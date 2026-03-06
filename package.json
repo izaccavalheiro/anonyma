@@ -1,0 +1,158 @@
+{
+  "name": "anonyma",
+  "version": "1.0.0",
+  "author": "Izac Cavaheiro <izac@izaccavalheiro.com>",
+  "description": "TypeScript-first PII detection & anonymization — 26 built-in detectors (email, SSN, IBAN, and more), 8 strategies (mask, redact, hash, AES-256 encrypt, tokenize, pseudonymize, generalize, synthesize), 6 compliance presets (GDPR, HIPAA, CCPA, PCI-DSS, SOX, FERPA), reversible tokenization, LLM/AI helpers, WHATWG streaming, batch processing, checksum validators, and optional Zod/MCP schemas.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/izaccavalheiro/anonyma.git"
+  },
+  "homepage": "https://github.com/izaccavalheiro/anonyma#readme",
+  "bugs": {
+    "url": "https://github.com/izaccavalheiro/anonyma/issues"
+  },
+  "keywords": [
+    "anonymization",
+    "pii",
+    "pii-detection",
+    "data-anonymization",
+    "text-anonymization",
+    "privacy",
+    "data-privacy",
+    "gdpr",
+    "hipaa",
+    "ccpa",
+    "pci-dss",
+    "sox",
+    "ferpa",
+    "compliance",
+    "phi",
+    "sensitive-data",
+    "redaction",
+    "masking",
+    "pseudonymization",
+    "tokenization",
+    "encryption",
+    "hashing",
+    "data-sanitization",
+    "typescript",
+    "ai",
+    "llm",
+    "mcp",
+    "streaming",
+    "web-crypto",
+    "zero-dependencies"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./schemas": {
+      "import": {
+        "types": "./dist/schemas.d.ts",
+        "default": "./dist/schemas.js"
+      },
+      "require": {
+        "types": "./dist/schemas.d.cts",
+        "default": "./dist/schemas.cjs"
+      }
+    },
+    "./detectors": {
+      "import": {
+        "types": "./dist/detectors/index.d.ts",
+        "default": "./dist/detectors/index.js"
+      },
+      "require": {
+        "types": "./dist/detectors/index.d.cts",
+        "default": "./dist/detectors/index.cjs"
+      }
+    },
+    "./validators": {
+      "import": {
+        "types": "./dist/validators.d.ts",
+        "default": "./dist/validators.js"
+      },
+      "require": {
+        "types": "./dist/validators.d.cts",
+        "default": "./dist/validators.cjs"
+      }
+    },
+    "./crypto": {
+      "import": {
+        "types": "./dist/crypto.d.ts",
+        "default": "./dist/crypto.js"
+      },
+      "require": {
+        "types": "./dist/crypto.d.cts",
+        "default": "./dist/crypto.cjs"
+      }
+    },
+    "./stream": {
+      "import": {
+        "types": "./dist/stream.d.ts",
+        "default": "./dist/stream.js"
+      },
+      "require": {
+        "types": "./dist/stream.d.cts",
+        "default": "./dist/stream.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run lint && npm run test && npm run build",
+    "release": "npm run prepublishOnly && npm publish"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^2.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^2.0.0",
+    "zod": "^3.23.0"
+  },
+  "peerDependencies": {
+    "zod": "^3.23.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
