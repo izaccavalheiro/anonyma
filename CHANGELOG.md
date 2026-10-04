@@ -7,6 +7,78 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+Additive modernization. The 1.x functions (`anonymize`, `tokenize`, `anonymizeObject`,
+the 1.x streams, `sanitizeForLLM`, …) keep their behaviour, apart from the three fixes
+listed under "Fixed".
+
+### Added
+
+- **`"anonyma/engine"`** — span-based engine. `createPipeline()` and `compilePipeline()`
+  build a reusable pipeline with `scan`, `test`, `transform` and `transformAsync`.
+  Overlapping detections are resolved so that no detected character is left in the
+  output, the confidence filter runs before overlap resolution, output is assembled in
+  one pass, and a synchronous transform throws `AsyncStrategyError` instead of
+  substituting another strategy. `createChunkTransformer()` and `createPipelineStream()`
+  detect values that are split across chunks.
+- **Validating detectors** for email, US SSN, IBAN, IPv4, IPv6 and payment cards
+  (`emailDetector`, `ssnDetector`, `ibanDetector`, `ipv4Detector`, `ipv6Detector`,
+  `creditCardDetector`), plus `defineDetector()`, `defineRegexDetector()` and
+  `fromLegacyDetector()`. The 1.x detectors are available to the engine as
+  `LEGACY_DETECTORS`.
+- **`"anonyma/vault"`** — `createSessionTokenizer()`, `createKeyedTokenizer()`,
+  `createSealedTokenizer()`, `createKeyRing()` (versioned keys, HKDF per purpose,
+  rotation, destruction), `createMemoryVault()`, `rewrapVault()`, `shredKey()`,
+  `restoreTokens()`, `tokenizeWith()`.
+- **`"anonyma/audit"`** — `createAuditLogger()` (hash-chained records without personal
+  data), `verifyAuditChain()`, `memorySink()`, `lineSink()`, `summarizeSpans()`,
+  `inputChecksum()`.
+- **`"anonyma/compliance"`** — `REGULATIONS` (GDPR, LGPD, PIPEDA, CCPA/CPRA, HIPAA,
+  PCI DSS with citations and coverage gaps), `parsePolicy()` / `checkPolicy()`,
+  `policyToSpec()`, `describeStrategy()`, `planErasure()`.
+- **`"anonyma/ai"`** — `sanitizeJson()` / `sanitizeJsonAsync()`, `createLlmGuard()`,
+  `createRestoreStream()`, `restoreChunks()` with lenses, `restoreJsonText()`,
+  `toLanguageModelMiddleware()`.
+- **`"anonyma/mcp"`** — MCP tool and resource declarations (`MCP_TOOLS`, `MCP_RESOURCES`,
+  `MCP_RESOURCE_TEMPLATES`) and a dependency-free server (`createMcpServer()`,
+  `serveStdio()`).
+- **`"anonyma/middleware"`**, **`"anonyma/middleware/express"`**,
+  **`"anonyma/middleware/hono"`** — `createScrubber()`, `anonymaExpress()`, `anonymaHono()`.
+- **Presets `lgpd` and `pipeda`.**
+- **Error classes** `AsyncStrategyError`, `KeyManagementError`, `TokenVaultError`,
+  `PolicyError`, `AuditIntegrityError`.
+- **`./package.json`** in the export map.
+- **Benchmark** (`npm run bench`, `bench/`) and labelled detector corpora
+  (`tests/fixtures/corpus/`).
+- Development dependencies `fast-check`, `express` and `hono` for property-based and
+  integration tests.
+
+### Changed
+
+- **Preset `hipaa`** also detects `credit-card`, `iban`, `passport`, `license-plate` and
+  `social-media`; its description no longer claims to cover all 18 Safe Harbor
+  identifiers. **Preset `ccpa`** also detects `medical-record`, `health-insurance` and
+  `api-key`. Text processed with these presets may have more values replaced than
+  before.
+- **Build:** entry points share code chunks (`splitting: true`). Every entry point now
+  uses the same class instances, so `instanceof AnonymaError` holds for errors thrown
+  by any subpath. The `dist/` layout gains `chunk-*.js` files.
+- `PresetNotFoundError` lists the eight presets.
+
+### Fixed
+
+- **`detectDateOfBirth()`** dropped every date that preceded a date of a more confident
+  format (`"born 12/05/1987. Admitted on March 3, 2021."` lost the first date): its
+  overlap check compared positions instead of testing for intersection.
+- **`mask()` with `preserveFormat`** and the generic **`synthesize()`** copied letters and
+  digits outside ASCII into their output. Letters and digits of every script are now
+  replaced.
+- **`synthesize()`** no longer crashes, or returns `[object Undefined]`, for a category
+  named like an `Object.prototype` member (`constructor`, `toString`, …).
+
+---
+
 ## [1.0.0] — 2026-03-06
 
 ### Added

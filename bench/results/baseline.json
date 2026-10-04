@@ -1,0 +1,2027 @@
+{
+  "environment": {
+    "node": "v25.9.0",
+    "cpu": "Intel(R) Core(TM) i5-10400F CPU @ 2.90GHz",
+    "cores": 12,
+    "dist": "/tmp/claude-1000/-home-izac-anonyma/d0bdfffc-6a73-4758-bb80-d562fa227813/scratchpad/baseline-dist",
+    "quick": false
+  },
+  "results": [
+    {
+      "op": "detect",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3549,
+      "medianMs": 0.07930700000000002,
+      "p95Ms": 0.10773900000000936,
+      "opsPerSec": 12609.2274326352,
+      "mbPerSec": 1.26092274326352
+    },
+    {
+      "op": "hasPII",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3761,
+      "medianMs": 0.07617299999998295,
+      "p95Ms": 0.09564100000000053,
+      "opsPerSec": 13128.011237580558,
+      "mbPerSec": 1.3128011237580557
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3737,
+      "medianMs": 0.07744600000000901,
+      "p95Ms": 0.08776800000009644,
+      "opsPerSec": 12912.2227100158,
+      "mbPerSec": 1.2912222710015802
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3744,
+      "medianMs": 0.07698699999991732,
+      "p95Ms": 0.08839599999987513,
+      "opsPerSec": 12989.205969853014,
+      "mbPerSec": 1.2989205969853015
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3746,
+      "medianMs": 0.0766769999997905,
+      "p95Ms": 0.08960500000011962,
+      "opsPerSec": 13041.720463799213,
+      "mbPerSec": 1.3041720463799216
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3803,
+      "medianMs": 0.0764929999998003,
+      "p95Ms": 0.0845440000000508,
+      "opsPerSec": 13073.091655479726,
+      "mbPerSec": 1.3073091655479725
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3647,
+      "medianMs": 0.07852999999977328,
+      "p95Ms": 0.09619099999986247,
+      "opsPerSec": 12733.987011370013,
+      "mbPerSec": 1.2733987011370014
+    },
+    {
+      "op": "detect",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3986,
+      "medianMs": 0.0722049999999399,
+      "p95Ms": 0.08615099999997256,
+      "opsPerSec": 13849.45640884748,
+      "mbPerSec": 1.3849456408847483
+    },
+    {
+      "op": "hasPII",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 20000,
+      "medianMs": 0.0007679999998799758,
+      "p95Ms": 0.0008509999997841078,
+      "opsPerSec": 1302083.333536825,
+      "mbPerSec": 130.2083333536825
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3918,
+      "medianMs": 0.07335999999986598,
+      "p95Ms": 0.08605500000021493,
+      "opsPerSec": 13631.406761202657,
+      "mbPerSec": 1.3631406761202658
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3997,
+      "medianMs": 0.07288100000005215,
+      "p95Ms": 0.08652099999972052,
+      "opsPerSec": 13720.997242069736,
+      "mbPerSec": 1.3720997242069735
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3935,
+      "medianMs": 0.07434599999987768,
+      "p95Ms": 0.0822769999999764,
+      "opsPerSec": 13450.622763856096,
+      "mbPerSec": 1.3450622763856097
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3711,
+      "medianMs": 0.0787239999999656,
+      "p95Ms": 0.08655700000008437,
+      "opsPerSec": 12702.606574874713,
+      "mbPerSec": 1.2702606574874713
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 2441,
+      "medianMs": 0.11752599999999802,
+      "p95Ms": 0.1551870000002964,
+      "opsPerSec": 8508.755509419336,
+      "mbPerSec": 0.8508755509419336
+    },
+    {
+      "op": "detect",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 4074,
+      "medianMs": 0.07165700000041397,
+      "p95Ms": 0.0800279999994018,
+      "opsPerSec": 13955.370724342672,
+      "mbPerSec": 1.3955370724342673
+    },
+    {
+      "op": "hasPII",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 20000,
+      "medianMs": 0.0008040000002438319,
+      "p95Ms": 0.0008639999996375991,
+      "opsPerSec": 1243781.0941501574,
+      "mbPerSec": 124.37810941501573
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 3914,
+      "medianMs": 0.07503099999939877,
+      "p95Ms": 0.0813029999999344,
+      "opsPerSec": 13327.82449931379,
+      "mbPerSec": 1.3327824499313792
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 3847,
+      "medianMs": 0.07573099999990518,
+      "p95Ms": 0.08422900000005029,
+      "opsPerSec": 13204.63218498702,
+      "mbPerSec": 1.320463218498702
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 3758,
+      "medianMs": 0.07700599999952829,
+      "p95Ms": 0.08875999999963824,
+      "opsPerSec": 12986.00109090364,
+      "mbPerSec": 1.2986001090903638
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 3586,
+      "medianMs": 0.08050300000013522,
+      "p95Ms": 0.09490699999969365,
+      "opsPerSec": 12421.897320575883,
+      "mbPerSec": 1.2421897320575885
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 2005,
+      "medianMs": 0.14454699999987497,
+      "p95Ms": 0.17951600000014878,
+      "opsPerSec": 6918.165025914512,
+      "mbPerSec": 0.6918165025914513
+    },
+    {
+      "op": "detect",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 968,
+      "medianMs": 0.3050469999998313,
+      "p95Ms": 0.33776599999964674,
+      "opsPerSec": 3278.183361909978,
+      "mbPerSec": 3.278183361909978
+    },
+    {
+      "op": "hasPII",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 985,
+      "medianMs": 0.30214799999976094,
+      "p95Ms": 0.3087619999996605,
+      "opsPerSec": 3309.6363371618913,
+      "mbPerSec": 3.3096363371618915
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 984,
+      "medianMs": 0.300253999999768,
+      "p95Ms": 0.3414990000001126,
+      "opsPerSec": 3330.513498573783,
+      "mbPerSec": 3.3305134985737834
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 980,
+      "medianMs": 0.30353399999967223,
+      "p95Ms": 0.3109130000002551,
+      "opsPerSec": 3294.5238424726053,
+      "mbPerSec": 3.2945238424726053
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 978,
+      "medianMs": 0.3032549999998082,
+      "p95Ms": 0.3300280000003113,
+      "opsPerSec": 3297.55486307112,
+      "mbPerSec": 3.29755486307112
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 975,
+      "medianMs": 0.3044180000006236,
+      "p95Ms": 0.33197699999982433,
+      "opsPerSec": 3284.9568685095874,
+      "mbPerSec": 3.2849568685095876
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 964,
+      "medianMs": 0.30563900000015565,
+      "p95Ms": 0.32712400000036723,
+      "opsPerSec": 3271.8337646684186,
+      "mbPerSec": 3.2718337646684184
+    },
+    {
+      "op": "detect",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 891,
+      "medianMs": 0.33308800000031624,
+      "p95Ms": 0.36731700000018463,
+      "opsPerSec": 3002.2096262820955,
+      "mbPerSec": 3.002209626282095
+    },
+    {
+      "op": "hasPII",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 20000,
+      "medianMs": 0.007024999998975545,
+      "p95Ms": 0.007297000000107801,
+      "opsPerSec": 142348.75446915728,
+      "mbPerSec": 142.34875446915729
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 891,
+      "medianMs": 0.3328990000009071,
+      "p95Ms": 0.34437900000011723,
+      "opsPerSec": 3003.914100064209,
+      "mbPerSec": 3.0039141000642093
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 892,
+      "medianMs": 0.3334020000002056,
+      "p95Ms": 0.36583299999983865,
+      "opsPerSec": 2999.3821272799305,
+      "mbPerSec": 2.999382127279931
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 882,
+      "medianMs": 0.3358509999998205,
+      "p95Ms": 0.36364099999991595,
+      "opsPerSec": 2977.510860472455,
+      "mbPerSec": 2.977510860472455
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 871,
+      "medianMs": 0.34104499999921245,
+      "p95Ms": 0.37061800000083167,
+      "opsPerSec": 2932.164377141753,
+      "mbPerSec": 2.9321643771417536
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 632,
+      "medianMs": 0.4619190000012168,
+      "p95Ms": 0.5384880000001431,
+      "opsPerSec": 2164.8817216814327,
+      "mbPerSec": 2.164881721681433
+    },
+    {
+      "op": "detect",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 23,
+      "iterations": 736,
+      "medianMs": 0.4002810000001773,
+      "p95Ms": 0.4501799999998184,
+      "opsPerSec": 2498.2449828984063,
+      "mbPerSec": 2.4982449828984064
+    },
+    {
+      "op": "hasPII",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 23,
+      "iterations": 20000,
+      "medianMs": 0.00659799999993993,
+      "p95Ms": 0.006809999998949934,
+      "opsPerSec": 151561.07911626316,
+      "mbPerSec": 151.56107911626316
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 23,
+      "iterations": 736,
+      "medianMs": 0.3995869999998831,
+      "p95Ms": 0.4479510000001028,
+      "opsPerSec": 2502.5839178959586,
+      "mbPerSec": 2.502583917895959
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 23,
+      "iterations": 732,
+      "medianMs": 0.40376800000012736,
+      "p95Ms": 0.4531700000006822,
+      "opsPerSec": 2476.669770758665,
+      "mbPerSec": 2.4766697707586647
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 23,
+      "iterations": 730,
+      "medianMs": 0.4065900000005058,
+      "p95Ms": 0.4443570000003092,
+      "opsPerSec": 2459.480065911006,
+      "mbPerSec": 2.459480065911006
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 23,
+      "iterations": 699,
+      "medianMs": 0.4247639999994135,
+      "p95Ms": 0.45763499999884516,
+      "opsPerSec": 2354.248476804486,
+      "mbPerSec": 2.3542484768044862
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 23,
+      "iterations": 315,
+      "medianMs": 0.9344620000010764,
+      "p95Ms": 1.0893079999987094,
+      "opsPerSec": 1070.1344730966568,
+      "mbPerSec": 1.0701344730966569
+    },
+    {
+      "op": "detect",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 136,
+      "medianMs": 2.199047000000064,
+      "p95Ms": 2.3833100000010745,
+      "opsPerSec": 454.7424407027093,
+      "mbPerSec": 4.547424407027093
+    },
+    {
+      "op": "hasPII",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 138,
+      "medianMs": 2.193442000001596,
+      "p95Ms": 2.2937069999989035,
+      "opsPerSec": 455.90446430736364,
+      "mbPerSec": 4.559044643073636
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 135,
+      "medianMs": 2.2016940000012255,
+      "p95Ms": 2.363816000000952,
+      "opsPerSec": 454.1957238378464,
+      "mbPerSec": 4.541957238378464
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 137,
+      "medianMs": 2.197625999999218,
+      "p95Ms": 2.3177320000013424,
+      "opsPerSec": 455.0364802747855,
+      "mbPerSec": 4.550364802747856
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 135,
+      "medianMs": 2.2011899999997695,
+      "p95Ms": 2.365827999999965,
+      "opsPerSec": 454.2997196971205,
+      "mbPerSec": 4.542997196971205
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 136,
+      "medianMs": 2.202838999999585,
+      "p95Ms": 2.326358000000255,
+      "opsPerSec": 453.9596402643081,
+      "mbPerSec": 4.539596402643082
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 136,
+      "medianMs": 2.201842000000397,
+      "p95Ms": 2.333371000000625,
+      "opsPerSec": 454.16519441441284,
+      "mbPerSec": 4.541651944144129
+    },
+    {
+      "op": "stream/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 42,
+      "medianMs": 7.108479000000443,
+      "p95Ms": 8.341161999998803,
+      "opsPerSec": 140.67707029871477,
+      "mbPerSec": 1.4067707029871477
+    },
+    {
+      "op": "stream/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 134,
+      "medianMs": 2.2071450000003097,
+      "p95Ms": 2.4219169999996666,
+      "opsPerSec": 453.0739937792305,
+      "mbPerSec": 4.530739937792305
+    },
+    {
+      "op": "detect",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 124,
+      "medianMs": 2.3811490000007325,
+      "p95Ms": 2.624272999999448,
+      "opsPerSec": 419.965319263806,
+      "mbPerSec": 4.19965319263806
+    },
+    {
+      "op": "hasPII",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 4146,
+      "medianMs": 0.07149299999946379,
+      "p95Ms": 0.07432300000073155,
+      "opsPerSec": 13987.383380295976,
+      "mbPerSec": 139.87383380295975
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 122,
+      "medianMs": 2.44509300000027,
+      "p95Ms": 2.6233439999996335,
+      "opsPerSec": 408.98239862446525,
+      "mbPerSec": 4.089823986244652
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 122,
+      "medianMs": 2.425720999999612,
+      "p95Ms": 2.6345889999993233,
+      "opsPerSec": 412.24856444750236,
+      "mbPerSec": 4.122485644475025
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 123,
+      "medianMs": 2.4211080000004586,
+      "p95Ms": 2.5630529999998544,
+      "opsPerSec": 413.03403235205144,
+      "mbPerSec": 4.130340323520515
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 121,
+      "medianMs": 2.4541710000012245,
+      "p95Ms": 2.595353000000614,
+      "opsPerSec": 407.4695691536984,
+      "mbPerSec": 4.074695691536983
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 83,
+      "medianMs": 3.5903399999988324,
+      "p95Ms": 3.937301000001753,
+      "opsPerSec": 278.5251536067128,
+      "mbPerSec": 2.7852515360671277
+    },
+    {
+      "op": "stream/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 39,
+      "medianMs": 7.668213000000833,
+      "p95Ms": 8.595214999997552,
+      "opsPerSec": 130.40847978530218,
+      "mbPerSec": 1.304084797853022
+    },
+    {
+      "op": "stream/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 121,
+      "medianMs": 2.4539289999993343,
+      "p95Ms": 2.6832979999999225,
+      "opsPerSec": 407.5097527272677,
+      "mbPerSec": 4.075097527272677
+    },
+    {
+      "op": "detect",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 233,
+      "iterations": 111,
+      "medianMs": 2.68811000000278,
+      "p95Ms": 2.8757479999985662,
+      "opsPerSec": 372.0085859577792,
+      "mbPerSec": 3.720085859577792
+    },
+    {
+      "op": "hasPII",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 233,
+      "iterations": 4155,
+      "medianMs": 0.07132699999783654,
+      "p95Ms": 0.07428599999911967,
+      "opsPerSec": 14019.93634991422,
+      "mbPerSec": 140.1993634991422
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 233,
+      "iterations": 103,
+      "medianMs": 2.8859709999996994,
+      "p95Ms": 3.1500450000021374,
+      "opsPerSec": 346.5038283475836,
+      "mbPerSec": 3.465038283475836
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 233,
+      "iterations": 102,
+      "medianMs": 2.9381170000015118,
+      "p95Ms": 3.0901640000010957,
+      "opsPerSec": 340.3540430825204,
+      "mbPerSec": 3.4035404308252035
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 233,
+      "iterations": 98,
+      "medianMs": 3.031838000002608,
+      "p95Ms": 3.5649969999976747,
+      "opsPerSec": 329.8329264291627,
+      "mbPerSec": 3.298329264291627
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 233,
+      "iterations": 95,
+      "medianMs": 3.1476609999990615,
+      "p95Ms": 3.4013279999999213,
+      "opsPerSec": 317.6962195103914,
+      "mbPerSec": 3.1769621951039144
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 233,
+      "iterations": 38,
+      "medianMs": 7.990772999997716,
+      "p95Ms": 8.766920999998547,
+      "opsPerSec": 125.14433835128163,
+      "mbPerSec": 1.2514433835128163
+    },
+    {
+      "op": "stream/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 233,
+      "iterations": 45,
+      "medianMs": 6.693264999998064,
+      "p95Ms": 7.333182999998826,
+      "opsPerSec": 149.40391572727052,
+      "mbPerSec": 1.494039157272705
+    },
+    {
+      "op": "stream/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 233,
+      "iterations": 98,
+      "medianMs": 3.013609000001452,
+      "p95Ms": 3.39287499999773,
+      "opsPerSec": 331.8280506859112,
+      "mbPerSec": 3.318280506859112
+    },
+    {
+      "op": "detect",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 20.489426000000094,
+      "p95Ms": 20.856642999999167,
+      "opsPerSec": 48.805662003415584,
+      "mbPerSec": 4.880566200341558
+    },
+    {
+      "op": "hasPII",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 20.47441600000093,
+      "p95Ms": 21.071320999999443,
+      "opsPerSec": 48.841441924397486,
+      "mbPerSec": 4.884144192439749
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 20.13141800000085,
+      "p95Ms": 20.3507099999988,
+      "opsPerSec": 49.673599743443695,
+      "mbPerSec": 4.967359974344371
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 20.064500000000407,
+      "p95Ms": 21.04820500000278,
+      "opsPerSec": 49.83926835953947,
+      "mbPerSec": 4.983926835953947
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 19.834278999998787,
+      "p95Ms": 20.8166229999988,
+      "opsPerSec": 50.41776411434271,
+      "mbPerSec": 5.041776411434271
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 20.11070599999948,
+      "p95Ms": 21.075074000000313,
+      "opsPerSec": 49.724758544032504,
+      "mbPerSec": 4.972475854403251
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 20.011993000000075,
+      "p95Ms": 21.026434999999765,
+      "opsPerSec": 49.97003546823129,
+      "mbPerSec": 4.997003546823129
+    },
+    {
+      "op": "stream/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 71.8697809999976,
+      "p95Ms": 72.12190399999963,
+      "opsPerSec": 13.914053807956273,
+      "mbPerSec": 1.3914053807956273
+    },
+    {
+      "op": "stream/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 20.78798299999835,
+      "p95Ms": 23.222900000000664,
+      "opsPerSec": 48.104715113538404,
+      "mbPerSec": 4.810471511353841
+    },
+    {
+      "op": "detect",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 500,
+      "iterations": 14,
+      "medianMs": 21.909584000000905,
+      "p95Ms": 22.461591000002954,
+      "opsPerSec": 45.64212629504781,
+      "mbPerSec": 4.564212629504781
+    },
+    {
+      "op": "hasPII",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 500,
+      "iterations": 422,
+      "medianMs": 0.7066260000028706,
+      "p95Ms": 0.7462369999993825,
+      "opsPerSec": 1415.1757789777587,
+      "mbPerSec": 141.51757789777588
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 500,
+      "iterations": 12,
+      "medianMs": 25.932110999998258,
+      "p95Ms": 26.444550000000163,
+      "opsPerSec": 38.56222889066251,
+      "mbPerSec": 3.8562228890662515
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 500,
+      "iterations": 12,
+      "medianMs": 25.823576999999204,
+      "p95Ms": 26.09088899999915,
+      "opsPerSec": 38.7243022142142,
+      "mbPerSec": 3.87243022142142
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 500,
+      "iterations": 12,
+      "medianMs": 26.20661299999847,
+      "p95Ms": 34.41709300000002,
+      "opsPerSec": 38.1583075996909,
+      "mbPerSec": 3.8158307599690904
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 500,
+      "iterations": 12,
+      "medianMs": 26.851556999998138,
+      "p95Ms": 27.258773999998084,
+      "opsPerSec": 37.2417882508664,
+      "mbPerSec": 3.7241788250866397
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 500,
+      "iterations": 8,
+      "medianMs": 38.81794799999989,
+      "p95Ms": 40.59713799999736,
+      "opsPerSec": 25.76127929276434,
+      "mbPerSec": 2.576127929276434
+    },
+    {
+      "op": "stream/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 500,
+      "iterations": 5,
+      "medianMs": 76.40105100000073,
+      "p95Ms": 87.36216400000194,
+      "opsPerSec": 13.088825178595911,
+      "mbPerSec": 1.3088825178595913
+    },
+    {
+      "op": "stream/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 500,
+      "iterations": 13,
+      "medianMs": 24.434817999997904,
+      "p95Ms": 24.994958000002953,
+      "opsPerSec": 40.92520762790563,
+      "mbPerSec": 4.092520762790563
+    },
+    {
+      "op": "detect",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2402,
+      "iterations": 12,
+      "medianMs": 25.400386000001163,
+      "p95Ms": 25.67986799999926,
+      "opsPerSec": 39.369480448051235,
+      "mbPerSec": 3.9369480448051233
+    },
+    {
+      "op": "hasPII",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2402,
+      "iterations": 400,
+      "medianMs": 0.7288399999997637,
+      "p95Ms": 0.8480469999994966,
+      "opsPerSec": 1372.0432468035842,
+      "mbPerSec": 137.2043246803584
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2402,
+      "iterations": 8,
+      "medianMs": 42.31882100000075,
+      "p95Ms": 42.80887900000016,
+      "opsPerSec": 23.63014791929062,
+      "mbPerSec": 2.363014791929062
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2402,
+      "iterations": 7,
+      "medianMs": 44.98119199999928,
+      "p95Ms": 59.85736100000213,
+      "opsPerSec": 22.23151400701022,
+      "mbPerSec": 2.223151400701022
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2402,
+      "iterations": 7,
+      "medianMs": 43.42403800000102,
+      "p95Ms": 49.600603999999294,
+      "opsPerSec": 23.028719715102877,
+      "mbPerSec": 2.302871971510288
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2402,
+      "iterations": 7,
+      "medianMs": 46.558554000002914,
+      "p95Ms": 47.62261199999921,
+      "opsPerSec": 21.47833027632124,
+      "mbPerSec": 2.147833027632124
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2402,
+      "iterations": 5,
+      "medianMs": 99.84826100000282,
+      "p95Ms": 101.80054500000188,
+      "opsPerSec": 10.015196959714418,
+      "mbPerSec": 1.0015196959714419
+    },
+    {
+      "op": "stream/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2402,
+      "iterations": 5,
+      "medianMs": 63.60848799999803,
+      "p95Ms": 64.50183500000276,
+      "opsPerSec": 15.721172306438582,
+      "mbPerSec": 1.5721172306438584
+    },
+    {
+      "op": "stream/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2402,
+      "iterations": 9,
+      "medianMs": 35.52457400000276,
+      "p95Ms": 35.677662999998574,
+      "opsPerSec": 28.149528267388156,
+      "mbPerSec": 2.814952826738816
+    },
+    {
+      "op": "detect",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 197.57677399999739,
+      "p95Ms": 198.2717900000025,
+      "opsPerSec": 5.061323655380734,
+      "mbPerSec": 5.061323655380734
+    },
+    {
+      "op": "hasPII",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 196.49043800000072,
+      "p95Ms": 197.39712700000018,
+      "opsPerSec": 5.0893061778405535,
+      "mbPerSec": 5.089306177840554
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 196.2943879999948,
+      "p95Ms": 196.90866999999707,
+      "opsPerSec": 5.094389147793805,
+      "mbPerSec": 5.094389147793805
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 196.82208900000114,
+      "p95Ms": 197.26056300000346,
+      "opsPerSec": 5.080730547474243,
+      "mbPerSec": 5.080730547474243
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 198.30261299999984,
+      "p95Ms": 198.6990799999985,
+      "opsPerSec": 5.042797897978282,
+      "mbPerSec": 5.042797897978282
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 197.00276399999711,
+      "p95Ms": 197.6925590000028,
+      "opsPerSec": 5.076070912385852,
+      "mbPerSec": 5.076070912385852
+    },
+    {
+      "op": "stream/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 695.9052849999935,
+      "p95Ms": 697.3777619999964,
+      "opsPerSec": 1.4369771599018815,
+      "mbPerSec": 1.4369771599018815
+    },
+    {
+      "op": "stream/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 204.43909500000154,
+      "p95Ms": 211.64577099999588,
+      "opsPerSec": 4.89143233587486,
+      "mbPerSec": 4.89143233587486
+    },
+    {
+      "op": "detect",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 4866,
+      "iterations": 5,
+      "medianMs": 216.56239500000083,
+      "p95Ms": 217.80447399999684,
+      "opsPerSec": 4.617606856444287,
+      "mbPerSec": 4.617606856444288
+    },
+    {
+      "op": "hasPII",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 4866,
+      "iterations": 41,
+      "medianMs": 7.194986000002245,
+      "p95Ms": 9.265698000002885,
+      "opsPerSec": 138.98567697000215,
+      "mbPerSec": 138.98567697000215
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 4866,
+      "iterations": 5,
+      "medianMs": 1920.7791720000023,
+      "p95Ms": 1927.842435999999,
+      "opsPerSec": 0.5206220551416927,
+      "mbPerSec": 0.5206220551416927
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 4866,
+      "iterations": 5,
+      "medianMs": 1960.2621819999986,
+      "p95Ms": 1972.9378540000034,
+      "opsPerSec": 0.5101358426349526,
+      "mbPerSec": 0.5101358426349526
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 4866,
+      "iterations": 5,
+      "medianMs": 1931.6394880000007,
+      "p95Ms": 1939.409015000012,
+      "opsPerSec": 0.5176949457765484,
+      "mbPerSec": 0.5176949457765484
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 4866,
+      "iterations": 5,
+      "medianMs": 1958.3190049999976,
+      "p95Ms": 1961.11273600001,
+      "opsPerSec": 0.5106420340336744,
+      "mbPerSec": 0.5106420340336743
+    },
+    {
+      "op": "stream/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 4866,
+      "iterations": 5,
+      "medianMs": 719.0444109999953,
+      "p95Ms": 723.3901110000006,
+      "opsPerSec": 1.3907346816162187,
+      "mbPerSec": 1.3907346816162187
+    },
+    {
+      "op": "stream/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 4866,
+      "iterations": 5,
+      "medianMs": 245.03424599999562,
+      "p95Ms": 245.93861900000775,
+      "opsPerSec": 4.081062203852182,
+      "mbPerSec": 4.081062203852182
+    },
+    {
+      "op": "detect",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 24121,
+      "iterations": 5,
+      "medianMs": 295.0217499999999,
+      "p95Ms": 296.5719340000069,
+      "opsPerSec": 3.3895805987185703,
+      "mbPerSec": 3.3895805987185708
+    },
+    {
+      "op": "hasPII",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 24121,
+      "iterations": 41,
+      "medianMs": 7.330301999987569,
+      "p95Ms": 7.815069000003859,
+      "opsPerSec": 136.42002744248407,
+      "mbPerSec": 136.42002744248407
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 24121,
+      "iterations": 5,
+      "medianMs": 8011.119101999997,
+      "p95Ms": 8034.4112259999965,
+      "opsPerSec": 0.12482650516958953,
+      "mbPerSec": 0.12482650516958953
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 24121,
+      "iterations": 5,
+      "medianMs": 8983.291402000003,
+      "p95Ms": 9001.311248000013,
+      "opsPerSec": 0.1113177737702424,
+      "mbPerSec": 0.1113177737702424
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 24121,
+      "iterations": 5,
+      "medianMs": 8078.359672999999,
+      "p95Ms": 8116.222323000024,
+      "opsPerSec": 0.12378750643429047,
+      "mbPerSec": 0.12378750643429046
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 24121,
+      "iterations": 5,
+      "medianMs": 8494.344497999991,
+      "p95Ms": 8522.784280000022,
+      "opsPerSec": 0.117725387784243,
+      "mbPerSec": 0.117725387784243
+    },
+    {
+      "op": "stream/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 24121,
+      "iterations": 5,
+      "medianMs": 626.7503159999615,
+      "p95Ms": 637.2352219999884,
+      "opsPerSec": 1.5955317045265942,
+      "mbPerSec": 1.5955317045265942
+    },
+    {
+      "op": "stream/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 24121,
+      "iterations": 5,
+      "medianMs": 370.45939899998484,
+      "p95Ms": 372.31905599997845,
+      "opsPerSec": 2.6993511372619836,
+      "mbPerSec": 2.699351137261983
+    },
+    {
+      "op": "anonymizeObject",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": -1,
+      "iterations": 289,
+      "medianMs": 1.0195509999757633,
+      "p95Ms": 1.1035950000514276,
+      "opsPerSec": 980.8239117256243,
+      "mbPerSec": 0.9808239117256242
+    },
+    {
+      "op": "anonymizeBatch",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 8,
+      "iterations": 410,
+      "medianMs": 0.7239919999847189,
+      "p95Ms": 0.7822739999974146,
+      "opsPerSec": 1381.2307318604444,
+      "mbPerSec": 1.3812307318604444
+    },
+    {
+      "op": "anonymizeObject",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": -1,
+      "iterations": 21,
+      "medianMs": 14.503086999990046,
+      "p95Ms": 17.086288999998942,
+      "opsPerSec": 68.95083784581078,
+      "mbPerSec": 0.6895083784581079
+    },
+    {
+      "op": "anonymizeBatch",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 77,
+      "iterations": 44,
+      "medianMs": 6.904028000019025,
+      "p95Ms": 7.260726000007708,
+      "opsPerSec": 144.84298151705704,
+      "mbPerSec": 1.4484298151705706
+    },
+    {
+      "op": "anonymizeObject",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": -1,
+      "iterations": 5,
+      "medianMs": 144.30194099998334,
+      "p95Ms": 145.67476299998816,
+      "opsPerSec": 6.929913714744249,
+      "mbPerSec": 0.6929913714744249
+    },
+    {
+      "op": "anonymizeBatch",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 745,
+      "iterations": 5,
+      "medianMs": 67.80604600004153,
+      "p95Ms": 69.01320200000191,
+      "opsPerSec": 14.747947402793365,
+      "mbPerSec": 1.4747947402793367
+    },
+    {
+      "op": "anonymizeObject",
+      "size": 999995,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": -1,
+      "iterations": 5,
+      "medianMs": 1463.3976410000469,
+      "p95Ms": 1475.7091789999977,
+      "opsPerSec": 0.6833412682807297,
+      "mbPerSec": 0.6833378515743883
+    },
+    {
+      "op": "anonymizeBatch",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 7407,
+      "iterations": 5,
+      "medianMs": 739.3785640000133,
+      "p95Ms": 745.7548279999755,
+      "opsPerSec": 1.3524871408092134,
+      "mbPerSec": 1.3524871408092134
+    },
+    {
+      "op": "encrypt/passphrase",
+      "size": 17,
+      "sizeLabel": "17B",
+      "density": "-",
+      "matches": 1,
+      "iterations": 7,
+      "medianMs": 41.04769199999282,
+      "p95Ms": 63.41000299999723,
+      "opsPerSec": 24.36190565842715,
+      "mbPerSec": 0.00041415239619326156
+    },
+    {
+      "op": "encrypt/keyBytes",
+      "size": 17,
+      "sizeLabel": "17B",
+      "density": "-",
+      "matches": 1,
+      "iterations": 4968,
+      "medianMs": 0.05502700002398342,
+      "p95Ms": 0.08049399999435991,
+      "opsPerSec": 18172.89693358082,
+      "mbPerSec": 0.30893924787087396
+    }
+  ],
+  "scaling": [
+    {
+      "op": "detect",
+      "density": "none",
+      "slope": 0.9403402675886083
+    },
+    {
+      "op": "detect",
+      "density": "sparse",
+      "slope": 0.9402919736080688
+    },
+    {
+      "op": "detect",
+      "density": "dense",
+      "slope": 0.9577860456170968
+    },
+    {
+      "op": "hasPII",
+      "density": "none",
+      "slope": 0.9409450458561558
+    },
+    {
+      "op": "hasPII",
+      "density": "sparse",
+      "slope": 1.0026076965827384
+    },
+    {
+      "op": "hasPII",
+      "density": "dense",
+      "slope": 1.0146506910110884
+    },
+    {
+      "op": "anonymize/redact",
+      "density": "none",
+      "slope": 0.9407374652391989
+    },
+    {
+      "op": "anonymize/redact",
+      "density": "sparse",
+      "slope": 1.2309037331226325
+    },
+    {
+      "op": "anonymize/redact",
+      "density": "dense",
+      "slope": 1.4072487110612908
+    },
+    {
+      "op": "anonymize/mask",
+      "density": "none",
+      "slope": 0.939607403267028
+    },
+    {
+      "op": "anonymize/mask",
+      "density": "sparse",
+      "slope": 1.2335213433344474
+    },
+    {
+      "op": "anonymize/mask",
+      "density": "dense",
+      "slope": 1.4226872647038973
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "density": "none",
+      "slope": 0.9401320286986682
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "density": "sparse",
+      "slope": 1.2313735020366445
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "density": "dense",
+      "slope": 1.405052369103611
+    },
+    {
+      "op": "tokenize+detokenize",
+      "density": "none",
+      "slope": 0.9393450533599409
+    },
+    {
+      "op": "tokenize+detokenize",
+      "density": "sparse",
+      "slope": 1.2316279909191685
+    },
+    {
+      "op": "tokenize+detokenize",
+      "density": "dense",
+      "slope": 1.407295803586004
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "density": "none",
+      "slope": 0.9080407861124944
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "density": "sparse",
+      "slope": 0.9622333737892875
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "density": "dense",
+      "slope": 1.0143894299863394
+    },
+    {
+      "op": "stream/lines",
+      "density": "none",
+      "slope": 0.9953867249839382
+    },
+    {
+      "op": "stream/lines",
+      "density": "sparse",
+      "slope": 0.9860307735829483
+    },
+    {
+      "op": "stream/lines",
+      "density": "dense",
+      "slope": 0.9857282708245516
+    },
+    {
+      "op": "stream/64KB",
+      "density": "none",
+      "slope": 0.9833665421922011
+    },
+    {
+      "op": "stream/64KB",
+      "density": "sparse",
+      "slope": 0.99968239629041
+    },
+    {
+      "op": "stream/64KB",
+      "density": "dense",
+      "slope": 1.0448268568168766
+    },
+    {
+      "op": "anonymizeObject",
+      "density": "sparse",
+      "slope": 1.046867885146272
+    },
+    {
+      "op": "anonymizeBatch",
+      "density": "sparse",
+      "slope": 1.0019565140087934
+    }
+  ],
+  "matchScaling": {
+    "rows": [
+      {
+        "size": 400000,
+        "matches": 489,
+        "detectMs": 82.89426799997455,
+        "anonymizeMs": 156.33294800005388,
+        "replaceMs": 73.43868000007933
+      },
+      {
+        "size": 400000,
+        "matches": 967,
+        "detectMs": 84.84217000001809,
+        "anonymizeMs": 225.62825599999633,
+        "replaceMs": 140.78608599997824
+      },
+      {
+        "size": 400000,
+        "matches": 1958,
+        "detectMs": 87.72921599994879,
+        "anonymizeMs": 382.7266459999955,
+        "replaceMs": 294.99743000004673
+      },
+      {
+        "size": 400000,
+        "matches": 3899,
+        "detectMs": 91.88962200004607,
+        "anonymizeMs": 663.3561329999939,
+        "replaceMs": 571.4665109999478
+      },
+      {
+        "size": 400000,
+        "matches": 7744,
+        "detectMs": 100.15709299995797,
+        "anonymizeMs": 1185.3767879999941,
+        "replaceMs": 1085.2196950000362
+      },
+      {
+        "size": 400000,
+        "matches": 10722,
+        "detectMs": 109.12610599998152,
+        "anonymizeMs": 1586.1742019999656,
+        "replaceMs": 1477.048095999984
+      }
+    ],
+    "slopes": {
+      "detect": 0.08345144448073233,
+      "anonymize": 0.7622426892594345,
+      "replace": 0.9751849118118854
+    }
+  },
+  "perDetector": [
+    {
+      "category": "ipv6",
+      "medianMs": 3.0107720000087284,
+      "matches": 13,
+      "share": 0.13944267890821768
+    },
+    {
+      "category": "national-id",
+      "medianMs": 2.6930799999972805,
+      "matches": 29,
+      "share": 0.12472890332203002
+    },
+    {
+      "category": "api-key",
+      "medianMs": 1.7217969999765046,
+      "matches": 12,
+      "share": 0.07974432677471431
+    },
+    {
+      "category": "cryptocurrency",
+      "medianMs": 1.63025899999775,
+      "matches": 4,
+      "share": 0.07550478158866206
+    },
+    {
+      "category": "license-plate",
+      "medianMs": 1.095683999999892,
+      "matches": 16,
+      "share": 0.05074615819345124
+    },
+    {
+      "category": "drivers-license",
+      "medianMs": 1.0548320000525564,
+      "matches": 7,
+      "share": 0.048854114454703064
+    },
+    {
+      "category": "health-insurance",
+      "medianMs": 0.9477520000073127,
+      "matches": 10,
+      "share": 0.04389474786574928
+    },
+    {
+      "category": "tracking-number",
+      "medianMs": 0.8929149999748915,
+      "matches": 4,
+      "share": 0.041354994544080065
+    },
+    {
+      "category": "medical-record",
+      "medianMs": 0.881885000038892,
+      "matches": 5,
+      "share": 0.04084414458950736
+    },
+    {
+      "category": "vin",
+      "medianMs": 0.7284729999955744,
+      "matches": 4,
+      "share": 0.03373893029143171
+    },
+    {
+      "category": "email",
+      "medianMs": 0.7277089999988675,
+      "matches": 96,
+      "share": 0.03370354594275757
+    },
+    {
+      "category": "address",
+      "medianMs": 0.7093539999914356,
+      "matches": 19,
+      "share": 0.03285344159331189
+    },
+    {
+      "category": "prescription",
+      "medianMs": 0.6629749999847263,
+      "matches": 4,
+      "share": 0.030705417097932956
+    },
+    {
+      "category": "tax-id",
+      "medianMs": 0.6541729999589734,
+      "matches": 4,
+      "share": 0.030297756051750238
+    },
+    {
+      "category": "case-number",
+      "medianMs": 0.6228419999824837,
+      "matches": 6,
+      "share": 0.028846673548796723
+    },
+    {
+      "category": "company-registration",
+      "medianMs": 0.6120920000248589,
+      "matches": 7,
+      "share": 0.028348791679179863
+    },
+    {
+      "category": "bank-account",
+      "medianMs": 0.5314359999611042,
+      "matches": 4,
+      "share": 0.024613241887007385
+    },
+    {
+      "category": "date-of-birth",
+      "medianMs": 0.4685639999806881,
+      "matches": 10,
+      "share": 0.021701350815361568
+    },
+    {
+      "category": "passport",
+      "medianMs": 0.3989979999605566,
+      "matches": 28,
+      "share": 0.01847942985830865
+    },
+    {
+      "category": "name",
+      "medianMs": 0.3926159999682568,
+      "matches": 41,
+      "share": 0.018183850128021557
+    },
+    {
+      "category": "social-media",
+      "medianMs": 0.38973499997518957,
+      "matches": 15,
+      "share": 0.01805041778675935
+    },
+    {
+      "category": "credit-card",
+      "medianMs": 0.23690399999031797,
+      "matches": 27,
+      "share": 0.010972112269752256
+    },
+    {
+      "category": "phone",
+      "medianMs": 0.20922899997094646,
+      "matches": 59,
+      "share": 0.009690355915742405
+    },
+    {
+      "category": "iban",
+      "medianMs": 0.13274500000989065,
+      "matches": 18,
+      "share": 0.006148030609091911
+    },
+    {
+      "category": "ssn",
+      "medianMs": 0.09087199997156858,
+      "matches": 28,
+      "share": 0.004208699666977861
+    },
+    {
+      "category": "ipv4",
+      "medianMs": 0.05960600002435967,
+      "matches": 50,
+      "share": 0.002760627613906302
+    },
+    {
+      "category": "url",
+      "medianMs": 0.034167999983765185,
+      "matches": 39,
+      "share": 0.0015824770027947459
+    }
+  ],
+  "memory": {
+    "perCall": [
+      {
+        "op": "detect",
+        "size": 1000,
+        "transientBytes": 74584,
+        "retainedBytes": 16448,
+        "keep": 1
+      },
+      {
+        "op": "anonymize",
+        "size": 1000,
+        "transientBytes": 413456,
+        "retainedBytes": 10896,
+        "keep": 1
+      },
+      {
+        "op": "tokenize",
+        "size": 1000,
+        "transientBytes": 66832,
+        "retainedBytes": 2000,
+        "keep": 1
+      },
+      {
+        "op": "detect",
+        "size": 10000,
+        "transientBytes": 282816,
+        "retainedBytes": 297088,
+        "keep": 1
+      },
+      {
+        "op": "anonymize",
+        "size": 10000,
+        "transientBytes": 756784,
+        "retainedBytes": 6496,
+        "keep": 1
+      },
+      {
+        "op": "tokenize",
+        "size": 10000,
+        "transientBytes": 777608,
+        "retainedBytes": 10704,
+        "keep": 1
+      },
+      {
+        "op": "detect",
+        "size": 100000,
+        "transientBytes": 366840,
+        "retainedBytes": 18192,
+        "keep": 1
+      },
+      {
+        "op": "anonymize",
+        "size": 100000,
+        "transientBytes": 2939760,
+        "retainedBytes": 35832,
+        "keep": 1
+      },
+      {
+        "op": "tokenize",
+        "size": 100000,
+        "transientBytes": 2164032,
+        "retainedBytes": 96192,
+        "keep": 1
+      },
+      {
+        "op": "detect",
+        "size": 1000000,
+        "transientBytes": 12778832,
+        "retainedBytes": 278688,
+        "keep": 1
+      },
+      {
+        "op": "anonymize",
+        "size": 1000000,
+        "transientBytes": 92893080,
+        "retainedBytes": 867024,
+        "keep": 1
+      },
+      {
+        "op": "tokenize",
+        "size": 1000000,
+        "transientBytes": 135554200,
+        "retainedBytes": 905864,
+        "keep": 1
+      }
+    ],
+    "stream": {
+      "bytes": 50000000,
+      "peakHeapGrowthBytes": 69028200,
+      "retainedBytes": -1508512,
+      "mbPerSec": 1.3657330043159863
+    }
+  }
+}

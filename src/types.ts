@@ -139,7 +139,15 @@ export type Locale =
 /**
  * Built-in compliance preset identifiers.
  */
-export type CompliancePreset = "gdpr" | "hipaa" | "ccpa" | "pci-dss" | "sox" | "ferpa";
+export type CompliancePreset =
+  | "gdpr"
+  | "lgpd"
+  | "pipeda"
+  | "hipaa"
+  | "ccpa"
+  | "pci-dss"
+  | "sox"
+  | "ferpa";
 
 // ---------------------------------------------------------------------------
 // Tokenization types

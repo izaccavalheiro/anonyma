@@ -18,6 +18,8 @@
  * ```
  */
 
+import type { PolicyIssue } from "./compliance/types.js";
+
 /**
  * Base class for all errors thrown by the anonyma library.
  * Consumers can use `err instanceof AnonymaError` to narrowly handle library errors.
@@ -160,7 +162,7 @@ export class PresetNotFoundError extends AnonymaError {
   public constructor(preset: string) {
     super(
       `Unknown compliance preset: "${preset}". ` +
-        `Available presets are: gdpr, hipaa, ccpa, pci-dss, sox, ferpa.`,
+        `Available presets are: gdpr, lgpd, pipeda, hipaa, ccpa, pci-dss, sox, ferpa.`,
       "PRESET_NOT_FOUND",
     );
     this.name = "PresetNotFoundError";
@@ -225,3 +227,121 @@ export class BatchProcessingError extends AnonymaError {
   }
 }
 
+
+/**
+ * Thrown by a synchronous pipeline entry point when a replacer returns a
+ * promise. Use the asynchronous entry point (`transformAsync()`, an async
+ * chunk transformer, or an async stream) with that replacer instead.
+ *
+ * @example
+ * ```ts
+ * throw new AsyncStrategyError("email");
+ * ```
+ */
+export class AsyncStrategyError extends AnonymaError {
+  /** The category whose replacer is asynchronous. */
+  public readonly category: string;
+
+  public constructor(category: string) {
+    super(
+      `The replacer for category "${category}" is asynchronous and cannot run in a synchronous ` +
+        `transform. Use the asynchronous entry point instead.`,
+      "ASYNC_STRATEGY",
+    );
+    this.name = "AsyncStrategyError";
+    this.category = category;
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
+/**
+ * Thrown when a key version is unknown, destroyed, malformed, or cannot be
+ * derived. The message never contains key material.
+ *
+ * @example
+ * ```ts
+ * throw new KeyManagementError("key version has been destroyed", "k1");
+ * ```
+ */
+export class KeyManagementError extends AnonymaError {
+  /** The key version the error refers to, when there is one. */
+  public readonly keyId: string | undefined;
+
+  public constructor(reason: string, keyId?: string) {
+    super(
+      keyId === undefined
+        ? `Key management error: ${reason}`
+        : `Key management error for key "${keyId}": ${reason}`,
+      "KEY_MANAGEMENT_ERROR",
+    );
+    this.name = "KeyManagementError";
+    this.keyId = keyId;
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
+/**
+ * Thrown when a token vault operation fails or would corrupt the vault. The
+ * message never contains an original value.
+ *
+ * @example
+ * ```ts
+ * throw new TokenVaultError("token identifier collision; increase idLength");
+ * ```
+ */
+export class TokenVaultError extends AnonymaError {
+  public constructor(reason: string) {
+    super(`Token vault error: ${reason}`, "TOKEN_VAULT_ERROR");
+    this.name = "TokenVaultError";
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
+/**
+ * Thrown when a policy document is malformed or violates a requirement of a
+ * regulation it extends. `issues` lists every problem that was found.
+ *
+ * @example
+ * ```ts
+ * try {
+ *   parsePolicy(document);
+ * } catch (err) {
+ *   if (err instanceof PolicyError) {
+ *     for (const issue of err.issues) console.error(issue.path, issue.message);
+ *   }
+ * }
+ * ```
+ */
+export class PolicyError extends AnonymaError {
+  /** Every problem found in the document, errors first. */
+  public readonly issues: readonly PolicyIssue[];
+
+  public constructor(issues: readonly PolicyIssue[]) {
+    const errors = issues.filter((issue) => issue.severity === "error");
+    const first = errors[0];
+    super(
+      `Policy rejected with ${String(errors.length)} error(s)` +
+        (first === undefined ? "." : `: ${first.path === "" ? "/" : first.path} ${first.message}`),
+      "POLICY_ERROR",
+    );
+    this.name = "PolicyError";
+    this.issues = issues;
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
+/**
+ * Thrown when the audit chain cannot be extended or does not verify.
+ *
+ * @example
+ * ```ts
+ * throw new AuditIntegrityError("a sink rejected record 12; the logger is closed");
+ * ```
+ */
+export class AuditIntegrityError extends AnonymaError {
+  public constructor(reason: string) {
+    super(`Audit integrity error: ${reason}`, "AUDIT_INTEGRITY_ERROR");
+    this.name = "AuditIntegrityError";
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}

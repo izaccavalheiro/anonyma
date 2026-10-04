@@ -577,6 +577,43 @@ const result = anonymize(req.body.text as string, opts);
 | `"anonyma/validators"`   | Standalone checksum validators (Luhn, MOD-97, NHS, VIN, etc.)            |
 | `"anonyma/stream"`       | WHATWG `TransformStream` wrappers (Node ≥ 18 / browsers)                 |
 | `"anonyma/crypto"`       | Low-level Web Crypto utilities                                            |
+| `"anonyma/engine"`       | Span engine: `createPipeline`, `compilePipeline`, detectors, replacers, chunk-safe streams |
+| `"anonyma/vault"`        | Session, keyed and sealed tokenizers; key ring with rotation; token vault |
+| `"anonyma/audit"`        | Hash-chained audit logger without personal data; chain verification      |
+| `"anonyma/compliance"`   | Regulation profiles with citations, policy parser, erasure planning       |
+| `"anonyma/ai"`           | Structure-preserving JSON and chat-message redaction; stream restoration  |
+| `"anonyma/mcp"`          | MCP tool and resource declarations; dependency-free MCP server            |
+| `"anonyma/middleware"`   | HTTP payload scrubber; adapters in `/express` and `/hono`                 |
+
+---
+
+## Span Engine, Tokenization, Audit and AI Modules
+
+The subpaths `anonyma/engine`, `anonyma/vault`, `anonyma/audit`, `anonyma/compliance`,
+`anonyma/ai`, `anonyma/mcp` and `anonyma/middleware` are a newer, separate set of APIs.
+They do not change the functions described above.
+
+```ts
+import { compilePipeline, createPipelineStream } from "anonyma/engine";
+import { createSessionTokenizer } from "anonyma/vault";
+
+// Irreversible, with a compliance preset:
+const pipeline = compilePipeline({ preset: "hipaa" });
+pipeline.transform("Patient jane@example.org, SSN 123-45-6789").text;
+// "Patient [REDACTED], SSN [REDACTED]"
+
+// Reversible tokens for an LLM round trip:
+const session = createSessionTokenizer();
+const tokenizing = compilePipeline(
+  { defaultStrategy: { strategy: "tokenize" } },
+  { tokenization: session },
+);
+const prompt = tokenizing.transform("Email alice@example.com").text; // "Email [EMAIL_0001]"
+session.restore("Sent to [EMAIL_0001].").text;                       // "Sent to alice@example.com."
+
+// Text that arrives in arbitrary chunks:
+const scrubbed = source.pipeThrough(createPipelineStream(pipeline));
+```
 
 ---
 

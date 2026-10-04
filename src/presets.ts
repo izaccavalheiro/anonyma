@@ -1,14 +1,19 @@
 /**
  * @module presets
- * @description Built-in compliance preset configurations for GDPR, HIPAA, CCPA,
- * PCI-DSS, SOX, and FERPA. Import from `"anonyma"` or extend using the
- * `preset` option in {@link AnonymizeOptions}.
+ * @description Built-in compliance preset configurations for GDPR, LGPD,
+ * PIPEDA, CCPA/CPRA, HIPAA, PCI-DSS, SOX, and FERPA. Import from `"anonyma"`
+ * or extend using the `preset` option in {@link AnonymizeOptions}.
+ *
+ * A preset selects the categories that the library can detect for an
+ * instrument and the strategy applied to them. The legal provisions behind
+ * each category, and the data elements each instrument names that no detector
+ * covers, are documented in `"anonyma/compliance"`.
  *
  * @example
  * ```ts
  * import { anonymize } from "anonyma";
  *
- * // Apply HIPAA preset — redacts all 18 HIPAA Safe Harbor identifiers
+ * // Apply HIPAA preset — redacts the Safe Harbor identifiers that have a detector
  * anonymize(text, { preset: "hipaa" });
  *
  * // Extend GDPR preset with API key detection
@@ -101,8 +106,9 @@ const GDPR_PRESET: PresetConfig = {
 const HIPAA_PRESET: PresetConfig = {
   name: "hipaa",
   description:
-    "US HIPAA Safe Harbor — Covers all 18 protected health information (PHI) identifiers " +
-    "to de-identify medical records.",
+    "US HIPAA Safe Harbor — Redacts the identifiers of 45 CFR 164.514(b)(2)(i) that can be " +
+    "detected in text. City, county, ZIP code, dates other than birth dates, ages over 89, " +
+    "device identifiers, biometrics and photographs need field-level rules.",
   categories: [
     "name",
     "address",
@@ -114,13 +120,18 @@ const HIPAA_PRESET: PresetConfig = {
     "health-insurance",
     "prescription",
     "bank-account",
+    "credit-card",
+    "iban",
     "drivers-license",
+    "passport",
     "vin",
+    "license-plate",
     "url",
     "ipv4",
     "ipv6",
     "national-id",
     "tax-id",
+    "social-media",
     "company-registration",
   ],
   defaultStrategy: { strategy: "redact" },
@@ -153,6 +164,81 @@ const CCPA_PRESET: PresetConfig = {
     "url",
     "social-media",
     "date-of-birth",
+    "medical-record",
+    "health-insurance",
+    "api-key",
+  ],
+  defaultStrategy: { strategy: "redact" },
+};
+
+/**
+ * LGPD — Lei Geral de Proteção de Dados Pessoais (Brazil, Lei nº 13.709/2018).
+ * Covers dados pessoais and the identifiers that lead to dados pessoais sensíveis.
+ * Default strategy: redact (anonymisation in the sense of Art. 5, XI).
+ */
+const LGPD_PRESET: PresetConfig = {
+  name: "lgpd",
+  description:
+    "Brazilian Lei Geral de Proteção de Dados — Covers personal data that identifies a " +
+    "natural person. CPF is detected in its punctuated form; CNPJ, RG, CNH and CEP need " +
+    "custom patterns.",
+  categories: [
+    "name",
+    "email",
+    "phone",
+    "address",
+    "date-of-birth",
+    "national-id",
+    "tax-id",
+    "passport",
+    "drivers-license",
+    "bank-account",
+    "iban",
+    "credit-card",
+    "cryptocurrency",
+    "ipv4",
+    "ipv6",
+    "url",
+    "social-media",
+    "license-plate",
+    "medical-record",
+    "health-insurance",
+    "prescription",
+  ],
+  defaultStrategy: { strategy: "redact" },
+};
+
+/**
+ * PIPEDA — Personal Information Protection and Electronic Documents Act (Canada).
+ * Covers information about an identifiable individual.
+ * Default strategy: redact.
+ */
+const PIPEDA_PRESET: PresetConfig = {
+  name: "pipeda",
+  description:
+    "Canadian PIPEDA — Covers information about an identifiable individual, including the " +
+    "Social Insurance Number. Provincial health card numbers and postal codes need custom " +
+    "patterns.",
+  categories: [
+    "name",
+    "email",
+    "phone",
+    "address",
+    "date-of-birth",
+    "national-id",
+    "ssn",
+    "passport",
+    "drivers-license",
+    "tax-id",
+    "bank-account",
+    "iban",
+    "credit-card",
+    "ipv4",
+    "ipv6",
+    "social-media",
+    "medical-record",
+    "health-insurance",
+    "prescription",
   ],
   defaultStrategy: { strategy: "redact" },
 };
@@ -239,6 +325,8 @@ const FERPA_PRESET: PresetConfig = {
 /** All built-in presets keyed by name. */
 export const PRESET_REGISTRY: Readonly<Record<CompliancePreset, PresetConfig>> = {
   gdpr: GDPR_PRESET,
+  lgpd: LGPD_PRESET,
+  pipeda: PIPEDA_PRESET,
   hipaa: HIPAA_PRESET,
   ccpa: CCPA_PRESET,
   "pci-dss": PCI_DSS_PRESET,

@@ -37,7 +37,7 @@ describe("getPreset()", () => {
   });
 
   it("PRESET_REGISTRY has all 6 presets", () => {
-    expect(Object.keys(PRESET_REGISTRY)).toHaveLength(6);
+    expect(Object.keys(PRESET_REGISTRY)).toHaveLength(8);
     expect(PRESET_REGISTRY["gdpr"]).toBeDefined();
     expect(PRESET_REGISTRY["hipaa"]).toBeDefined();
     expect(PRESET_REGISTRY["pci-dss"]).toBeDefined();

@@ -37,7 +37,8 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],
       include: ["src/**/*.ts"],
-      exclude: ["src/index.ts", "src/schemas.ts", "src/types.ts"],
+      // Barrels and type-only modules contain no logic of their own.
+      exclude: ["src/index.ts", "src/schemas.ts", "src/types.ts", "src/**/types.ts"],
       thresholds: {
         lines: 90,
         functions: 90,

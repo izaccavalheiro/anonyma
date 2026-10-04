@@ -21,7 +21,7 @@ src/
 ├── tokenize.ts           # High-level tokenize() / detokenize() API
 ├── llm.ts                # sanitizeForLLM() / restoreFromLLM() wrappers
 ├── batch.ts              # anonymizeBatch(), anonymizeBatchAsync(), detectBatch(), tokenizeBatch()
-├── presets.ts            # GDPR / HIPAA / CCPA / PCI-DSS / SOX / FERPA preset definitions
+├── presets.ts            # GDPR / LGPD / PIPEDA / HIPAA / CCPA / PCI-DSS / SOX / FERPA preset definitions
 ├── stream.ts             # WHATWG TransformStream wrappers (Node ≥ 18 / browsers)
 ├── crypto.ts             # Low-level Web Crypto helpers
 ├── validators.ts         # Checksum validators (Luhn, Verhoeff, NHS, CPF, IBAN, etc.)
@@ -34,6 +34,23 @@ src/
     ├── synthesize.ts      # Format-preserving deterministic synthesis
     └── tokenize.ts        # Internal token store used by tokenize.ts and anonymize.ts
 tests/                     # Vitest test suite — mirrors src/ structure
+```
+
+Modules added by the modernization. Each has a `types.ts` with
+its contracts and an `index.ts` barrel that is a subpath export:
+
+```
+src/
+├── engine/               # "anonyma/engine" — span detectors, overlap resolution, pipeline, replacers, chunk-safe streams
+├── vault/                # "anonyma/vault" — key ring, session / keyed / sealed tokenizers, token vault, rotation
+├── audit/                # "anonyma/audit" — hash-chained audit logger, sinks, verification
+├── compliance/           # "anonyma/compliance" — regulation profiles, policy parser, erasure planning
+├── ai/                   # "anonyma/ai" — JSON and chat-message sanitizers, stream restoration, LLM guard
+├── mcp/                  # "anonyma/mcp" — MCP declarations and server
+├── middleware/           # "anonyma/middleware", "/express", "/hono" — HTTP payload scrubbing
+└── internal/             # Web Crypto lookup, byte encodings and lossless JSON numbers shared by the modules above
+bench/                    # Benchmark (run.mjs), corpus generator, saved results
+tests/fixtures/corpus/    # Labelled detector corpora used by tests/engine/precision.test.ts
 ```
 
 ---

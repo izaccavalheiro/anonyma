@@ -1,0 +1,1123 @@
+{
+  "family": "ssn",
+  "items": [
+    {
+      "id": "SS-P001",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "SSN: 123-45-6789",
+      "expected": [
+        {
+          "value": "123-45-6789",
+          "start": 5,
+          "end": 16
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P002",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "Social Security Number 536-90-4399 on file",
+      "expected": [
+        {
+          "value": "536-90-4399",
+          "start": 23,
+          "end": 34
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P003",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "ssn=457-55-5462&dob=1980-01-02",
+      "expected": [
+        {
+          "value": "457-55-5462",
+          "start": 4,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P004",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "{\"ssn\":\"212-09-7694\"}",
+      "expected": [
+        {
+          "value": "212-09-7694",
+          "start": 8,
+          "end": 19
+        }
+      ],
+      "note": "JSON"
+    },
+    {
+      "id": "SS-P005",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "(SSN 001-01-0001)",
+      "expected": [
+        {
+          "value": "001-01-0001",
+          "start": 5,
+          "end": 16
+        }
+      ],
+      "note": "lowest structurally valid value"
+    },
+    {
+      "id": "SS-P006",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "665-99-9999",
+      "expected": [
+        {
+          "value": "665-99-9999",
+          "start": 0,
+          "end": 11
+        }
+      ],
+      "note": "area 665 boundary"
+    },
+    {
+      "id": "SS-P007",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "667-01-0001",
+      "expected": [
+        {
+          "value": "667-01-0001",
+          "start": 0,
+          "end": 11
+        }
+      ],
+      "note": "area 667 boundary"
+    },
+    {
+      "id": "SS-P008",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "899-99-9999",
+      "expected": [
+        {
+          "value": "899-99-9999",
+          "start": 0,
+          "end": 11
+        }
+      ],
+      "note": "area 899, issued since 2011 randomisation"
+    },
+    {
+      "id": "SS-P009",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "750-12-3456",
+      "expected": [
+        {
+          "value": "750-12-3456",
+          "start": 0,
+          "end": 11
+        }
+      ],
+      "note": "area 750, issued since 2011 randomisation"
+    },
+    {
+      "id": "SS-P010",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "SSN#231-64-8825",
+      "expected": [
+        {
+          "value": "231-64-8825",
+          "start": 4,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P011",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "Her SSN is 321-54-9876.",
+      "expected": [
+        {
+          "value": "321-54-9876",
+          "start": 11,
+          "end": 22
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P012",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "SSN:432-10-9876,",
+      "expected": [
+        {
+          "value": "432-10-9876",
+          "start": 4,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P013",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "ss# 219-11-2222;",
+      "expected": [
+        {
+          "value": "219-11-2222",
+          "start": 4,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P014",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "'521-33-9012'",
+      "expected": [
+        {
+          "value": "521-33-9012",
+          "start": 1,
+          "end": 12
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P015",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "<ssn>601-22-4455</ssn>",
+      "expected": [
+        {
+          "value": "601-22-4455",
+          "start": 5,
+          "end": 16
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P016",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "John,Doe,345-67-8901,1980-01-02",
+      "expected": [
+        {
+          "value": "345-67-8901",
+          "start": 9,
+          "end": 20
+        }
+      ],
+      "note": "CSV row"
+    },
+    {
+      "id": "SS-P017",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "TIN/SSN\t456-78-9012",
+      "expected": [
+        {
+          "value": "456-78-9012",
+          "start": 8,
+          "end": 19
+        }
+      ],
+      "note": "tab separated"
+    },
+    {
+      "id": "SS-P018",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "SSN 567-89-0123\nDOB 01/02/1980",
+      "expected": [
+        {
+          "value": "567-89-0123",
+          "start": 4,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P019",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "SSNs: 123-45-6789, 234-56-7890 and 345-67-8901",
+      "expected": [
+        {
+          "value": "123-45-6789",
+          "start": 6,
+          "end": 17
+        },
+        {
+          "value": "234-56-7890",
+          "start": 19,
+          "end": 30
+        },
+        {
+          "value": "345-67-8901",
+          "start": 35,
+          "end": 46
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P020",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "*146-52-8830*",
+      "expected": [
+        {
+          "value": "146-52-8830",
+          "start": 1,
+          "end": 12
+        }
+      ],
+      "note": "markdown emphasis"
+    },
+    {
+      "id": "SS-P021",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "“287-65-4321”",
+      "expected": [
+        {
+          "value": "287-65-4321",
+          "start": 1,
+          "end": 12
+        }
+      ],
+      "note": "curly quotes"
+    },
+    {
+      "id": "SS-P022",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "https://hr.example.com/employee?ssn=408-12-7765&x=1",
+      "expected": [
+        {
+          "value": "408-12-7765",
+          "start": 36,
+          "end": 47
+        }
+      ],
+      "note": "URL query"
+    },
+    {
+      "id": "SS-P023",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "SSN:&nbsp;590-31-2468",
+      "expected": [
+        {
+          "value": "590-31-2468",
+          "start": 10,
+          "end": 21
+        }
+      ],
+      "note": "HTML entity before"
+    },
+    {
+      "id": "SS-P024",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "Applicant SSN [318-22-9041] verified",
+      "expected": [
+        {
+          "value": "318-22-9041",
+          "start": 15,
+          "end": 26
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P025",
+      "kind": "pos",
+      "class": "hyphenated",
+      "text": "SSN 123-45 6789",
+      "expected": [
+        {
+          "value": "123-45 6789",
+          "start": 4,
+          "end": 15
+        }
+      ],
+      "note": "mixed separators"
+    },
+    {
+      "id": "SS-P026",
+      "kind": "pos",
+      "class": "spaced",
+      "text": "SSN 123 45 6789",
+      "expected": [
+        {
+          "value": "123 45 6789",
+          "start": 4,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P027",
+      "kind": "pos",
+      "class": "spaced",
+      "text": "social security no. 234 56 7890 verified",
+      "expected": [
+        {
+          "value": "234 56 7890",
+          "start": 20,
+          "end": 31
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P028",
+      "kind": "pos",
+      "class": "spaced",
+      "text": "SSN: 345 67 8901.",
+      "expected": [
+        {
+          "value": "345 67 8901",
+          "start": 5,
+          "end": 16
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P029",
+      "kind": "pos",
+      "class": "unseparated-with-context",
+      "text": "SSN: 123456789",
+      "expected": [
+        {
+          "value": "123456789",
+          "start": 5,
+          "end": 14
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P030",
+      "kind": "pos",
+      "class": "unseparated-with-context",
+      "text": "ssn=234567890",
+      "expected": [
+        {
+          "value": "234567890",
+          "start": 4,
+          "end": 13
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P031",
+      "kind": "pos",
+      "class": "unseparated-with-context",
+      "text": "{\"ssn\":\"345678901\"}",
+      "expected": [
+        {
+          "value": "345678901",
+          "start": 8,
+          "end": 17
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P032",
+      "kind": "pos",
+      "class": "unseparated-with-context",
+      "text": "Social Security Number: 456789012",
+      "expected": [
+        {
+          "value": "456789012",
+          "start": 24,
+          "end": 33
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P033",
+      "kind": "pos",
+      "class": "unseparated-with-context",
+      "text": "SSN 567890123 on file.",
+      "expected": [
+        {
+          "value": "567890123",
+          "start": 4,
+          "end": 13
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P034",
+      "kind": "pos",
+      "class": "unseparated-with-context",
+      "text": "taxpayer SSN 678901234",
+      "expected": [
+        {
+          "value": "678901234",
+          "start": 13,
+          "end": 22
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "SS-P035",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "SSN: 123–45–6789",
+      "expected": [
+        {
+          "value": "123–45–6789",
+          "start": 5,
+          "end": 16
+        }
+      ],
+      "note": "en dash U+2013"
+    },
+    {
+      "id": "SS-P036",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "SSN: 234‑56‑7890",
+      "expected": [
+        {
+          "value": "234‑56‑7890",
+          "start": 5,
+          "end": 16
+        }
+      ],
+      "note": "non-breaking hyphen U+2011"
+    },
+    {
+      "id": "SS-P037",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "SSN: 345−67−8901",
+      "expected": [
+        {
+          "value": "345−67−8901",
+          "start": 5,
+          "end": 16
+        }
+      ],
+      "note": "minus sign U+2212"
+    },
+    {
+      "id": "SS-P038",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "SSN: 456 78 9012",
+      "expected": [
+        {
+          "value": "456 78 9012",
+          "start": 5,
+          "end": 16
+        }
+      ],
+      "note": "no-break space U+00A0"
+    },
+    {
+      "id": "SS-P039",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "SSN: 567.89.0123",
+      "expected": [
+        {
+          "value": "567.89.0123",
+          "start": 5,
+          "end": 16
+        }
+      ],
+      "note": "dots"
+    },
+    {
+      "id": "SS-P040",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "SSN: 678 - 90 - 1234",
+      "expected": [
+        {
+          "value": "678 - 90 - 1234",
+          "start": 5,
+          "end": 20
+        }
+      ],
+      "note": "spaced hyphens"
+    },
+    {
+      "id": "SS-P041",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "SSN: 123-45-\n6789",
+      "expected": [
+        {
+          "value": "123-45-\n6789",
+          "start": 5,
+          "end": 17
+        }
+      ],
+      "note": "line wrap inside the value"
+    },
+    {
+      "id": "SS-P042",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "SSN: １２３-４５-６７８９",
+      "expected": [
+        {
+          "value": "１２３-４５-６７８９",
+          "start": 5,
+          "end": 16
+        }
+      ],
+      "note": "full-width digits"
+    },
+    {
+      "id": "SS-P043",
+      "kind": "pos",
+      "class": "glued",
+      "text": "SSN123-45-6789",
+      "expected": [
+        {
+          "value": "123-45-6789",
+          "start": 3,
+          "end": 14
+        }
+      ],
+      "note": "label glued to the value"
+    },
+    {
+      "id": "SS-P044",
+      "kind": "pos",
+      "class": "glued",
+      "text": "W2_234-56-7890.pdf",
+      "expected": [
+        {
+          "value": "234-56-7890",
+          "start": 3,
+          "end": 14
+        }
+      ],
+      "note": "underscore before (file name)"
+    },
+    {
+      "id": "SS-P045",
+      "kind": "pos",
+      "class": "glued",
+      "text": "ssn_345-67-8901_verified",
+      "expected": [
+        {
+          "value": "345-67-8901",
+          "start": 4,
+          "end": 15
+        }
+      ],
+      "note": "snake_case key"
+    },
+    {
+      "id": "SS-P046",
+      "kind": "pos",
+      "class": "glued",
+      "text": "456-78-9012x",
+      "expected": [
+        {
+          "value": "456-78-9012",
+          "start": 0,
+          "end": 11
+        }
+      ],
+      "note": "letter directly after"
+    },
+    {
+      "id": "SS-N001",
+      "kind": "neg",
+      "class": "ssa-invalid",
+      "text": "000-12-3456",
+      "expected": [],
+      "note": "area 000"
+    },
+    {
+      "id": "SS-N002",
+      "kind": "neg",
+      "class": "ssa-invalid",
+      "text": "666-12-3456",
+      "expected": [],
+      "note": "area 666"
+    },
+    {
+      "id": "SS-N003",
+      "kind": "neg",
+      "class": "ssa-invalid",
+      "text": "900-12-3456",
+      "expected": [],
+      "note": "area 9XX"
+    },
+    {
+      "id": "SS-N004",
+      "kind": "neg",
+      "class": "ssa-invalid",
+      "text": "999-99-9999",
+      "expected": [],
+      "note": "area 9XX"
+    },
+    {
+      "id": "SS-N005",
+      "kind": "neg",
+      "class": "ssa-invalid",
+      "text": "123-00-4567",
+      "expected": [],
+      "note": "group 00"
+    },
+    {
+      "id": "SS-N006",
+      "kind": "neg",
+      "class": "ssa-invalid",
+      "text": "123-45-0000",
+      "expected": [],
+      "note": "serial 0000"
+    },
+    {
+      "id": "SS-N007",
+      "kind": "neg",
+      "class": "ssa-invalid",
+      "text": "000000000",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N008",
+      "kind": "neg",
+      "class": "ssa-invalid",
+      "text": "666123456",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N009",
+      "kind": "neg",
+      "class": "ssa-invalid",
+      "text": "987654321",
+      "expected": [],
+      "note": "area 9XX"
+    },
+    {
+      "id": "SS-N010",
+      "kind": "neg",
+      "class": "itin",
+      "text": "ITIN 912-70-1234",
+      "expected": [],
+      "note": "IRS ITIN range, not an SSN"
+    },
+    {
+      "id": "SS-N011",
+      "kind": "neg",
+      "class": "itin",
+      "text": "ITIN: 999-88-1234",
+      "expected": [],
+      "note": "IRS ITIN range, not an SSN"
+    },
+    {
+      "id": "SS-N012",
+      "kind": "neg",
+      "class": "itin",
+      "text": "ITIN 900-55-4321",
+      "expected": [],
+      "note": "IRS ITIN range, not an SSN"
+    },
+    {
+      "id": "SS-N013",
+      "kind": "neg",
+      "class": "zip-plus-4",
+      "text": "New York, NY 10001-1234",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N014",
+      "kind": "neg",
+      "class": "zip-plus-4",
+      "text": "Chicago, IL 60601-4321",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N015",
+      "kind": "neg",
+      "class": "zip-plus-4",
+      "text": "Cambridge, MA 02139-4307",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N016",
+      "kind": "neg",
+      "class": "zip-plus-4",
+      "text": "Atlanta, GA 30303-1234",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N017",
+      "kind": "neg",
+      "class": "zip-plus-4",
+      "text": "Austin, TX 73301-0001",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N018",
+      "kind": "neg",
+      "class": "zip-plus-4",
+      "text": "Houston, TX 77002-5678",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N019",
+      "kind": "neg",
+      "class": "zip-plus-4",
+      "text": "San Francisco, CA 94105-1234",
+      "expected": [],
+      "note": "starts with 9"
+    },
+    {
+      "id": "SS-N020",
+      "kind": "neg",
+      "class": "zip-plus-4",
+      "text": "Washington, DC 20500-0003",
+      "expected": [],
+      "note": "digits 4-5 are 00"
+    },
+    {
+      "id": "SS-N021",
+      "kind": "neg",
+      "class": "zip-plus-4",
+      "text": "P/N 10305-2210",
+      "expected": [],
+      "note": "5-4 part number"
+    },
+    {
+      "id": "SS-N022",
+      "kind": "neg",
+      "class": "bare-9-digits",
+      "text": "Routing number: 322271627",
+      "expected": [],
+      "note": "ABA routing number"
+    },
+    {
+      "id": "SS-N023",
+      "kind": "neg",
+      "class": "bare-9-digits",
+      "text": "ABA 011401533",
+      "expected": [],
+      "note": "ABA routing number"
+    },
+    {
+      "id": "SS-N024",
+      "kind": "neg",
+      "class": "bare-9-digits",
+      "text": "ABA 021000021",
+      "expected": [],
+      "note": "ABA routing number with 00 in digits 4-5"
+    },
+    {
+      "id": "SS-N025",
+      "kind": "neg",
+      "class": "bare-9-digits",
+      "text": "Order #482915736 shipped",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N026",
+      "kind": "neg",
+      "class": "bare-9-digits",
+      "text": "Transferred 123456789 bytes in 4.2s",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N027",
+      "kind": "neg",
+      "class": "bare-9-digits",
+      "text": "US population (2020 census): 331449281",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N028",
+      "kind": "neg",
+      "class": "bare-9-digits",
+      "text": "GET /users/482915736/profile",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N029",
+      "kind": "neg",
+      "class": "bare-9-digits",
+      "text": "Invoice 100234567 is overdue",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N030",
+      "kind": "neg",
+      "class": "bare-9-digits",
+      "text": "build 202405123",
+      "expected": [],
+      "note": "date-stamped build number"
+    },
+    {
+      "id": "SS-N031",
+      "kind": "neg",
+      "class": "bare-9-digits",
+      "text": "epoch 852076800",
+      "expected": [],
+      "note": "9-digit Unix time (1997)"
+    },
+    {
+      "id": "SS-N032",
+      "kind": "neg",
+      "class": "bare-9-digits",
+      "text": "Total: $123456789.50",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N033",
+      "kind": "neg",
+      "class": "fraction-digits",
+      "text": "2024-05-01 12:34:56.123456789 +0000 UTC",
+      "expected": [],
+      "note": "Go time.Time nanoseconds"
+    },
+    {
+      "id": "SS-N034",
+      "kind": "neg",
+      "class": "fraction-digits",
+      "text": "pi = 3.141592653",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N035",
+      "kind": "neg",
+      "class": "fraction-digits",
+      "text": "lat=37.774929512",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N036",
+      "kind": "neg",
+      "class": "fraction-digits",
+      "text": "elapsed 0.482915736 s",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N037",
+      "kind": "neg",
+      "class": "foreign-9-digits",
+      "text": "tel: 612345678",
+      "expected": [],
+      "note": "Spanish mobile number"
+    },
+    {
+      "id": "SS-N038",
+      "kind": "neg",
+      "class": "foreign-9-digits",
+      "text": "Canadian SIN 046454286",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N039",
+      "kind": "neg",
+      "class": "foreign-9-digits",
+      "text": "BSN 111222333",
+      "expected": [],
+      "note": "Dutch citizen service number"
+    },
+    {
+      "id": "SS-N040",
+      "kind": "neg",
+      "class": "foreign-9-digits",
+      "text": "SIREN 732829320",
+      "expected": [],
+      "note": "French company number"
+    },
+    {
+      "id": "SS-N041",
+      "kind": "neg",
+      "class": "foreign-9-digits",
+      "text": "Tel. 089-123456",
+      "expected": [],
+      "note": "German landline, 3-6 grouping"
+    },
+    {
+      "id": "SS-N042",
+      "kind": "neg",
+      "class": "foreign-9-digits",
+      "text": "Tel. 030-234567",
+      "expected": [],
+      "note": "German landline, 3-6 grouping"
+    },
+    {
+      "id": "SS-N043",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "Phone: 555-123-4567",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N044",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "SIN 123-456-789",
+      "expected": [],
+      "note": "Canadian SIN, 3-3-3"
+    },
+    {
+      "id": "SS-N045",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "EIN 12-3456789",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N046",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "123-45-67890",
+      "expected": [],
+      "note": "one digit too many"
+    },
+    {
+      "id": "SS-N047",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "1234-56-7890",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N048",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "123-45-678",
+      "expected": [],
+      "note": "one digit too few"
+    },
+    {
+      "id": "SS-N049",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "12-345-6789",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N050",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "0123456789",
+      "expected": [],
+      "note": "10 digits"
+    },
+    {
+      "id": "SS-N051",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "4111-1111-1111-1111",
+      "expected": [],
+      "note": "card number"
+    },
+    {
+      "id": "SS-N052",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "UUID 123e4567-e89b-12d3-a456-426614174000",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N053",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "Timestamp 20240501123456789",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "SS-N054",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "SSN: XXX-XX-6789",
+      "expected": [],
+      "note": "already masked"
+    },
+    {
+      "id": "SS-N055",
+      "kind": "neg",
+      "class": "other-format",
+      "text": "Case 2024-318-22-9041",
+      "expected": [],
+      "note": "longer hyphenated reference"
+    },
+    {
+      "id": "SS-X001",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "Part No. 458-23-9912",
+      "expected": [],
+      "note": "3-2-4 part number, indistinguishable without context"
+    },
+    {
+      "id": "SS-X002",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "078-05-1120",
+      "expected": [],
+      "note": "Woolworth wallet SSN, voided by SSA"
+    },
+    {
+      "id": "SS-X003",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "Account 123456789",
+      "expected": [],
+      "note": "bare 9 digits, context neither confirms nor excludes an SSN"
+    }
+  ]
+}

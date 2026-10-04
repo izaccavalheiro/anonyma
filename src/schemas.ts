@@ -497,7 +497,8 @@ export const ANONYMA_MANIFEST = {
         enabledCategories: "Convenience boolean map for enabling/disabling categories.",
         customPatterns: "Ad-hoc regex patterns merged into the detection pipeline.",
         customDetectors: "Override built-in detectors on a per-category basis.",
-        preset: "Apply a compliance preset (gdpr | hipaa | ccpa | pci-dss | sox | ferpa).",
+        preset:
+          "Apply a compliance preset (gdpr | lgpd | pipeda | hipaa | ccpa | pci-dss | sox | ferpa).",
         allowlist: "String values that should never be anonymized even when detected as PII.",
         confidenceThreshold: "Minimum confidence score (0-1) for a match to be anonymized.",
       },
@@ -525,8 +526,8 @@ export const ANONYMA_MANIFEST = {
       returns: "BatchResult<T>[] where ok/error per item is available.",
     },
     presets: {
-      description: "GDPR, HIPAA, CCPA, PCI-DSS, SOX, FERPA compliance presets.",
-      available: ["gdpr", "hipaa", "ccpa", "pci-dss", "sox", "ferpa"],
+      description: "GDPR, LGPD, PIPEDA, HIPAA, CCPA, PCI-DSS, SOX, FERPA compliance presets.",
+      available: ["gdpr", "lgpd", "pipeda", "hipaa", "ccpa", "pci-dss", "sox", "ferpa"],
     },
   },
   toolDefinitions: {

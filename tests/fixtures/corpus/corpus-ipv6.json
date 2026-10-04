@@ -1,0 +1,1062 @@
+{
+  "family": "ipv6",
+  "items": [
+    {
+      "id": "V6-P001",
+      "kind": "pos",
+      "class": "full",
+      "text": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+      "expected": [
+        {
+          "value": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+          "start": 0,
+          "end": 39
+        }
+      ],
+      "note": "README example"
+    },
+    {
+      "id": "V6-P002",
+      "kind": "pos",
+      "class": "full",
+      "text": "2001:db8:85a3:0:0:8a2e:370:7334",
+      "expected": [
+        {
+          "value": "2001:db8:85a3:0:0:8a2e:370:7334",
+          "start": 0,
+          "end": 31
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P003",
+      "kind": "pos",
+      "class": "full",
+      "text": "FE80:0000:0000:0000:0202:B3FF:FE1E:8329",
+      "expected": [
+        {
+          "value": "FE80:0000:0000:0000:0202:B3FF:FE1E:8329",
+          "start": 0,
+          "end": 39
+        }
+      ],
+      "note": "upper case"
+    },
+    {
+      "id": "V6-P004",
+      "kind": "pos",
+      "class": "full",
+      "text": "2a03:2880:f12f:83:face:b00c:0:25de",
+      "expected": [
+        {
+          "value": "2a03:2880:f12f:83:face:b00c:0:25de",
+          "start": 0,
+          "end": 34
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P005",
+      "kind": "pos",
+      "class": "full",
+      "text": "2001:db8:1234:5678:9abc:def0:1234:5678",
+      "expected": [
+        {
+          "value": "2001:db8:1234:5678:9abc:def0:1234:5678",
+          "start": 0,
+          "end": 38
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P006",
+      "kind": "pos",
+      "class": "full",
+      "text": "from 2a02:c7f:1234:5600:d1e2:f3a4:b5c6:d7e8 port 51234",
+      "expected": [
+        {
+          "value": "2a02:c7f:1234:5600:d1e2:f3a4:b5c6:d7e8",
+          "start": 5,
+          "end": 43
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P007",
+      "kind": "pos",
+      "class": "full",
+      "text": "2001:db8:0:1:1:1:1:1",
+      "expected": [
+        {
+          "value": "2001:db8:0:1:1:1:1:1",
+          "start": 0,
+          "end": 20
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P008",
+      "kind": "pos",
+      "class": "full",
+      "text": "1:2:3:4:5:6:7:8",
+      "expected": [
+        {
+          "value": "1:2:3:4:5:6:7:8",
+          "start": 0,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P009",
+      "kind": "pos",
+      "class": "full",
+      "text": "2001:0db8:0000:0000:0000:ff00:0042:8329.",
+      "expected": [
+        {
+          "value": "2001:0db8:0000:0000:0000:ff00:0042:8329",
+          "start": 0,
+          "end": 39
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P010",
+      "kind": "pos",
+      "class": "full",
+      "text": "src=2001:db8:aaaa:bbbb:cccc:dddd:eeee:ffff",
+      "expected": [
+        {
+          "value": "2001:db8:aaaa:bbbb:cccc:dddd:eeee:ffff",
+          "start": 4,
+          "end": 42
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P011",
+      "kind": "pos",
+      "class": "full",
+      "text": "X-Forwarded-For: 2001:db8:85a3:8d3:1319:8a2e:370:7348",
+      "expected": [
+        {
+          "value": "2001:db8:85a3:8d3:1319:8a2e:370:7348",
+          "start": 17,
+          "end": 53
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P012",
+      "kind": "pos",
+      "class": "full",
+      "text": "2001:db8:85a3:8d3:1319:8a2e:370:7348/128",
+      "expected": [
+        {
+          "value": "2001:db8:85a3:8d3:1319:8a2e:370:7348",
+          "start": 0,
+          "end": 36
+        }
+      ],
+      "note": "prefix length"
+    },
+    {
+      "id": "V6-P013",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "2001:db8::1",
+      "expected": [
+        {
+          "value": "2001:db8::1",
+          "start": 0,
+          "end": 11
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P014",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "fe80::1",
+      "expected": [
+        {
+          "value": "fe80::1",
+          "start": 0,
+          "end": 7
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P015",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "2001:db8::8a2e:370:7334",
+      "expected": [
+        {
+          "value": "2001:db8::8a2e:370:7334",
+          "start": 0,
+          "end": 23
+        }
+      ],
+      "note": "README table example shape"
+    },
+    {
+      "id": "V6-P016",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "2001:db8:85a3::8a2e:370:7334",
+      "expected": [
+        {
+          "value": "2001:db8:85a3::8a2e:370:7334",
+          "start": 0,
+          "end": 28
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P017",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "fe80::1ff:fe23:4567:890a",
+      "expected": [
+        {
+          "value": "fe80::1ff:fe23:4567:890a",
+          "start": 0,
+          "end": 24
+        }
+      ],
+      "note": "link-local with EUI-64 interface id"
+    },
+    {
+      "id": "V6-P018",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "2606:4700:4700::1111",
+      "expected": [
+        {
+          "value": "2606:4700:4700::1111",
+          "start": 0,
+          "end": 20
+        }
+      ],
+      "note": "Cloudflare DNS"
+    },
+    {
+      "id": "V6-P019",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "2001:4860:4860::8888",
+      "expected": [
+        {
+          "value": "2001:4860:4860::8888",
+          "start": 0,
+          "end": 20
+        }
+      ],
+      "note": "Google DNS"
+    },
+    {
+      "id": "V6-P020",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "2620:fe::fe",
+      "expected": [
+        {
+          "value": "2620:fe::fe",
+          "start": 0,
+          "end": 11
+        }
+      ],
+      "note": "Quad9"
+    },
+    {
+      "id": "V6-P021",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "2a00:1450:4001:81b::200e",
+      "expected": [
+        {
+          "value": "2a00:1450:4001:81b::200e",
+          "start": 0,
+          "end": 24
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P022",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "ff02::1",
+      "expected": [
+        {
+          "value": "ff02::1",
+          "start": 0,
+          "end": 7
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P023",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "ff02::1:ff00:42",
+      "expected": [
+        {
+          "value": "ff02::1:ff00:42",
+          "start": 0,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P024",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "2001:DB8::ABCD",
+      "expected": [
+        {
+          "value": "2001:DB8::ABCD",
+          "start": 0,
+          "end": 14
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P025",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "2001:db8:0:0:1::1",
+      "expected": [
+        {
+          "value": "2001:db8:0:0:1::1",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P026",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "2001:db8::1:0:0:1",
+      "expected": [
+        {
+          "value": "2001:db8::1:0:0:1",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P027",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "fd12:3456:789a:1::1",
+      "expected": [
+        {
+          "value": "fd12:3456:789a:1::1",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "ULA"
+    },
+    {
+      "id": "V6-P028",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "fd00::dead:beef",
+      "expected": [
+        {
+          "value": "fd00::dead:beef",
+          "start": 0,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P029",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "Client 2001:db8::ff00:42:8329 connected",
+      "expected": [
+        {
+          "value": "2001:db8::ff00:42:8329",
+          "start": 7,
+          "end": 29
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P030",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "{\"ip\":\"2001:db8::2:1\"}",
+      "expected": [
+        {
+          "value": "2001:db8::2:1",
+          "start": 7,
+          "end": 20
+        }
+      ],
+      "note": "JSON"
+    },
+    {
+      "id": "V6-P031",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "AAAA 2400:cb00:2048:1::c629:d7a2",
+      "expected": [
+        {
+          "value": "2400:cb00:2048:1::c629:d7a2",
+          "start": 5,
+          "end": 32
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P032",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "2001:db8::1, 2001:db8::2",
+      "expected": [
+        {
+          "value": "2001:db8::1",
+          "start": 0,
+          "end": 11
+        },
+        {
+          "value": "2001:db8::2",
+          "start": 13,
+          "end": 24
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P033",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "(2001:db8::1)",
+      "expected": [
+        {
+          "value": "2001:db8::1",
+          "start": 1,
+          "end": 12
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P034",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "'2001:db8::1'",
+      "expected": [
+        {
+          "value": "2001:db8::1",
+          "start": 1,
+          "end": 12
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P035",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "[2001:db8::1]:443",
+      "expected": [
+        {
+          "value": "2001:db8::1",
+          "start": 1,
+          "end": 12
+        }
+      ],
+      "note": "bracketed with port"
+    },
+    {
+      "id": "V6-P036",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "http://[2001:db8:85a3::8a2e:370:7334]:8080/path",
+      "expected": [
+        {
+          "value": "2001:db8:85a3::8a2e:370:7334",
+          "start": 8,
+          "end": 36
+        }
+      ],
+      "note": "URL literal"
+    },
+    {
+      "id": "V6-P037",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "fe80::1ff:fe23:4567:890a%eth0",
+      "expected": [
+        {
+          "value": "fe80::1ff:fe23:4567:890a",
+          "start": 0,
+          "end": 24
+        }
+      ],
+      "note": "zone id"
+    },
+    {
+      "id": "V6-P038",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "inet6 fe80::a00:27ff:fe4e:66a1/64 scope link",
+      "expected": [
+        {
+          "value": "fe80::a00:27ff:fe4e:66a1",
+          "start": 6,
+          "end": 30
+        }
+      ],
+      "note": "ip addr output"
+    },
+    {
+      "id": "V6-P039",
+      "kind": "pos",
+      "class": "compressed-middle",
+      "text": "inet6 2001:db8:1::ab9:c0a8:102/64 scope global",
+      "expected": [
+        {
+          "value": "2001:db8:1::ab9:c0a8:102",
+          "start": 6,
+          "end": 30
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P040",
+      "kind": "pos",
+      "class": "compressed-leading",
+      "text": "::1",
+      "expected": [
+        {
+          "value": "::1",
+          "start": 0,
+          "end": 3
+        }
+      ],
+      "note": "loopback"
+    },
+    {
+      "id": "V6-P041",
+      "kind": "pos",
+      "class": "compressed-leading",
+      "text": "listening on ::1 port 5432",
+      "expected": [
+        {
+          "value": "::1",
+          "start": 13,
+          "end": 16
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P042",
+      "kind": "pos",
+      "class": "compressed-leading",
+      "text": "::ffff:c000:280",
+      "expected": [
+        {
+          "value": "::ffff:c000:280",
+          "start": 0,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P043",
+      "kind": "pos",
+      "class": "compressed-leading",
+      "text": "::8a2e:370:7334",
+      "expected": [
+        {
+          "value": "::8a2e:370:7334",
+          "start": 0,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P044",
+      "kind": "pos",
+      "class": "compressed-trailing",
+      "text": "2001:db8::/32",
+      "expected": [
+        {
+          "value": "2001:db8::",
+          "start": 0,
+          "end": 10
+        }
+      ],
+      "note": "prefix"
+    },
+    {
+      "id": "V6-P045",
+      "kind": "pos",
+      "class": "compressed-trailing",
+      "text": "2001:db8:abcd:12::/64",
+      "expected": [
+        {
+          "value": "2001:db8:abcd:12::",
+          "start": 0,
+          "end": 18
+        }
+      ],
+      "note": "prefix"
+    },
+    {
+      "id": "V6-P046",
+      "kind": "pos",
+      "class": "compressed-trailing",
+      "text": "prefix 2001:db8:1:: delegated",
+      "expected": [
+        {
+          "value": "2001:db8:1::",
+          "start": 7,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P047",
+      "kind": "pos",
+      "class": "compressed-trailing",
+      "text": "fe80::/10",
+      "expected": [
+        {
+          "value": "fe80::",
+          "start": 0,
+          "end": 6
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-P048",
+      "kind": "pos",
+      "class": "embedded-ipv4",
+      "text": "::ffff:192.0.2.128",
+      "expected": [
+        {
+          "value": "::ffff:192.0.2.128",
+          "start": 0,
+          "end": 18
+        }
+      ],
+      "note": "IPv4-mapped"
+    },
+    {
+      "id": "V6-P049",
+      "kind": "pos",
+      "class": "embedded-ipv4",
+      "text": "64:ff9b::192.0.2.33",
+      "expected": [
+        {
+          "value": "64:ff9b::192.0.2.33",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "NAT64"
+    },
+    {
+      "id": "V6-P050",
+      "kind": "pos",
+      "class": "embedded-ipv4",
+      "text": "2001:db8::192.0.2.1",
+      "expected": [
+        {
+          "value": "2001:db8::192.0.2.1",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V6-N001",
+      "kind": "neg",
+      "class": "mac",
+      "text": "00:1A:2B:3C:4D:5E",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N002",
+      "kind": "neg",
+      "class": "mac",
+      "text": "ether aa:bb:cc:dd:ee:ff txqueuelen 1000",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N003",
+      "kind": "neg",
+      "class": "mac",
+      "text": "Bluetooth 00:11:22:33:FF:EE",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N004",
+      "kind": "neg",
+      "class": "colon-hex-bytes",
+      "text": "EUI-64 00:1A:2B:FF:FE:3C:4D:5E",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N005",
+      "kind": "neg",
+      "class": "colon-hex-bytes",
+      "text": "WWN 50:06:01:60:3b:a0:12:34",
+      "expected": [],
+      "note": "Fibre Channel world wide name"
+    },
+    {
+      "id": "V6-N006",
+      "kind": "neg",
+      "class": "colon-hex-bytes",
+      "text": "SHA1 Fingerprint=5F:3B:8C:F2:F8:10:B3:7D:78:B4:CE:EC:19:19:C3:73:34:B9:C7:74",
+      "expected": [],
+      "note": "openssl x509 -fingerprint"
+    },
+    {
+      "id": "V6-N007",
+      "kind": "neg",
+      "class": "colon-hex-bytes",
+      "text": "MD5:16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48",
+      "expected": [],
+      "note": "ssh-keygen -E md5"
+    },
+    {
+      "id": "V6-N008",
+      "kind": "neg",
+      "class": "colon-hex-bytes",
+      "text": "Serial Number: 0a:01:41:42:00:00:01:53:85:73:6a:0b:85:ec:a7:08",
+      "expected": [],
+      "note": "X.509 serial"
+    },
+    {
+      "id": "V6-N009",
+      "kind": "neg",
+      "class": "colon-hex-bytes",
+      "text": "sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N010",
+      "kind": "neg",
+      "class": "colon-hex-bytes",
+      "text": "de:ad:be:ef",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N011",
+      "kind": "neg",
+      "class": "time",
+      "text": "12:34:56",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N012",
+      "kind": "neg",
+      "class": "time",
+      "text": "timecode 01:00:00:00",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N013",
+      "kind": "neg",
+      "class": "time",
+      "text": "2024:05:01 12:30:45",
+      "expected": [],
+      "note": "EXIF date"
+    },
+    {
+      "id": "V6-N014",
+      "kind": "neg",
+      "class": "time",
+      "text": "0:00:00.000",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N015",
+      "kind": "neg",
+      "class": "time",
+      "text": "ratio 16:9",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N016",
+      "kind": "neg",
+      "class": "time",
+      "text": "1:2:3",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N017",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "std::cout << std::dec << value;",
+      "expected": [],
+      "note": "C++"
+    },
+    {
+      "id": "V6-N018",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "use crate::db::connect;",
+      "expected": [],
+      "note": "Rust"
+    },
+    {
+      "id": "V6-N019",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "let s = Add::add(a, b);",
+      "expected": [],
+      "note": "Rust"
+    },
+    {
+      "id": "V6-N020",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "Feed::Item.find(1)",
+      "expected": [],
+      "note": "Ruby"
+    },
+    {
+      "id": "V6-N021",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "perl -MO=Deparse uses B::Deparse",
+      "expected": [],
+      "note": "Perl"
+    },
+    {
+      "id": "V6-N022",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "my $dbh = DBI::db->new;",
+      "expected": [],
+      "note": "Perl"
+    },
+    {
+      "id": "V6-N023",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "A::B::C obj;",
+      "expected": [],
+      "note": "C++"
+    },
+    {
+      "id": "V6-N024",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "ACE::init();",
+      "expected": [],
+      "note": "C++"
+    },
+    {
+      "id": "V6-N025",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "Cafe::Order.new",
+      "expected": [],
+      "note": "Ruby"
+    },
+    {
+      "id": "V6-N026",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "DB::table('users')->get();",
+      "expected": [],
+      "note": "PHP / Laravel"
+    },
+    {
+      "id": "V6-N027",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "a::before { content: ''; }",
+      "expected": [],
+      "note": "CSS pseudo-element"
+    },
+    {
+      "id": "V6-N028",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "std::vector<int> v;",
+      "expected": [],
+      "note": "C++"
+    },
+    {
+      "id": "V6-N029",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "File::Spec->catfile($a, $b)",
+      "expected": [],
+      "note": "Perl"
+    },
+    {
+      "id": "V6-N030",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "Foo::bar()",
+      "expected": [],
+      "note": "PHP"
+    },
+    {
+      "id": "V6-N031",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "T::default()",
+      "expected": [],
+      "note": "Rust"
+    },
+    {
+      "id": "V6-N032",
+      "kind": "neg",
+      "class": "scope-operator",
+      "text": "Time::HiRes::sleep(0.5)",
+      "expected": [],
+      "note": "Perl"
+    },
+    {
+      "id": "V6-N033",
+      "kind": "neg",
+      "class": "malformed",
+      "text": "2001:db8:::1",
+      "expected": [],
+      "note": "three colons"
+    },
+    {
+      "id": "V6-N034",
+      "kind": "neg",
+      "class": "malformed",
+      "text": "2001:db8::1::2",
+      "expected": [],
+      "note": "two :: groups"
+    },
+    {
+      "id": "V6-N035",
+      "kind": "neg",
+      "class": "malformed",
+      "text": "1:2:3:4:5:6:7:8:9",
+      "expected": [],
+      "note": "nine groups"
+    },
+    {
+      "id": "V6-N036",
+      "kind": "neg",
+      "class": "malformed",
+      "text": "1:2:3:4:5:6:7",
+      "expected": [],
+      "note": "seven groups, no ::"
+    },
+    {
+      "id": "V6-N037",
+      "kind": "neg",
+      "class": "malformed",
+      "text": "12345::1",
+      "expected": [],
+      "note": "five hex digits in a group"
+    },
+    {
+      "id": "V6-N038",
+      "kind": "neg",
+      "class": "malformed",
+      "text": "gggg::1",
+      "expected": [],
+      "note": "non-hex group"
+    },
+    {
+      "id": "V6-N039",
+      "kind": "neg",
+      "class": "other",
+      "text": "urn:uuid:123e4567-e89b-12d3-a456-426614174000",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N040",
+      "kind": "neg",
+      "class": "other",
+      "text": "http://example.com:8080/a:b",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-N041",
+      "kind": "neg",
+      "class": "other",
+      "text": "C:\\Windows\\System32",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V6-X001",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "::",
+      "expected": [],
+      "note": "unspecified address"
+    },
+    {
+      "id": "V6-X002",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "dead::beef",
+      "expected": [],
+      "note": "valid address made of hex words"
+    },
+    {
+      "id": "V6-X003",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "00:00:00:00:00:00:00:01",
+      "expected": [],
+      "note": "eight zero-padded byte groups are also a valid IPv6 text form"
+    }
+  ]
+}

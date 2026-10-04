@@ -1,0 +1,2105 @@
+{
+  "family": "credit-card",
+  "items": [
+    {
+      "id": "CC-P001",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 4111111111111111",
+      "expected": [
+        {
+          "value": "4111111111111111",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "visa"
+    },
+    {
+      "id": "CC-P002",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 4012888888881881",
+      "expected": [
+        {
+          "value": "4012888888881881",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "visa"
+    },
+    {
+      "id": "CC-P003",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 4222222222222",
+      "expected": [
+        {
+          "value": "4222222222222",
+          "start": 4,
+          "end": 17
+        }
+      ],
+      "note": "visa 13"
+    },
+    {
+      "id": "CC-P004",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 4242424242424242",
+      "expected": [
+        {
+          "value": "4242424242424242",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "visa"
+    },
+    {
+      "id": "CC-P005",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 4000056655665556",
+      "expected": [
+        {
+          "value": "4000056655665556",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "visa debit"
+    },
+    {
+      "id": "CC-P006",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 4000000000000000006",
+      "expected": [
+        {
+          "value": "4000000000000000006",
+          "start": 4,
+          "end": 23
+        }
+      ],
+      "note": "visa 19"
+    },
+    {
+      "id": "CC-P007",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 5555555555554444",
+      "expected": [
+        {
+          "value": "5555555555554444",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "mastercard"
+    },
+    {
+      "id": "CC-P008",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 5105105105105100",
+      "expected": [
+        {
+          "value": "5105105105105100",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "mastercard"
+    },
+    {
+      "id": "CC-P009",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 5200828282828210",
+      "expected": [
+        {
+          "value": "5200828282828210",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "mastercard debit"
+    },
+    {
+      "id": "CC-P010",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 2223003122003222",
+      "expected": [
+        {
+          "value": "2223003122003222",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "mastercard 2-series"
+    },
+    {
+      "id": "CC-P011",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 378282246310005",
+      "expected": [
+        {
+          "value": "378282246310005",
+          "start": 4,
+          "end": 19
+        }
+      ],
+      "note": "amex"
+    },
+    {
+      "id": "CC-P012",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 371449635398431",
+      "expected": [
+        {
+          "value": "371449635398431",
+          "start": 4,
+          "end": 19
+        }
+      ],
+      "note": "amex"
+    },
+    {
+      "id": "CC-P013",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 6011111111111117",
+      "expected": [
+        {
+          "value": "6011111111111117",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "discover"
+    },
+    {
+      "id": "CC-P014",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 6011000990139424",
+      "expected": [
+        {
+          "value": "6011000990139424",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "discover"
+    },
+    {
+      "id": "CC-P015",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 3530111333300000",
+      "expected": [
+        {
+          "value": "3530111333300000",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "jcb"
+    },
+    {
+      "id": "CC-P016",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 3566002020360505",
+      "expected": [
+        {
+          "value": "3566002020360505",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "jcb"
+    },
+    {
+      "id": "CC-P017",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 30569309025904",
+      "expected": [
+        {
+          "value": "30569309025904",
+          "start": 4,
+          "end": 18
+        }
+      ],
+      "note": "diners 14"
+    },
+    {
+      "id": "CC-P018",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 38520000023237",
+      "expected": [
+        {
+          "value": "38520000023237",
+          "start": 4,
+          "end": 18
+        }
+      ],
+      "note": "diners 14"
+    },
+    {
+      "id": "CC-P019",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 6200000000000005",
+      "expected": [
+        {
+          "value": "6200000000000005",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "unionpay"
+    },
+    {
+      "id": "CC-P020",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 6205500000000000004",
+      "expected": [
+        {
+          "value": "6205500000000000004",
+          "start": 4,
+          "end": 23
+        }
+      ],
+      "note": "unionpay 19"
+    },
+    {
+      "id": "CC-P021",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 6759649826438453",
+      "expected": [
+        {
+          "value": "6759649826438453",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "maestro"
+    },
+    {
+      "id": "CC-P022",
+      "kind": "pos",
+      "class": "unseparated",
+      "text": "PAN 2200000000000004",
+      "expected": [
+        {
+          "value": "2200000000000004",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": "mir"
+    },
+    {
+      "id": "CC-P023",
+      "kind": "pos",
+      "class": "grouped",
+      "text": "4111 1111 1111 1111",
+      "expected": [
+        {
+          "value": "4111 1111 1111 1111",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P024",
+      "kind": "pos",
+      "class": "grouped",
+      "text": "5555-5555-5555-4444",
+      "expected": [
+        {
+          "value": "5555-5555-5555-4444",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P025",
+      "kind": "pos",
+      "class": "grouped",
+      "text": "3782 822463 10005",
+      "expected": [
+        {
+          "value": "3782 822463 10005",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": "amex 4-6-5"
+    },
+    {
+      "id": "CC-P026",
+      "kind": "pos",
+      "class": "grouped",
+      "text": "3714-496353-98431",
+      "expected": [
+        {
+          "value": "3714-496353-98431",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": "amex 4-6-5"
+    },
+    {
+      "id": "CC-P027",
+      "kind": "pos",
+      "class": "grouped",
+      "text": "3056 930902 5904",
+      "expected": [
+        {
+          "value": "3056 930902 5904",
+          "start": 0,
+          "end": 16
+        }
+      ],
+      "note": "diners 4-6-4"
+    },
+    {
+      "id": "CC-P028",
+      "kind": "pos",
+      "class": "grouped",
+      "text": "6011 1111 1111 1117",
+      "expected": [
+        {
+          "value": "6011 1111 1111 1117",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P029",
+      "kind": "pos",
+      "class": "grouped",
+      "text": "4222 2222 2222 2",
+      "expected": [
+        {
+          "value": "4222 2222 2222 2",
+          "start": 0,
+          "end": 16
+        }
+      ],
+      "note": "13 digits"
+    },
+    {
+      "id": "CC-P030",
+      "kind": "pos",
+      "class": "grouped",
+      "text": "6205 5000 0000 0000 004",
+      "expected": [
+        {
+          "value": "6205 5000 0000 0000 004",
+          "start": 0,
+          "end": 23
+        }
+      ],
+      "note": "19 digits"
+    },
+    {
+      "id": "CC-P031",
+      "kind": "pos",
+      "class": "grouped",
+      "text": "4012 8888 8888 1881",
+      "expected": [
+        {
+          "value": "4012 8888 8888 1881",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P032",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "Card: 4111 1111 1111 1111",
+      "expected": [
+        {
+          "value": "4111 1111 1111 1111",
+          "start": 6,
+          "end": 25
+        }
+      ],
+      "note": "README example"
+    },
+    {
+      "id": "CC-P033",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "card number 4242424242424242.",
+      "expected": [
+        {
+          "value": "4242424242424242",
+          "start": 12,
+          "end": 28
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P034",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "{\"card_number\":\"5555555555554444\",\"exp\":\"12/25\"}",
+      "expected": [
+        {
+          "value": "5555555555554444",
+          "start": 16,
+          "end": 32
+        }
+      ],
+      "note": "JSON"
+    },
+    {
+      "id": "CC-P035",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "cc=4012888888881881&cvv=123",
+      "expected": [
+        {
+          "value": "4012888888881881",
+          "start": 3,
+          "end": 19
+        }
+      ],
+      "note": "form body"
+    },
+    {
+      "id": "CC-P036",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "(Visa 4111-1111-1111-1111)",
+      "expected": [
+        {
+          "value": "4111-1111-1111-1111",
+          "start": 6,
+          "end": 25
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P037",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "Paid with 378282246310005, thanks",
+      "expected": [
+        {
+          "value": "378282246310005",
+          "start": 10,
+          "end": 25
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P038",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "PAN|4111111111111111|",
+      "expected": [
+        {
+          "value": "4111111111111111",
+          "start": 4,
+          "end": 20
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P039",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "<PAN>5105105105105100</PAN>",
+      "expected": [
+        {
+          "value": "5105105105105100",
+          "start": 5,
+          "end": 21
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P040",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "4111-1111-1111-1111;",
+      "expected": [
+        {
+          "value": "4111-1111-1111-1111",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P041",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "'4111111111111111'",
+      "expected": [
+        {
+          "value": "4111111111111111",
+          "start": 1,
+          "end": 17
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P042",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "4111111111111111\n12/25",
+      "expected": [
+        {
+          "value": "4111111111111111",
+          "start": 0,
+          "end": 16
+        }
+      ],
+      "note": "expiry on the next line"
+    },
+    {
+      "id": "CC-P043",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "4111 1111 1111 1111\t12/25",
+      "expected": [
+        {
+          "value": "4111 1111 1111 1111",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "tab before expiry"
+    },
+    {
+      "id": "CC-P044",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "card:4111111111111111,exp:1225",
+      "expected": [
+        {
+          "value": "4111111111111111",
+          "start": 5,
+          "end": 21
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P045",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "6011-0009-9013-9424 (Discover)",
+      "expected": [
+        {
+          "value": "6011-0009-9013-9424",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P046",
+      "kind": "pos",
+      "class": "followed-by-word",
+      "text": "4111 1111 1111 1111 is my card",
+      "expected": [
+        {
+          "value": "4111 1111 1111 1111",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P047",
+      "kind": "pos",
+      "class": "followed-by-word",
+      "text": "5555 5555 5555 4444 exp 12/25 cvv 123",
+      "expected": [
+        {
+          "value": "5555 5555 5555 4444",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P048",
+      "kind": "pos",
+      "class": "followed-by-word",
+      "text": "charge 4242424242424242 today",
+      "expected": [
+        {
+          "value": "4242424242424242",
+          "start": 7,
+          "end": 23
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-P049",
+      "kind": "pos",
+      "class": "adjacent-digits",
+      "text": "4111 1111 1111 1111 12/25",
+      "expected": [
+        {
+          "value": "4111 1111 1111 1111",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "expiry MM/YY follows"
+    },
+    {
+      "id": "CC-P050",
+      "kind": "pos",
+      "class": "adjacent-digits",
+      "text": "4111111111111111 123",
+      "expected": [
+        {
+          "value": "4111111111111111",
+          "start": 0,
+          "end": 16
+        }
+      ],
+      "note": "CVV follows"
+    },
+    {
+      "id": "CC-P051",
+      "kind": "pos",
+      "class": "adjacent-digits",
+      "text": "2024-05-01 4111111111111111 49.99",
+      "expected": [
+        {
+          "value": "4111111111111111",
+          "start": 11,
+          "end": 27
+        }
+      ],
+      "note": "log line: date, PAN, amount"
+    },
+    {
+      "id": "CC-P052",
+      "kind": "pos",
+      "class": "adjacent-digits",
+      "text": "12:30:45 5555555555554444 APPROVED",
+      "expected": [
+        {
+          "value": "5555555555554444",
+          "start": 9,
+          "end": 25
+        }
+      ],
+      "note": "log line: time, PAN"
+    },
+    {
+      "id": "CC-P053",
+      "kind": "pos",
+      "class": "adjacent-digits",
+      "text": "Order 10023 4242 4242 4242 4242",
+      "expected": [
+        {
+          "value": "4242 4242 4242 4242",
+          "start": 12,
+          "end": 31
+        }
+      ],
+      "note": "order id precedes"
+    },
+    {
+      "id": "CC-P054",
+      "kind": "pos",
+      "class": "adjacent-digits",
+      "text": "Amex 3782 822463 10005 1234",
+      "expected": [
+        {
+          "value": "3782 822463 10005",
+          "start": 5,
+          "end": 22
+        }
+      ],
+      "note": "4-digit CID follows"
+    },
+    {
+      "id": "CC-P055",
+      "kind": "pos",
+      "class": "adjacent-digits",
+      "text": "4111111111111111 5555555555554444",
+      "expected": [
+        {
+          "value": "4111111111111111",
+          "start": 0,
+          "end": 16
+        },
+        {
+          "value": "5555555555554444",
+          "start": 17,
+          "end": 33
+        }
+      ],
+      "note": "two PANs on one line"
+    },
+    {
+      "id": "CC-P056",
+      "kind": "pos",
+      "class": "adjacent-digits",
+      "text": "5105105105105100 2025-12",
+      "expected": [
+        {
+          "value": "5105105105105100",
+          "start": 0,
+          "end": 16
+        }
+      ],
+      "note": "expiry YYYY-MM follows"
+    },
+    {
+      "id": "CC-P057",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "4111.1111.1111.1111",
+      "expected": [
+        {
+          "value": "4111.1111.1111.1111",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "dots"
+    },
+    {
+      "id": "CC-P058",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "4111 1111 1111 1111",
+      "expected": [
+        {
+          "value": "4111 1111 1111 1111",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "no-break spaces"
+    },
+    {
+      "id": "CC-P059",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "4111  1111  1111  1111",
+      "expected": [
+        {
+          "value": "4111  1111  1111  1111",
+          "start": 0,
+          "end": 22
+        }
+      ],
+      "note": "double spaces"
+    },
+    {
+      "id": "CC-P060",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "4111 1111\n1111 1111",
+      "expected": [
+        {
+          "value": "4111 1111\n1111 1111",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "line wrap inside the value"
+    },
+    {
+      "id": "CC-P061",
+      "kind": "pos",
+      "class": "glued",
+      "text": "card_4111111111111111",
+      "expected": [
+        {
+          "value": "4111111111111111",
+          "start": 5,
+          "end": 21
+        }
+      ],
+      "note": "underscore before"
+    },
+    {
+      "id": "CC-P062",
+      "kind": "pos",
+      "class": "glued",
+      "text": "CC4111111111111111",
+      "expected": [
+        {
+          "value": "4111111111111111",
+          "start": 2,
+          "end": 18
+        }
+      ],
+      "note": "letters glued before"
+    },
+    {
+      "id": "CC-A001",
+      "kind": "agg",
+      "class": "masked-asterisk",
+      "text": "****-****-****-1234",
+      "expected": [
+        {
+          "value": "****-****-****-1234",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "documented form"
+    },
+    {
+      "id": "CC-A002",
+      "kind": "agg",
+      "class": "masked-asterisk",
+      "text": "**** **** **** 1234",
+      "expected": [
+        {
+          "value": "**** **** **** 1234",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "documented form"
+    },
+    {
+      "id": "CC-A003",
+      "kind": "agg",
+      "class": "masked-asterisk",
+      "text": "************1234",
+      "expected": [
+        {
+          "value": "************1234",
+          "start": 0,
+          "end": 16
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-A004",
+      "kind": "agg",
+      "class": "masked-asterisk",
+      "text": "Card ending ****-****-****-4242.",
+      "expected": [
+        {
+          "value": "****-****-****-4242",
+          "start": 12,
+          "end": 31
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-A005",
+      "kind": "agg",
+      "class": "masked-other",
+      "text": "XXXX-XXXX-XXXX-1234",
+      "expected": [
+        {
+          "value": "XXXX-XXXX-XXXX-1234",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-A006",
+      "kind": "agg",
+      "class": "masked-other",
+      "text": "xxxx xxxx xxxx 1234",
+      "expected": [
+        {
+          "value": "xxxx xxxx xxxx 1234",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "CC-A007",
+      "kind": "agg",
+      "class": "masked-other",
+      "text": "•••• •••• •••• 1234",
+      "expected": [
+        {
+          "value": "•••• •••• •••• 1234",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "bullets"
+    },
+    {
+      "id": "CC-A008",
+      "kind": "agg",
+      "class": "masked-other",
+      "text": "4111 11** **** 1111",
+      "expected": [
+        {
+          "value": "4111 11** **** 1111",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "PCI first-6 / last-4"
+    },
+    {
+      "id": "CC-A009",
+      "kind": "agg",
+      "class": "masked-other",
+      "text": "411111******1111",
+      "expected": [
+        {
+          "value": "411111******1111",
+          "start": 0,
+          "end": 16
+        }
+      ],
+      "note": "PCI first-6 / last-4"
+    },
+    {
+      "id": "CC-A010",
+      "kind": "agg",
+      "class": "masked-other",
+      "text": "XXXX-XXXXXX-X1005",
+      "expected": [
+        {
+          "value": "XXXX-XXXXXX-X1005",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": "amex mask"
+    },
+    {
+      "id": "CC-N001",
+      "kind": "neg",
+      "class": "luhn-invalid",
+      "text": "4111111111111112",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 16,
+        "luhn": false,
+        "network": "visa"
+      }
+    },
+    {
+      "id": "CC-N002",
+      "kind": "neg",
+      "class": "luhn-invalid",
+      "text": "4111 1111 1111 1121",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 16,
+        "luhn": false,
+        "network": "visa"
+      }
+    },
+    {
+      "id": "CC-N003",
+      "kind": "neg",
+      "class": "luhn-invalid",
+      "text": "5555555555554445",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 16,
+        "luhn": false,
+        "network": "mastercard"
+      }
+    },
+    {
+      "id": "CC-N004",
+      "kind": "neg",
+      "class": "luhn-invalid",
+      "text": "378282246310006",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 15,
+        "luhn": false,
+        "network": "amex"
+      }
+    },
+    {
+      "id": "CC-N005",
+      "kind": "neg",
+      "class": "luhn-invalid",
+      "text": "6011111111111118",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 16,
+        "luhn": false,
+        "network": "discover"
+      }
+    },
+    {
+      "id": "CC-N006",
+      "kind": "neg",
+      "class": "luhn-invalid",
+      "text": "4242 4242 4242 4241",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 16,
+        "luhn": false,
+        "network": "visa"
+      }
+    },
+    {
+      "id": "CC-N007",
+      "kind": "neg",
+      "class": "luhn-invalid",
+      "text": "1234 5678 9012 3456",
+      "expected": [],
+      "note": "placeholder",
+      "diagnosis": {
+        "digits": 16,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N008",
+      "kind": "neg",
+      "class": "luhn-invalid",
+      "text": "1111 1111 1111 1111",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 16,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N009",
+      "kind": "neg",
+      "class": "luhn-by-design",
+      "text": "IMEI: 490154203237518",
+      "expected": [],
+      "note": "GSMA sample IMEI",
+      "diagnosis": {
+        "digits": 15,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N010",
+      "kind": "neg",
+      "class": "luhn-by-design",
+      "text": "IMEI 356938035643809",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 15,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N011",
+      "kind": "neg",
+      "class": "luhn-by-design",
+      "text": "IMEI 352099001761481",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 15,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N012",
+      "kind": "neg",
+      "class": "luhn-by-design",
+      "text": "IMEI: 35-209900-176148-1",
+      "expected": [],
+      "note": "hyphenated IMEI",
+      "diagnosis": {
+        "digits": 15,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N013",
+      "kind": "neg",
+      "class": "luhn-by-design",
+      "text": "ICCID 8901410321111851072",
+      "expected": [],
+      "note": "SIM card number",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N014",
+      "kind": "neg",
+      "class": "luhn-by-design",
+      "text": "SA ID 8001015009087",
+      "expected": [],
+      "note": "South African ID number",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N015",
+      "kind": "neg",
+      "class": "luhn-by-design",
+      "text": "NPI 808401234567893",
+      "expected": [],
+      "note": "US NPI with 80840 prefix",
+      "diagnosis": {
+        "digits": 15,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N016",
+      "kind": "neg",
+      "class": "all-zeros",
+      "text": "0000000000000000",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 16,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N017",
+      "kind": "neg",
+      "class": "all-zeros",
+      "text": "0000 0000 0000 0000",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 16,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N018",
+      "kind": "neg",
+      "class": "all-zeros",
+      "text": "00000000 00000000",
+      "expected": [],
+      "note": "two zero words in a hex dump",
+      "diagnosis": {
+        "digits": 16,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N019",
+      "kind": "neg",
+      "class": "all-zeros",
+      "text": "id=0000000000000",
+      "expected": [],
+      "note": "13 zeros",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N020",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1700000000000",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N021",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1700604923457",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N022",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1701209846914",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N023",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1701814770371",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N024",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1702419693828",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N025",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1703024617285",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N026",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1703629540742",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N027",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1704234464199",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N028",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1704839387656",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N029",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1705444311113",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N030",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1706049234570",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N031",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1706654158027",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N032",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1707259081484",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N033",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1707864004941",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N034",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1708468928398",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N035",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1709073851855",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N036",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1709678775312",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N037",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1710283698769",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N038",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1710888622226",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N039",
+      "kind": "neg",
+      "class": "epoch-ms",
+      "text": "ts=1711493545683",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N040",
+      "kind": "neg",
+      "class": "snowflake-id",
+      "text": "tweet_id=1780000000000000000",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N041",
+      "kind": "neg",
+      "class": "snowflake-id",
+      "text": "tweet_id=1787919000000000037",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N042",
+      "kind": "neg",
+      "class": "snowflake-id",
+      "text": "tweet_id=1795838000000000074",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N043",
+      "kind": "neg",
+      "class": "snowflake-id",
+      "text": "tweet_id=1803757000000000111",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N044",
+      "kind": "neg",
+      "class": "snowflake-id",
+      "text": "tweet_id=1811676000000000148",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N045",
+      "kind": "neg",
+      "class": "snowflake-id",
+      "text": "tweet_id=1819595000000000185",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N046",
+      "kind": "neg",
+      "class": "snowflake-id",
+      "text": "tweet_id=1827514000000000222",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N047",
+      "kind": "neg",
+      "class": "snowflake-id",
+      "text": "tweet_id=1835433000000000259",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N048",
+      "kind": "neg",
+      "class": "snowflake-id",
+      "text": "tweet_id=1843352000000000296",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N049",
+      "kind": "neg",
+      "class": "snowflake-id",
+      "text": "tweet_id=1851271000000000333",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N050",
+      "kind": "neg",
+      "class": "order-number",
+      "text": "Order 112-6492680-2384192",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 17,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N051",
+      "kind": "neg",
+      "class": "order-number",
+      "text": "Order 112-1446656-5052728",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 17,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N052",
+      "kind": "neg",
+      "class": "order-number",
+      "text": "Order 112-3589504-6841408",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 17,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N053",
+      "kind": "neg",
+      "class": "order-number",
+      "text": "Order 112-6071744-8312128",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 17,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N054",
+      "kind": "neg",
+      "class": "order-number",
+      "text": "Order 112-1475008-2422528",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 17,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N055",
+      "kind": "neg",
+      "class": "order-number",
+      "text": "Order 112-7428928-4808640",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 17,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N056",
+      "kind": "neg",
+      "class": "order-number",
+      "text": "Order 112-2132160-2729216",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 17,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N057",
+      "kind": "neg",
+      "class": "order-number",
+      "text": "Order 112-2147200-2655616",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 17,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N058",
+      "kind": "neg",
+      "class": "order-number",
+      "text": "Order 112-7594752-3691712",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 17,
+        "luhn": true,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N059",
+      "kind": "neg",
+      "class": "order-number",
+      "text": "Order 112-9874944-1070784",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 17,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N060",
+      "kind": "neg",
+      "class": "isbn-13",
+      "text": "ISBN 978-0-306-40615-7",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N061",
+      "kind": "neg",
+      "class": "isbn-13",
+      "text": "ISBN 978-3-16-148410-0",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N062",
+      "kind": "neg",
+      "class": "isbn-13",
+      "text": "ISBN 9780131103627",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N063",
+      "kind": "neg",
+      "class": "isbn-13",
+      "text": "ISBN 9780262033848",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N064",
+      "kind": "neg",
+      "class": "isbn-13",
+      "text": "ISBN 9780201633610",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N065",
+      "kind": "neg",
+      "class": "isbn-13",
+      "text": "ISBN 9780596517748",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N066",
+      "kind": "neg",
+      "class": "isbn-13",
+      "text": "ISBN 9781491950357",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N067",
+      "kind": "neg",
+      "class": "isbn-13",
+      "text": "ISBN 9780134685991",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N068",
+      "kind": "neg",
+      "class": "isbn-13",
+      "text": "ISBN 9780132350884",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N069",
+      "kind": "neg",
+      "class": "isbn-13",
+      "text": "ISBN 9780321125217",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N070",
+      "kind": "neg",
+      "class": "ean-13",
+      "text": "EAN 4006381333931",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": "visa"
+      }
+    },
+    {
+      "id": "CC-N071",
+      "kind": "neg",
+      "class": "ean-13",
+      "text": "EAN 5901234123457",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": true,
+        "network": "maestro"
+      }
+    },
+    {
+      "id": "CC-N072",
+      "kind": "neg",
+      "class": "ean-13",
+      "text": "EAN 4012345678901",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": "visa"
+      }
+    },
+    {
+      "id": "CC-N073",
+      "kind": "neg",
+      "class": "ean-13",
+      "text": "EAN 7622210449283",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N074",
+      "kind": "neg",
+      "class": "ean-13",
+      "text": "EAN 8710398503602",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 13,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N075",
+      "kind": "neg",
+      "class": "other-digits",
+      "text": "wire 021000021 1234567890",
+      "expected": [],
+      "note": "routing + account number",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N076",
+      "kind": "neg",
+      "class": "other-digits",
+      "text": "period 2024-01-01 2024-12-31",
+      "expected": [],
+      "note": "date range",
+      "diagnosis": {
+        "digits": 16,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N077",
+      "kind": "neg",
+      "class": "other-digits",
+      "text": "phones 415-555-2671 415-555-2672",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 20,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N078",
+      "kind": "neg",
+      "class": "other-digits",
+      "text": "sizes: 10 20 30 40 50 60 70",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 14,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N079",
+      "kind": "neg",
+      "class": "other-digits",
+      "text": "steps 1 2 3 4 5 6 7 8 9 10 11 12 13",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 17,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N080",
+      "kind": "neg",
+      "class": "other-digits",
+      "text": "USPS 9400 1000 0000 0000 0000 00",
+      "expected": [],
+      "note": "22-digit tracking number",
+      "diagnosis": {
+        "digits": 22,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N081",
+      "kind": "neg",
+      "class": "other-digits",
+      "text": "INT64_MAX 9223372036854775807",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 19,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N082",
+      "kind": "neg",
+      "class": "other-digits",
+      "text": "UINT64_MAX 18446744073709551615",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "digits": 20,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N083",
+      "kind": "neg",
+      "class": "other-digits",
+      "text": "IBAN DE89 3704 0044 0532 0130 00",
+      "expected": [],
+      "note": "BBAN digits",
+      "diagnosis": {
+        "digits": 18,
+        "luhn": false,
+        "network": null
+      }
+    },
+    {
+      "id": "CC-N084",
+      "kind": "neg",
+      "class": "other-digits",
+      "text": "1Z999AA10123456784",
+      "expected": [],
+      "note": "UPS tracking number"
+    }
+  ]
+}
