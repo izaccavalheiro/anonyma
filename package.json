@@ -223,11 +223,10 @@
     "release": "npm run prepublishOnly && npm publish",
     "bench": "node bench/run.mjs"
   },
-  "dependencies": {},
   "devDependencies": {
     "@eslint/js": "^9.0.0",
     "@types/node": "^20.0.0",
-    "@vitest/coverage-v8": "^2.0.0",
+    "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^9.0.0",
     "express": "^5.2.1",
     "fast-check": "^4.10.2",
@@ -236,7 +235,7 @@
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
     "typescript-eslint": "^8.0.0",
-    "vitest": "^2.0.0",
+    "vitest": "^4.1.11",
     "zod": "^3.23.0"
   },
   "peerDependencies": {
