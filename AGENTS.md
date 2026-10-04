@@ -50,6 +50,7 @@ src/
 ├── middleware/           # "anonyma/middleware", "/express", "/hono" — HTTP payload scrubbing
 └── internal/             # Web Crypto lookup, byte encodings and lossless JSON numbers shared by the modules above
 bench/                    # Benchmark (run.mjs), corpus generator, saved results
+scripts/                  # Repository checks run by CI: package smoke test, size budget, privacy invariants, benchmark scaling
 tests/fixtures/corpus/    # Labelled detector corpora used by tests/engine/precision.test.ts
 ```
 
@@ -86,7 +87,15 @@ npm run test:coverage
 
 # Build ESM + CJS output into dist/
 npm run build
+
+# Everything CI runs, in one command
+npm run validate
 ```
+
+`npm install` also installs git hooks (Husky): staged files are linted and
+formatted on commit, the commit message is checked against Conventional
+Commits, and a push runs the type check, the linter, the privacy invariants and
+the tests. Do not bypass them with `--no-verify`.
 
 ---
 
@@ -124,9 +133,10 @@ npm run build
 
 ## Code Style Rules (enforced by ESLint + Prettier)
 
-- Tabs: 2-space indentation.
-- Trailing commas: ES5.
-- Single quotes for strings.
+- Indentation: 2 spaces. Line width: 100.
+- Trailing commas everywhere a comma may trail.
+- Double quotes for strings.
+- These are the settings of `.prettierrc`; `npm run format` applies them.
 - JSDoc / TSDoc comments on every exported symbol.
 - No `console.log` in source files (only `console.warn` for deprecations in specific, documented cases).
 - Keep files focused — one primary concern per file.
@@ -172,6 +182,9 @@ Scope examples: `detectors`, `strategies`, `presets`, `stream`, `batch`, `llm`, 
 - Do not break the dual ESM/CJS export map in `package.json`.
 - Do not remove or weaken the test coverage thresholds in `vitest.config.ts`.
 - Do not bypass the `prepublishOnly` gate (`tsc + lint + test + build`) before publishing.
+- Do not publish from a local machine: a release is published by the `Release` workflow from a version tag.
+- Do not put real personal data, credentials or production logs in tests, fixtures, benchmarks, issues or commits. Use synthetic values (`example.com` addresses, documentation IP ranges, test card numbers); `npm run check:privacy` enforces part of this.
+- Do not reference a GitHub Action by a tag or a branch: pin it to a commit SHA, with the version in a comment.
 - Do not import `zod` in any file outside `src/schemas.ts` — it is an optional peer dependency.
 
 ---

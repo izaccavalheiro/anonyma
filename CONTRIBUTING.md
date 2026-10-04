@@ -26,20 +26,44 @@ Code of Conduct. Harassment or discrimination of any kind will not be tolerated.
 
 ### Prerequisites
 
-- **Node.js** ≥ 18
-- **npm** ≥ 9
+- **Node.js** ≥ 22.22 for development (`.nvmrc` pins the version CI uses). The
+  development tooling needs it; the package itself supports Node.js ≥ 18, which
+  CI checks by installing the packed tarball on every supported line.
+- **npm** ≥ 10
 
 ### Getting Started
 
 ```bash
 git clone https://github.com/izaccavalheiro/anonyma.git
 cd anonyma
-npm install
+npm install         # also installs the git hooks
 npm run typecheck   # Verify TypeScript compilation
 npm run lint        # Lint with ESLint
 npm run test        # Run test suite
 npm run build       # Build ESM + CJS output
+npm run validate    # Everything CI runs, in one command
 ```
+
+### Git hooks
+
+`npm install` sets up three hooks (Husky):
+
+| Hook         | What it does                                                             |
+| ------------ | ------------------------------------------------------------------------ |
+| `pre-commit` | Lints and formats the staged files (lint-staged).                        |
+| `commit-msg` | Checks the message against Conventional Commits (commitlint).            |
+| `pre-push`   | Type check, lint, privacy invariants and the test suite, before pushing. |
+
+Set `HUSKY=0` to skip them for one command. CI runs the same checks regardless.
+
+### Synthetic data only
+
+This library exists to protect personal data, so its repository must not hold
+any. Tests, fixtures, benchmarks, issues and pull requests use made-up values
+only: addresses under `example.com`, `example.org` or `*.example`, the
+documentation IP ranges, the published test card numbers. `npm run check:privacy`
+fails on an e-mail address under a domain that is neither reserved for
+documentation nor listed in `scripts/synthetic-domains.json`.
 
 ---
 
@@ -91,6 +115,26 @@ All PRs must satisfy these requirements before merge:
 
 - Code is formatted with Prettier (`npm run format`) and linted with ESLint (`npm run lint`).
 - CI will fail if formatting or lint checks do not pass.
+
+### Continuous integration
+
+Every push and pull request runs the `CI` workflow. Each job answers one question:
+
+| Job            | Question                                                                                     |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| `static`       | Does the code type-check, lint and follow the format? Are the commit messages conventional?  |
+| `test`         | Do the tests pass on Node.js 20, 22 and 24, and on Linux, macOS and Windows?                 |
+| `coverage`     | Is the code covered above the thresholds in `vitest.config.ts`?                              |
+| `package`      | Is the build a valid dual ESM/CJS package (publint, are-the-types-wrong), within its budget? |
+| `smoke`        | Does the packed tarball work for a consumer on Node.js 18, 20, 22, 24 and 26?                |
+| `performance`  | Is the span engine still linear in the size of its input?                                    |
+| `privacy`      | Do the privacy invariants and the compliance suites hold (GDPR, LGPD)?                       |
+| `supply-chain` | Are the dependencies free of known vulnerabilities and correctly signed?                     |
+
+CodeQL analyses the source and the workflows on every push, and Dependabot
+proposes dependency updates weekly. A new size budget, a new made-up domain in
+a fixture or a new entry point belongs in the same pull request as the change
+that needs it.
 
 ### Documentation
 
@@ -166,6 +210,25 @@ anonyma follows **Semantic Versioning (SemVer)**:
 - **Patch** (`x.x.PATCH`): Backward-compatible bug fixes.
 - **Minor** (`x.MINOR.x`): New features, no breaking changes.
 - **Major** (`MAJOR.x.x`): Breaking API changes.
+
+---
+
+## Releasing
+
+Releases are published by GitHub Actions, never from a local machine.
+
+1. Set the version in `package.json` (and `package-lock.json`), and give
+   `CHANGELOG.md` a section `## [<version>]`. A test fails when the version
+   the code reports differs from `package.json`.
+2. Merge, then push a tag `v<version>` on that commit.
+3. The `Release` workflow runs the whole CI pipeline on the tag, publishes to
+   npm with a provenance attestation, and creates the GitHub release with the
+   changelog section, the tarball and an SBOM. A version with a prerelease
+   suffix (`1.2.0-beta.0`) is published under the `next` dist-tag, any other
+   under `latest`.
+
+Running the `Release` workflow by hand from the Actions tab rehearses all of it
+without publishing.
 
 ---
 
