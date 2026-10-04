@@ -50,20 +50,21 @@ export function mask(value: string, options: MaskOptions = {}): string {
   if (value.length === 0) return value;
 
   // --- Format-preserving mode ---
-  // Alpha → 'X', digit → '0', separators/punctuation preserved.
+  // Letter → 'X' / 'x', digit → '0', separators/punctuation preserved. Letters
+  // and digits of every script are masked, not only ASCII ones.
   // `keepLeading` / `keepTrailing` still apply (character counts, ignoring separators).
   if (preserveFormat) {
+    const chars = Array.from(value);
     const totalVisible = keepLeading + keepTrailing;
-    if (totalVisible >= value.length) {
+    if (totalVisible >= chars.length) {
       return value; // everything is visible, nothing to mask
     }
 
-    const chars = value.split("");
     // Determine the interior slice to mask (skip leading / trailing).
-    const interior = chars.slice(keepLeading, value.length - (keepTrailing > 0 ? keepTrailing : 0));
+    const interior = chars.slice(keepLeading, chars.length - (keepTrailing > 0 ? keepTrailing : 0));
     const maskedInterior = interior.map((ch) => {
-      if (/[a-zA-Z]/.test(ch)) return ch === ch.toUpperCase() ? "X" : "x";
-      if (/\d/.test(ch)) return "0";
+      if (/\p{L}/u.test(ch)) return ch !== ch.toLowerCase() ? "X" : "x";
+      if (/\p{N}/u.test(ch)) return "0";
       return ch; // separator / punctuation — preserved
     });
 

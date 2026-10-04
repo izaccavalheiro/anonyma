@@ -92,8 +92,8 @@ export function detectDateOfBirth(text: string): PiiMatch[] {
 
   for (const match of sorted) {
     let overlaps = false;
-    for (const pos of seen) {
-      if (match.start < pos) {
+    for (let i = match.start; i < match.end; i++) {
+      if (seen.has(i)) {
         overlaps = true;
         break;
       }
