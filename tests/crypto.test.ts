@@ -10,7 +10,7 @@
  *  - missing passphrase AND keyBytes → EncryptionError
  *  - invalid keyBytes length → EncryptionError
  *  - malformed ciphertext (decrypt) → EncryptionError
- *  - `CryptoNotAvailableError` when `crypto.subtle` is absent
+ *  - the fallback to Node's own Web Crypto when `globalThis.crypto.subtle` is absent
  */
 
 import { describe, it, expect, vi, afterEach } from "vitest";
@@ -132,21 +132,19 @@ describe("malformed ciphertext", () => {
 });
 
 // ---------------------------------------------------------------------------
-// CryptoNotAvailableError — when globalThis.crypto.subtle is absent
+// Runtimes without a global Web Crypto object (Node.js 18)
 // ---------------------------------------------------------------------------
-describe("CryptoNotAvailableError", () => {
-  it("encrypt throws CryptoNotAvailableError when crypto.subtle is not available", async () => {
-    vi.stubGlobal("crypto", {});
-    await expect(encrypt("value", { passphrase: "pw" })).rejects.toThrow(
-      CryptoNotAvailableError,
-    );
+describe("without globalThis.crypto.subtle", () => {
+  it("encrypt and decrypt fall back to Node's own Web Crypto", async () => {
+    for (const absent of [{}, undefined]) {
+      vi.stubGlobal("crypto", absent);
+      const sealed = await encrypt("value", { passphrase: "pw" });
+      expect(await decrypt(sealed, { passphrase: "pw" })).toBe("value");
+    }
   });
 
-  it("decrypt throws CryptoNotAvailableError when crypto.subtle is not available", async () => {
-    vi.stubGlobal("crypto", {});
-    await expect(decrypt("base64:iv:payload", { passphrase: "pw" })).rejects.toThrow(
-      CryptoNotAvailableError,
-    );
+  it("the error for a runtime with no Web Crypto at all names the problem", () => {
+    expect(new CryptoNotAvailableError().code).toBe("CRYPTO_NOT_AVAILABLE");
   });
 });
 

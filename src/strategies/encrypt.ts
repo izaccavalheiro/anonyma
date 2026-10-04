@@ -1,27 +1,24 @@
 /**
  * @module strategies/encrypt
  * @description The `encrypt` anonymization strategy — uses AES-GCM via the
- * Web Crypto API (Node ≥ 18 / browsers with Web Crypto support).
+ * Web Crypto API: `globalThis.crypto` where the runtime exposes it, and Node's
+ * own implementation (`node:crypto`) on Node.js 18, which does not.
  *
  * The output format is `"<encoding>:<iv>:<ciphertext>"` where `<iv>` is the
  * random 12-byte initialisation vector and `<ciphertext>` is the encrypted
  * payload. Both parts are encoded in the same format (base64 or hex).
  *
- * @throws {@link CryptoNotAvailableError} When `globalThis.crypto.subtle` is not present.
+ * @throws {@link CryptoNotAvailableError} When the runtime has no Web Crypto API at all.
  * @throws {@link EncryptionError} When the underlying Web Crypto operation fails.
  */
 
-import { CryptoNotAvailableError, EncryptionError } from "../errors.js";
+import { EncryptionError } from "../errors.js";
+import { webCrypto } from "../internal/webcrypto.js";
 import type { EncryptOptions } from "../types.js";
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function requireCrypto(): SubtleCrypto {
-  if (typeof globalThis.crypto.subtle === "undefined") throw new CryptoNotAvailableError();
-  return globalThis.crypto.subtle;
-}
 
 function toBase64(buf: ArrayBuffer): string {
   return btoa(String.fromCharCode(...new Uint8Array(buf)));
@@ -104,12 +101,13 @@ async function importRawKey(subtle: SubtleCrypto, keyBytes: Uint8Array): Promise
  * ```
  */
 export async function encrypt(value: string, options: EncryptOptions): Promise<string> {
-  const subtle = requireCrypto();
+  const crypto = await webCrypto();
+  const { subtle } = crypto;
   const encoding = options.encoding ?? "base64";
 
   try {
     const enc = new TextEncoder();
-    const iv = globalThis.crypto.getRandomValues(new Uint8Array(12));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
 
     let key: CryptoKey;
     if (options.keyBytes) {
@@ -153,7 +151,7 @@ export async function encrypt(value: string, options: EncryptOptions): Promise<s
  * ```
  */
 export async function decrypt(ciphertext: string, options: EncryptOptions): Promise<string> {
-  const subtle = requireCrypto();
+  const { subtle } = await webCrypto();
 
   const parts = ciphertext.split(":");
   if (parts.length !== 3) {

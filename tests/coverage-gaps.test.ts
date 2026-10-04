@@ -20,7 +20,6 @@ import {
   resolveToken,
   createTokenStore,
 } from "../src/strategies/tokenize.js";
-import { CryptoNotAvailableError } from "../src/errors.js";
 
 // ---------------------------------------------------------------------------
 // Detectors
@@ -60,17 +59,19 @@ describe("strategies barrel (src/strategies/index.ts)", () => {
 });
 
 // =============================================================================
-// src/strategies/hash.ts — CryptoNotAvailableError path (lines 26-27)
+// src/strategies/hash.ts — runtimes without a global Web Crypto object (Node.js 18)
 // =============================================================================
-describe("hash() — CryptoNotAvailableError path", () => {
-  it("throws CryptoNotAvailableError when globalThis.crypto is undefined", async () => {
+describe("hash() — without globalThis.crypto.subtle", () => {
+  it("falls back to Node's own Web Crypto when globalThis.crypto is undefined", async () => {
+    const expected = await hash("test-value");
     vi.stubGlobal("crypto", undefined);
-    await expect(hash("test-value")).rejects.toThrow(CryptoNotAvailableError);
+    expect(await hash("test-value")).toBe(expected);
   });
 
-  it("throws CryptoNotAvailableError when crypto.subtle is undefined", async () => {
+  it("falls back to Node's own Web Crypto when crypto.subtle is undefined", async () => {
+    const expected = await hash("test-value");
     vi.stubGlobal("crypto", { subtle: undefined });
-    await expect(hash("test-value")).rejects.toThrow(CryptoNotAvailableError);
+    expect(await hash("test-value")).toBe(expected);
   });
 });
 
