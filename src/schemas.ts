@@ -444,9 +444,9 @@ export const ANONYMIZE_OBJECT_TOOL_DEFINITION: OpenAiFunctionDefinition = {
  */
 export const ANONYMA_MANIFEST = {
   name: "anonyma",
-  version: "1.0.0",
+  version: "1.1.0-beta.0",
   description:
-    "TypeScript-first PII detection & anonymization — 26 built-in detectors (email, SSN, IBAN, passport, credit card, and more), 8 strategies (mask, redact, hash, AES-256 encrypt, tokenize, pseudonymize, generalize, synthesize), 6 compliance presets (GDPR, HIPAA, CCPA, PCI-DSS, SOX, FERPA), reversible tokenization, LLM/AI pipeline helpers, WHATWG streaming, batch processing, checksum validators, and optional Zod/MCP schemas. Zero runtime dependencies.",
+    "TypeScript-first PII detection & anonymization — 27 built-in detectors (email, SSN, IBAN, passport, credit card, and more), 8 strategies (mask, redact, hash, AES-256 encrypt, tokenize, pseudonymize, generalize, synthesize), 8 compliance presets (GDPR, LGPD, PIPEDA, HIPAA, CCPA, PCI-DSS, SOX, FERPA), reversible tokenization, LLM/AI pipeline helpers, WHATWG streaming, batch processing, checksum validators, and optional Zod/MCP schemas. Zero runtime dependencies.",
   capabilities: {
     detect: {
       description: "Detect PII in free text without modifying it.",

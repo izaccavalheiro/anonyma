@@ -9,9 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.1.0-beta.0] — 2026-10-04
+
+Pre-release, published under the `next` dist-tag: `npm install anonyma@next`.
+
 Additive modernization. The 1.x functions (`anonymize`, `tokenize`, `anonymizeObject`,
-the 1.x streams, `sanitizeForLLM`, …) keep their behaviour, apart from the three fixes
-listed under "Fixed".
+the 1.x streams, `sanitizeForLLM`, …) keep their behaviour, apart from the fixes listed
+under "Fixed".
+
+The new subpath exports (`anonyma/engine`, `/vault`, `/audit`, `/compliance`, `/ai`,
+`/mcp`, `/middleware`) are **experimental** until 1.1.0 is released: their APIs may
+still change between pre-releases.
 
 ### Added
 
@@ -65,9 +75,17 @@ listed under "Fixed".
   uses the same class instances, so `instanceof AnonymaError` holds for errors thrown
   by any subpath. The `dist/` layout gains `chunk-*.js` files.
 - `PresetNotFoundError` lists the eight presets.
+- **Releases** are built and published by GitHub Actions from a version tag, with an npm
+  provenance attestation, a GitHub build attestation and a CycloneDX SBOM attached to the
+  GitHub release.
+- **Development** needs Node.js 22.22 or newer. The package still supports Node.js 18:
+  every release is installed and exercised on Node.js 18, 20, 22, 24 and 26.
 
 ### Fixed
 
+- **`hash()`, `encrypt()` and `decrypt()` on Node.js 18** threw because they read
+  `globalThis.crypto`, which that runtime does not define. They now fall back to the Web
+  Crypto implementation in `node:crypto`.
 - **`detectDateOfBirth()`** dropped every date that preceded a date of a more confident
   format (`"born 12/05/1987. Admitted on March 3, 2021."` lost the first date): its
   overlap check compared positions instead of testing for intersection.
@@ -526,4 +544,5 @@ All types are zero-cost, type-only exports (stripped by `tsc`; no runtime overhe
 - **Prettier** code formatting.
 - **MIT License**.
 
+[1.1.0-beta.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.0-beta.0
 [1.0.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.0.0

@@ -611,6 +611,9 @@ The subpaths `anonyma/engine`, `anonyma/vault`, `anonyma/audit`, `anonyma/compli
 `anonyma/ai`, `anonyma/mcp` and `anonyma/middleware` are a newer, separate set of APIs.
 They do not change the functions described above.
 
+They ship from `1.1.0-beta.0` (`npm install anonyma@next`) and are **experimental** until
+1.1.0 is released: their APIs may still change between pre-releases.
+
 ```ts
 import { compilePipeline, createPipelineStream } from "anonyma/engine";
 import { createSessionTokenizer } from "anonyma/vault";

@@ -7,7 +7,7 @@ anonyma is a zero-dependency TypeScript library (Node ≥ 18) for PII detection 
 It ships:
   - 27 PII detectors (email, phone, SSN, credit card, IBAN, passport, address, VIN, API keys, …)
   - 8 anonymization strategies (mask, redact, pseudonymize, hash/SHA-256, generalize, tokenize, encrypt/AES-GCM, synthesize)
-  - 6 compliance presets (GDPR, HIPAA, CCPA, PCI-DSS, SOX, FERPA)
+  - 8 compliance presets (GDPR, LGPD, PIPEDA, HIPAA, CCPA, PCI-DSS, SOX, FERPA)
   - Reversible tokenization + LLM pipeline helpers (sanitizeForLLM / restoreFromLLM)
   - WHATWG TransformStream wrappers, batch processing, checksum validators
   - Optional Zod schemas + OpenAI/MCP tool definitions

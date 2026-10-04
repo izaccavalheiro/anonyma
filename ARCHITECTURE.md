@@ -550,7 +550,7 @@ tests/
 ├── errors.test.ts         # Error classes and codes
 ├── errors-v2.test.ts      # Extended error scenario coverage
 ├── new-detectors.test.ts  # Detectors added in later releases
-├── presets.test.ts        # All 6 compliance presets
+├── presets.test.ts        # All 8 compliance presets
 ├── strategies.test.ts     # All 8 strategies (sync + async)
 ├── strategies-v2.test.ts  # Edge cases for strategies
 ├── stream.test.ts         # TransformStream wrappers

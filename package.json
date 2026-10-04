@@ -1,8 +1,8 @@
 {
   "name": "anonyma",
-  "version": "1.0.0",
+  "version": "1.1.0-beta.0",
   "author": "Izac Cavaheiro <izac@izaccavalheiro.com>",
-  "description": "TypeScript-first PII detection & anonymization — 26 built-in detectors (email, SSN, IBAN, and more), 8 strategies (mask, redact, hash, AES-256 encrypt, tokenize, pseudonymize, generalize, synthesize), 6 compliance presets (GDPR, HIPAA, CCPA, PCI-DSS, SOX, FERPA), reversible tokenization, LLM/AI helpers, WHATWG streaming, batch processing, checksum validators, and optional Zod/MCP schemas.",
+  "description": "TypeScript-first PII detection & anonymization — 27 built-in detectors (email, SSN, IBAN, and more), 8 strategies (mask, redact, hash, AES-256 encrypt, tokenize, pseudonymize, generalize, synthesize), 8 compliance presets (GDPR, LGPD, PIPEDA, HIPAA, CCPA, PCI-DSS, SOX, FERPA), reversible tokenization, LLM/AI helpers, WHATWG streaming, batch processing, checksum validators, and optional Zod/MCP schemas.",
   "license": "MIT",
   "repository": {
     "type": "git",
