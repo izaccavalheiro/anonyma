@@ -227,7 +227,6 @@ export class BatchProcessingError extends AnonymaError {
   }
 }
 
-
 /**
  * Thrown by a synchronous pipeline entry point when a replacer returns a
  * promise. Use the asynchronous entry point (`transformAsync()`, an async

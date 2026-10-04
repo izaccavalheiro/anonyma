@@ -50,8 +50,7 @@ const LINKEDIN_PATTERN = /\blinkedin\.com\/in\/[a-zA-Z0-9-]{3,100}\b/gi;
  * Context keywords for Discord IDs.
  * @internal
  */
-const DISCORD_CONTEXT_RE =
-  /\b(?:discord(?:\s+(?:id|user|server|guild))?|user\s+id|uid)\s*:?\s*/gi;
+const DISCORD_CONTEXT_RE = /\b(?:discord(?:\s+(?:id|user|server|guild))?|user\s+id|uid)\s*:?\s*/gi;
 
 /**
  * Detect social media identifiers in `text`.
@@ -91,7 +90,7 @@ export function detectSocialMedia(text: string): PiiMatch[] {
   // YouTube channel IDs — distinctive
   const ytRe = new RegExp(YT_CHANNEL_PATTERN.source, "g");
   while ((m = ytRe.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, 0.90);
+    push(m[0], m.index, m.index + m[0].length, 0.9);
   }
 
   // Reddit usernames

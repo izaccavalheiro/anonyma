@@ -4,10 +4,7 @@
  */
 
 import { DETECTOR_REGISTRY, AGGRESSIVE_DETECTOR_REGISTRY } from "./detectors/index.js";
-import {
-  createTokenStore,
-  assignToken as assignTokenFn,
-} from "./strategies/tokenize.js";
+import { createTokenStore, assignToken as assignTokenFn } from "./strategies/tokenize.js";
 import { mask } from "./strategies/mask.js";
 import { redact } from "./strategies/redact.js";
 import { pseudonymize } from "./strategies/pseudonymize.js";
@@ -165,9 +162,7 @@ function deduplicateMatches<T extends { start: number; end: number; confidence: 
   matches: T[],
 ): T[] {
   // Sort by start position; on ties prefer higher confidence.
-  const sorted = [...matches].sort(
-    (a, b) => a.start - b.start || b.confidence - a.confidence,
-  );
+  const sorted = [...matches].sort((a, b) => a.start - b.start || b.confidence - a.confidence);
 
   const result: T[] = [];
   let cursor = 0;
@@ -455,10 +450,7 @@ export function anonymize(text: string, options: AnonymizeOptions = {}): Anonymi
     ...allowlistPatterns,
     ...allowlist.map(
       (entry) =>
-        new RegExp(
-          entry.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-          allowlistCaseSensitive ? "" : "i",
-        ),
+        new RegExp(entry.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), allowlistCaseSensitive ? "" : "i"),
     ),
   ];
 
@@ -492,7 +484,9 @@ export function anonymize(text: string, options: AnonymizeOptions = {}): Anonymi
   const tokenCounters = new Map<string, number>(); // key: prefix → counter
 
   function assignToken(category: string, value: string): string {
-    const prefix = (TOKEN_PREFIX_MAP as Readonly<Record<string, string | undefined>>)[category] ?? category.toUpperCase();
+    const prefix =
+      (TOKEN_PREFIX_MAP as Readonly<Record<string, string | undefined>>)[category] ??
+      category.toUpperCase();
     const key = `${prefix}:${value.toLowerCase()}`;
     const existing = tokenMap.get(key);
     if (existing) return existing;
@@ -572,8 +566,10 @@ export async function anonymizeAsync(
 
   // For strategies that don't involve async primitives, delegate to sync.
   const hasAsyncStrategy = (opts: StrategyOptions): boolean =>
-    opts.strategy === "hash" || opts.strategy === "encrypt" ||
-    opts.strategy === "tokenize" || opts.strategy === "synthesize";
+    opts.strategy === "hash" ||
+    opts.strategy === "encrypt" ||
+    opts.strategy === "tokenize" ||
+    opts.strategy === "synthesize";
 
   const needsAsync =
     (options.defaultStrategy != null && hasAsyncStrategy(options.defaultStrategy)) ||
@@ -638,10 +634,7 @@ export async function anonymizeAsync(
     ...allowlistPatterns,
     ...allowlist.map(
       (entry) =>
-        new RegExp(
-          entry.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-          allowlistCaseSensitive ? "" : "i",
-        ),
+        new RegExp(entry.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), allowlistCaseSensitive ? "" : "i"),
     ),
   ];
   const isAllowlisted = (value: string): boolean =>
@@ -658,7 +651,9 @@ export async function anonymizeAsync(
   const tokenMap = new Map<string, string>();
   const tokenCounters = new Map<string, number>();
   function assignToken(category: string, value: string): string {
-    const prefix = (TOKEN_PREFIX_MAP as Readonly<Record<string, string | undefined>>)[category] ?? category.toUpperCase();
+    const prefix =
+      (TOKEN_PREFIX_MAP as Readonly<Record<string, string | undefined>>)[category] ??
+      category.toUpperCase();
     const key = `${prefix}:${value.toLowerCase()}`;
     const existing = tokenMap.get(key);
     if (existing) return existing;
@@ -776,11 +771,7 @@ function deepAnonymizeValue(
   // Plain object.
   const result: Record<string, unknown> = {};
   for (const key of Object.keys(value as Record<string, unknown>)) {
-    result[key] = deepAnonymizeValue(
-      (value as Record<string, unknown>)[key],
-      options,
-      seen,
-    );
+    result[key] = deepAnonymizeValue((value as Record<string, unknown>)[key], options, seen);
   }
   seen.delete(value);
   return result;
@@ -988,7 +979,10 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
       return anonymizeObject(obj, baseOptions(options));
     },
 
-    async anonymizeAsync(text: string, options?: Partial<AnonymizeOptions>): Promise<AnonymizeResult> {
+    async anonymizeAsync(
+      text: string,
+      options?: Partial<AnonymizeOptions>,
+    ): Promise<AnonymizeResult> {
       return anonymizeAsync(text, baseOptions(options));
     },
 
@@ -1008,7 +1002,8 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
         (entry: string) =>
           new RegExp(entry.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"), tCaseSensitive ? "" : "i"),
       );
-      const isAllowlisted = (v: string): boolean => tCompiledAllowlist.some((re: RegExp) => re.test(v));
+      const isAllowlisted = (v: string): boolean =>
+        tCompiledAllowlist.some((re: RegExp) => re.test(v));
 
       const tMatches = detect(text, tCats ?? categories, tCustDet ?? customDetectors, tAgg).filter(
         (m) => m.confidence >= tConfidence && !isAllowlisted(m.value),

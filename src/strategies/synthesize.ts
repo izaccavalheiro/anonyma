@@ -68,14 +68,54 @@ function pick<T>(rng: () => number, arr: readonly T[]): T {
 
 const DOMAINS = ["example.com", "test.org", "sample.net", "demo.io", "placeholder.dev"] as const;
 const NAMES_FIRST = [
-  "Alice", "Bob", "Carol", "Dave", "Eve", "Frank", "Grace", "Hank",
-  "Irene", "Jack", "Karen", "Leo", "Mina", "Neal", "Olivia", "Paul",
-  "Quinn", "Rosa", "Sam", "Tina", "Uma", "Victor", "Wendy", "Xena", "Yuri", "Zoe",
+  "Alice",
+  "Bob",
+  "Carol",
+  "Dave",
+  "Eve",
+  "Frank",
+  "Grace",
+  "Hank",
+  "Irene",
+  "Jack",
+  "Karen",
+  "Leo",
+  "Mina",
+  "Neal",
+  "Olivia",
+  "Paul",
+  "Quinn",
+  "Rosa",
+  "Sam",
+  "Tina",
+  "Uma",
+  "Victor",
+  "Wendy",
+  "Xena",
+  "Yuri",
+  "Zoe",
 ] as const;
 const NAMES_LAST = [
-  "Smith", "Jones", "Williams", "Taylor", "Brown", "Davies", "Evans",
-  "Wilson", "Thomas", "Roberts", "Johnson", "White", "Martin", "Anderson",
-  "Thompson", "Garcia", "Martinez", "Robinson", "Clark", "Rodriguez",
+  "Smith",
+  "Jones",
+  "Williams",
+  "Taylor",
+  "Brown",
+  "Davies",
+  "Evans",
+  "Wilson",
+  "Thomas",
+  "Roberts",
+  "Johnson",
+  "White",
+  "Martin",
+  "Anderson",
+  "Thompson",
+  "Garcia",
+  "Martinez",
+  "Robinson",
+  "Clark",
+  "Rodriguez",
 ] as const;
 
 function synthEmail(rng: () => number): string {
@@ -231,9 +271,7 @@ export function synthesize(
   const rng = makePrng(strHash(seedStr));
 
   // An own-property lookup: a category named "constructor" has no generator.
-  const gen = Object.hasOwn(GENERATORS, category)
-    ? GENERATORS[category as PiiCategory]
-    : undefined;
+  const gen = Object.hasOwn(GENERATORS, category) ? GENERATORS[category as PiiCategory] : undefined;
   if (gen) return gen(rng, value);
   return synthGeneric(rng, value);
 }

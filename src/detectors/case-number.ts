@@ -22,8 +22,7 @@ const FEDERAL_CASE_PATTERN =
  * General legal case number with context.
  * @internal
  */
-const GENERAL_CASE_PATTERN =
-  /\b(?:[A-Z]{1,4}[-\s])?\d{2,4}[-/]\d{2,6}(?:[-/][A-Z0-9]{1,5})?\b/gi;
+const GENERAL_CASE_PATTERN = /\b(?:[A-Z]{1,4}[-\s])?\d{2,4}[-/]\d{2,6}(?:[-/][A-Z0-9]{1,5})?\b/gi;
 
 /**
  * Case number context keywords.
@@ -67,7 +66,7 @@ export function detectCaseNumber(text: string): PiiMatch[] {
   // Federal court pattern — relatively distinctive
   const fedRe = new RegExp(FEDERAL_CASE_PATTERN.source, "gi");
   while ((m = fedRe.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, hasContextAt(m.index) ? 0.92 : 0.80);
+    push(m[0], m.index, m.index + m[0].length, hasContextAt(m.index) ? 0.92 : 0.8);
   }
 
   // General pattern — requires context

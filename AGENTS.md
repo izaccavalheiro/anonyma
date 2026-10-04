@@ -188,15 +188,15 @@ Scope examples: `detectors`, `strategies`, `presets`, `stream`, `batch`, `llm`, 
 
 ## Useful Reference
 
-| Concern | File |
-|---|---|
-| All public API types | `src/types.ts` |
-| Error codes | `src/errors.ts` |
-| Detector contract | `src/detectors/email.ts` (canonical example) |
-| Strategy contract | `src/strategies/mask.ts` (canonical sync) · `src/strategies/hash.ts` (canonical async) |
-| Preset definition | `src/presets.ts` |
-| Token format | `src/tokenize.ts` + `src/strategies/tokenize.ts` |
-| LLM integration | `src/llm.ts` |
-| Streaming | `src/stream.ts` |
-| Zod schemas + AI tool defs | `src/schemas.ts` |
-| Validators | `src/validators.ts` |
+| Concern                    | File                                                                                   |
+| -------------------------- | -------------------------------------------------------------------------------------- |
+| All public API types       | `src/types.ts`                                                                         |
+| Error codes                | `src/errors.ts`                                                                        |
+| Detector contract          | `src/detectors/email.ts` (canonical example)                                           |
+| Strategy contract          | `src/strategies/mask.ts` (canonical sync) · `src/strategies/hash.ts` (canonical async) |
+| Preset definition          | `src/presets.ts`                                                                       |
+| Token format               | `src/tokenize.ts` + `src/strategies/tokenize.ts`                                       |
+| LLM integration            | `src/llm.ts`                                                                           |
+| Streaming                  | `src/stream.ts`                                                                        |
+| Zod schemas + AI tool defs | `src/schemas.ts`                                                                       |
+| Validators                 | `src/validators.ts`                                                                    |

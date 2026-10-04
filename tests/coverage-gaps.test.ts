@@ -15,11 +15,7 @@ import { mask } from "../src/strategies/mask.js";
 import { hash } from "../src/strategies/hash.js";
 import { pseudonymize } from "../src/strategies/pseudonymize.js";
 import { synthesize } from "../src/strategies/synthesize.js";
-import {
-  assignToken,
-  resolveToken,
-  createTokenStore,
-} from "../src/strategies/tokenize.js";
+import { assignToken, resolveToken, createTokenStore } from "../src/strategies/tokenize.js";
 
 // ---------------------------------------------------------------------------
 // Detectors
@@ -186,7 +182,7 @@ describe("detectPrescription() — coverage gaps", () => {
     const matches = detectPrescription("AB1234563 prescribed");
     const m = matches.find((x) => x.value === "AB1234563");
     expect(m).toBeDefined();
-    expect(m?.confidence).toBe(0.90);
+    expect(m?.confidence).toBe(0.9);
     expect(m?.category).toBe("prescription");
   });
 
@@ -203,7 +199,7 @@ describe("detectPrescription() — coverage gaps", () => {
     const matches = detectPrescription("NDC: 12345-1234-12 for patient");
     const m = matches.find((x) => x.value === "12345-1234-12");
     expect(m).toBeDefined();
-    expect(m?.confidence).toBe(0.90);
+    expect(m?.confidence).toBe(0.9);
   });
 
   it("detects NDC 5-3-2 format", () => {
@@ -255,9 +251,7 @@ describe("detectSocialMedia() — coverage gaps", () => {
   it("detects LinkedIn profile URLs", () => {
     const matches = detectSocialMedia("Connect at linkedin.com/in/john-doe-123");
     expect(matches.some((m) => m.value.includes("linkedin.com/in/"))).toBe(true);
-    expect(
-      matches.find((m) => m.value.includes("linkedin"))?.category,
-    ).toBe("social-media");
+    expect(matches.find((m) => m.value.includes("linkedin"))?.category).toBe("social-media");
   });
 
   it("builds Discord context positions (lines 76-77)", () => {
@@ -265,9 +259,7 @@ describe("detectSocialMedia() — coverage gaps", () => {
     // Then 18-digit snowflake is detected (lines 116-120)
     const matches = detectSocialMedia("discord id: 123456789012345678 online");
     expect(matches.some((m) => m.value === "123456789012345678")).toBe(true);
-    expect(
-      matches.find((m) => m.value === "123456789012345678")?.category,
-    ).toBe("social-media");
+    expect(matches.find((m) => m.value === "123456789012345678")?.category).toBe("social-media");
   });
 
   it("detects Discord snowflake IDs only with context keyword (branch: hasContext true)", () => {
@@ -291,7 +283,7 @@ describe("detectMedicalRecord() — coverage gaps", () => {
     // AB1234563: valid DEA checksum
     const matches = detectMedicalRecord("AB1234563 prescription");
     expect(matches.some((m) => m.value === "AB1234563")).toBe(true);
-    expect(matches.find((m) => m.value === "AB1234563")?.confidence).toBe(0.90);
+    expect(matches.find((m) => m.value === "AB1234563")?.confidence).toBe(0.9);
   });
 
   it("detects US NPI numbers with valid Luhn check (lines 80-85, branch 80)", () => {
@@ -333,9 +325,7 @@ describe("detectTrackingNumber() — coverage gaps", () => {
     // USPS_FORMAT_PATTERN: [A-Z]{2}\d{9}US
     const matches = detectTrackingNumber("Package EA123456789US shipped today");
     expect(matches.some((m) => m.value === "EA123456789US")).toBe(true);
-    expect(
-      matches.find((m) => m.value === "EA123456789US")?.category,
-    ).toBe("tracking-number");
+    expect(matches.find((m) => m.value === "EA123456789US")?.category).toBe("tracking-number");
   });
 
   it("detects DHL 10-digit numbers with context keyword (lines 113-114)", () => {
@@ -350,29 +340,23 @@ describe("detectTrackingNumber() — coverage gaps", () => {
   });
 
   it("detects USPS long (20-digit) numbers with context keyword (lines 120-121)", () => {
-    const matches = detectTrackingNumber(
-      "tracking number: 12345678901234567890 delivered",
-    );
+    const matches = detectTrackingNumber("tracking number: 12345678901234567890 delivered");
     expect(matches.some((m) => m.value === "12345678901234567890")).toBe(true);
-    expect(
-      matches.find((m) => m.value === "12345678901234567890")?.category,
-    ).toBe("tracking-number");
+    expect(matches.find((m) => m.value === "12345678901234567890")?.category).toBe(
+      "tracking-number",
+    );
   });
 
   it("detects FedEx 12-digit numbers with context keyword (lines 125-126)", () => {
     // FedEx 12-digit number; fedex context triggers context positions
     const matches = detectTrackingNumber("fedex tracking: 123456789012 arrived");
     expect(matches.some((m) => m.value === "123456789012")).toBe(true);
-    expect(
-      matches.find((m) => m.value === "123456789012")?.category,
-    ).toBe("tracking-number");
+    expect(matches.find((m) => m.value === "123456789012")?.category).toBe("tracking-number");
   });
 
   it("covers hasContextAt function body (lines 77-78) via context keyword", () => {
     // "shipment number:" triggers context building + generic detection paths
-    const matches = detectTrackingNumber(
-      "shipment number: 123456789012 in transit",
-    );
+    const matches = detectTrackingNumber("shipment number: 123456789012 in transit");
     expect(Array.isArray(matches)).toBe(true);
   });
 });
@@ -465,7 +449,7 @@ describe("detectTaxId() — coverage gaps", () => {
     const matches = detectTaxId("12-3456789 is listed");
     const m = matches.find((x) => x.value === "12-3456789");
     expect(m).toBeDefined();
-    expect(m?.confidence).toBe(0.80);
+    expect(m?.confidence).toBe(0.8);
   });
 });
 
@@ -498,12 +482,8 @@ describe("detectDriversLicense() — generic pattern with context", () => {
     // GENERIC_DL_PATTERN: [A-Z0-9]{5,15}; DL context keyword: "DL#"
     const matches = detectDriversLicense("DL# ABC12345678 issued");
     expect(matches.some((m) => m.value === "ABC12345678")).toBe(true);
-    expect(
-      matches.find((m) => m.value === "ABC12345678")?.category,
-    ).toBe("drivers-license");
-    expect(
-      matches.find((m) => m.value === "ABC12345678")?.confidence,
-    ).toBe(0.85);
+    expect(matches.find((m) => m.value === "ABC12345678")?.category).toBe("drivers-license");
+    expect(matches.find((m) => m.value === "ABC12345678")?.confidence).toBe(0.85);
   });
 
   it("detects generic DL with 'license no:' context", () => {
@@ -582,7 +562,7 @@ describe("detectLicensePlate() — coverage gaps", () => {
     expect(matches.length).toBeGreaterThan(0);
     const m = matches.find((x) => x.value === "AB12 CDE" || x.value === "AB12CDE");
     if (m) {
-      expect(m.confidence).toBeGreaterThanOrEqual(0.90);
+      expect(m.confidence).toBeGreaterThanOrEqual(0.9);
     }
   });
 
@@ -591,7 +571,7 @@ describe("detectLicensePlate() — coverage gaps", () => {
     const matches = detectLicensePlate("A456 BCD spotted");
     const m = matches.find((x) => /^A\d+/.test(x.value));
     if (m) {
-      expect(m.confidence).toBe(0.70);
+      expect(m.confidence).toBe(0.7);
     }
   });
 });
@@ -617,12 +597,8 @@ describe("detectApiKey() — coverage gaps", () => {
     const text = "api_key: my_custom_generic_token_value_abc1234567890";
     const matches = detectApiKey(text);
     // The generic key should be detected via hasContextAt path
-    expect(
-      matches.some((m) => m.value.includes("my_custom_generic")),
-    ).toBe(true);
-    expect(
-      matches.find((m) => m.value.includes("my_custom_generic"))?.confidence,
-    ).toBe(0.82);
+    expect(matches.some((m) => m.value.includes("my_custom_generic"))).toBe(true);
+    expect(matches.find((m) => m.value.includes("my_custom_generic"))?.confidence).toBe(0.82);
   });
 
   it("covers context building with 'access_token:' keyword", () => {
@@ -765,7 +741,7 @@ describe("detectCaseNumber() — remaining branches (lines 58, 68, 74)", () => {
     // FEDERAL_CASE_PATTERN without CASE_CONTEXT_RE keyword → confidence = 0.80
     const matches = detectCaseNumber("The matter 21-cv-00123 was filed");
     expect(matches.some((m) => m.value === "21-cv-00123")).toBe(true);
-    expect(matches.find((m) => m.value === "21-cv-00123")?.confidence).toBe(0.80);
+    expect(matches.find((m) => m.value === "21-cv-00123")?.confidence).toBe(0.8);
     expect(matches.find((m) => m.value === "21-cv-00123")?.category).toBe("case-number");
   });
 
@@ -861,7 +837,7 @@ describe("detectHealthInsurance() — MBI/NHS without context branch", () => {
     const matchesNoCtx = detectHealthInsurance("Identifier 1A0A0A1AA01 found");
     const m = matchesNoCtx.find((x) => x.value === "1A0A0A1AA01");
     if (m) {
-      expect(m.confidence).toBe(0.80);
+      expect(m.confidence).toBe(0.8);
     }
   });
 
@@ -884,7 +860,7 @@ describe("detectTaxId() — EU VAT with context (line 101)", () => {
     const matches = detectTaxId("VAT number: DE123456789 registered");
     const m = matches.find((x) => x.value === "DE123456789");
     expect(m).toBeDefined();
-    expect(m?.confidence).toBe(0.90);
+    expect(m?.confidence).toBe(0.9);
   });
 
   it("EU VAT WITHOUT context gets 0.78 confidence (line 101 false branch already partial)", () => {
@@ -937,7 +913,7 @@ describe("detectLicensePlate() — UK old format with context (line 86)", () => 
     const matches = detectLicensePlate("Saw A123 BCD on the road");
     const m = matches.find((x) => /A123/.test(x.value));
     if (m) {
-      expect(m.confidence).toBe(0.70);
+      expect(m.confidence).toBe(0.7);
     }
   });
 });
@@ -1105,7 +1081,7 @@ describe("detectHealthInsurance() — MBI with context (line 84 true branch — 
     const matches = detectHealthInsurance("medicare: 1A0A01AAA01 on file");
     const m = matches.find((x) => x.value === "1A0A01AAA01");
     expect(m).toBeDefined();
-    expect(m?.confidence).toBe(0.90);
+    expect(m?.confidence).toBe(0.9);
   });
 
   it("MBI WITHOUT context keyword gets 0.80 confidence (line 84 false branch)", () => {
@@ -1114,7 +1090,7 @@ describe("detectHealthInsurance() — MBI with context (line 84 true branch — 
     const matches = detectHealthInsurance("the identifier 1A0A01AAA01 is assigned");
     const m = matches.find((x) => x.value === "1A0A01AAA01");
     expect(m).toBeDefined();
-    expect(m?.confidence).toBe(0.80);
+    expect(m?.confidence).toBe(0.8);
   });
 });
 

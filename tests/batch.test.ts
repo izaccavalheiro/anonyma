@@ -2,12 +2,7 @@
  * Tests for v2 batch processing utilities
  */
 import { describe, it, expect, vi, afterEach } from "vitest";
-import {
-  anonymizeBatch,
-  anonymizeBatchAsync,
-  tokenizeBatch,
-  detectBatch,
-} from "../src/batch.js";
+import { anonymizeBatch, anonymizeBatchAsync, tokenizeBatch, detectBatch } from "../src/batch.js";
 import * as anonymizeModule from "../src/anonymize.js";
 import * as tokenizeModule from "../src/tokenize.js";
 
@@ -233,10 +228,7 @@ describe("detectBatch()", () => {
   });
 
   it("category filter is passed through", () => {
-    const results = detectBatch(
-      ["alice@example.com and +1-202-555-0101"],
-      ["email"],
-    );
+    const results = detectBatch(["alice@example.com and +1-202-555-0101"], ["email"]);
     if (results[0]?.ok) {
       expect(results[0].value.every((m) => m.category === "email")).toBe(true);
     }

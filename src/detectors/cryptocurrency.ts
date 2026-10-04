@@ -88,8 +88,8 @@ const CRYPTO_ENTRIES: readonly CryptoEntry[] = [
   { pattern: BTC_LEGACY_PATTERN, confidence: 0.88, requiresContext: false },
   { pattern: BTC_P2SH_PATTERN, confidence: 0.85, requiresContext: false },
   { pattern: LTC_LEGACY_PATTERN, confidence: 0.83, requiresContext: false },
-  { pattern: LTC_M_PATTERN, confidence: 0.80, requiresContext: false },
-  { pattern: XMR_PATTERN, confidence: 0.90, requiresContext: false },
+  { pattern: LTC_M_PATTERN, confidence: 0.8, requiresContext: false },
+  { pattern: XMR_PATTERN, confidence: 0.9, requiresContext: false },
   { pattern: XRP_PATTERN, confidence: 0.78, requiresContext: true },
   { pattern: SOL_PATTERN, confidence: 0.72, requiresContext: true },
 ];
@@ -136,7 +136,9 @@ export function detectCryptocurrency(text: string): PiiMatch[] {
       if (seen.has(key)) continue;
       seen.add(key);
 
-      const confidence = hasContext(m.index) ? Math.min(entry.confidence + 0.03, 0.99) : entry.confidence;
+      const confidence = hasContext(m.index)
+        ? Math.min(entry.confidence + 0.03, 0.99)
+        : entry.confidence;
 
       matches.push({
         category: "cryptocurrency",

@@ -179,14 +179,14 @@ listed under "Fixed".
 Six presets are available out of the box, each pre-configuring `enabledCategories` and
 `defaultStrategy`:
 
-| Preset | Default Strategy | Coverage |
-|---|---|---|
-| `"gdpr"` | `pseudonymize` | All personal data categories defined by the EU GDPR. |
-| `"hipaa"` | `redact` | All 18 HIPAA Safe Harbor identifiers for PHI de-identification. |
-| `"ccpa"` | `redact` | Consumer data categories defined by the California Consumer Privacy Act. |
-| `"pci-dss"` | `redact` (card numbers: `mask` keepTrailing 4) | Cardholder and sensitive authentication data per PCI-DSS. |
-| `"sox"` | `redact` | Financial records and corporate officer identifiers for SOX audit trails. |
-| `"ferpa"` | `redact` | Student education records as defined by FERPA. |
+| Preset      | Default Strategy                               | Coverage                                                                  |
+| ----------- | ---------------------------------------------- | ------------------------------------------------------------------------- |
+| `"gdpr"`    | `pseudonymize`                                 | All personal data categories defined by the EU GDPR.                      |
+| `"hipaa"`   | `redact`                                       | All 18 HIPAA Safe Harbor identifiers for PHI de-identification.           |
+| `"ccpa"`    | `redact`                                       | Consumer data categories defined by the California Consumer Privacy Act.  |
+| `"pci-dss"` | `redact` (card numbers: `mask` keepTrailing 4) | Cardholder and sensitive authentication data per PCI-DSS.                 |
+| `"sox"`     | `redact`                                       | Financial records and corporate officer identifiers for SOX audit trails. |
+| `"ferpa"`   | `redact`                                       | Student education records as defined by FERPA.                            |
 
 ---
 
@@ -246,71 +246,71 @@ individually for maximum tree-shaking. Twenty-seven categories are supported.
 
 **Email, Network & Identity**
 
-| Function | Confidence | Notes |
-|---|---|---|
-| `detectEmail` | 0.99 | RFC 5321 email addresses. |
-| `detectEmailAggressive` | 0.75 | Obfuscated formats, e.g. `user [at] example [dot] com`. |
-| `detectIpv4` | 0.98 | Dotted-decimal IPv4 with optional CIDR notation. |
-| `detectIpv6` | 0.98 | Full and compressed IPv6 addresses. |
-| `detectUrl` | 0.95 | http and https URLs with paths, query strings, and fragments. |
-| `detectApiKey` | — | Common API key patterns (hex strings, Bearer tokens, `sk-`/`pk-`/`ghp_`-prefixed keys, etc.). |
-| `detectSocialMedia` | — | Social media handles (`@username`) and profile URL patterns. |
+| Function                | Confidence | Notes                                                                                         |
+| ----------------------- | ---------- | --------------------------------------------------------------------------------------------- |
+| `detectEmail`           | 0.99       | RFC 5321 email addresses.                                                                     |
+| `detectEmailAggressive` | 0.75       | Obfuscated formats, e.g. `user [at] example [dot] com`.                                       |
+| `detectIpv4`            | 0.98       | Dotted-decimal IPv4 with optional CIDR notation.                                              |
+| `detectIpv6`            | 0.98       | Full and compressed IPv6 addresses.                                                           |
+| `detectUrl`             | 0.95       | http and https URLs with paths, query strings, and fragments.                                 |
+| `detectApiKey`          | —          | Common API key patterns (hex strings, Bearer tokens, `sk-`/`pk-`/`ghp_`-prefixed keys, etc.). |
+| `detectSocialMedia`     | —          | Social media handles (`@username`) and profile URL patterns.                                  |
 
 **Phone & Identity Numbers**
 
-| Function | Confidence | Notes |
-|---|---|---|
-| `detectPhone` | 0.90 | North American + E.164 international formats. |
-| `detectPhoneAggressive` | 0.70 | 7-digit local formats (e.g. `555-1234`). |
-| `detectSsn` | 0.95 | US Social Security Numbers with format and known-invalid range exclusions. |
-| `detectSsnAggressive` | 0.80 | Expanded SSN pattern set. |
+| Function                | Confidence | Notes                                                                      |
+| ----------------------- | ---------- | -------------------------------------------------------------------------- |
+| `detectPhone`           | 0.90       | North American + E.164 international formats.                              |
+| `detectPhoneAggressive` | 0.70       | 7-digit local formats (e.g. `555-1234`).                                   |
+| `detectSsn`             | 0.95       | US Social Security Numbers with format and known-invalid range exclusions. |
+| `detectSsnAggressive`   | 0.80       | Expanded SSN pattern set.                                                  |
 
 **Financial**
 
-| Function | Confidence | Notes |
-|---|---|---|
-| `detectCreditCard` | 0.97 | 13–19 digit card numbers validated with the Luhn algorithm. |
-| `detectCreditCardAggressive` | 0.80 | Also catches masked formats `****-****-****-1234`. |
-| `detectIban` | 0.99 | IBAN strings validated with the ISO 13616 MOD-97 algorithm. |
-| `detectBankAccount` | — | Common bank account number formats. |
-| `detectCryptocurrency` | — | Bitcoin, Ethereum, and other common cryptocurrency wallet addresses. |
-| `detectTaxId` | — | US EIN and common international tax identification number formats. |
+| Function                     | Confidence | Notes                                                                |
+| ---------------------------- | ---------- | -------------------------------------------------------------------- |
+| `detectCreditCard`           | 0.97       | 13–19 digit card numbers validated with the Luhn algorithm.          |
+| `detectCreditCardAggressive` | 0.80       | Also catches masked formats `****-****-****-1234`.                   |
+| `detectIban`                 | 0.99       | IBAN strings validated with the ISO 13616 MOD-97 algorithm.          |
+| `detectBankAccount`          | —          | Common bank account number formats.                                  |
+| `detectCryptocurrency`       | —          | Bitcoin, Ethereum, and other common cryptocurrency wallet addresses. |
+| `detectTaxId`                | —          | US EIN and common international tax identification number formats.   |
 
 **Personal Information**
 
-| Function | Confidence | Notes |
-|---|---|---|
-| `detectName` | 0.75 | Heuristic: catches names preceded by greeting/salutation keywords (`Dear`, `Hi`, `Hello`, `To`, `From`, `Patient`, `Client`, `Defendant`, etc.). Not an NLP-based named-entity recogniser. |
-| `detectNameAggressive` | 0.65 | Extends `detectName` with title-prefix patterns (`Mr.`, `Mrs.`, `Ms.`, `Dr.`, `Prof.`). |
-| `detectDateOfBirth` | 0.78–0.88 | ISO 8601, US (`MM/DD/YYYY`), European (`DD/MM/YYYY`), and long-form date patterns. |
-| `detectAddress` | — | Multi-line postal address patterns (street number, city, state/zip). |
-| `detectPassport` | — | Passport number formats for major issuing countries. |
-| `detectDriversLicense` | — | US and international driver's licence number patterns. |
-| `detectNationalId` | — | National identity document numbers (SSN-adjacent, Aadhaar, NINO, etc.). |
+| Function               | Confidence | Notes                                                                                                                                                                                      |
+| ---------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `detectName`           | 0.75       | Heuristic: catches names preceded by greeting/salutation keywords (`Dear`, `Hi`, `Hello`, `To`, `From`, `Patient`, `Client`, `Defendant`, etc.). Not an NLP-based named-entity recogniser. |
+| `detectNameAggressive` | 0.65       | Extends `detectName` with title-prefix patterns (`Mr.`, `Mrs.`, `Ms.`, `Dr.`, `Prof.`).                                                                                                    |
+| `detectDateOfBirth`    | 0.78–0.88  | ISO 8601, US (`MM/DD/YYYY`), European (`DD/MM/YYYY`), and long-form date patterns.                                                                                                         |
+| `detectAddress`        | —          | Multi-line postal address patterns (street number, city, state/zip).                                                                                                                       |
+| `detectPassport`       | —          | Passport number formats for major issuing countries.                                                                                                                                       |
+| `detectDriversLicense` | —          | US and international driver's licence number patterns.                                                                                                                                     |
+| `detectNationalId`     | —          | National identity document numbers (SSN-adjacent, Aadhaar, NINO, etc.).                                                                                                                    |
 
 **Healthcare**
 
-| Function | Notes |
-|---|---|
-| `detectMedicalRecord` | Medical record number (MRN) patterns. |
+| Function                | Notes                                                  |
+| ----------------------- | ------------------------------------------------------ |
+| `detectMedicalRecord`   | Medical record number (MRN) patterns.                  |
 | `detectHealthInsurance` | Health insurance member ID and policy number patterns. |
-| `detectPrescription` | Prescription and DEA registration number patterns. |
+| `detectPrescription`    | Prescription and DEA registration number patterns.     |
 
 **Vehicles & Transportation**
 
-| Function | Notes |
-|---|---|
-| `detectVin` | 17-character Vehicle Identification Numbers validated with the ISO 3779 mod-11 checksum. |
-| `detectVinAggressive` | Expanded VIN pattern set for partial or obfuscated VINs. |
-| `detectLicensePlate` | Common licence plate formats across multiple countries. |
-| `detectTrackingNumber` | Shipping tracking numbers (UPS, FedEx, USPS, DHL formats). |
+| Function               | Notes                                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------- |
+| `detectVin`            | 17-character Vehicle Identification Numbers validated with the ISO 3779 mod-11 checksum. |
+| `detectVinAggressive`  | Expanded VIN pattern set for partial or obfuscated VINs.                                 |
+| `detectLicensePlate`   | Common licence plate formats across multiple countries.                                  |
+| `detectTrackingNumber` | Shipping tracking numbers (UPS, FedEx, USPS, DHL formats).                               |
 
 **Government & Legal**
 
-| Function | Notes |
-|---|---|
-| `detectCaseNumber` | Court case number formats (`YYYY-CV-NNNNN` and variants). |
-| `detectCompanyRegistration` | Company registration and incorporation number formats. |
+| Function                    | Notes                                                     |
+| --------------------------- | --------------------------------------------------------- |
+| `detectCaseNumber`          | Court case number formats (`YYYY-CV-NNNNN` and variants). |
+| `detectCompanyRegistration` | Company registration and incorporation number formats.    |
 
 **Registries**
 
@@ -325,23 +325,23 @@ individually for maximum tree-shaking. Twenty-seven categories are supported.
 
 #### `AnonymizeOptions` Reference
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `rules` | `AnonymizationRule[]` | `[]` | Per-category strategy overrides. When non-empty, only listed categories are scanned. |
-| `defaultStrategy` | `StrategyOptions` | `{ strategy: "redact" }` | Strategy applied to any category not covered by `rules`. |
-| `includeMatches` | `boolean` | `false` | Include the `PiiMatch` array in the result. |
-| `customDetectors` | `Partial<Record<PiiCategory, Detector>>` | — | Replace built-in detectors on a per-category basis. |
-| `customPatterns` | `CustomPattern[]` | — | Ad-hoc `RegExp` patterns merged into the detection pipeline. Matches participate in standard overlap deduplication. |
-| `globalReplacement` | `string` | — | Replace every detected entity with this exact string, overriding all strategy settings. |
-| `consistentTokens` | `boolean` | `false` | Map repeated identical PII values to the same token within a single call (e.g. `EMAIL_1`, `EMAIL_1` for the same address appearing twice). Different values get different counters. |
-| `aggressive` | `boolean` | `false` | Switch to `AGGRESSIVE_DETECTOR_REGISTRY` for all built-in categories. |
-| `enabledCategories` | `Partial<Record<PiiCategory, boolean>>` | — | Convenience boolean map. Only categories set to `true` are active; `rules` takes precedence for categories it covers. |
-| `allowlist` | `string[]` | `[]` | Exact values to never anonymize (case-insensitive by default). |
-| `allowlistPatterns` | `RegExp[]` | `[]` | Regular expressions matched against detected values; matches are skipped. |
-| `allowlistCaseSensitive` | `boolean` | `false` | Make `allowlist` string matching case-sensitive. |
-| `confidenceThreshold` | `number` | `0` | Minimum confidence score `[0, 1]` for a match to be anonymized. |
-| `preset` | `CompliancePreset` | — | Apply a compliance preset as the base configuration. Explicit `rules` and `defaultStrategy` take precedence. |
-| `locales` | `Locale[]` | `["global"]` | Activate locale-specific detector patterns. Values: `"global"`, `"us"`, `"uk"`, `"eu"`, `"ca"`, `"au"`, `"br"`, `"in"`, `"cn"`, `"jp"`, `"kr"`, `"za"`. |
+| Option                   | Type                                     | Default                  | Description                                                                                                                                                                         |
+| ------------------------ | ---------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `rules`                  | `AnonymizationRule[]`                    | `[]`                     | Per-category strategy overrides. When non-empty, only listed categories are scanned.                                                                                                |
+| `defaultStrategy`        | `StrategyOptions`                        | `{ strategy: "redact" }` | Strategy applied to any category not covered by `rules`.                                                                                                                            |
+| `includeMatches`         | `boolean`                                | `false`                  | Include the `PiiMatch` array in the result.                                                                                                                                         |
+| `customDetectors`        | `Partial<Record<PiiCategory, Detector>>` | —                        | Replace built-in detectors on a per-category basis.                                                                                                                                 |
+| `customPatterns`         | `CustomPattern[]`                        | —                        | Ad-hoc `RegExp` patterns merged into the detection pipeline. Matches participate in standard overlap deduplication.                                                                 |
+| `globalReplacement`      | `string`                                 | —                        | Replace every detected entity with this exact string, overriding all strategy settings.                                                                                             |
+| `consistentTokens`       | `boolean`                                | `false`                  | Map repeated identical PII values to the same token within a single call (e.g. `EMAIL_1`, `EMAIL_1` for the same address appearing twice). Different values get different counters. |
+| `aggressive`             | `boolean`                                | `false`                  | Switch to `AGGRESSIVE_DETECTOR_REGISTRY` for all built-in categories.                                                                                                               |
+| `enabledCategories`      | `Partial<Record<PiiCategory, boolean>>`  | —                        | Convenience boolean map. Only categories set to `true` are active; `rules` takes precedence for categories it covers.                                                               |
+| `allowlist`              | `string[]`                               | `[]`                     | Exact values to never anonymize (case-insensitive by default).                                                                                                                      |
+| `allowlistPatterns`      | `RegExp[]`                               | `[]`                     | Regular expressions matched against detected values; matches are skipped.                                                                                                           |
+| `allowlistCaseSensitive` | `boolean`                                | `false`                  | Make `allowlist` string matching case-sensitive.                                                                                                                                    |
+| `confidenceThreshold`    | `number`                                 | `0`                      | Minimum confidence score `[0, 1]` for a match to be anonymized.                                                                                                                     |
+| `preset`                 | `CompliancePreset`                       | —                        | Apply a compliance preset as the base configuration. Explicit `rules` and `defaultStrategy` take precedence.                                                                        |
+| `locales`                | `Locale[]`                               | `["global"]`             | Activate locale-specific detector patterns. Values: `"global"`, `"us"`, `"uk"`, `"eu"`, `"ca"`, `"au"`, `"br"`, `"in"`, `"cn"`, `"jp"`, `"kr"`, `"za"`.                             |
 
 ---
 
@@ -350,17 +350,17 @@ individually for maximum tree-shaking. Twenty-seven categories are supported.
 All errors extend `AnonymaError` and carry a machine-readable `code` string, enabling
 precise `switch`/`instanceof` error handling.
 
-| Class | Code | Extra Properties | When Thrown |
-|---|---|---|---|
-| `AnonymaError` | — | `code: string` | Base class; never thrown directly. |
-| `ValidationError` | `VALIDATION_ERROR` | `field: string` | A function argument fails validation (wrong type, out-of-range value, etc.). |
-| `UnsupportedStrategyError` | `UNSUPPORTED_STRATEGY` | `strategy: string` | An unrecognised strategy name is passed. |
-| `UnknownCategoryError` | `UNKNOWN_CATEGORY` | `category: string` | A rule or config references an unknown PII category. |
-| `CryptoNotAvailableError` | `CRYPTO_NOT_AVAILABLE` | — | `globalThis.crypto.subtle` is absent (Node < 18 or no polyfill). |
-| `EncryptionError` | `ENCRYPTION_ERROR` | `operation: "encrypt" \| "decrypt"` | The underlying AES-GCM operation fails (wrong key, corrupt ciphertext, etc.). |
-| `PresetNotFoundError` | `PRESET_NOT_FOUND` | `preset: string` | `getPreset()` is called with an unknown preset name. |
-| `AllowlistMatchError` | `ALLOWLIST_MATCH_ERROR` | `field: string` | An allowlist configuration entry is malformed. |
-| `BatchProcessingError` | `BATCH_PROCESSING_ERROR` | `succeeded`, `failed`, `total: number` | One or more items in a batch fail; carries partial result counts. |
+| Class                      | Code                     | Extra Properties                       | When Thrown                                                                   |
+| -------------------------- | ------------------------ | -------------------------------------- | ----------------------------------------------------------------------------- |
+| `AnonymaError`             | —                        | `code: string`                         | Base class; never thrown directly.                                            |
+| `ValidationError`          | `VALIDATION_ERROR`       | `field: string`                        | A function argument fails validation (wrong type, out-of-range value, etc.).  |
+| `UnsupportedStrategyError` | `UNSUPPORTED_STRATEGY`   | `strategy: string`                     | An unrecognised strategy name is passed.                                      |
+| `UnknownCategoryError`     | `UNKNOWN_CATEGORY`       | `category: string`                     | A rule or config references an unknown PII category.                          |
+| `CryptoNotAvailableError`  | `CRYPTO_NOT_AVAILABLE`   | —                                      | `globalThis.crypto.subtle` is absent (Node < 18 or no polyfill).              |
+| `EncryptionError`          | `ENCRYPTION_ERROR`       | `operation: "encrypt" \| "decrypt"`    | The underlying AES-GCM operation fails (wrong key, corrupt ciphertext, etc.). |
+| `PresetNotFoundError`      | `PRESET_NOT_FOUND`       | `preset: string`                       | `getPreset()` is called with an unknown preset name.                          |
+| `AllowlistMatchError`      | `ALLOWLIST_MATCH_ERROR`  | `field: string`                        | An allowlist configuration entry is malformed.                                |
+| `BatchProcessingError`     | `BATCH_PROCESSING_ERROR` | `succeeded`, `failed`, `total: number` | One or more items in a batch fail; carries partial result counts.             |
 
 ---
 
@@ -389,17 +389,17 @@ unavailable.
 Pure validation functions for PII checksum and format algorithms. All accept a string and
 return `boolean`.
 
-| Function | Algorithm / Standard | Notes |
-|---|---|---|
-| `luhn(digits)` | Luhn (ISO/IEC 7812) | Credit/debit card numbers and some national IDs. |
-| `verhoeff(digits)` | Verhoeff | Indian Aadhaar numbers and some other national IDs. |
-| `nhsMod11(value)` | NHS mod-11 | UK NHS 10-digit numbers (with or without spaces/hyphens). |
-| `cpfChecksum(value)` | Brazilian CPF | 11-digit CPF with two check digits; rejects all-same-digit sequences. |
-| `vinChecksum(vin)` | ISO 3779 mod-11 | 17-character Vehicle Identification Numbers. |
-| `deaChecksum(value)` | DEA mod-10 | US Drug Enforcement Administration registration numbers. |
-| `ibanMod97(value)` | ISO 13616 mod-97 | IBAN strings (15–34 characters, with or without spaces). |
-| `ninoValid(value)` | UK NINO format | UK National Insurance Numbers; rejects invalid letter prefixes. |
-| `aadhaarFormat(value)` | Aadhaar format | 12-digit Indian Aadhaar; does not start with `0` or `1`. |
+| Function               | Algorithm / Standard | Notes                                                                 |
+| ---------------------- | -------------------- | --------------------------------------------------------------------- |
+| `luhn(digits)`         | Luhn (ISO/IEC 7812)  | Credit/debit card numbers and some national IDs.                      |
+| `verhoeff(digits)`     | Verhoeff             | Indian Aadhaar numbers and some other national IDs.                   |
+| `nhsMod11(value)`      | NHS mod-11           | UK NHS 10-digit numbers (with or without spaces/hyphens).             |
+| `cpfChecksum(value)`   | Brazilian CPF        | 11-digit CPF with two check digits; rejects all-same-digit sequences. |
+| `vinChecksum(vin)`     | ISO 3779 mod-11      | 17-character Vehicle Identification Numbers.                          |
+| `deaChecksum(value)`   | DEA mod-10           | US Drug Enforcement Administration registration numbers.              |
+| `ibanMod97(value)`     | ISO 13616 mod-97     | IBAN strings (15–34 characters, with or without spaces).              |
+| `ninoValid(value)`     | UK NINO format       | UK National Insurance Numbers; rejects invalid letter prefixes.       |
+| `aadhaarFormat(value)` | Aadhaar format       | 12-digit Indian Aadhaar; does not start with `0` or `1`.              |
 
 ---
 
@@ -423,22 +423,22 @@ Requires `zod` as a peer dependency. Import from `"anonyma/schemas"`.
 
 **Zod Schemas**
 
-| Export | Validates |
-|---|---|
-| `PiiCategorySchema` | All 27 `PiiCategory` string literals. |
-| `MaskOptionsSchema` | `MaskOptions` including `maskChar`, `keepLeading`, `keepTrailing`. |
-| `RedactOptionsSchema` | `RedactOptions` with `label`. |
-| `PseudonymizeOptionsSchema` | `PseudonymizeOptions` with `seed` and `prefix`. |
-| `HashOptionsSchema` | `HashOptions` with `truncate` and `pepper`. |
-| `GeneralizeOptionsSchema` | `GeneralizeOptions` with `bucketSize`. |
-| `StrategyOptionsSchema` | Discriminated union of all strategy option shapes. |
-| `PiiMatchSchema` | `PiiMatch` output object. |
-| `AnonymizeResultSchema` | `AnonymizeResult` with `text` and `matches`. |
-| `AnonymizationRuleSchema` | Single `{ category, strategy }` rule. |
-| `CustomPatternSchema` | `CustomPattern` with `pattern` (RegExp instance), `category`, `confidence`, `label`. |
-| `AnonymizeOptionsSchema` | Full `AnonymizeOptions` input object. |
-| `FieldRuleSchema` | Single field-level `{ strategy }` rule. |
-| `FieldRuleMapSchema` | `Record<string, FieldRule>` for `anonymizeRecord()`. |
+| Export                      | Validates                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------------ |
+| `PiiCategorySchema`         | All 27 `PiiCategory` string literals.                                                |
+| `MaskOptionsSchema`         | `MaskOptions` including `maskChar`, `keepLeading`, `keepTrailing`.                   |
+| `RedactOptionsSchema`       | `RedactOptions` with `label`.                                                        |
+| `PseudonymizeOptionsSchema` | `PseudonymizeOptions` with `seed` and `prefix`.                                      |
+| `HashOptionsSchema`         | `HashOptions` with `truncate` and `pepper`.                                          |
+| `GeneralizeOptionsSchema`   | `GeneralizeOptions` with `bucketSize`.                                               |
+| `StrategyOptionsSchema`     | Discriminated union of all strategy option shapes.                                   |
+| `PiiMatchSchema`            | `PiiMatch` output object.                                                            |
+| `AnonymizeResultSchema`     | `AnonymizeResult` with `text` and `matches`.                                         |
+| `AnonymizationRuleSchema`   | Single `{ category, strategy }` rule.                                                |
+| `CustomPatternSchema`       | `CustomPattern` with `pattern` (RegExp instance), `category`, `confidence`, `label`. |
+| `AnonymizeOptionsSchema`    | Full `AnonymizeOptions` input object.                                                |
+| `FieldRuleSchema`           | Single field-level `{ strategy }` rule.                                              |
+| `FieldRuleMapSchema`        | `Record<string, FieldRule>` for `anonymizeRecord()`.                                 |
 
 **OpenAI / MCP Tool Definitions**
 
@@ -469,41 +469,41 @@ All Zod schema input/output types are re-exported as TypeScript types:
 
 All types are zero-cost, type-only exports (stripped by `tsc`; no runtime overhead).
 
-| Type | Description |
-|---|---|
-| `PiiCategory` | Union of all 27 supported category string literals. |
-| `PiiMatch` | `{ category, value, start, end, confidence }` — a single detected PII entity. |
-| `CustomPattern` | `{ pattern: RegExp; category?; confidence?; label? }` — ad-hoc detection pattern. |
-| `Locale` | `"global" \| "us" \| "uk" \| "eu" \| "ca" \| "au" \| "br" \| "in" \| "cn" \| "jp" \| "kr" \| "za"` |
-| `CompliancePreset` | `"gdpr" \| "hipaa" \| "ccpa" \| "pci-dss" \| "sox" \| "ferpa"` |
-| `StrategyName` | `"mask" \| "redact" \| "pseudonymize" \| "hash" \| "generalize" \| "tokenize" \| "encrypt" \| "synthesize"` |
-| `StrategyOptions` | Discriminated union of all per-strategy option shapes. |
-| `MaskOptions` | `{ maskChar?, keepLeading?, keepTrailing?, preserveFormat? }` |
-| `RedactOptions` | `{ label? }` |
-| `PseudonymizeOptions` | `{ seed?, prefix? }` |
-| `HashOptions` | `{ truncate?, pepper? }` |
-| `GeneralizeOptions` | `{ bucketSize? }` |
-| `EncryptOptions` | `{ passphrase?, keyBytes?, encoding? }` |
-| `SynthesizeOptions` | `{ seed?, locale? }` |
-| `AnonymizationRule` | `{ category: PiiCategory, strategy: StrategyOptions }` |
-| `AnonymizeOptions` | Full options accepted by `anonymize()` and `anonymizeAsync()`. |
-| `AnonymizeResult` | `{ text: string, matches: ReadonlyArray<PiiMatch> }` |
-| `TokenFormat` | `"angle" \| "bracket" \| "custom"` |
-| `TokenizeOptions` | Options for `tokenize()` including `categories`, `format`, `tokenTemplate`, `deterministic`, `aggressive`, `locales`, `confidenceThreshold`, `allowlist`. |
-| `TokenizeResult` | `{ text, mapping: ReadonlyMap<string, string>, tokens: TokenMatch[] }` |
-| `DetokenizeResult` | `{ text, replacedCount, unresolved: string[] }` |
-| `TokenMatch` | `{ token, original, category, start, end }` |
-| `BatchResult<T>` | Discriminated union: `{ index, ok: true, value: T } \| { index, ok: false, error: Error }` |
-| `FieldRule` | `{ strategy: StrategyOptions }` |
-| `FieldRuleMap` | `Record<string, FieldRule>` — dot-notation paths for `anonymizeRecord()`. |
-| `Detector` | `(text: string) => PiiMatch[]` — detector function signature. |
-| `DetectorRegistry` | `Record<PiiCategory, Detector>` |
-| `Anonymizer` | Interface returned by `createAnonymizer()`. |
-| `AnonymizerConfig` | Config accepted by `createAnonymizer()`. |
-| `AnonymaPlugin` | `{ name, detectors?, strategies?, validators? }` — plugin extension point. |
-| `ValidatorFunction` | `(value: string) => boolean` |
-| `StrategyFunction` | `(value: string, options?) => string` |
-| `PresetConfig` | Full configuration shape for a compliance preset. |
+| Type                  | Description                                                                                                                                               |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PiiCategory`         | Union of all 27 supported category string literals.                                                                                                       |
+| `PiiMatch`            | `{ category, value, start, end, confidence }` — a single detected PII entity.                                                                             |
+| `CustomPattern`       | `{ pattern: RegExp; category?; confidence?; label? }` — ad-hoc detection pattern.                                                                         |
+| `Locale`              | `"global" \| "us" \| "uk" \| "eu" \| "ca" \| "au" \| "br" \| "in" \| "cn" \| "jp" \| "kr" \| "za"`                                                        |
+| `CompliancePreset`    | `"gdpr" \| "hipaa" \| "ccpa" \| "pci-dss" \| "sox" \| "ferpa"`                                                                                            |
+| `StrategyName`        | `"mask" \| "redact" \| "pseudonymize" \| "hash" \| "generalize" \| "tokenize" \| "encrypt" \| "synthesize"`                                               |
+| `StrategyOptions`     | Discriminated union of all per-strategy option shapes.                                                                                                    |
+| `MaskOptions`         | `{ maskChar?, keepLeading?, keepTrailing?, preserveFormat? }`                                                                                             |
+| `RedactOptions`       | `{ label? }`                                                                                                                                              |
+| `PseudonymizeOptions` | `{ seed?, prefix? }`                                                                                                                                      |
+| `HashOptions`         | `{ truncate?, pepper? }`                                                                                                                                  |
+| `GeneralizeOptions`   | `{ bucketSize? }`                                                                                                                                         |
+| `EncryptOptions`      | `{ passphrase?, keyBytes?, encoding? }`                                                                                                                   |
+| `SynthesizeOptions`   | `{ seed?, locale? }`                                                                                                                                      |
+| `AnonymizationRule`   | `{ category: PiiCategory, strategy: StrategyOptions }`                                                                                                    |
+| `AnonymizeOptions`    | Full options accepted by `anonymize()` and `anonymizeAsync()`.                                                                                            |
+| `AnonymizeResult`     | `{ text: string, matches: ReadonlyArray<PiiMatch> }`                                                                                                      |
+| `TokenFormat`         | `"angle" \| "bracket" \| "custom"`                                                                                                                        |
+| `TokenizeOptions`     | Options for `tokenize()` including `categories`, `format`, `tokenTemplate`, `deterministic`, `aggressive`, `locales`, `confidenceThreshold`, `allowlist`. |
+| `TokenizeResult`      | `{ text, mapping: ReadonlyMap<string, string>, tokens: TokenMatch[] }`                                                                                    |
+| `DetokenizeResult`    | `{ text, replacedCount, unresolved: string[] }`                                                                                                           |
+| `TokenMatch`          | `{ token, original, category, start, end }`                                                                                                               |
+| `BatchResult<T>`      | Discriminated union: `{ index, ok: true, value: T } \| { index, ok: false, error: Error }`                                                                |
+| `FieldRule`           | `{ strategy: StrategyOptions }`                                                                                                                           |
+| `FieldRuleMap`        | `Record<string, FieldRule>` — dot-notation paths for `anonymizeRecord()`.                                                                                 |
+| `Detector`            | `(text: string) => PiiMatch[]` — detector function signature.                                                                                             |
+| `DetectorRegistry`    | `Record<PiiCategory, Detector>`                                                                                                                           |
+| `Anonymizer`          | Interface returned by `createAnonymizer()`.                                                                                                               |
+| `AnonymizerConfig`    | Config accepted by `createAnonymizer()`.                                                                                                                  |
+| `AnonymaPlugin`       | `{ name, detectors?, strategies?, validators? }` — plugin extension point.                                                                                |
+| `ValidatorFunction`   | `(value: string) => boolean`                                                                                                                              |
+| `StrategyFunction`    | `(value: string, options?) => string`                                                                                                                     |
+| `PresetConfig`        | Full configuration shape for a compliance preset.                                                                                                         |
 
 ---
 

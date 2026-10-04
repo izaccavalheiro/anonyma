@@ -108,8 +108,6 @@ export interface CustomPattern {
   readonly label?: string;
 }
 
-
-
 // ---------------------------------------------------------------------------
 // Locale type
 // ---------------------------------------------------------------------------
@@ -442,7 +440,10 @@ export type StrategyOptions =
   | ({ strategy: "pseudonymize" } & PseudonymizeOptions)
   | ({ strategy: "hash" } & HashOptions)
   | ({ strategy: "generalize" } & GeneralizeOptions)
-  | ({ strategy: "tokenize" } & Omit<TokenizeOptions, "categories" | "aggressive" | "locales" | "confidenceThreshold">)
+  | ({ strategy: "tokenize" } & Omit<
+      TokenizeOptions,
+      "categories" | "aggressive" | "locales" | "confidenceThreshold"
+    >)
   | ({ strategy: "encrypt" } & EncryptOptions)
   | ({ strategy: "synthesize" } & SynthesizeOptions & { category?: PiiCategory });
 
@@ -624,7 +625,10 @@ export interface Anonymizer {
    * @param text - The input text.
    * @param options - Optional per-call overrides.
    */
-  readonly anonymizeAsync: (text: string, options?: Partial<AnonymizeOptions>) => Promise<AnonymizeResult>;
+  readonly anonymizeAsync: (
+    text: string,
+    options?: Partial<AnonymizeOptions>,
+  ) => Promise<AnonymizeResult>;
 
   /**
    * Detect all PII in a text string without anonymizing.

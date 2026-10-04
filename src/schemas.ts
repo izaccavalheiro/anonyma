@@ -69,11 +69,7 @@ export const PiiCategorySchema = z.enum([
  */
 export const MaskOptionsSchema = z.object({
   strategy: z.literal("mask"),
-  maskChar: z
-    .string()
-    .length(1, "maskChar must be exactly one character")
-    .default("*")
-    .optional(),
+  maskChar: z.string().length(1, "maskChar must be exactly one character").default("*").optional(),
   keepLeading: z.number().int().nonnegative().default(0).optional(),
   keepTrailing: z.number().int().nonnegative().default(0).optional(),
 });
@@ -315,8 +311,7 @@ export const DETECT_TOOL_DEFINITION: OpenAiFunctionDefinition = {
       categories: {
         type: "array",
         description:
-          "Optional subset of PII categories to detect. " +
-          "Defaults to all supported categories.",
+          "Optional subset of PII categories to detect. " + "Defaults to all supported categories.",
         items: {
           type: "string",
           enum: [
@@ -456,11 +451,33 @@ export const ANONYMA_MANIFEST = {
     detect: {
       description: "Detect PII in free text without modifying it.",
       supportedCategories: [
-        "email", "phone", "ssn", "credit-card", "ipv4", "ipv6", "url",
-        "iban", "date-of-birth", "name", "address", "passport", "drivers-license",
-        "national-id", "bank-account", "cryptocurrency", "tax-id", "medical-record",
-        "health-insurance", "prescription", "api-key", "social-media", "vin",
-        "license-plate", "tracking-number", "case-number", "company-registration",
+        "email",
+        "phone",
+        "ssn",
+        "credit-card",
+        "ipv4",
+        "ipv6",
+        "url",
+        "iban",
+        "date-of-birth",
+        "name",
+        "address",
+        "passport",
+        "drivers-license",
+        "national-id",
+        "bank-account",
+        "cryptocurrency",
+        "tax-id",
+        "medical-record",
+        "health-insurance",
+        "prescription",
+        "api-key",
+        "social-media",
+        "vin",
+        "license-plate",
+        "tracking-number",
+        "case-number",
+        "company-registration",
       ],
       notes: {
         name:
@@ -480,8 +497,7 @@ export const ANONYMA_MANIFEST = {
       strategies: {
         mask: "Replace characters with a mask char, keeping optional leading/trailing chars.",
         redact: "Replace the entire value with a label such as [REDACTED].",
-        pseudonymize:
-          "Replace with a deterministic pseudonym (requires seed for reproducibility).",
+        pseudonymize: "Replace with a deterministic pseudonym (requires seed for reproducibility).",
         hash: "Replace with a one-way SHA-256 hash (requires Node.js ≥ 18).",
         generalize: "Replace a numeric value with a bucket range (e.g. 27 → 20-29).",
         tokenize: "Replace with a reversible opaque token ([CATEGORY_NNNN]) for LLM pipelines.",
@@ -490,10 +506,8 @@ export const ANONYMA_MANIFEST = {
       },
       options: {
         globalReplacement: "Override ALL strategy outputs with a single replacement string.",
-        consistentTokens:
-          "Same PII value → same token (EMAIL_1, PHONE_2, etc.) within a call.",
-        aggressive:
-          "Use expanded, more permissive regex patterns to catch obfuscated PII.",
+        consistentTokens: "Same PII value → same token (EMAIL_1, PHONE_2, etc.) within a call.",
+        aggressive: "Use expanded, more permissive regex patterns to catch obfuscated PII.",
         enabledCategories: "Convenience boolean map for enabling/disabling categories.",
         customPatterns: "Ad-hoc regex patterns merged into the detection pipeline.",
         customDetectors: "Override built-in detectors on a per-category basis.",
@@ -505,8 +519,7 @@ export const ANONYMA_MANIFEST = {
       returns: "AnonymizeResult { text: string; matches: PiiMatch[] }",
     },
     tokenize: {
-      description:
-        "Replace PII with reversible opaque tokens. Use detokenize() to restore.",
+      description: "Replace PII with reversible opaque tokens. Use detokenize() to restore.",
       returns: "TokenizeResult { text: string; mapping: Map<string, string> }",
     },
     anonymizeObject: {

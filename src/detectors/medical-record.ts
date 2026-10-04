@@ -71,7 +71,7 @@ export function detectMedicalRecord(text: string): PiiMatch[] {
   const deaRe = new RegExp(DEA_PATTERN.source, "gi");
   while ((m = deaRe.exec(text)) !== null) {
     if (deaChecksum(m[0])) {
-      push(m[0], m.index, m.index + m[0].length, 0.90);
+      push(m[0], m.index, m.index + m[0].length, 0.9);
     }
   }
 

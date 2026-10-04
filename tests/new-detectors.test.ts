@@ -73,7 +73,8 @@ describe("detectApiKey", () => {
   it("detects JWT tokens (eyJ)", () => {
     // Built via concatenation to avoid triggering static secret scanners in CI
     const jwt =
-      "eyJ" + "hbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+      "eyJ" +
+      "hbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
     const matches = detectApiKey(jwt);
     expect(matches.some((x) => x.value.startsWith("eyJ"))).toBe(true);
   });
@@ -123,16 +124,12 @@ describe("detectCryptocurrency", () => {
   });
 
   it("detects Ethereum addresses (0x...)", () => {
-    const matches = detectCryptocurrency(
-      "Wallet: 0xAbCd1234567890AbCd1234567890AbCd12345678",
-    );
+    const matches = detectCryptocurrency("Wallet: 0xAbCd1234567890AbCd1234567890AbCd12345678");
     expect(matches.some((x) => x.value.toLowerCase().startsWith("0x"))).toBe(true);
   });
 
   it("detects Bech32 Bitcoin addresses (bc1...)", () => {
-    const matches = detectCryptocurrency(
-      "Pay to bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
-    );
+    const matches = detectCryptocurrency("Pay to bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq");
     expect(matches.some((x) => x.value.startsWith("bc1"))).toBe(true);
   });
 
@@ -350,9 +347,7 @@ describe("detectCompanyRegistration", () => {
 describe("detectDriversLicense", () => {
   it("detects UK DVLA driver license format", () => {
     // Pattern: [A-Z9]{5} + \d{6} + [02-9] + \d + [A-Z]{2} + \w{2} (17 chars total)
-    const matches = detectDriversLicense(
-      "Driver license: JONES86115203AB9W — please verify",
-    );
+    const matches = detectDriversLicense("Driver license: JONES86115203AB9W — please verify");
     expect(matches.length).toBeGreaterThan(0);
     expect(matches[0]?.category).toBe("drivers-license");
   });
@@ -396,9 +391,7 @@ describe("anonymize() with new categories", () => {
   });
 
   it("redacts cryptocurrency addresses", () => {
-    const { text } = anonymize(
-      "Send to 0xAbCd1234567890AbCd1234567890AbCd12345678",
-    );
+    const { text } = anonymize("Send to 0xAbCd1234567890AbCd1234567890AbCd12345678");
     expect(text).not.toContain("0xAbCd");
     expect(text).toContain("[REDACTED]");
   });

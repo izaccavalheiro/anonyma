@@ -103,7 +103,9 @@ describe("PresetNotFoundError — additional coverage", () => {
 
 describe("AllowlistMatchError — additional coverage", () => {
   it("has code ALLOWLIST_MATCH_ERROR", () => {
-    expect(new AllowlistMatchError("field", "must be non-empty").code).toBe("ALLOWLIST_MATCH_ERROR");
+    expect(new AllowlistMatchError("field", "must be non-empty").code).toBe(
+      "ALLOWLIST_MATCH_ERROR",
+    );
   });
 
   it("includes both field and reason in message", () => {

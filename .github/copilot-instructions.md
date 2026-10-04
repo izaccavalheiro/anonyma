@@ -91,6 +91,7 @@ export function detect<Category>(text: string): PiiMatch[] {
 ```
 
 After creating the file:
+
 1. Add the category to `PiiCategory` in `src/types.ts`
 2. Register in `DETECTOR_REGISTRY` in `src/detectors/index.ts`
 3. Add `TOKEN_PREFIX_MAP` entries in `src/anonymize.ts` and `src/tokenize.ts`
@@ -111,6 +112,7 @@ export function <strategy>(value: string, options: <Strategy>Options = {}): stri
 ```
 
 After creating the file:
+
 1. Add the strategy name to `StrategyName` union in `src/types.ts`
 2. Add `<Strategy>Options` interface in `src/types.ts`
 3. Register in `applyStrategy` switch in `src/anonymize.ts`
@@ -147,16 +149,16 @@ describe("detectEmail()", () => {
 
 ## Naming Conventions
 
-| Construct | Convention | Example |
-|---|---|---|
-| Detector function | `detect<Category>` camelCase | `detectCreditCard` |
-| Aggressive variant | `detect<Category>Aggressive` | `detectEmailAggressive` |
-| Strategy function | lowercase verb | `mask`, `redact`, `pseudonymize` |
-| Error class | `<Reason>Error` PascalCase | `ValidationError` |
-| Preset name | lowercase hyphenated string literal | `"pci-dss"` |
-| PII category | lowercase hyphenated string literal | `"credit-card"` |
-| Registry constant | SCREAMING_SNAKE_CASE | `DETECTOR_REGISTRY` |
-| Internal helper | `_` prefix or unexported | `_deduplicateMatches` |
+| Construct          | Convention                          | Example                          |
+| ------------------ | ----------------------------------- | -------------------------------- |
+| Detector function  | `detect<Category>` camelCase        | `detectCreditCard`               |
+| Aggressive variant | `detect<Category>Aggressive`        | `detectEmailAggressive`          |
+| Strategy function  | lowercase verb                      | `mask`, `redact`, `pseudonymize` |
+| Error class        | `<Reason>Error` PascalCase          | `ValidationError`                |
+| Preset name        | lowercase hyphenated string literal | `"pci-dss"`                      |
+| PII category       | lowercase hyphenated string literal | `"credit-card"`                  |
+| Registry constant  | SCREAMING_SNAKE_CASE                | `DETECTOR_REGISTRY`              |
+| Internal helper    | `_` prefix or unexported            | `_deduplicateMatches`            |
 
 ---
 
@@ -177,20 +179,21 @@ describe("detectEmail()", () => {
 
 ## Subpath Exports Reference
 
-| Import path | Contents |
-|---|---|
-| `"anonyma"` | Core API: `anonymize`, `detect`, `hasPII`, `tokenize`, strategies, errors, types |
-| `"anonyma/detectors"` | Individual `detect*` functions + `DETECTOR_REGISTRY` |
-| `"anonyma/schemas"` | Zod schemas + `toJsonSchema()` + MCP tool defs (requires `zod`) |
-| `"anonyma/validators"` | `luhn`, `verhoeff`, `nhsMod11`, `cpfChecksum`, etc. |
-| `"anonyma/crypto"` | Low-level Web Crypto helpers |
-| `"anonyma/stream"` | `createAnonymizeStream`, `createTokenizeStream` |
+| Import path            | Contents                                                                         |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| `"anonyma"`            | Core API: `anonymize`, `detect`, `hasPII`, `tokenize`, strategies, errors, types |
+| `"anonyma/detectors"`  | Individual `detect*` functions + `DETECTOR_REGISTRY`                             |
+| `"anonyma/schemas"`    | Zod schemas + `toJsonSchema()` + MCP tool defs (requires `zod`)                  |
+| `"anonyma/validators"` | `luhn`, `verhoeff`, `nhsMod11`, `cpfChecksum`, etc.                              |
+| `"anonyma/crypto"`     | Low-level Web Crypto helpers                                                     |
+| `"anonyma/stream"`     | `createAnonymizeStream`, `createTokenizeStream`                                  |
 
 ---
 
 ## Compliance Context
 
 When generating code related to:
+
 - **HIPAA**: Use `redact` strategy; cover all 18 Safe Harbor identifiers.
 - **GDPR**: Use `pseudonymize` strategy; cover all personal data including IP addresses.
 - **PCI-DSS**: Use `mask` strategy; focus on credit card, bank account, CVV data.

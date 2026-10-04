@@ -61,10 +61,20 @@ npm install zod
 
 ```ts
 import {
-  anonymize, anonymizeAsync, detect, hasPII,
-  anonymizeObject, anonymizeRecord, createAnonymizer,
-  tokenize, tokenizeAsync, detokenize, sanitizeForLLM, restoreFromLLM,
-  anonymizeBatch, anonymizeBatchAsync,
+  anonymize,
+  anonymizeAsync,
+  detect,
+  hasPII,
+  anonymizeObject,
+  anonymizeRecord,
+  createAnonymizer,
+  tokenize,
+  tokenizeAsync,
+  detokenize,
+  sanitizeForLLM,
+  restoreFromLLM,
+  anonymizeBatch,
+  anonymizeBatchAsync,
 } from "anonyma";
 
 // ── Detect PII ─────────────────────────────────────────────────────────────
@@ -122,7 +132,7 @@ anonymizeObject({
 const { text: masked } = anonymize("alice@example.com and 192.168.1.1", {
   rules: [
     { category: "email", strategy: { strategy: "mask", keepLeading: 1, keepTrailing: 3 } },
-    { category: "ipv4",  strategy: { strategy: "redact", label: "[IP REMOVED]" } },
+    { category: "ipv4", strategy: { strategy: "redact", label: "[IP REMOVED]" } },
   ],
 });
 // "a***************com and [IP REMOVED]"
@@ -151,7 +161,7 @@ anonymize("maybe a name here", { confidenceThreshold: 0.8 }).text;
 
 // ── Compliance presets ─────────────────────────────────────────────────────
 anonymize(medicalNote, { preset: "hipaa" }).text;
-anonymize(userData,    { preset: "gdpr"  }).text;
+anonymize(userData, { preset: "gdpr" }).text;
 
 // ── Locale-aware detection ─────────────────────────────────────────────────
 anonymize("NHS: 943 476 5919", { locales: ["uk"] }).text;
@@ -162,8 +172,8 @@ anonymizeRecord(
   { name: "Alice", email: "alice@example.com", age: "27" },
   {
     email: { strategy: { strategy: "redact" } },
-    age:   { strategy: { strategy: "generalize" } },  // 27 → "20-29"
-  }
+    age: { strategy: { strategy: "generalize" } }, // 27 → "20-29"
+  },
 );
 // { name: "Alice", email: "[REDACTED]", age: "20-29" }
 
@@ -184,7 +194,9 @@ const { text: restored } = detokenize(tokenized, mapping);
 // "alice@example.com called 555-867-5309"
 
 // ── LLM pipeline — sanitize then restore ──────────────────────────────────
-const { text: sanitized, mapping: llmMapping } = sanitizeForLLM("Send invoice to alice@example.com");
+const { text: sanitized, mapping: llmMapping } = sanitizeForLLM(
+  "Send invoice to alice@example.com",
+);
 // "Send invoice to [EMAIL_0001]"
 const llmResponse = await callLLM(sanitized);
 const final = restoreFromLLM(llmResponse, llmMapping);
@@ -215,16 +227,16 @@ anonymize("alice@example.com", {
 
 ## Strategies
 
-| Strategy       | Description                                                         | Async | Deterministic | Reversible |
-|----------------|---------------------------------------------------------------------|:-----:|:-------------:|:----------:|
-| `redact`       | Replace with `[REDACTED]` label (customizable)                      | ❌    | ✅            | ❌         |
-| `mask`         | Replace inner chars with `*`; optional format-preserving mode       | ❌    | ✅            | ❌         |
-| `pseudonymize` | Replace with a hex pseudonym (seeded or random)                     | ❌    | ✅†           | ❌         |
-| `hash`         | SHA-256 one-way hash with optional pepper (Web Crypto)              | ✅    | ✅            | ❌         |
-| `generalize`   | Replace numbers with a bucket range (e.g. `27` → `20-29`)          | ❌    | ✅            | ❌         |
-| `tokenize`     | Replace with a reversible placeholder token                         | ❌    | ✅            | ✅         |
-| `encrypt`      | AES-256-GCM encryption via passphrase or raw key (Web Crypto)       | ✅    | ❌‡           | ✅         |
-| `synthesize`   | Format-preserving synthetic replacement (seeded, no real PII)       | ❌    | ✅†           | ❌         |
+| Strategy       | Description                                                   | Async | Deterministic | Reversible |
+| -------------- | ------------------------------------------------------------- | :---: | :-----------: | :--------: |
+| `redact`       | Replace with `[REDACTED]` label (customizable)                |  ❌   |      ✅       |     ❌     |
+| `mask`         | Replace inner chars with `*`; optional format-preserving mode |  ❌   |      ✅       |     ❌     |
+| `pseudonymize` | Replace with a hex pseudonym (seeded or random)               |  ❌   |      ✅†      |     ❌     |
+| `hash`         | SHA-256 one-way hash with optional pepper (Web Crypto)        |  ✅   |      ✅       |     ❌     |
+| `generalize`   | Replace numbers with a bucket range (e.g. `27` → `20-29`)     |  ❌   |      ✅       |     ❌     |
+| `tokenize`     | Replace with a reversible placeholder token                   |  ❌   |      ✅       |     ✅     |
+| `encrypt`      | AES-256-GCM encryption via passphrase or raw key (Web Crypto) |  ✅   |      ❌‡      |     ✅     |
+| `synthesize`   | Format-preserving synthetic replacement (seeded, no real PII) |  ❌   |      ✅†      |     ❌     |
 
 † Deterministic when `seed` is provided. ‡ Random IV per encryption; decryptable with the same key.
 
@@ -234,60 +246,60 @@ anonymize("alice@example.com", {
 
 ### Personal Information
 
-| Category          | Examples                                    | Validator / Notes                   |
-|-------------------|---------------------------------------------|-------------------------------------|
-| `email`           | `alice@example.com`                         | RFC 5321 regex                      |
-| `phone`           | `+1 (555) 867-5309`, `415.555.2671`         | Multi-format regex                  |
-| `ssn`             | `123-45-6789`                               | Regex + exclusions                  |
-| `name`            | `Dear Alice Smith`, `Patient: John Doe`     | Heuristic (greeting/title context)  |
-| `date-of-birth`   | `1990-04-15`, `April 15, 1990`              | Multi-format regex                  |
-| `address`         | `123 Main St, Springfield, IL 62701`        | Pattern + keyword heuristic         |
-| `passport`        | `A12345678`, `P1234567`                     | Country-specific patterns           |
-| `drivers-license` | `D123-4567-8901`, `F123-456-78-910-1`       | Multi-state/country patterns        |
-| `national-id`     | Aadhaar, NHS number, NINO, CPF, etc.        | Country-specific patterns           |
+| Category          | Examples                                | Validator / Notes                  |
+| ----------------- | --------------------------------------- | ---------------------------------- |
+| `email`           | `alice@example.com`                     | RFC 5321 regex                     |
+| `phone`           | `+1 (555) 867-5309`, `415.555.2671`     | Multi-format regex                 |
+| `ssn`             | `123-45-6789`                           | Regex + exclusions                 |
+| `name`            | `Dear Alice Smith`, `Patient: John Doe` | Heuristic (greeting/title context) |
+| `date-of-birth`   | `1990-04-15`, `April 15, 1990`          | Multi-format regex                 |
+| `address`         | `123 Main St, Springfield, IL 62701`    | Pattern + keyword heuristic        |
+| `passport`        | `A12345678`, `P1234567`                 | Country-specific patterns          |
+| `drivers-license` | `D123-4567-8901`, `F123-456-78-910-1`   | Multi-state/country patterns       |
+| `national-id`     | Aadhaar, NHS number, NINO, CPF, etc.    | Country-specific patterns          |
 
 ### Financial
 
-| Category           | Examples                                  | Validator / Notes                   |
-|--------------------|-------------------------------------------|-------------------------------------|
-| `credit-card`      | `4111 1111 1111 1111`                     | Luhn algorithm                      |
-| `iban`             | `GB82 WEST 1234 5698 7654 32`             | MOD-97 (ISO 13616)                  |
-| `bank-account`     | Routing + account number pairs            | Pattern regex                       |
-| `cryptocurrency`   | BTC, ETH, XRP wallet addresses            | Format regex per chain              |
-| `tax-id`           | EIN `12-3456789`, VAT `GB123456789`       | Multi-country patterns              |
+| Category         | Examples                            | Validator / Notes      |
+| ---------------- | ----------------------------------- | ---------------------- |
+| `credit-card`    | `4111 1111 1111 1111`               | Luhn algorithm         |
+| `iban`           | `GB82 WEST 1234 5698 7654 32`       | MOD-97 (ISO 13616)     |
+| `bank-account`   | Routing + account number pairs      | Pattern regex          |
+| `cryptocurrency` | BTC, ETH, XRP wallet addresses      | Format regex per chain |
+| `tax-id`         | EIN `12-3456789`, VAT `GB123456789` | Multi-country patterns |
 
 ### Healthcare
 
-| Category          | Examples                                    | Validator / Notes                   |
-|-------------------|---------------------------------------------|-------------------------------------|
-| `medical-record`  | `MRN: 1234567`, `MR#00456789`               | Keyword + pattern                   |
-| `health-insurance`| `Subscriber ID`, `Group/Member #`           | Pattern regex                       |
-| `prescription`    | `Rx# 1234567`, DEA numbers                  | Pattern + DEA checksum              |
+| Category           | Examples                          | Validator / Notes      |
+| ------------------ | --------------------------------- | ---------------------- |
+| `medical-record`   | `MRN: 1234567`, `MR#00456789`     | Keyword + pattern      |
+| `health-insurance` | `Subscriber ID`, `Group/Member #` | Pattern regex          |
+| `prescription`     | `Rx# 1234567`, DEA numbers        | Pattern + DEA checksum |
 
 ### Digital Identity
 
-| Category       | Examples                                       | Validator / Notes            |
-|----------------|------------------------------------------------|------------------------------|
-| `ipv4`         | `192.168.1.1`, `10.0.0.0/8`                    | Octet-range regex            |
-| `ipv6`         | `2001:0db8::8a2e:0370:7334`                    | Regex                        |
-| `url`          | `https://example.com/path?q=1`                 | http/https (scheme-required) |
-| `api-key`      | Bearer tokens, AWS keys, GitHub PATs, etc.     | Pattern regex per provider   |
-| `social-media` | `@username`, profile URLs, handles             | Pattern regex                |
+| Category       | Examples                                   | Validator / Notes            |
+| -------------- | ------------------------------------------ | ---------------------------- |
+| `ipv4`         | `192.168.1.1`, `10.0.0.0/8`                | Octet-range regex            |
+| `ipv6`         | `2001:0db8::8a2e:0370:7334`                | Regex                        |
+| `url`          | `https://example.com/path?q=1`             | http/https (scheme-required) |
+| `api-key`      | Bearer tokens, AWS keys, GitHub PATs, etc. | Pattern regex per provider   |
+| `social-media` | `@username`, profile URLs, handles         | Pattern regex                |
 
 ### Vehicles & Transportation
 
-| Category          | Examples                              | Validator / Notes            |
-|-------------------|---------------------------------------|------------------------------|
-| `vin`             | `1HGCM82633A004352`                   | VIN checksum (pos 9)         |
-| `license-plate`   | `ABC-1234`, `AB12CDE`                 | Multi-country patterns       |
-| `tracking-number` | FedEx, UPS, USPS, DHL tracking codes  | Pattern regex per carrier    |
+| Category          | Examples                             | Validator / Notes         |
+| ----------------- | ------------------------------------ | ------------------------- |
+| `vin`             | `1HGCM82633A004352`                  | VIN checksum (pos 9)      |
+| `license-plate`   | `ABC-1234`, `AB12CDE`                | Multi-country patterns    |
+| `tracking-number` | FedEx, UPS, USPS, DHL tracking codes | Pattern regex per carrier |
 
 ### Government & Legal
 
-| Category              | Examples                              | Validator / Notes            |
-|-----------------------|---------------------------------------|------------------------------|
-| `case-number`         | `2023-CV-001234`, `CR-2022-5678`      | Pattern regex                |
-| `company-registration`| EIN, CRN, SIREN, ABN, etc.            | Multi-country patterns       |
+| Category               | Examples                         | Validator / Notes      |
+| ---------------------- | -------------------------------- | ---------------------- |
+| `case-number`          | `2023-CV-001234`, `CR-2022-5678` | Pattern regex          |
+| `company-registration` | EIN, CRN, SIREN, ABN, etc.       | Multi-country patterns |
 
 ---
 
@@ -295,14 +307,14 @@ anonymize("alice@example.com", {
 
 Built-in presets pre-configure which categories are detected and which default strategy is applied.
 
-| Preset     | Categories Covered                                                       | Default Strategy  |
-|------------|--------------------------------------------------------------------------|-------------------|
-| `gdpr`     | All personal, financial, healthcare, and digital identity categories     | `pseudonymize`    |
-| `hipaa`    | All 18 HIPAA Safe Harbor PHI identifiers                                 | `redact`          |
-| `ccpa`     | Consumer identifiers, financial data, online activity                    | `redact`          |
-| `pci-dss`  | Credit card, cardholder name, bank account, address                      | `mask` (last 4)   |
-| `sox`      | Financial identifiers for audit trails                                   | `redact`          |
-| `ferpa`    | Student PII — name, SSN, DOB, address                                    | `redact`          |
+| Preset    | Categories Covered                                                   | Default Strategy |
+| --------- | -------------------------------------------------------------------- | ---------------- |
+| `gdpr`    | All personal, financial, healthcare, and digital identity categories | `pseudonymize`   |
+| `hipaa`   | All 18 HIPAA Safe Harbor PHI identifiers                             | `redact`         |
+| `ccpa`    | Consumer identifiers, financial data, online activity                | `redact`         |
+| `pci-dss` | Credit card, cardholder name, bank account, address                  | `mask` (last 4)  |
+| `sox`     | Financial identifiers for audit trails                               | `redact`         |
+| `ferpa`   | Student PII — name, SSN, DOB, address                                | `redact`         |
 
 ```ts
 import { anonymize, getPreset, PRESET_REGISTRY } from "anonyma";
@@ -328,7 +340,7 @@ console.log(hipaa.categories); // [...18 categories...]
 import { tokenize, detokenize } from "anonyma";
 
 const { text, mapping, tokens } = tokenize("alice@example.com called 555-867-5309", {
-  format: "bracket",  // "[EMAIL_0001]", "[PHONE_0001]" (default)
+  format: "bracket", // "[EMAIL_0001]", "[PHONE_0001]" (default)
   // format: "angle",   // "<Email_1>", "<Phone_1>" (LLM-friendly)
   // format: "custom", tokenTemplate: (cat, n) => `{{${cat}_${n}}}`,
   deterministic: true, // same value → same token (default: true)
@@ -407,7 +419,7 @@ import {
 // Anonymize line by line
 const readable = ReadableStream.from(lines);
 const anonymized = readable.pipeThrough(
-  createAnonymizeStream({ defaultStrategy: { strategy: "mask" } })
+  createAnonymizeStream({ defaultStrategy: { strategy: "mask" } }),
 );
 for await (const { text } of anonymized) {
   process.stdout.write(text + "\n");
@@ -473,20 +485,20 @@ Standalone checksum and format validators are exported from `"anonyma/validators
 
 ```ts
 import {
-  luhn,         // Luhn (ISO/IEC 7812) — credit cards
-  verhoeff,     // Verhoeff — Indian Aadhaar
-  nhsMod11,     // NHS mod-11 — UK NHS numbers
-  cpfChecksum,  // CPF — Brazilian tax IDs
-  vinChecksum,  // VIN position-9 check digit
-  deaChecksum,  // DEA number check — US prescriptions
-  ibanMod97,    // MOD-97 — IBAN (ISO 13616)
-  ninoValid,    // NINO format — UK National Insurance
-  aadhaarFormat,// Aadhaar format — Indian national ID
+  luhn, // Luhn (ISO/IEC 7812) — credit cards
+  verhoeff, // Verhoeff — Indian Aadhaar
+  nhsMod11, // NHS mod-11 — UK NHS numbers
+  cpfChecksum, // CPF — Brazilian tax IDs
+  vinChecksum, // VIN position-9 check digit
+  deaChecksum, // DEA number check — US prescriptions
+  ibanMod97, // MOD-97 — IBAN (ISO 13616)
+  ninoValid, // NINO format — UK National Insurance
+  aadhaarFormat, // Aadhaar format — Indian national ID
 } from "anonyma/validators";
 
-luhn("4111111111111111");  // true
-ibanMod97("GB82WEST12345698765432");  // true
-nhsMod11("943-476-5919");   // true
+luhn("4111111111111111"); // true
+ibanMod97("GB82WEST12345698765432"); // true
+nhsMod11("943-476-5919"); // true
 ```
 
 ---
@@ -506,7 +518,13 @@ const myPlugin: AnonymaPlugin = {
     "employee-id": (text) => {
       const matches = [];
       for (const m of text.matchAll(/\bEMP-\d{6}\b/g)) {
-        matches.push({ category: "employee-id", value: m[0], start: m.index!, end: m.index! + m[0].length, confidence: 0.95 });
+        matches.push({
+          category: "employee-id",
+          value: m[0],
+          start: m.index!,
+          end: m.index! + m[0].length,
+          confidence: 0.95,
+        });
       }
       return matches;
     },
@@ -569,21 +587,21 @@ const result = anonymize(req.body.text as string, opts);
 
 ## Subpath Imports
 
-| Import path              | Contents                                                                  |
-|--------------------------|---------------------------------------------------------------------------|
-| `"anonyma"`              | Core API — no Zod dependency                                              |
-| `"anonyma/detectors"`    | All detectors + `DETECTOR_REGISTRY` + `AGGRESSIVE_DETECTOR_REGISTRY`     |
-| `"anonyma/schemas"`      | Zod schemas, JSON schemas, AI/MCP tool definitions (requires `zod`)       |
-| `"anonyma/validators"`   | Standalone checksum validators (Luhn, MOD-97, NHS, VIN, etc.)            |
-| `"anonyma/stream"`       | WHATWG `TransformStream` wrappers (Node ≥ 18 / browsers)                 |
-| `"anonyma/crypto"`       | Low-level Web Crypto utilities                                            |
-| `"anonyma/engine"`       | Span engine: `createPipeline`, `compilePipeline`, detectors, replacers, chunk-safe streams |
-| `"anonyma/vault"`        | Session, keyed and sealed tokenizers; key ring with rotation; token vault |
-| `"anonyma/audit"`        | Hash-chained audit logger without personal data; chain verification      |
-| `"anonyma/compliance"`   | Regulation profiles with citations, policy parser, erasure planning       |
-| `"anonyma/ai"`           | Structure-preserving JSON and chat-message redaction; stream restoration  |
-| `"anonyma/mcp"`          | MCP tool and resource declarations; dependency-free MCP server            |
-| `"anonyma/middleware"`   | HTTP payload scrubber; adapters in `/express` and `/hono`                 |
+| Import path            | Contents                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------ |
+| `"anonyma"`            | Core API — no Zod dependency                                                               |
+| `"anonyma/detectors"`  | All detectors + `DETECTOR_REGISTRY` + `AGGRESSIVE_DETECTOR_REGISTRY`                       |
+| `"anonyma/schemas"`    | Zod schemas, JSON schemas, AI/MCP tool definitions (requires `zod`)                        |
+| `"anonyma/validators"` | Standalone checksum validators (Luhn, MOD-97, NHS, VIN, etc.)                              |
+| `"anonyma/stream"`     | WHATWG `TransformStream` wrappers (Node ≥ 18 / browsers)                                   |
+| `"anonyma/crypto"`     | Low-level Web Crypto utilities                                                             |
+| `"anonyma/engine"`     | Span engine: `createPipeline`, `compilePipeline`, detectors, replacers, chunk-safe streams |
+| `"anonyma/vault"`      | Session, keyed and sealed tokenizers; key ring with rotation; token vault                  |
+| `"anonyma/audit"`      | Hash-chained audit logger without personal data; chain verification                        |
+| `"anonyma/compliance"` | Regulation profiles with citations, policy parser, erasure planning                        |
+| `"anonyma/ai"`         | Structure-preserving JSON and chat-message redaction; stream restoration                   |
+| `"anonyma/mcp"`        | MCP tool and resource declarations; dependency-free MCP server                             |
+| `"anonyma/middleware"` | HTTP payload scrubber; adapters in `/express` and `/hono`                                  |
 
 ---
 
@@ -609,7 +627,7 @@ const tokenizing = compilePipeline(
   { tokenization: session },
 );
 const prompt = tokenizing.transform("Email alice@example.com").text; // "Email [EMAIL_0001]"
-session.restore("Sent to [EMAIL_0001].").text;                       // "Sent to alice@example.com."
+session.restore("Sent to [EMAIL_0001].").text; // "Sent to alice@example.com."
 
 // Text that arrives in arbitrary chunks:
 const scrubbed = source.pipeThrough(createPipelineStream(pipeline));

@@ -20,10 +20,7 @@ import { ValidationError } from "../src/errors.js";
 // Helper: push one chunk through a TransformStream and collect the output.
 // Write and read are started concurrently to avoid backpressure deadlock.
 // ---------------------------------------------------------------------------
-async function pushThrough<I, O>(
-  stream: TransformStream<I, O>,
-  chunk: I,
-): Promise<O> {
+async function pushThrough<I, O>(stream: TransformStream<I, O>, chunk: I): Promise<O> {
   const writer = stream.writable.getWriter();
   const reader = stream.readable.getReader();
 

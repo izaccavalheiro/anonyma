@@ -121,9 +121,9 @@ describe("missing key material", () => {
 // ---------------------------------------------------------------------------
 describe("malformed ciphertext", () => {
   it("throws EncryptionError when ciphertext does not have exactly 3 colon-separated parts", async () => {
-    await expect(
-      decrypt("onlytwoparts:here", { passphrase: "pw" }),
-    ).rejects.toThrow(EncryptionError);
+    await expect(decrypt("onlytwoparts:here", { passphrase: "pw" })).rejects.toThrow(
+      EncryptionError,
+    );
   });
 
   it("throws EncryptionError for a completely empty ciphertext string", async () => {

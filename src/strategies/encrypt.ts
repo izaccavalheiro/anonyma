@@ -75,7 +75,10 @@ async function importRawKey(subtle: SubtleCrypto, keyBytes: Uint8Array): Promise
   if (keyBytes.length !== 16 && keyBytes.length !== 32) {
     throw new EncryptionError("encrypt", new Error("keyBytes must be 16 or 32 bytes"));
   }
-  return subtle.importKey("raw", keyBytes as unknown as ArrayBuffer, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
+  return subtle.importKey("raw", keyBytes as unknown as ArrayBuffer, { name: "AES-GCM" }, false, [
+    "encrypt",
+    "decrypt",
+  ]);
 }
 
 // ---------------------------------------------------------------------------
@@ -155,7 +158,10 @@ export async function decrypt(ciphertext: string, options: EncryptOptions): Prom
 
   const parts = ciphertext.split(":");
   if (parts.length !== 3) {
-    throw new EncryptionError("decrypt", new Error("Malformed ciphertext — expected `encoding:iv:payload`"));
+    throw new EncryptionError(
+      "decrypt",
+      new Error("Malformed ciphertext — expected `encoding:iv:payload`"),
+    );
   }
 
   const [encoding, ivEncoded, payloadEncoded] = parts as [string, string, string];
@@ -176,7 +182,11 @@ export async function decrypt(ciphertext: string, options: EncryptOptions): Prom
       throw new EncryptionError("decrypt", new Error("Provide `passphrase` or `keyBytes`"));
     }
 
-    const plainBuf = await subtle.decrypt({ name: "AES-GCM", iv: iv as unknown as ArrayBuffer }, key, payload as unknown as ArrayBuffer);
+    const plainBuf = await subtle.decrypt(
+      { name: "AES-GCM", iv: iv as unknown as ArrayBuffer },
+      key,
+      payload as unknown as ArrayBuffer,
+    );
     return new TextDecoder().decode(plainBuf);
   } catch (err) {
     if (err instanceof EncryptionError) throw err;

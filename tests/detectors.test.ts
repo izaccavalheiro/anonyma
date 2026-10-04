@@ -486,8 +486,16 @@ describe("detectCreditCardAggressive (aggressive mode)", () => {
 // ---------------------------------------------------------------------------
 describe("AGGRESSIVE_DETECTOR_REGISTRY", () => {
   const ALL_CATEGORIES = [
-    "email", "phone", "ssn", "credit-card", "ipv4", "ipv6",
-    "url", "iban", "date-of-birth", "name",
+    "email",
+    "phone",
+    "ssn",
+    "credit-card",
+    "ipv4",
+    "ipv6",
+    "url",
+    "iban",
+    "date-of-birth",
+    "name",
   ] as const;
 
   it("has a detector for every PII category", () => {

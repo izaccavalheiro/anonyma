@@ -177,8 +177,7 @@ describe("detokenize() shape", () => {
   });
 
   it("round-trips multiple PII types", () => {
-    const original =
-      "From alice@example.com, SSN 001-01-0001, card 4111111111111111";
+    const original = "From alice@example.com, SSN 001-01-0001, card 4111111111111111";
     const { text: tokenized, mapping } = tokenize(original);
     const { text: restored } = detokenize(tokenized, mapping);
     expect(restored).toBe(original);
@@ -307,8 +306,7 @@ describe("sanitizeForLLM()", () => {
   });
 
   it("sanitized text does not contain PII", () => {
-    const pii =
-      "Contact alice@example.com, SSN 001-01-0001, card 4111111111111111";
+    const pii = "Contact alice@example.com, SSN 001-01-0001, card 4111111111111111";
     const { text } = sanitizeForLLM(pii);
     expect(text).not.toContain("alice@example.com");
     expect(text).not.toContain("001-01-0001");
@@ -316,9 +314,7 @@ describe("sanitizeForLLM()", () => {
   });
 
   it("mapping contains enough entries to restore", () => {
-    const { mapping } = sanitizeForLLM(
-      "Contact alice@example.com for help",
-    );
+    const { mapping } = sanitizeForLLM("Contact alice@example.com for help");
     expect(mapping.size).toBeGreaterThan(0);
   });
 });
@@ -329,19 +325,14 @@ describe("restoreFromLLM()", () => {
     const { text: sanitized, mapping } = sanitizeForLLM(original);
 
     // Simulate LLM paraphrasing around the token
-    const llmResponse = sanitized.replace(
-      /\[EMAIL_\d+\]/,
-      (m) => `the address ${m}`,
-    );
+    const llmResponse = sanitized.replace(/\[EMAIL_\d+\]/, (m) => `the address ${m}`);
 
     const { text: restored } = restoreFromLLM(llmResponse, mapping);
     expect(restored).toContain("alice@example.com");
   });
 
   it("returns replacedCount > 0 for successful restore", () => {
-    const { text: sanitized, mapping } = sanitizeForLLM(
-      "alice@example.com",
-    );
+    const { text: sanitized, mapping } = sanitizeForLLM("alice@example.com");
     const { replacedCount } = restoreFromLLM(sanitized, mapping);
     expect(replacedCount).toBeGreaterThan(0);
   });

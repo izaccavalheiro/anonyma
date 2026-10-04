@@ -253,14 +253,7 @@ const PCI_DSS_PRESET: PresetConfig = {
   description:
     "PCI-DSS Cardholder Data — Covers credit/debit card numbers, bank accounts, " +
     "and associated cardholder identifiers.",
-  categories: [
-    "credit-card",
-    "bank-account",
-    "name",
-    "address",
-    "email",
-    "phone",
-  ],
+  categories: ["credit-card", "bank-account", "name", "address", "email", "phone"],
   defaultStrategy: { strategy: "redact" },
   rules: [
     {
@@ -306,15 +299,7 @@ const FERPA_PRESET: PresetConfig = {
   name: "ferpa",
   description:
     "FERPA — Covers education records and student personally identifiable information (PII).",
-  categories: [
-    "name",
-    "email",
-    "phone",
-    "address",
-    "date-of-birth",
-    "ssn",
-    "national-id",
-  ],
+  categories: ["name", "email", "phone", "address", "date-of-birth", "ssn", "national-id"],
   defaultStrategy: { strategy: "redact" },
 };
 

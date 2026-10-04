@@ -136,16 +136,16 @@ test(strategies): increase hash coverage
 chore(deps): bump typescript to 5.5
 ```
 
-| Type       | When to use                              |
-|------------|------------------------------------------|
-| `feat`     | New feature                              |
-| `fix`      | Bug fix                                  |
-| `docs`     | Documentation only                       |
-| `test`     | Tests only                               |
-| `refactor` | Code change without fix/feature          |
-| `perf`     | Performance improvement                  |
-| `chore`    | Build process, deps, tooling             |
-| `ci`       | CI/CD changes                            |
+| Type       | When to use                     |
+| ---------- | ------------------------------- |
+| `feat`     | New feature                     |
+| `fix`      | Bug fix                         |
+| `docs`     | Documentation only              |
+| `test`     | Tests only                      |
+| `refactor` | Code change without fix/feature |
+| `perf`     | Performance improvement         |
+| `chore`    | Build process, deps, tooling    |
+| `ci`       | CI/CD changes                   |
 
 ---
 

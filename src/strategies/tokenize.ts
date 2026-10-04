@@ -65,8 +65,7 @@ export function assignToken(
   store.counters.set(prefix, count);
 
   const id = format === "bracket" ? String(count).padStart(4, "0") : String(count);
-  const token =
-    format === "bracket" ? `[${prefix}_${id}]` : `<${prefix}_${id}>`;
+  const token = format === "bracket" ? `[${prefix}_${id}]` : `<${prefix}_${id}>`;
 
   store.index.set(indexKey, token);
   store.tokens.set(token, value);

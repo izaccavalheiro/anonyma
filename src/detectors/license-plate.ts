@@ -77,26 +77,26 @@ export function detectLicensePlate(text: string): PiiMatch[] {
   // UK current format — distinctive
   const ukCurrentRe = new RegExp(UK_CURRENT_LP_PATTERN.source, "gi");
   while ((m = ukCurrentRe.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, hasContextAt(m.index) ? 0.90 : 0.78);
+    push(m[0], m.index, m.index + m[0].length, hasContextAt(m.index) ? 0.9 : 0.78);
   }
 
   // UK older format
   const ukOldRe = new RegExp(UK_OLD_LP_PATTERN.source, "gi");
   while ((m = ukOldRe.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, hasContextAt(m.index) ? 0.85 : 0.70);
+    push(m[0], m.index, m.index + m[0].length, hasContextAt(m.index) ? 0.85 : 0.7);
   }
 
   // EU generic — context recommended
   const euRe = new RegExp(EU_LP_PATTERN.source, "gi");
   while ((m = euRe.exec(text)) !== null) {
     const conf = hasContextAt(m.index) ? 0.82 : 0.65;
-    if (conf >= 0.70) push(m[0], m.index, m.index + m[0].length, conf);
+    if (conf >= 0.7) push(m[0], m.index, m.index + m[0].length, conf);
   }
 
   // US generic — requires context
   const usRe = new RegExp(US_LP_PATTERN.source, "g");
   while ((m = usRe.exec(text)) !== null) {
-    if (hasContextAt(m.index)) push(m[0], m.index, m.index + m[0].length, 0.80);
+    if (hasContextAt(m.index)) push(m[0], m.index, m.index + m[0].length, 0.8);
   }
 
   return matches;

@@ -23,8 +23,7 @@ const US_EIN_PATTERN = /\b\d{2}-\d{7}\b/g;
  * US ITIN: 9XX-XX-XXXX (Individual Taxpayer ID, second group 50-65,70-88,90-92,94-99)
  * @internal
  */
-const US_ITIN_PATTERN =
-  /\b9\d{2}[\s-](?:5[0-9]|6[0-5]|7[0-9]|8[0-8]|90|91|92|9[4-9])[\s-]\d{4}\b/g;
+const US_ITIN_PATTERN = /\b9\d{2}[\s-](?:5[0-9]|6[0-5]|7[0-9]|8[0-8]|90|91|92|9[4-9])[\s-]\d{4}\b/g;
 
 /**
  * UK UTR: 10 digits (Unique Taxpayer Reference). Requires context.
@@ -88,19 +87,19 @@ export function detectTaxId(text: string): PiiMatch[] {
   // US EIN: XX-XXXXXXX — distinctive format
   const einRe = new RegExp(US_EIN_PATTERN.source, "g");
   while ((m = einRe.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, hasContext(m.index) ? 0.92 : 0.80);
+    push(m[0], m.index, m.index + m[0].length, hasContext(m.index) ? 0.92 : 0.8);
   }
 
   // US ITIN — distinctive format
   const itinRe = new RegExp(US_ITIN_PATTERN.source, "g");
   while ((m = itinRe.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, 0.90);
+    push(m[0], m.index, m.index + m[0].length, 0.9);
   }
 
   // EU VAT — distinctive format
   const vatRe = new RegExp(EU_VAT_PATTERN.source, "g");
   while ((m = vatRe.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, hasContext(m.index) ? 0.90 : 0.78);
+    push(m[0], m.index, m.index + m[0].length, hasContext(m.index) ? 0.9 : 0.78);
   }
 
   // AU ABN — distinctive format

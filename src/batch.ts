@@ -36,10 +36,7 @@ import type {
 // ---------------------------------------------------------------------------
 
 /** Wrap a single sync call in a BatchResult entry. */
-function wrapSync<T>(
-  index: number,
-  fn: () => T,
-): BatchResult<T> {
+function wrapSync<T>(index: number, fn: () => T): BatchResult<T> {
   try {
     return { index, ok: true, value: fn() };
   } catch (err) {
@@ -52,10 +49,7 @@ function wrapSync<T>(
 }
 
 /** Wrap a single async call in a BatchResult entry. */
-async function wrapAsync<T>(
-  index: number,
-  fn: () => Promise<T>,
-): Promise<BatchResult<T>> {
+async function wrapAsync<T>(index: number, fn: () => Promise<T>): Promise<BatchResult<T>> {
   try {
     return { index, ok: true, value: await fn() };
   } catch (err) {
@@ -162,7 +156,5 @@ export function detectBatch(
   texts: readonly string[],
   categories?: readonly PiiCategory[],
 ): BatchResult<PiiMatch[]>[] {
-  return texts.map((text, index) =>
-    wrapSync(index, () => detect(text, categories)),
-  );
+  return texts.map((text, index) => wrapSync(index, () => detect(text, categories)));
 }
