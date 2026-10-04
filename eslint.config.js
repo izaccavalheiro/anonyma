@@ -4,14 +4,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: [
-      "dist/**",
-      "coverage/**",
-      "node_modules/**",
-      "tests/**",
-      "bench/**",
-      "vitest.config.ts",
-    ],
+    ignores: ["dist/**", "coverage/**", "node_modules/**", "tests/**", "vitest.config.ts"],
   },
   eslint.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
@@ -40,9 +33,36 @@ export default tseslint.config(
     },
   },
   {
-    files: ["tests/**/*.ts", "vitest.config.ts", "tsup.config.ts", "eslint.config.js"],
+    files: [
+      "tests/**/*.ts",
+      "vitest.config.ts",
+      "tsup.config.ts",
+      "eslint.config.js",
+      "commitlint.config.js",
+    ],
     extends: [tseslint.configs.disableTypeChecked],
     rules: {
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+    },
+  },
+  {
+    // Node.js scripts of the repository: plain JavaScript, run directly, free to print.
+    files: ["scripts/**/*.mjs", "bench/**/*.mjs"],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: {
+      globals: {
+        console: "readonly",
+        process: "readonly",
+        performance: "readonly",
+        URL: "readonly",
+        globalThis: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+      },
+    },
+    rules: {
+      "no-console": "off",
       "@typescript-eslint/explicit-function-return-type": "off",
       "@typescript-eslint/explicit-module-boundary-types": "off",
     },

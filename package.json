@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/izaccavalheiro/anonyma.git"
+    "url": "git+https://github.com/izaccavalheiro/anonyma.git"
   },
   "homepage": "https://github.com/izaccavalheiro/anonyma#readme",
   "bugs": {
@@ -216,14 +216,23 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "prettier --write \"*.{md,json,js,cjs,mjs,ts,yml,yaml}\" \".github/**/*.{yml,yaml,md}\" \"{src,tests,bench,scripts}/**/*.{ts,js,mjs,cjs,json,md}\"",
+    "format:check": "prettier --check \"*.{md,json,js,cjs,mjs,ts,yml,yaml}\" \".github/**/*.{yml,yaml,md}\" \"{src,tests,bench,scripts}/**/*.{ts,js,mjs,cjs,json,md}\"",
     "typecheck": "tsc --noEmit",
+    "check:package": "publint --strict && attw --pack . --profile node16",
+    "check:size": "node scripts/check-size.mjs",
+    "check:privacy": "node scripts/check-privacy.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "validate": "npm run typecheck && npm run lint && npm run format:check && npm run test:coverage && npm run build && npm run check:package && npm run check:size && npm run check:privacy -- --require-dist && npm run smoke",
     "prepublishOnly": "npm run typecheck && npm run lint && npm run test && npm run build",
     "release": "npm run prepublishOnly && npm publish",
-    "bench": "node bench/run.mjs"
+    "bench": "node bench/run.mjs",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
     "@eslint/js": "^9.0.0",
     "@types/node": "^20.0.0",
     "@vitest/coverage-v8": "^4.1.11",
@@ -231,7 +240,10 @@
     "express": "^5.2.1",
     "fast-check": "^4.10.2",
     "hono": "^4.13.13",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
     "prettier": "^3.0.0",
+    "publint": "^0.3.25",
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
     "typescript-eslint": "^8.0.0",
@@ -248,5 +260,12 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,js,mjs,cjs}": [
+      "eslint --fix --no-warn-ignored",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": "prettier --write"
   }
 }

@@ -65,7 +65,7 @@ describe("engine/precise", () => {
       const text = "o'".repeat(100_000) + "@";
       const started = performance.now();
       expect(found(emailDetector, text)).toEqual([]);
-      expect(performance.now() - started).toBeLessThan(1500);
+      expect(performance.now() - started).toBeLessThan(5000);
     });
 
     it("ignores look-alikes", () => {

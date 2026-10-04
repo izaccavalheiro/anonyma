@@ -1,0 +1,5 @@
+# What CI checks first, before the push leaves the machine.
+npm run typecheck
+npm run lint
+npm run check:privacy
+npm test

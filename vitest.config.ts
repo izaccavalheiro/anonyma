@@ -35,7 +35,7 @@ export default defineConfig({
     include: ["tests/**/*.test.ts"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "json", "html", "lcov"],
+      reporter: ["text", "json", "json-summary", "html", "lcov"],
       include: ["src/**/*.ts"],
       // Barrels and type-only modules contain no logic of their own.
       exclude: ["src/index.ts", "src/schemas.ts", "src/types.ts", "src/**/types.ts"],

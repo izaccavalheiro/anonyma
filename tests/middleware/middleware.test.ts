@@ -684,10 +684,16 @@ describe("middleware/hono (headers and streams)", () => {
         },
       }),
   );
+  // The handler writes its second event only when the test lets it.
+  let releaseSecondEvent: () => void = () => undefined;
+  let secondEventWritten = false;
   app.get("/sse", (c) =>
     streamSSE(c, async (stream) => {
       await stream.writeSSE({ data: "first for alice@example.com" });
-      await stream.sleep(300);
+      await new Promise<void>((resolve) => {
+        releaseSecondEvent = resolve;
+      });
+      secondEventWritten = true;
       await stream.writeSSE({ data: "second" });
     }),
   );
@@ -727,14 +733,15 @@ describe("middleware/hono (headers and streams)", () => {
   });
 
   it("delivers server-sent events while the stream is open, scrubbed", async () => {
-    const started = performance.now();
     const response = await app.request("/sse");
     expect(response.headers.get("content-type")).toContain("text/event-stream");
     const reader = response.body?.pipeThrough(new TextDecoderStream()).getReader();
     if (reader === undefined) throw new Error("unreachable");
+    // The first event arrives while the handler is still waiting to write the second.
     const first = await reader.read();
-    expect(performance.now() - started).toBeLessThan(250);
     expect(first.value).toBe("data: first for [REDACTED]\n\n");
+    expect(secondEventWritten).toBe(false);
+    releaseSecondEvent();
     expect((await reader.read()).value).toBe("data: second\n\n");
   });
 });

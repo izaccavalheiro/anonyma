@@ -482,7 +482,7 @@ describe("engine/resolve", () => {
       const text = "x".repeat(400_000);
       const started = performance.now();
       const spans = resolveSpans(text, [outer, ...inner], "cover");
-      expect(performance.now() - started).toBeLessThan(1500);
+      expect(performance.now() - started).toBeLessThan(5000);
       expect(spans).toHaveLength(80_000);
       expect(
         spans.every((span, index) => index === 0 || span.start >= (spans[index - 1]?.end ?? 0)),

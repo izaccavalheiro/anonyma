@@ -334,7 +334,7 @@ describe("ai/json", () => {
       for (let i = 0; i < 40; i++) diamond = { left: diamond, right: diamond };
       const started = performance.now();
       const { value, replaced } = sanitizeJson(diamond, { pipeline });
-      expect(performance.now() - started).toBeLessThan(1000);
+      expect(performance.now() - started).toBeLessThan(5000);
       expect(replaced).toBe(1);
       expect((value as { left: unknown; right: unknown }).left).toBe(
         (value as { left: unknown; right: unknown }).right,

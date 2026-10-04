@@ -1,0 +1,17 @@
+{
+  ".": 30,
+  "./schemas": 5,
+  "./detectors": 14,
+  "./validators": 2.5,
+  "./crypto": 4.5,
+  "./stream": 25,
+  "./engine": 39,
+  "./vault": 15.5,
+  "./audit": 42,
+  "./compliance": 31,
+  "./ai": 51,
+  "./mcp": 67,
+  "./middleware": 44,
+  "./middleware/express": 45,
+  "./middleware/hono": 45
+}

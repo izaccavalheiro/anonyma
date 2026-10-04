@@ -261,7 +261,7 @@ const CATALOGUE = [
     cat: "name",
     weight: 8,
     gen: (r) => `${r.pick(FIRST)} ${r.pick(LAST)}`,
-    log: (v, r) => `msg="approved by ${v}"`,
+    log: (v) => `msg="approved by ${v}"`,
     prose: (v, r) =>
       r.chance(0.5)
         ? `I spoke with ${r.pick(TITLES)} ${v} today.`
@@ -842,8 +842,8 @@ export function splitFixed(text, chunkSize) {
  */
 export function toTwoByte(text) {
   const i = text.indexOf(" ");
-  if (i < 0) return `${text} `;
-  return `${text.slice(0, i)} ${text.slice(i + 1)}`;
+  if (i < 0) return `${text}\u2003`;
+  return `${text.slice(0, i)}\u2003${text.slice(i + 1)}`;
 }
 
 // ---------------------------------------------------------------------------
