@@ -17,7 +17,7 @@
 - 🔁 **Reversible tokenization** — `tokenize()` / `detokenize()` for round-trip fidelity
 - 🤖 **LLM pipeline helpers** — `sanitizeForLLM()` / `restoreFromLLM()` for safe prompt injection with reversible tokens
 - 📋 **Compliance presets** — built-in `gdpr`, `lgpd`, `pipeda`, `hipaa`, `ccpa`, `pci-dss`, `sox` and `ferpa` presets
-- 🌍 **Locale-aware detection** — locale flags for US, UK, EU, CA, AU, BR, IN, CN, JP, KR, ZA, and global
+- 🌍 **International identifiers** — national IDs, tax IDs, passports, licence plates and company registrations of many countries, detected without configuration
 - ⚡ **Batch processing** — `anonymizeBatch()`, `anonymizeBatchAsync()`, `tokenizeBatch()`, `detectBatch()`
 - 🌊 **Streaming support** — WHATWG `TransformStream` wrappers (`createAnonymizeStream()`, `createTokenizeStream()`)
 - 🎯 **Field-level record anonymization** — dot-notation paths for nested objects
@@ -168,9 +168,9 @@ anonymize("maybe a name here", { confidenceThreshold: 0.8 }).text;
 anonymize(medicalNote, { preset: "hipaa" }).text;
 anonymize(userData, { preset: "gdpr" }).text;
 
-// ── Locale-aware detection ─────────────────────────────────────────────────
-anonymize("NHS: 943 476 5919", { locales: ["uk"] }).text;
-// "[REDACTED]"
+// ── International identifiers ──────────────────────────────────────────────
+anonymize("NHS: 943 476 5919").text;
+// "NHS: [REDACTED]"
 
 // ── Anonymize object fields ─────────────────────────────────────────────────
 anonymizeRecord(
@@ -373,14 +373,15 @@ import { tokenize, detokenize } from "anonyma";
 const { text, mapping, tokens } = tokenize("alice@example.com called 555-867-5309", {
   format: "bracket", // "[EMAIL_0001]", "[PHONE_0001]" (default)
   // format: "angle",   // "<EMAIL_1>", "<PHONE_1>" (LLM-friendly)
-  // format: "custom", tokenTemplate: (cat, n) => `{{${cat}_${n}}}`,
-  deterministic: true, // same value → same token (default: true)
 });
 // text: "[EMAIL_0001] called [PHONE_0001]"
 
 const { text: restored } = detokenize(text, mapping);
 // "alice@example.com called 555-867-5309"
 ```
+
+Identical values share a token. `TokenizeOptions` also declares `format: "custom"` with
+`tokenTemplate`, `deterministic: false` and `locales`, which `tokenize()` does not apply.
 
 ---
 
