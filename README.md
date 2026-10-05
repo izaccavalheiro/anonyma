@@ -222,8 +222,8 @@ const original = await decrypt(ciphertext, { passphrase: "s3cr3t" });
 
 // ── Synthetic data replacement ────────────────────────────────────────────
 import { synthesize } from "anonyma";
-synthesize("alice@example.com", "email", { seed: "project-x" });
-// "dave.wilson99@placeholder.dev" (deterministic, structurally valid)
+synthesize("alice@example.com", "email", { seed: "project-y" });
+// "olivia.williams47@example.com" (deterministic, structurally valid)
 ```
 
 ---
@@ -505,13 +505,13 @@ Replace PII with structurally valid, format-preserving synthetic data. Determini
 import { synthesize } from "anonyma";
 import { compilePipeline } from "anonyma/engine";
 
-synthesize("alice@example.com", "email", { seed: "project-x" });
-// "dave.wilson99@placeholder.dev"
+synthesize("alice@example.com", "email", { seed: "project-y" });
+// "olivia.williams47@example.com"
 
-compilePipeline({ defaultStrategy: { strategy: "synthesize", seed: "my-seed" } }).transform(
+compilePipeline({ defaultStrategy: { strategy: "synthesize", seed: "project-z" } }).transform(
   "Call 555-867-5309 or email alice@example.com",
 ).text;
-// "Call +1-271-864-7239 or email dave.rodriguez53@demo.io"
+// "Call +1-297-841-6744 or email wendy.clark9@example.com"
 ```
 
 ---
