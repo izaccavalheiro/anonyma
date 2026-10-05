@@ -6,11 +6,11 @@ are welcome and are treated as a priority.
 
 ## Supported versions
 
-| Version | Supported                                    |
-| ------- | -------------------------------------------- |
-| 1.1.x   | yes (pre-releases under the `next` dist-tag) |
-| 1.0.x   | security fixes only                          |
-| < 1.0   | no                                           |
+| Version | Supported           |
+| ------- | ------------------- |
+| 1.1.x   | yes                 |
+| 1.0.x   | security fixes only |
+| < 1.0   | no                  |
 
 ## Reporting a vulnerability
 
