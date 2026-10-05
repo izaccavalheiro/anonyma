@@ -64,10 +64,10 @@ const NAME_CONTEXT_PATTERN = new RegExp(
 const NAME_AGGRESSIVE_PATTERN = new RegExp(
   // Greeting context
   `(?:(?:^|\\.[\\s]+)(?:dear|hi|hello|greetings|hey there|hey)\\s+([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)*))|` +
-  // Title prefix
-  `(?:\\b(?:Mr|Mrs|Ms|Miss|Mx|Dr|Prof(?:essor)?|Rev(?:erend)?|Hon(?:orable)?|Capt(?:ain)?|Cmdr|Commander|Lt|Lieu?t(?:enant)?|Sgt|Sergeant|Fr|Father|Sr|Sister|Br|Brother|Esq|Esquire)\\.?\\s+([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)*))|` +
-  // Context keywords
-  `(?:\\b(?:${NAME_CONTEXT_KEYWORDS.replace(/[-()\]{}*+?.,\\^$|#\s[]/g, "\\$&")})\\s+([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)+))`,
+    // Title prefix
+    `(?:\\b(?:Mr|Mrs|Ms|Miss|Mx|Dr|Prof(?:essor)?|Rev(?:erend)?|Hon(?:orable)?|Capt(?:ain)?|Cmdr|Commander|Lt|Lieu?t(?:enant)?|Sgt|Sergeant|Fr|Father|Sr|Sister|Br|Brother|Esq|Esquire)\\.?\\s+([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)*))|` +
+    // Context keywords
+    `(?:\\b(?:${NAME_CONTEXT_KEYWORDS.replace(/[-()\]{}*+?.,\\^$|#\s[]/g, "\\$&")})\\s+([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)+))`,
   "gi",
 );
 
@@ -98,11 +98,7 @@ function extractNameMatches(text: string, pattern: RegExp, confidence: number): 
     // When m[1] is null, m[2] is evaluated (branch 4); since context arm is dead, m[2] ??→m[3]
     // is also a dead path (branch 4 false = branch 5 = branch 6 are all structurally dead).
     /* v8 ignore next 6 */
-    const rawCapture = (
-      m[1] ??
-      m[2] ??
-      m[3] ?? ""
-    ).trim();
+    const rawCapture = (m[1] ?? m[2] ?? m[3] ?? "").trim();
     if (!rawCapture) continue;
 
     const captureStart = text.indexOf(rawCapture, m.index);
@@ -173,7 +169,7 @@ function deduplicateNameMatches(matches: PiiMatch[]): PiiMatch[] {
 export function detectName(text: string): PiiMatch[] {
   const greetingMatches = extractNameMatches(text, NAME_GREETING_PATTERN, 0.75);
   const titleMatches = extractNameMatches(text, NAME_TITLE_PATTERN, 0.78);
-  const contextMatches = extractNameMatches(text, NAME_CONTEXT_PATTERN, 0.70);
+  const contextMatches = extractNameMatches(text, NAME_CONTEXT_PATTERN, 0.7);
 
   return deduplicateNameMatches([...greetingMatches, ...titleMatches, ...contextMatches]);
 }

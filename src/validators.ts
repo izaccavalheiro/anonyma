@@ -106,9 +106,9 @@ export function verhoeff(digits: string): boolean {
     const digit = parseInt(reversed[i] ?? "0", 10);
     const pRow = VERHOEFF_P[i % 8];
     /* v8 ignore next 3 -- lookup tables always cover valid indices (0-7 for P, 0-9 for D) */
-    const pVal = pRow ? pRow[digit] ?? digit : digit;
+    const pVal = pRow ? (pRow[digit] ?? digit) : digit;
     const dRow = VERHOEFF_D[c];
-    c = dRow ? dRow[pVal] ?? 0 : 0;
+    c = dRow ? (dRow[pVal] ?? 0) : 0;
   }
 
   return c === 0;
@@ -202,10 +202,39 @@ export function cpfChecksum(value: string): boolean {
 
 /** VIN transliteration map: letters → numeric values. @internal */
 const VIN_TRANSLITERATION: Readonly<Record<string, number>> = {
-  A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8,
-  J: 1, K: 2, L: 3, M: 4, N: 5,         P: 7, R: 9,
-  S: 2, T: 3, U: 4, V: 5, W: 6, X: 7, Y: 8, Z: 9,
-  0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9,
+  A: 1,
+  B: 2,
+  C: 3,
+  D: 4,
+  E: 5,
+  F: 6,
+  G: 7,
+  H: 8,
+  J: 1,
+  K: 2,
+  L: 3,
+  M: 4,
+  N: 5,
+  P: 7,
+  R: 9,
+  S: 2,
+  T: 3,
+  U: 4,
+  V: 5,
+  W: 6,
+  X: 7,
+  Y: 8,
+  Z: 9,
+  0: 0,
+  1: 1,
+  2: 2,
+  3: 3,
+  4: 4,
+  5: 5,
+  6: 6,
+  7: 7,
+  8: 8,
+  9: 9,
 } as const;
 
 /** VIN position weight factors (positions 1–9 = check, 1-based). @internal */
@@ -270,10 +299,12 @@ export function deaChecksum(value: string): boolean {
 
   const digits = stripped.slice(2);
   /* v8 ignore start -- regex guarantees \d{7} so indices 0-6 are always defined */
-  const oddSum = parseInt(digits[0] ?? "0", 10) +
+  const oddSum =
+    parseInt(digits[0] ?? "0", 10) +
     parseInt(digits[2] ?? "0", 10) +
     parseInt(digits[4] ?? "0", 10);
-  const evenSum = parseInt(digits[1] ?? "0", 10) +
+  const evenSum =
+    parseInt(digits[1] ?? "0", 10) +
     parseInt(digits[3] ?? "0", 10) +
     parseInt(digits[5] ?? "0", 10);
   const checksum = (oddSum + 2 * evenSum) % 10;
@@ -305,10 +336,13 @@ export function ibanMod97(value: string): boolean {
   const rearranged = stripped.slice(4) + stripped.slice(0, 4);
 
   // Convert letters to digits (A=10, B=11, ..., Z=35)
-  const numeric = rearranged.split("").map((c) => {
-    const code = c.charCodeAt(0);
-    return code >= 65 && code <= 90 ? String(code - 55) : c;
-  }).join("");
+  const numeric = rearranged
+    .split("")
+    .map((c) => {
+      const code = c.charCodeAt(0);
+      return code >= 65 && code <= 90 ? String(code - 55) : c;
+    })
+    .join("");
 
   // Compute mod-97 on large number via chunking
   let remainder = 0;

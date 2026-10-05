@@ -110,7 +110,7 @@ const API_KEY_ENTRIES: readonly ApiKeyEntry[] = [
   // OpenAI API keys
   {
     pattern: /\bsk-[a-zA-Z0-9]{32,}\b/g,
-    confidence: 0.90,
+    confidence: 0.9,
     requiresContext: false,
   },
   // Google API keys

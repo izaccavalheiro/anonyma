@@ -39,8 +39,7 @@ const UK_NHS_PATTERN = /\b\d{3}[\s-]\d{3}[\s-]\d{4}\b|\b\d{10}\b/g;
  * (simplified — per-country formats vary significantly)
  * @internal
  */
-const EU_EHIC_PATTERN =
-  /\b[A-Z]{2}\d{6,10}\b/g;
+const EU_EHIC_PATTERN = /\b[A-Z]{2}\d{6,10}\b/g;
 
 /**
  * Generic insurance member ID with context.
@@ -81,7 +80,7 @@ export function detectHealthInsurance(text: string): PiiMatch[] {
   // US MBI — distinctive format
   const mbiRe = new RegExp(US_MBI_PATTERN.source, "gi");
   while ((m = mbiRe.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, hasContextAt(m.index) ? 0.90 : 0.80);
+    push(m[0], m.index, m.index + m[0].length, hasContextAt(m.index) ? 0.9 : 0.8);
   }
 
   // UK NHS — with mod-11 validation

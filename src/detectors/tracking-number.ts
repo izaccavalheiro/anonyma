@@ -28,8 +28,7 @@ const USPS_LONG_PATTERN = /\b\d{20,22}\b/g;
  * USPS: service code + digits + US (e.g., 94001116990045395947)
  * @internal
  */
-const USPS_FORMAT_PATTERN =
-  /\b(?:9[2-5]\d{18,20}|[A-Z]{2}\d{9}US)\b/gi;
+const USPS_FORMAT_PATTERN = /\b(?:9[2-5]\d{18,20}|[A-Z]{2}\d{9}US)\b/gi;
 
 /**
  * FedEx: 12-digit, 15-digit, or 20-22 digit number
@@ -101,7 +100,7 @@ export function detectTrackingNumber(text: string): PiiMatch[] {
   // USPS service-format
   const uspsFormatRe = new RegExp(USPS_FORMAT_PATTERN.source, "gi");
   while ((m = uspsFormatRe.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, 0.90);
+    push(m[0], m.index, m.index + m[0].length, 0.9);
   }
 
   // DHL JD prefix
@@ -117,7 +116,7 @@ export function detectTrackingNumber(text: string): PiiMatch[] {
   // Generic numeric tracking — requires context
   const uspsLongRe = new RegExp(USPS_LONG_PATTERN.source, "g");
   while ((m = uspsLongRe.exec(text)) !== null) {
-    if (hasContextAt(m.index)) push(m[0], m.index, m.index + m[0].length, 0.80);
+    if (hasContextAt(m.index)) push(m[0], m.index, m.index + m[0].length, 0.8);
   }
 
   const fedexRe = new RegExp(FEDEX_PATTERN.source, "g");

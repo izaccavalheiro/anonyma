@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**anonyma** is a zero-dependency TypeScript library for PII detection and data anonymization. It targets Node.js ≥ 18, ships as Dual ESM + CJS, and provides 27 PII detectors, 8 anonymization strategies, 6 compliance presets, reversible tokenization, LLM pipeline helpers, WHATWG streaming, batch processing, checksum validators, and optional Zod/MCP schemas.
+**anonyma** is a zero-dependency TypeScript library for PII detection and data anonymization. It targets Node.js ≥ 18, ships as Dual ESM + CJS, and provides 27 PII detectors, 8 anonymization strategies, 8 compliance presets, reversible tokenization, LLM pipeline helpers, WHATWG streaming, batch processing, checksum validators, and optional Zod/MCP schemas. Since 1.1.0 the subpath exports `anonyma/engine`, `/vault`, `/audit`, `/compliance`, `/ai`, `/mcp` and `/middleware` add a span-based engine, keyed tokenization, a zero-PII audit log, regulation profiles, LLM sanitizers, an MCP server and HTTP middleware.
 
 ---
 
@@ -91,11 +91,14 @@ export function detect<Category>(text: string): PiiMatch[] {
 ```
 
 After creating the file:
+
 1. Add the category to `PiiCategory` in `src/types.ts`
 2. Register in `DETECTOR_REGISTRY` in `src/detectors/index.ts`
 3. Add `TOKEN_PREFIX_MAP` entries in `src/anonymize.ts` and `src/tokenize.ts`
 4. Add to `ALL_CATEGORIES` in `src/anonymize.ts`
-5. Add tests in `tests/detectors.test.ts`
+5. Wrap it for the span engine in `src/engine/builtin.ts` (`LEGACY_DETECTORS`, `BUILTIN_CATEGORIES`, a named export) and export it from `src/engine/index.ts`
+6. Add the category to `PiiCategorySchema` in `src/schemas.ts`
+7. Add tests in `tests/detectors.test.ts`
 
 ### Adding a New Strategy
 
@@ -111,10 +114,13 @@ export function <strategy>(value: string, options: <Strategy>Options = {}): stri
 ```
 
 After creating the file:
+
 1. Add the strategy name to `StrategyName` union in `src/types.ts`
 2. Add `<Strategy>Options` interface in `src/types.ts`
-3. Register in `applyStrategy` switch in `src/anonymize.ts`
-4. Re-export from `src/strategies/index.ts` and `src/index.ts`
+3. Register in the `applyStrategySync()` switch in `src/anonymize.ts` (an asynchronous strategy is awaited in `anonymizeAsync()`)
+4. Handle it in `strategyReplacer()` in `src/engine/replacers.ts` and in `describeStrategy()` in `src/compliance/traits.ts`
+5. Add its options to `StrategyOptionsSchema` in `src/schemas.ts`
+6. Re-export from `src/strategies/index.ts` and `src/index.ts`
 
 ---
 
@@ -147,22 +153,22 @@ describe("detectEmail()", () => {
 
 ## Naming Conventions
 
-| Construct | Convention | Example |
-|---|---|---|
-| Detector function | `detect<Category>` camelCase | `detectCreditCard` |
-| Aggressive variant | `detect<Category>Aggressive` | `detectEmailAggressive` |
-| Strategy function | lowercase verb | `mask`, `redact`, `pseudonymize` |
-| Error class | `<Reason>Error` PascalCase | `ValidationError` |
-| Preset name | lowercase hyphenated string literal | `"pci-dss"` |
-| PII category | lowercase hyphenated string literal | `"credit-card"` |
-| Registry constant | SCREAMING_SNAKE_CASE | `DETECTOR_REGISTRY` |
-| Internal helper | `_` prefix or unexported | `_deduplicateMatches` |
+| Construct          | Convention                          | Example                          |
+| ------------------ | ----------------------------------- | -------------------------------- |
+| Detector function  | `detect<Category>` camelCase        | `detectCreditCard`               |
+| Aggressive variant | `detect<Category>Aggressive`        | `detectEmailAggressive`          |
+| Strategy function  | lowercase verb                      | `mask`, `redact`, `pseudonymize` |
+| Error class        | `<Reason>Error` PascalCase          | `ValidationError`                |
+| Preset name        | lowercase hyphenated string literal | `"pci-dss"`                      |
+| PII category       | lowercase hyphenated string literal | `"credit-card"`                  |
+| Registry constant  | SCREAMING_SNAKE_CASE                | `DETECTOR_REGISTRY`              |
+| Internal helper    | `_` prefix or unexported            | `_deduplicateMatches`            |
 
 ---
 
 ## What Copilot Should NOT Suggest
 
-- Importing from `node:crypto` — use Web Crypto API (`globalThis.crypto.subtle`) instead.
+- Importing from `node:crypto` — reach Web Crypto through `webCrypto()` in `src/internal/webcrypto.ts`, which finds it on every supported runtime.
 - Using `Buffer` — use `Uint8Array` for binary data.
 - Adding npm packages for string manipulation, UUID generation, or hashing.
 - Using `JSON.parse` / `JSON.stringify` without null checks when working with unknown input.
@@ -177,23 +183,35 @@ describe("detectEmail()", () => {
 
 ## Subpath Exports Reference
 
-| Import path | Contents |
-|---|---|
-| `"anonyma"` | Core API: `anonymize`, `detect`, `hasPII`, `tokenize`, strategies, errors, types |
-| `"anonyma/detectors"` | Individual `detect*` functions + `DETECTOR_REGISTRY` |
-| `"anonyma/schemas"` | Zod schemas + `toJsonSchema()` + MCP tool defs (requires `zod`) |
-| `"anonyma/validators"` | `luhn`, `verhoeff`, `nhsMod11`, `cpfChecksum`, etc. |
-| `"anonyma/crypto"` | Low-level Web Crypto helpers |
-| `"anonyma/stream"` | `createAnonymizeStream`, `createTokenizeStream` |
+| Import path            | Contents                                                                            |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| `"anonyma"`            | Core API: `anonymize`, `detect`, `hasPII`, `tokenize`, strategies, errors, types    |
+| `"anonyma/detectors"`  | Individual `detect*` functions + `DETECTOR_REGISTRY`                                |
+| `"anonyma/schemas"`    | Zod schemas, function-calling tool definitions, `ANONYMA_MANIFEST` (requires `zod`) |
+| `"anonyma/validators"` | `luhn`, `verhoeff`, `nhsMod11`, `cpfChecksum`, etc.                                 |
+| `"anonyma/crypto"`     | Low-level Web Crypto helpers                                                        |
+| `"anonyma/stream"`     | `createAnonymizeStream`, `createTokenizeStream`                                     |
+| `"anonyma/engine"`     | `createPipeline`, `compilePipeline`, span detectors, replacers, chunk-safe streams  |
+| `"anonyma/vault"`      | Session, keyed and sealed tokenizers, key ring, token vault, rotation               |
+| `"anonyma/audit"`      | Hash-chained audit logger without personal data, chain verification                 |
+| `"anonyma/compliance"` | `REGULATIONS`, policy parser, erasure planning                                      |
+| `"anonyma/ai"`         | `sanitizeJson`, `createLlmGuard`, stream restoration                                |
+| `"anonyma/mcp"`        | MCP tool and resource declarations, `createMcpServer`, `serveStdio`                 |
+| `"anonyma/middleware"` | `createScrubber`; adapters in `/middleware/express` and `/middleware/hono`          |
 
 ---
 
 ## Compliance Context
 
 When generating code related to:
-- **HIPAA**: Use `redact` strategy; cover all 18 Safe Harbor identifiers.
-- **GDPR**: Use `pseudonymize` strategy; cover all personal data including IP addresses.
-- **PCI-DSS**: Use `mask` strategy; focus on credit card, bank account, CVV data.
-- **CCPA**: Use `mask`; cover personal data + household data identifiers.
+
+- **HIPAA**: Use `redact`; the preset covers the Safe Harbor identifiers that can be detected in text. ZIP codes, dates other than birth dates, device identifiers, biometrics and photographs need field-level rules.
+- **GDPR**: Use `pseudonymize`; cover all personal data including IP addresses.
+- **LGPD**: Use `redact`; cover personal data, including the CPF.
+- **PIPEDA**: Use `redact`; cover personal information, including the Social Insurance Number.
+- **PCI-DSS**: Use `redact`, with card and bank account numbers masked to their last 4 digits. Card verification codes, track data and PINs have no detector.
+- **CCPA**: Use `redact`; cover consumer identifiers, financial and health data, online activity.
 - **FERPA**: Use `redact`; focus on student education records and identifiers.
-- **SOX**: Use `hash`; focus on financial records and employee identifying data.
+- **SOX**: Use `redact`; focus on financial records and corporate officer identifiers.
+
+`REGULATIONS` in `src/compliance/regulations.ts` maps GDPR, LGPD, PIPEDA, CCPA, HIPAA and PCI DSS to their provisions and lists what no detector covers; follow it rather than this summary when they differ.

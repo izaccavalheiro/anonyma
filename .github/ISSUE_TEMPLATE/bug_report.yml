@@ -1,0 +1,38 @@
+name: Bug report
+description: Something is detected, replaced or restored wrongly.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Use synthetic data only.** Do not paste real personal data, real credentials or production logs.
+        Replace real values with made-up ones of the same shape (`alice@example.com`, `203.0.113.7`, `4111 1111 1111 1111`).
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The anonyma version and the runtime.
+      placeholder: anonyma 1.1.0, Node.js 24
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: The smallest input and configuration that show the problem.
+      render: ts
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
+  - type: checkboxes
+    id: synthetic
+    attributes:
+      label: Data
+      options:
+        - label: The report contains synthetic data only.
+          required: true

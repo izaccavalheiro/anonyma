@@ -31,4 +31,3 @@ export { generalize } from "./generalize.js";
 export { encrypt, decrypt } from "./encrypt.js";
 export { synthesize } from "./synthesize.js";
 export { assignToken, resolveToken, detokenizeText, createTokenStore } from "./tokenize.js";
-

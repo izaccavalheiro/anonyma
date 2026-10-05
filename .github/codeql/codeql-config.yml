@@ -1,0 +1,11 @@
+name: anonyma
+
+# Analyse what is published and what runs in CI with privileges: the source,
+# the repository scripts and the workflows. Tests and benchmarks are left out
+# because they hold counter-examples on purpose (an echo server, a partial
+# replacement, an operation named after a passphrase), which are findings by
+# design and would bury a real one.
+paths:
+  - src
+  - scripts
+  - .github

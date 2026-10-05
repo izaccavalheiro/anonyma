@@ -1,0 +1,1086 @@
+{
+  "family": "ipv4",
+  "items": [
+    {
+      "id": "V4-P001",
+      "kind": "pos",
+      "class": "plain",
+      "text": "192.168.1.1",
+      "expected": [
+        {
+          "value": "192.168.1.1",
+          "start": 0,
+          "end": 11
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P002",
+      "kind": "pos",
+      "class": "plain",
+      "text": "Client IP: 10.0.0.5",
+      "expected": [
+        {
+          "value": "10.0.0.5",
+          "start": 11,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P003",
+      "kind": "pos",
+      "class": "plain",
+      "text": "from 172.16.254.3 port 22",
+      "expected": [
+        {
+          "value": "172.16.254.3",
+          "start": 5,
+          "end": 17
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P004",
+      "kind": "pos",
+      "class": "plain",
+      "text": "8.8.8.8",
+      "expected": [
+        {
+          "value": "8.8.8.8",
+          "start": 0,
+          "end": 7
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P005",
+      "kind": "pos",
+      "class": "plain",
+      "text": "1.1.1.1 is Cloudflare DNS",
+      "expected": [
+        {
+          "value": "1.1.1.1",
+          "start": 0,
+          "end": 7
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P006",
+      "kind": "pos",
+      "class": "plain",
+      "text": "203.0.113.42",
+      "expected": [
+        {
+          "value": "203.0.113.42",
+          "start": 0,
+          "end": 12
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P007",
+      "kind": "pos",
+      "class": "plain",
+      "text": "nameserver 9.9.9.9",
+      "expected": [
+        {
+          "value": "9.9.9.9",
+          "start": 11,
+          "end": 18
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P008",
+      "kind": "pos",
+      "class": "plain",
+      "text": "host 91.198.174.192 (wikipedia)",
+      "expected": [
+        {
+          "value": "91.198.174.192",
+          "start": 5,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P009",
+      "kind": "pos",
+      "class": "plain",
+      "text": "Failed password for root from 61.177.173.13 port 4022 ssh2",
+      "expected": [
+        {
+          "value": "61.177.173.13",
+          "start": 30,
+          "end": 43
+        }
+      ],
+      "note": "sshd log"
+    },
+    {
+      "id": "V4-P010",
+      "kind": "pos",
+      "class": "plain",
+      "text": "222.186.42.137 - - [01/May/2024:12:00:00 +0000] \"GET / HTTP/1.1\" 200 512",
+      "expected": [
+        {
+          "value": "222.186.42.137",
+          "start": 0,
+          "end": 14
+        }
+      ],
+      "note": "access log"
+    },
+    {
+      "id": "V4-P011",
+      "kind": "pos",
+      "class": "plain",
+      "text": "IPv4 Address. . . . . . . . . . . : 192.168.0.103",
+      "expected": [
+        {
+          "value": "192.168.0.103",
+          "start": 36,
+          "end": 49
+        }
+      ],
+      "note": "ipconfig output"
+    },
+    {
+      "id": "V4-P012",
+      "kind": "pos",
+      "class": "plain",
+      "text": "X-Forwarded-For: 203.0.113.195, 70.41.3.18, 150.172.238.178",
+      "expected": [
+        {
+          "value": "203.0.113.195",
+          "start": 17,
+          "end": 30
+        },
+        {
+          "value": "70.41.3.18",
+          "start": 32,
+          "end": 42
+        },
+        {
+          "value": "150.172.238.178",
+          "start": 44,
+          "end": 59
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P013",
+      "kind": "pos",
+      "class": "plain",
+      "text": "10.20.30.40\n10.20.30.41",
+      "expected": [
+        {
+          "value": "10.20.30.40",
+          "start": 0,
+          "end": 11
+        },
+        {
+          "value": "10.20.30.41",
+          "start": 12,
+          "end": 23
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P014",
+      "kind": "pos",
+      "class": "plain",
+      "text": "192.168.001.010",
+      "expected": [
+        {
+          "value": "192.168.001.010",
+          "start": 0,
+          "end": 15
+        }
+      ],
+      "note": "zero-padded octets"
+    },
+    {
+      "id": "V4-P015",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "198.51.100.17,",
+      "expected": [
+        {
+          "value": "198.51.100.17",
+          "start": 0,
+          "end": 13
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P016",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "(100.64.0.1)",
+      "expected": [
+        {
+          "value": "100.64.0.1",
+          "start": 1,
+          "end": 11
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P017",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "[192.0.2.1]",
+      "expected": [
+        {
+          "value": "192.0.2.1",
+          "start": 1,
+          "end": 10
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P018",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "src=10.1.2.3 dst=10.4.5.6",
+      "expected": [
+        {
+          "value": "10.1.2.3",
+          "start": 4,
+          "end": 12
+        },
+        {
+          "value": "10.4.5.6",
+          "start": 17,
+          "end": 25
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P019",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "{\"ip\":\"54.239.28.85\"}",
+      "expected": [
+        {
+          "value": "54.239.28.85",
+          "start": 7,
+          "end": 19
+        }
+      ],
+      "note": "JSON"
+    },
+    {
+      "id": "V4-P020",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "'93.184.216.34'",
+      "expected": [
+        {
+          "value": "93.184.216.34",
+          "start": 1,
+          "end": 14
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P021",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "ping 151.101.1.69.",
+      "expected": [
+        {
+          "value": "151.101.1.69",
+          "start": 5,
+          "end": 17
+        }
+      ],
+      "note": "sentence-final period"
+    },
+    {
+      "id": "V4-P022",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "connect to 185.199.108.153; retry",
+      "expected": [
+        {
+          "value": "185.199.108.153",
+          "start": 11,
+          "end": 26
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P023",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "<ip>66.249.66.1</ip>",
+      "expected": [
+        {
+          "value": "66.249.66.1",
+          "start": 4,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P024",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "ip=157.240.22.35&ua=x",
+      "expected": [
+        {
+          "value": "157.240.22.35",
+          "start": 3,
+          "end": 16
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P025",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "addr:192.168.122.1",
+      "expected": [
+        {
+          "value": "192.168.122.1",
+          "start": 5,
+          "end": 18
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P026",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "eth0:10.20.30.40",
+      "expected": [
+        {
+          "value": "10.20.30.40",
+          "start": 5,
+          "end": 16
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P027",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "between 10.0.0.1-10.0.0.254",
+      "expected": [
+        {
+          "value": "10.0.0.1",
+          "start": 8,
+          "end": 16
+        },
+        {
+          "value": "10.0.0.254",
+          "start": 17,
+          "end": 27
+        }
+      ],
+      "note": "range"
+    },
+    {
+      "id": "V4-P028",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "\"remote_addr\": \"2.57.122.9\",",
+      "expected": [
+        {
+          "value": "2.57.122.9",
+          "start": 16,
+          "end": 26
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P029",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "a,192.168.1.77,b",
+      "expected": [
+        {
+          "value": "192.168.1.77",
+          "start": 2,
+          "end": 14
+        }
+      ],
+      "note": "CSV"
+    },
+    {
+      "id": "V4-P030",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "IP 45.33.32.156,port 80",
+      "expected": [
+        {
+          "value": "45.33.32.156",
+          "start": 3,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P031",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "ssh admin@192.0.2.44",
+      "expected": [
+        {
+          "value": "192.0.2.44",
+          "start": 10,
+          "end": 20
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P032",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "user@[192.0.2.55]",
+      "expected": [
+        {
+          "value": "192.0.2.55",
+          "start": 6,
+          "end": 16
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P033",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "地址192.0.2.60。",
+      "expected": [
+        {
+          "value": "192.0.2.60",
+          "start": 2,
+          "end": 12
+        }
+      ],
+      "note": "CJK text glued on both sides"
+    },
+    {
+      "id": "V4-P034",
+      "kind": "pos",
+      "class": "port-or-url",
+      "text": "http://192.168.0.10:8080/admin",
+      "expected": [
+        {
+          "value": "192.168.0.10",
+          "start": 7,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P035",
+      "kind": "pos",
+      "class": "port-or-url",
+      "text": "192.168.1.5:443",
+      "expected": [
+        {
+          "value": "192.168.1.5",
+          "start": 0,
+          "end": 11
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P036",
+      "kind": "pos",
+      "class": "port-or-url",
+      "text": "tcp://34.117.59.81:9092",
+      "expected": [
+        {
+          "value": "34.117.59.81",
+          "start": 6,
+          "end": 18
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P037",
+      "kind": "pos",
+      "class": "port-or-url",
+      "text": "http://10.1.2.3/5/items",
+      "expected": [
+        {
+          "value": "10.1.2.3",
+          "start": 7,
+          "end": 15
+        }
+      ],
+      "note": "one-digit path segment follows the host"
+    },
+    {
+      "id": "V4-P038",
+      "kind": "pos",
+      "class": "port-or-url",
+      "text": "GET http://10.9.8.7/12 HTTP/1.1",
+      "expected": [
+        {
+          "value": "10.9.8.7",
+          "start": 11,
+          "end": 19
+        }
+      ],
+      "note": "two-digit path segment follows the host"
+    },
+    {
+      "id": "V4-P039",
+      "kind": "pos",
+      "class": "cidr",
+      "text": "10.0.0.0/8",
+      "expected": [
+        {
+          "value": "10.0.0.0/8",
+          "start": 0,
+          "end": 10
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P040",
+      "kind": "pos",
+      "class": "cidr",
+      "text": "inet 192.168.1.5/24 brd 192.168.1.255 scope global",
+      "expected": [
+        {
+          "value": "192.168.1.5/24",
+          "start": 5,
+          "end": 19
+        },
+        {
+          "value": "192.168.1.255",
+          "start": 24,
+          "end": 37
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P041",
+      "kind": "pos",
+      "class": "cidr",
+      "text": "route 172.16.0.0/12 via 10.0.0.1",
+      "expected": [
+        {
+          "value": "172.16.0.0/12",
+          "start": 6,
+          "end": 19
+        },
+        {
+          "value": "10.0.0.1",
+          "start": 24,
+          "end": 32
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "V4-P042",
+      "kind": "pos",
+      "class": "glued",
+      "text": "ip_10.0.0.5",
+      "expected": [
+        {
+          "value": "10.0.0.5",
+          "start": 3,
+          "end": 11
+        }
+      ],
+      "note": "underscore before"
+    },
+    {
+      "id": "V4-P043",
+      "kind": "pos",
+      "class": "glued",
+      "text": "host_10.0.0.5_log.txt",
+      "expected": [
+        {
+          "value": "10.0.0.5",
+          "start": 5,
+          "end": 13
+        }
+      ],
+      "note": "underscores on both sides"
+    },
+    {
+      "id": "V4-P044",
+      "kind": "pos",
+      "class": "glued",
+      "text": "IP10.20.30.40",
+      "expected": [
+        {
+          "value": "10.20.30.40",
+          "start": 2,
+          "end": 13
+        }
+      ],
+      "note": "letters glued before"
+    },
+    {
+      "id": "V4-P045",
+      "kind": "pos",
+      "class": "glued",
+      "text": "peer10.20.30.41 up",
+      "expected": [
+        {
+          "value": "10.20.30.41",
+          "start": 4,
+          "end": 15
+        }
+      ],
+      "note": "letters glued before"
+    },
+    {
+      "id": "V4-N001",
+      "kind": "neg",
+      "class": "version",
+      "text": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+      "expected": [],
+      "note": "reduced Chrome user agent"
+    },
+    {
+      "id": "V4-N002",
+      "kind": "neg",
+      "class": "version",
+      "text": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N003",
+      "kind": "neg",
+      "class": "version",
+      "text": "System.Runtime, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+      "expected": [],
+      "note": ".NET assembly name"
+    },
+    {
+      "id": "V4-N004",
+      "kind": "neg",
+      "class": "version",
+      "text": "<bindingRedirect oldVersion=\"0.0.0.0-13.0.0.0\" newVersion=\"13.0.0.0\" />",
+      "expected": [],
+      "note": ".NET binding redirect"
+    },
+    {
+      "id": "V4-N005",
+      "kind": "neg",
+      "class": "version",
+      "text": "[assembly: AssemblyVersion(\"1.2.3.4\")]",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N006",
+      "kind": "neg",
+      "class": "version",
+      "text": "firmware 2.4.1.0 installed",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N007",
+      "kind": "neg",
+      "class": "version",
+      "text": "libfoo 2.4.6.1-1ubuntu1",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N008",
+      "kind": "neg",
+      "class": "version",
+      "text": "Oracle Database 19.3.0.0.0",
+      "expected": [],
+      "note": "five-part version"
+    },
+    {
+      "id": "V4-N009",
+      "kind": "neg",
+      "class": "version",
+      "text": "app-1.2.3.4.jar",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N010",
+      "kind": "neg",
+      "class": "version",
+      "text": "build 1.0.0.0-SNAPSHOT",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N011",
+      "kind": "neg",
+      "class": "version",
+      "text": "linux-generic 5.4.0.42.46",
+      "expected": [],
+      "note": "five-part version"
+    },
+    {
+      "id": "V4-N012",
+      "kind": "neg",
+      "class": "version",
+      "text": "v2.0.0.1",
+      "expected": [],
+      "note": "v prefix"
+    },
+    {
+      "id": "V4-N013",
+      "kind": "neg",
+      "class": "version",
+      "text": "Chrome/96.0.4664.110",
+      "expected": [],
+      "note": "component above 255"
+    },
+    {
+      "id": "V4-N014",
+      "kind": "neg",
+      "class": "version",
+      "text": "Windows 10.0.19045.3803",
+      "expected": [],
+      "note": "components above 255"
+    },
+    {
+      "id": "V4-N015",
+      "kind": "neg",
+      "class": "version",
+      "text": "package 1.2.3",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N016",
+      "kind": "neg",
+      "class": "version",
+      "text": "python 3.11",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N017",
+      "kind": "neg",
+      "class": "oid",
+      "text": "OID 1.3.6.1.4.1.311.21.20",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N018",
+      "kind": "neg",
+      "class": "oid",
+      "text": "2.5.4.3 (commonName)",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N019",
+      "kind": "neg",
+      "class": "oid",
+      "text": "subjectAltName 2.5.29.17",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N020",
+      "kind": "neg",
+      "class": "oid",
+      "text": "SNMP 1.3.6.1.2.1.1.3.0",
+      "expected": [],
+      "note": "sysUpTime"
+    },
+    {
+      "id": "V4-N021",
+      "kind": "neg",
+      "class": "oid",
+      "text": "2.16.840.1.101.3.4.2.1",
+      "expected": [],
+      "note": "SHA-256"
+    },
+    {
+      "id": "V4-N022",
+      "kind": "neg",
+      "class": "oid",
+      "text": "1.2.840.113549.1.1.11",
+      "expected": [],
+      "note": "sha256WithRSAEncryption"
+    },
+    {
+      "id": "V4-N023",
+      "kind": "neg",
+      "class": "section-number",
+      "text": "see section 1.2.3.4 of the spec",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N024",
+      "kind": "neg",
+      "class": "section-number",
+      "text": "§ 3.1.4.2",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N025",
+      "kind": "neg",
+      "class": "section-number",
+      "text": "Table 2.1.3.1 lists the options",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N026",
+      "kind": "neg",
+      "class": "section-number",
+      "text": "clause 12.4.2.1(b)",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N027",
+      "kind": "neg",
+      "class": "section-number",
+      "text": "ECMA-262 15.4.4.14",
+      "expected": [],
+      "note": "Array.prototype.indexOf in ES5"
+    },
+    {
+      "id": "V4-N028",
+      "kind": "neg",
+      "class": "grouped-number",
+      "text": "1.000.000.000 EUR",
+      "expected": [],
+      "note": "one billion, dot as thousands separator"
+    },
+    {
+      "id": "V4-N029",
+      "kind": "neg",
+      "class": "grouped-number",
+      "text": "Umsatz: 1.200.000.000",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N030",
+      "kind": "neg",
+      "class": "grouped-number",
+      "text": "R$ 2.100.000.000,00",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N031",
+      "kind": "neg",
+      "class": "grouped-number",
+      "text": "1.234.567.890",
+      "expected": [],
+      "note": "group above 255"
+    },
+    {
+      "id": "V4-N032",
+      "kind": "neg",
+      "class": "dotted-phone",
+      "text": "Tél: 01.23.45.67.89",
+      "expected": [],
+      "note": "French phone number"
+    },
+    {
+      "id": "V4-N033",
+      "kind": "neg",
+      "class": "dotted-phone",
+      "text": "06.12.34.56.78",
+      "expected": [],
+      "note": "French mobile number"
+    },
+    {
+      "id": "V4-N034",
+      "kind": "neg",
+      "class": "dotted-phone",
+      "text": "Tel 02.123.45.67",
+      "expected": [],
+      "note": "Belgian phone number"
+    },
+    {
+      "id": "V4-N035",
+      "kind": "neg",
+      "class": "out-of-range",
+      "text": "256.256.256.256",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N036",
+      "kind": "neg",
+      "class": "out-of-range",
+      "text": "192.168.1.256",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N037",
+      "kind": "neg",
+      "class": "out-of-range",
+      "text": "300.1.2.3",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N038",
+      "kind": "neg",
+      "class": "out-of-range",
+      "text": "1.2.3.999",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N039",
+      "kind": "neg",
+      "class": "out-of-range",
+      "text": "999.999.999.999",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N040",
+      "kind": "neg",
+      "class": "wrong-arity",
+      "text": "192.168.1",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N041",
+      "kind": "neg",
+      "class": "wrong-arity",
+      "text": "1.2.3.4.5",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N042",
+      "kind": "neg",
+      "class": "wrong-arity",
+      "text": "1.2.3.4.5.6.7.8",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N043",
+      "kind": "neg",
+      "class": "other",
+      "text": "date 12.05.2024",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N044",
+      "kind": "neg",
+      "class": "other",
+      "text": "time 12.30.45.123",
+      "expected": [],
+      "note": "hh.mm.ss.mmm"
+    },
+    {
+      "id": "V4-N045",
+      "kind": "neg",
+      "class": "other",
+      "text": "MAC 00:1A:2B:3C:4D:5E",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-N046",
+      "kind": "neg",
+      "class": "other",
+      "text": "ISBN 0.306.40615.2",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "V4-X001",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "netmask 255.255.255.0",
+      "expected": [],
+      "note": "valid dotted quad, not a host address"
+    },
+    {
+      "id": "V4-X002",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "listen 0.0.0.0:8080",
+      "expected": [],
+      "note": "unspecified address"
+    },
+    {
+      "id": "V4-X003",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "127.0.0.1 localhost",
+      "expected": [],
+      "note": "loopback"
+    },
+    {
+      "id": "V4-X004",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "1.0.0.127.in-addr.arpa",
+      "expected": [],
+      "note": "reverse-DNS name"
+    },
+    {
+      "id": "V4-X005",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "192[.]0[.]2[.]1",
+      "expected": [],
+      "note": "deliberately defanged address"
+    },
+    {
+      "id": "V4-X006",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "ip-10-0-0-1.ec2.internal",
+      "expected": [],
+      "note": "address embedded in a host name with hyphens"
+    }
+  ]
+}

@@ -1,0 +1,1976 @@
+{
+  "family": "iban",
+  "items": [
+    {
+      "id": "IB-P001",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: DE89 3704 0044 0532 0130 00",
+      "expected": [
+        {
+          "value": "DE89 3704 0044 0532 0130 00",
+          "start": 6,
+          "end": 33
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P002",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: GB29 NWBK 6016 1331 9268 19",
+      "expected": [
+        {
+          "value": "GB29 NWBK 6016 1331 9268 19",
+          "start": 6,
+          "end": 33
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P003",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: FR14 2004 1010 0505 0001 3M02 606",
+      "expected": [
+        {
+          "value": "FR14 2004 1010 0505 0001 3M02 606",
+          "start": 6,
+          "end": 39
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P004",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: IT60 X054 2811 1010 0000 0123 456",
+      "expected": [
+        {
+          "value": "IT60 X054 2811 1010 0000 0123 456",
+          "start": 6,
+          "end": 39
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P005",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: NL91 ABNA 0417 1643 00",
+      "expected": [
+        {
+          "value": "NL91 ABNA 0417 1643 00",
+          "start": 6,
+          "end": 28
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P006",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: CH93 0076 2011 6238 5295 7",
+      "expected": [
+        {
+          "value": "CH93 0076 2011 6238 5295 7",
+          "start": 6,
+          "end": 32
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P007",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: PT50 0002 0123 1234 5678 9015 4",
+      "expected": [
+        {
+          "value": "PT50 0002 0123 1234 5678 9015 4",
+          "start": 6,
+          "end": 37
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P008",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: NO93 8601 1117 947",
+      "expected": [
+        {
+          "value": "NO93 8601 1117 947",
+          "start": 6,
+          "end": 24
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P009",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: DK50 0040 0440 1162 43",
+      "expected": [
+        {
+          "value": "DK50 0040 0440 1162 43",
+          "start": 6,
+          "end": 28
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P010",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: FI21 1234 5600 0007 85",
+      "expected": [
+        {
+          "value": "FI21 1234 5600 0007 85",
+          "start": 6,
+          "end": 28
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P011",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: IE29 AIBK 9311 5212 3456 78",
+      "expected": [
+        {
+          "value": "IE29 AIBK 9311 5212 3456 78",
+          "start": 6,
+          "end": 33
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P012",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: GR16 0110 1250 0000 0001 2300 695",
+      "expected": [
+        {
+          "value": "GR16 0110 1250 0000 0001 2300 695",
+          "start": 6,
+          "end": 39
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P013",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: MT84 MALT 0110 0001 2345 MTLC AST0 01S",
+      "expected": [
+        {
+          "value": "MT84 MALT 0110 0001 2345 MTLC AST0 01S",
+          "start": 6,
+          "end": 44
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P014",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: TR33 0006 1005 1978 6457 8413 26",
+      "expected": [
+        {
+          "value": "TR33 0006 1005 1978 6457 8413 26",
+          "start": 6,
+          "end": 38
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P015",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: AE07 0331 2345 6789 0123 456",
+      "expected": [
+        {
+          "value": "AE07 0331 2345 6789 0123 456",
+          "start": 6,
+          "end": 34
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P016",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: BR18 0036 0305 0000 1000 9795 493C 1",
+      "expected": [
+        {
+          "value": "BR18 0036 0305 0000 1000 9795 493C 1",
+          "start": 6,
+          "end": 42
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P017",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: LI21 0881 0000 2324 013A A",
+      "expected": [
+        {
+          "value": "LI21 0881 0000 2324 013A A",
+          "start": 6,
+          "end": 32
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P018",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: HR12 1001 0051 8630 0016 0",
+      "expected": [
+        {
+          "value": "HR12 1001 0051 8630 0016 0",
+          "start": 6,
+          "end": 32
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P019",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: KW81 CBKU 0000 0000 0000 1234 5601 01",
+      "expected": [
+        {
+          "value": "KW81 CBKU 0000 0000 0000 1234 5601 01",
+          "start": 6,
+          "end": 43
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P020",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: QA58 DOHB 0000 1234 5678 90AB CDEF G",
+      "expected": [
+        {
+          "value": "QA58 DOHB 0000 1234 5678 90AB CDEF G",
+          "start": 6,
+          "end": 42
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P021",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: ES91 2100 0418 4502 0005 1332",
+      "expected": [
+        {
+          "value": "ES91 2100 0418 4502 0005 1332",
+          "start": 6,
+          "end": 35
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P022",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: BE68 5390 0754 7034",
+      "expected": [
+        {
+          "value": "BE68 5390 0754 7034",
+          "start": 6,
+          "end": 25
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P023",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: AT61 1904 3002 3457 3201",
+      "expected": [
+        {
+          "value": "AT61 1904 3002 3457 3201",
+          "start": 6,
+          "end": 30
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P024",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: SE45 5000 0000 0583 9825 7466",
+      "expected": [
+        {
+          "value": "SE45 5000 0000 0583 9825 7466",
+          "start": 6,
+          "end": 35
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P025",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: PL61 1090 1014 0000 0712 1981 2874",
+      "expected": [
+        {
+          "value": "PL61 1090 1014 0000 0712 1981 2874",
+          "start": 6,
+          "end": 40
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P026",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: LU28 0019 4006 4475 0000",
+      "expected": [
+        {
+          "value": "LU28 0019 4006 4475 0000",
+          "start": 6,
+          "end": 30
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P027",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: CZ65 0800 0000 1920 0014 5399",
+      "expected": [
+        {
+          "value": "CZ65 0800 0000 1920 0014 5399",
+          "start": 6,
+          "end": 35
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P028",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: HU42 1177 3016 1111 1018 0000 0000",
+      "expected": [
+        {
+          "value": "HU42 1177 3016 1111 1018 0000 0000",
+          "start": 6,
+          "end": 40
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P029",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: SA03 8000 0000 6080 1016 7519",
+      "expected": [
+        {
+          "value": "SA03 8000 0000 6080 1016 7519",
+          "start": 6,
+          "end": 35
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P030",
+      "kind": "pos",
+      "class": "print-format",
+      "text": "IBAN: RO49 AAAA 1B31 0075 9384 0000",
+      "expected": [
+        {
+          "value": "RO49 AAAA 1B31 0075 9384 0000",
+          "start": 6,
+          "end": 35
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P031",
+      "kind": "pos",
+      "class": "electronic-format",
+      "text": "DE89370400440532013000",
+      "expected": [
+        {
+          "value": "DE89370400440532013000",
+          "start": 0,
+          "end": 22
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P032",
+      "kind": "pos",
+      "class": "electronic-format",
+      "text": "GB82WEST12345698765432",
+      "expected": [
+        {
+          "value": "GB82WEST12345698765432",
+          "start": 0,
+          "end": 22
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P033",
+      "kind": "pos",
+      "class": "electronic-format",
+      "text": "FR1420041010050500013M02606",
+      "expected": [
+        {
+          "value": "FR1420041010050500013M02606",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P034",
+      "kind": "pos",
+      "class": "electronic-format",
+      "text": "NL91ABNA0417164300",
+      "expected": [
+        {
+          "value": "NL91ABNA0417164300",
+          "start": 0,
+          "end": 18
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P035",
+      "kind": "pos",
+      "class": "electronic-format",
+      "text": "ES9121000418450200051332",
+      "expected": [
+        {
+          "value": "ES9121000418450200051332",
+          "start": 0,
+          "end": 24
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P036",
+      "kind": "pos",
+      "class": "electronic-format",
+      "text": "BE68539007547034",
+      "expected": [
+        {
+          "value": "BE68539007547034",
+          "start": 0,
+          "end": 16
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P037",
+      "kind": "pos",
+      "class": "electronic-format",
+      "text": "CH9300762011623852957",
+      "expected": [
+        {
+          "value": "CH9300762011623852957",
+          "start": 0,
+          "end": 21
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P038",
+      "kind": "pos",
+      "class": "electronic-format",
+      "text": "IT60X0542811101000000123456",
+      "expected": [
+        {
+          "value": "IT60X0542811101000000123456",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P039",
+      "kind": "pos",
+      "class": "electronic-format",
+      "text": "NO9386011117947",
+      "expected": [
+        {
+          "value": "NO9386011117947",
+          "start": 0,
+          "end": 15
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P040",
+      "kind": "pos",
+      "class": "electronic-format",
+      "text": "SE4550000000058398257466",
+      "expected": [
+        {
+          "value": "SE4550000000058398257466",
+          "start": 0,
+          "end": 24
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P041",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "Please pay to IBAN DE89 3704 0044 0532 0130 00.",
+      "expected": [
+        {
+          "value": "DE89 3704 0044 0532 0130 00",
+          "start": 19,
+          "end": 46
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P042",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "{\"iban\":\"GB29NWBK60161331926819\"}",
+      "expected": [
+        {
+          "value": "GB29NWBK60161331926819",
+          "start": 9,
+          "end": 31
+        }
+      ],
+      "note": "JSON"
+    },
+    {
+      "id": "IB-P043",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "IBAN:NL91ABNA0417164300,",
+      "expected": [
+        {
+          "value": "NL91ABNA0417164300",
+          "start": 5,
+          "end": 23
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P044",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "(IBAN: CH93 0076 2011 6238 5295 7)",
+      "expected": [
+        {
+          "value": "CH93 0076 2011 6238 5295 7",
+          "start": 7,
+          "end": 33
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P045",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "<iban>FI2112345600000785</iban>",
+      "expected": [
+        {
+          "value": "FI2112345600000785",
+          "start": 6,
+          "end": 24
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P046",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "IBAN DE89 3704 0044 0532 0130 00, BIC COBADEFFXXX",
+      "expected": [
+        {
+          "value": "DE89 3704 0044 0532 0130 00",
+          "start": 5,
+          "end": 32
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P047",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "IBAN GB29 NWBK 6016 1331 9268 19\nBIC NWBKGB2L",
+      "expected": [
+        {
+          "value": "GB29 NWBK 6016 1331 9268 19",
+          "start": 5,
+          "end": 32
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P048",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "IBAN: IE29AIBK93115212345678; ref 42",
+      "expected": [
+        {
+          "value": "IE29AIBK93115212345678",
+          "start": 6,
+          "end": 28
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P049",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "IBAN FR14 2004 1010 0505 0001 3M02 606 (La Banque Postale)",
+      "expected": [
+        {
+          "value": "FR14 2004 1010 0505 0001 3M02 606",
+          "start": 5,
+          "end": 38
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P050",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "pay AT61 1904 3002 3457 3201 by Friday",
+      "expected": [
+        {
+          "value": "AT61 1904 3002 3457 3201",
+          "start": 4,
+          "end": 28
+        }
+      ],
+      "note": "lower-case word follows"
+    },
+    {
+      "id": "IB-P051",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "DE: DE89 3704 0044 0532 0130 00 / AT: AT61 1904 3002 3457 3201",
+      "expected": [
+        {
+          "value": "DE89 3704 0044 0532 0130 00",
+          "start": 4,
+          "end": 31
+        },
+        {
+          "value": "AT61 1904 3002 3457 3201",
+          "start": 38,
+          "end": 62
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P052",
+      "kind": "pos",
+      "class": "followed-by-token",
+      "text": "IBAN: BE68 5390 0754 7034 BIC: GKCCBEBB",
+      "expected": [
+        {
+          "value": "BE68 5390 0754 7034",
+          "start": 6,
+          "end": 25
+        }
+      ],
+      "note": "BIC label follows"
+    },
+    {
+      "id": "IB-P053",
+      "kind": "pos",
+      "class": "followed-by-token",
+      "text": "IBAN ES91 2100 0418 4502 0005 1332 EUR 1.500,00",
+      "expected": [
+        {
+          "value": "ES91 2100 0418 4502 0005 1332",
+          "start": 5,
+          "end": 34
+        }
+      ],
+      "note": "currency code follows"
+    },
+    {
+      "id": "IB-P054",
+      "kind": "pos",
+      "class": "followed-by-token",
+      "text": "AT61 1904 3002 3457 3201 BIC BKAUATWW",
+      "expected": [
+        {
+          "value": "AT61 1904 3002 3457 3201",
+          "start": 0,
+          "end": 24
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P055",
+      "kind": "pos",
+      "class": "followed-by-token",
+      "text": "SE45 5000 0000 0583 9825 7466 SWIFT ESSESESS",
+      "expected": [
+        {
+          "value": "SE45 5000 0000 0583 9825 7466",
+          "start": 0,
+          "end": 29
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P056",
+      "kind": "pos",
+      "class": "followed-by-token",
+      "text": "Konto: PL61 1090 1014 0000 0712 1981 2874 PLN",
+      "expected": [
+        {
+          "value": "PL61 1090 1014 0000 0712 1981 2874",
+          "start": 7,
+          "end": 41
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P057",
+      "kind": "pos",
+      "class": "followed-by-token",
+      "text": "IBAN BE68539007547034 BIC GKCCBEBB",
+      "expected": [
+        {
+          "value": "BE68539007547034",
+          "start": 5,
+          "end": 21
+        }
+      ],
+      "note": "electronic format, then BIC"
+    },
+    {
+      "id": "IB-P058",
+      "kind": "pos",
+      "class": "followed-by-token",
+      "text": "IBAN CZ65 0800 0000 1920 0014 5399 VS 1234567890",
+      "expected": [
+        {
+          "value": "CZ65 0800 0000 1920 0014 5399",
+          "start": 5,
+          "end": 34
+        }
+      ],
+      "note": "Czech variable symbol follows"
+    },
+    {
+      "id": "IB-P059",
+      "kind": "pos",
+      "class": "followed-by-token",
+      "text": "LU28 0019 4006 4475 0000 2024-06-30 SEPA",
+      "expected": [
+        {
+          "value": "LU28 0019 4006 4475 0000",
+          "start": 0,
+          "end": 24
+        }
+      ],
+      "note": "date column follows"
+    },
+    {
+      "id": "IB-P060",
+      "kind": "pos",
+      "class": "followed-by-token",
+      "text": "GB29 NWBK 6016 1331 9268 19 BIC NWBKGB2L",
+      "expected": [
+        {
+          "value": "GB29 NWBK 6016 1331 9268 19",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "note": "control: 22-char IBAN, last group is short"
+    },
+    {
+      "id": "IB-P061",
+      "kind": "pos",
+      "class": "lower-case",
+      "text": "iban: de89 3704 0044 0532 0130 00",
+      "expected": [
+        {
+          "value": "de89 3704 0044 0532 0130 00",
+          "start": 6,
+          "end": 33
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P062",
+      "kind": "pos",
+      "class": "lower-case",
+      "text": "gb82west12345698765432",
+      "expected": [
+        {
+          "value": "gb82west12345698765432",
+          "start": 0,
+          "end": 22
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P063",
+      "kind": "pos",
+      "class": "lower-case",
+      "text": "IBAN nl91abna0417164300 (typed by the customer)",
+      "expected": [
+        {
+          "value": "nl91abna0417164300",
+          "start": 5,
+          "end": 23
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "IB-P064",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "DE89-3704-0044-0532-0130-00",
+      "expected": [
+        {
+          "value": "DE89-3704-0044-0532-0130-00",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "note": "hyphens"
+    },
+    {
+      "id": "IB-P065",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "DE89 3704 0044 0532 0130 00",
+      "expected": [
+        {
+          "value": "DE89 3704 0044 0532 0130 00",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "note": "no-break spaces"
+    },
+    {
+      "id": "IB-P066",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "GB29  NWBK  6016  1331  9268  19",
+      "expected": [
+        {
+          "value": "GB29  NWBK  6016  1331  9268  19",
+          "start": 0,
+          "end": 32
+        }
+      ],
+      "note": "double spaces (PDF text extraction)"
+    },
+    {
+      "id": "IB-P067",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "GB29 NWBK 601613 31926819",
+      "expected": [
+        {
+          "value": "GB29 NWBK 601613 31926819",
+          "start": 0,
+          "end": 25
+        }
+      ],
+      "note": "sort code + account grouping"
+    },
+    {
+      "id": "IB-P068",
+      "kind": "pos",
+      "class": "alt-separator",
+      "text": "DE89 3704 0044\n0532 0130 00",
+      "expected": [
+        {
+          "value": "DE89 3704 0044\n0532 0130 00",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "note": "line wrap inside the value"
+    },
+    {
+      "id": "IB-P069",
+      "kind": "pos",
+      "class": "glued",
+      "text": "IBAN_DE89370400440532013000",
+      "expected": [
+        {
+          "value": "DE89370400440532013000",
+          "start": 5,
+          "end": 27
+        }
+      ],
+      "note": "underscore before"
+    },
+    {
+      "id": "IB-N001",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "DE89 3704 0044 0532 0130 01",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "DE",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 22,
+        "expectedLength": 22,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N002",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "GB29 NWBK 6016 1331 9268 18",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "GB",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 22,
+        "expectedLength": 22,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N003",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "FR14 2004 1010 0505 0001 3M02 607",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "FR",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 27,
+        "expectedLength": 27,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N004",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "NL91 ABNA 0417 1643 01",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "NL",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 18,
+        "expectedLength": 18,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N005",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "ES91 2100 0418 4502 0005 1333",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "ES",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 24,
+        "expectedLength": 24,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N006",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "DE89 3704 0044 0532 0103 00",
+      "expected": [],
+      "note": "transposition",
+      "diagnosis": {
+        "shape": true,
+        "country": "DE",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 22,
+        "expectedLength": 22,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N007",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "GB92 NWBK 6016 1331 9268 19",
+      "expected": [],
+      "note": "check digits transposed",
+      "diagnosis": {
+        "shape": true,
+        "country": "GB",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 22,
+        "expectedLength": 22,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N008",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "IT60 X054 2811 1010 0000 0123 465",
+      "expected": [],
+      "note": "transposition",
+      "diagnosis": {
+        "shape": true,
+        "country": "IT",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 27,
+        "expectedLength": 27,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N009",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "CH93 0076 2011 6238 5259 7",
+      "expected": [],
+      "note": "transposition",
+      "diagnosis": {
+        "shape": true,
+        "country": "CH",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 21,
+        "expectedLength": 21,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N010",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "BE68 5390 0754 7043",
+      "expected": [],
+      "note": "transposition",
+      "diagnosis": {
+        "shape": true,
+        "country": "BE",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 16,
+        "expectedLength": 16,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N011",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "DE00 3704 0044 0532 0130 00",
+      "expected": [],
+      "note": "check digits zeroed",
+      "diagnosis": {
+        "shape": true,
+        "country": "DE",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 22,
+        "expectedLength": 22,
+        "checkDigitsInRange": false,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N012",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "GB00 WEST 1234 5698 7654 32",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "GB",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 22,
+        "expectedLength": 22,
+        "checkDigitsInRange": false,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N013",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "FR00 2004 1010 0505 0001 3M02 606",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "FR",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 27,
+        "expectedLength": 27,
+        "checkDigitsInRange": false,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N014",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "GB29 NWBK 6016 1331 9268",
+      "expected": [],
+      "note": "truncated",
+      "diagnosis": {
+        "shape": true,
+        "country": "GB",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 20,
+        "expectedLength": 22,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N015",
+      "kind": "neg",
+      "class": "checksum-error",
+      "text": "DE89 3704 0044 0532 0130 0000",
+      "expected": [],
+      "note": "two extra digits",
+      "diagnosis": {
+        "shape": true,
+        "country": "DE",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 24,
+        "expectedLength": 22,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N016",
+      "kind": "neg",
+      "class": "bic",
+      "text": "BIC: DEUTDEFF500",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "IB-N017",
+      "kind": "neg",
+      "class": "bic",
+      "text": "SWIFT NWBKGB2L",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "IB-N018",
+      "kind": "neg",
+      "class": "bic",
+      "text": "BNPAFRPPXXX",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "IB-N019",
+      "kind": "neg",
+      "class": "vat-number",
+      "text": "VAT DE123456789",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "DE",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 11,
+        "expectedLength": 22,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N020",
+      "kind": "neg",
+      "class": "vat-number",
+      "text": "VAT GB123456789",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "GB",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 11,
+        "expectedLength": 22,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N021",
+      "kind": "neg",
+      "class": "vat-number",
+      "text": "TVA FR12345678901",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "FR",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 13,
+        "expectedLength": 27,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N022",
+      "kind": "neg",
+      "class": "vat-number",
+      "text": "P.IVA IT12345678901",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "IT",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 13,
+        "expectedLength": 27,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N023",
+      "kind": "neg",
+      "class": "vat-number",
+      "text": "BTW NL123456789B01",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "NL",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 14,
+        "expectedLength": 18,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N024",
+      "kind": "neg",
+      "class": "vat-number",
+      "text": "UID ATU12345678",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "IB-N025",
+      "kind": "neg",
+      "class": "vat-number",
+      "text": "BE0123456789",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "BE",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 12,
+        "expectedLength": 16,
+        "checkDigitsInRange": false,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N026",
+      "kind": "neg",
+      "class": "vat-number",
+      "text": "NIP PL1234567890",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "PL",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 12,
+        "expectedLength": 28,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N027",
+      "kind": "neg",
+      "class": "vat-number",
+      "text": "SE123456789001",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "SE",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 14,
+        "expectedLength": 24,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N028",
+      "kind": "neg",
+      "class": "vat-number",
+      "text": "CVR DK12345678",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "DK",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 10,
+        "expectedLength": 18,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N029",
+      "kind": "neg",
+      "class": "vat-number",
+      "text": "FI12345678",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "FI",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 10,
+        "expectedLength": 18,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N030",
+      "kind": "neg",
+      "class": "other-code",
+      "text": "NINO AB123456C",
+      "expected": [],
+      "note": "UK national insurance number",
+      "diagnosis": {
+        "shape": true,
+        "country": "AB",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 9,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N031",
+      "kind": "neg",
+      "class": "other-code",
+      "text": "Passport AB1234567",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "AB",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 9,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N032",
+      "kind": "neg",
+      "class": "other-code",
+      "text": "licence key AB12-CDEF-3456-GHIJ",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "IB-N033",
+      "kind": "neg",
+      "class": "other-code",
+      "text": "serial SN12 ABCD 3456 EFGH 78",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "SN",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 18,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N034",
+      "kind": "neg",
+      "class": "other-code",
+      "text": "PO12 3456 7890 1234",
+      "expected": [],
+      "note": "purchase order reference",
+      "diagnosis": {
+        "shape": true,
+        "country": "PO",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 16,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N035",
+      "kind": "neg",
+      "class": "other-code",
+      "text": "RR123456785GB",
+      "expected": [],
+      "note": "UPU S10 tracking code",
+      "diagnosis": {
+        "shape": true,
+        "country": "RR",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 13,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N036",
+      "kind": "neg",
+      "class": "other-code",
+      "text": "EE123456789DE",
+      "expected": [],
+      "note": "UPU S10 tracking code",
+      "diagnosis": {
+        "shape": true,
+        "country": "EE",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 13,
+        "expectedLength": 20,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N037",
+      "kind": "neg",
+      "class": "other-code",
+      "text": "flight AB12 3456",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "IB-N038",
+      "kind": "neg",
+      "class": "other-code",
+      "text": "hash AB12CDEF34567890ABCD",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "AB",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 20,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N039",
+      "kind": "neg",
+      "class": "other-code",
+      "text": "postcode AB10 1XG",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "IB-N040",
+      "kind": "neg",
+      "class": "other-code",
+      "text": "XX00 0000 0000 0000",
+      "expected": [],
+      "note": "",
+      "diagnosis": {
+        "shape": true,
+        "country": "XX",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 16,
+        "expectedLength": null,
+        "checkDigitsInRange": false,
+        "mod97": false
+      }
+    },
+    {
+      "id": "IB-N041",
+      "kind": "neg",
+      "class": "mod97-ok-unknown-country",
+      "text": "XX68 ABCD 1234 5678",
+      "expected": [],
+      "note": "XX is not a country code",
+      "diagnosis": {
+        "shape": true,
+        "country": "XX",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 16,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N042",
+      "kind": "neg",
+      "class": "mod97-ok-unknown-country",
+      "text": "ZZ70 9876 5432 10AB",
+      "expected": [],
+      "note": "ZZ is not a country code",
+      "diagnosis": {
+        "shape": true,
+        "country": "ZZ",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 16,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N043",
+      "kind": "neg",
+      "class": "mod97-ok-unknown-country",
+      "text": "US44 BOFA 0123 4567 89",
+      "expected": [],
+      "note": "the US does not issue IBANs",
+      "diagnosis": {
+        "shape": true,
+        "country": "US",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 18,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N044",
+      "kind": "neg",
+      "class": "mod97-ok-unknown-country",
+      "text": "CA93 0002 1234 5678 901",
+      "expected": [],
+      "note": "Canada does not issue IBANs",
+      "diagnosis": {
+        "shape": true,
+        "country": "CA",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 19,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N045",
+      "kind": "neg",
+      "class": "mod97-ok-unknown-country",
+      "text": "AU03 0620 0012 3456 78",
+      "expected": [],
+      "note": "Australia does not issue IBANs",
+      "diagnosis": {
+        "shape": true,
+        "country": "AU",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 18,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N046",
+      "kind": "neg",
+      "class": "mod97-ok-unknown-country",
+      "text": "JP15 0001 1234 5678 9",
+      "expected": [],
+      "note": "Japan does not issue IBANs",
+      "diagnosis": {
+        "shape": true,
+        "country": "JP",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 17,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N047",
+      "kind": "neg",
+      "class": "mod97-ok-wrong-length",
+      "text": "DE86 3704 0044 0532 0130",
+      "expected": [],
+      "note": "DE needs 22 characters, this has 20",
+      "diagnosis": {
+        "shape": true,
+        "country": "DE",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 20,
+        "expectedLength": 22,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N048",
+      "kind": "neg",
+      "class": "mod97-ok-wrong-length",
+      "text": "GB18 NWBK 6016 1331 9268 1912",
+      "expected": [],
+      "note": "GB needs 22 characters, this has 24",
+      "diagnosis": {
+        "shape": true,
+        "country": "GB",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 24,
+        "expectedLength": 22,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N049",
+      "kind": "neg",
+      "class": "mod97-ok-wrong-length",
+      "text": "NO10860111179",
+      "expected": [],
+      "note": "NO needs 15 characters, this has 13",
+      "diagnosis": {
+        "shape": true,
+        "country": "NO",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 13,
+        "expectedLength": 15,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N050",
+      "kind": "neg",
+      "class": "mod97-ok-wrong-length",
+      "text": "FR82 2004 1010 0505 0001 306",
+      "expected": [],
+      "note": "FR needs 27 characters, this has 23",
+      "diagnosis": {
+        "shape": true,
+        "country": "FR",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 23,
+        "expectedLength": 27,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N051",
+      "kind": "neg",
+      "class": "mod97-ok-wrong-length",
+      "text": "NL45 ABNA 0417 1643",
+      "expected": [],
+      "note": "NL needs 18 characters, this has 16",
+      "diagnosis": {
+        "shape": true,
+        "country": "NL",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 16,
+        "expectedLength": 18,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N052",
+      "kind": "neg",
+      "class": "mod97-ok-too-short",
+      "text": "AB4912345",
+      "expected": [],
+      "note": "9 characters",
+      "diagnosis": {
+        "shape": true,
+        "country": "AB",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 9,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N053",
+      "kind": "neg",
+      "class": "mod97-ok-too-short",
+      "text": "PL661234567",
+      "expected": [],
+      "note": "11 characters",
+      "diagnosis": {
+        "shape": true,
+        "country": "PL",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 11,
+        "expectedLength": 28,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N054",
+      "kind": "neg",
+      "class": "mod97-ok-other-identifier",
+      "text": "DE100530573",
+      "expected": [],
+      "note": "shape of a German VAT id (DE + 9 digits)",
+      "diagnosis": {
+        "shape": true,
+        "country": "DE",
+        "knownCountry": true,
+        "lengthOk": false,
+        "length": 11,
+        "expectedLength": 22,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N055",
+      "kind": "neg",
+      "class": "mod97-ok-other-identifier",
+      "text": "AB120033B",
+      "expected": [],
+      "note": "shape of a UK national insurance number",
+      "diagnosis": {
+        "shape": true,
+        "country": "AB",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 9,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N056",
+      "kind": "neg",
+      "class": "mod97-ok-other-identifier",
+      "text": "LA1000067",
+      "expected": [],
+      "note": "shape of a 2-letter + 7-digit passport number",
+      "diagnosis": {
+        "shape": true,
+        "country": "LA",
+        "knownCountry": false,
+        "lengthOk": false,
+        "length": 9,
+        "expectedLength": null,
+        "checkDigitsInRange": true,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-N057",
+      "kind": "neg",
+      "class": "mod97-ok-check-digits-01",
+      "text": "DE01 3704 0044 0532 0000 34",
+      "expected": [],
+      "note": "check digits 01 are outside the ISO 7064 range 02..98 (98 is the canonical value)",
+      "diagnosis": {
+        "shape": true,
+        "country": "DE",
+        "knownCountry": true,
+        "lengthOk": true,
+        "length": 22,
+        "expectedLength": 22,
+        "checkDigitsInRange": false,
+        "mod97": true
+      },
+      "constructed": true
+    },
+    {
+      "id": "IB-X001",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "IBANGB82WEST12345698765432",
+      "expected": [],
+      "note": "label glued to the value with no separator"
+    }
+  ],
+  "constructed": [
+    "IB-N041",
+    "IB-N042",
+    "IB-N043",
+    "IB-N044",
+    "IB-N045",
+    "IB-N046",
+    "IB-N047",
+    "IB-N048",
+    "IB-N049",
+    "IB-N050",
+    "IB-N051",
+    "IB-N052",
+    "IB-N053",
+    "IB-N054",
+    "IB-N055",
+    "IB-N056",
+    "IB-N057"
+  ]
+}

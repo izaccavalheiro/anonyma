@@ -23,8 +23,8 @@ describe("getPreset()", () => {
     expect(config.defaultStrategy).toBeDefined();
   });
 
-  it("returns a PresetConfig for each of the 6 presets", () => {
-    const names = ["gdpr", "hipaa", "ccpa", "pci-dss", "sox", "ferpa"] as const;
+  it("returns a PresetConfig for each of the 8 presets", () => {
+    const names = ["gdpr", "lgpd", "pipeda", "hipaa", "ccpa", "pci-dss", "sox", "ferpa"] as const;
     for (const name of names) {
       const config = getPreset(name);
       expect(config.name).toBe(name);
@@ -36,8 +36,8 @@ describe("getPreset()", () => {
     expect(() => getPreset("unknown-preset" as "gdpr")).toThrow();
   });
 
-  it("PRESET_REGISTRY has all 6 presets", () => {
-    expect(Object.keys(PRESET_REGISTRY)).toHaveLength(6);
+  it("PRESET_REGISTRY has all 8 presets", () => {
+    expect(Object.keys(PRESET_REGISTRY)).toHaveLength(8);
     expect(PRESET_REGISTRY["gdpr"]).toBeDefined();
     expect(PRESET_REGISTRY["hipaa"]).toBeDefined();
     expect(PRESET_REGISTRY["pci-dss"]).toBeDefined();
@@ -90,15 +90,11 @@ describe("anonymize() preset option", () => {
     });
     // HIPAA covers phone and email
     const categories = matches.map((m) => m.category);
-    expect(
-      categories.includes("email") || categories.includes("phone"),
-    ).toBe(true);
+    expect(categories.includes("email") || categories.includes("phone")).toBe(true);
   });
 
   it("throws on invalid preset name", () => {
-    expect(() =>
-      anonymize("some text", { preset: "not-a-preset" as "gdpr" }),
-    ).toThrow();
+    expect(() => anonymize("some text", { preset: "not-a-preset" as "gdpr" })).toThrow();
   });
 });
 
@@ -107,10 +103,9 @@ describe("anonymize() preset option", () => {
 // ---------------------------------------------------------------------------
 describe("anonymize() allowlist option", () => {
   it("does not anonymize an allowlisted email", () => {
-    const { text } = anonymize(
-      "Contact safe@example.com or alice@example.com",
-      { allowlist: ["safe@example.com"] },
-    );
+    const { text } = anonymize("Contact safe@example.com or alice@example.com", {
+      allowlist: ["safe@example.com"],
+    });
     expect(text).toContain("safe@example.com");
     expect(text).not.toContain("alice@example.com");
   });
@@ -141,12 +136,9 @@ describe("anonymize() allowlist option", () => {
   });
 
   it("allowlistPatterns accept RegExp objects", () => {
-    const { text } = anonymize(
-      "Contact safe@company.com or danger@evil.com",
-      {
-        allowlistPatterns: [/@company\.com$/i],
-      },
-    );
+    const { text } = anonymize("Contact safe@company.com or danger@evil.com", {
+      allowlistPatterns: [/@company\.com$/i],
+    });
     expect(text).toContain("safe@company.com");
     expect(text).not.toContain("danger@evil.com");
   });
@@ -170,10 +162,9 @@ describe("anonymize() confidenceThreshold option", () => {
   });
 
   it("threshold 0.99 filters low-confidence matches", () => {
-    const { matches: high } = anonymize(
-      "Call 555-0101 this is a local number",
-      { confidenceThreshold: 0.99 },
-    );
+    const { matches: high } = anonymize("Call 555-0101 this is a local number", {
+      confidenceThreshold: 0.99,
+    });
     const { matches: low } = anonymize("Call 555-0101 this is a local number", {
       confidenceThreshold: 0,
     });
@@ -213,10 +204,9 @@ describe("anonymizeAsync()", () => {
   });
 
   it("supports all same options as synchronous anonymize()", async () => {
-    const { text } = await anonymizeAsync(
-      "Contact alice@example.com or call +1-202-555-0101",
-      { strategy: "redact" },
-    );
+    const { text } = await anonymizeAsync("Contact alice@example.com or call +1-202-555-0101", {
+      strategy: "redact",
+    });
     expect(text).toContain("[REDACTED]");
     expect(text).not.toContain("alice@example.com");
     expect(text).not.toContain("+1-202-555-0101");

@@ -250,9 +250,7 @@ describe("createAnonymizer", () => {
 
   it("throws UnknownCategoryError for invalid category in config", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect(() => createAnonymizer({ categories: ["bad" as any] })).toThrow(
-      UnknownCategoryError,
-    );
+    expect(() => createAnonymizer({ categories: ["bad" as any] })).toThrow(UnknownCategoryError);
   });
 
   it("only detects the configured categories", () => {
@@ -384,10 +382,7 @@ describe("anonymizeObject", () => {
   });
 
   it("forwards options to anonymize()", () => {
-    const result = anonymizeObject(
-      { email: "alice@example.com" },
-      { globalReplacement: "***" },
-    );
+    const result = anonymizeObject({ email: "alice@example.com" }, { globalReplacement: "***" });
     expect((result as { email: string }).email).toBe("***");
   });
 
@@ -519,27 +514,22 @@ describe("anonymize() — globalReplacement", () => {
 // ---------------------------------------------------------------------------
 describe("anonymize() — consistentTokens", () => {
   it("maps the same email to the same token", () => {
-    const { text } = anonymize(
-      "alice@example.com and alice@example.com again",
-      { consistentTokens: true },
-    );
+    const { text } = anonymize("alice@example.com and alice@example.com again", {
+      consistentTokens: true,
+    });
     expect(text).toBe("EMAIL_1 and EMAIL_1 again");
   });
 
   it("maps different emails to different tokens", () => {
-    const { text } = anonymize(
-      "alice@example.com and bob@example.com",
-      { consistentTokens: true },
-    );
+    const { text } = anonymize("alice@example.com and bob@example.com", { consistentTokens: true });
     expect(text).toContain("EMAIL_1");
     expect(text).toContain("EMAIL_2");
   });
 
   it("increments counters per category separately", () => {
-    const { text } = anonymize(
-      "alice@example.com bob@example.com 555-867-5309",
-      { consistentTokens: true },
-    );
+    const { text } = anonymize("alice@example.com bob@example.com 555-867-5309", {
+      consistentTokens: true,
+    });
     expect(text).toContain("EMAIL_1");
     expect(text).toContain("EMAIL_2");
     expect(text).toContain("PHONE_1");
@@ -848,10 +838,10 @@ describe("anonymizeAsync", () => {
   });
 
   it("consistentTokens works in the async path", async () => {
-    const { text } = await anonymizeAsync(
-      "alice@example.com and alice@example.com again",
-      { defaultStrategy: { strategy: "hash" }, consistentTokens: true },
-    );
+    const { text } = await anonymizeAsync("alice@example.com and alice@example.com again", {
+      defaultStrategy: { strategy: "hash" },
+      consistentTokens: true,
+    });
     expect(text).toBe("EMAIL_1 and EMAIL_1 again");
   });
 
@@ -915,7 +905,10 @@ describe("anonymizeAsync", () => {
   it("throws PresetNotFoundError for unknown preset in async path", async () => {
     await expect(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      anonymizeAsync("text", { preset: "nonexistent" as any, defaultStrategy: { strategy: "hash" } }),
+      anonymizeAsync("text", {
+        preset: "nonexistent" as any,
+        defaultStrategy: { strategy: "hash" },
+      }),
     ).rejects.toThrow(PresetNotFoundError);
   });
 
@@ -952,10 +945,9 @@ describe("anonymizeAsync", () => {
 describe("anonymizeRecord() — edge cases", () => {
   it("converts a non-string field value to string before applying strategy", () => {
     // age is a number, not a string — String(27) → '27' → generalize → '20-29'
-    const result = anonymizeRecord(
-      { age: 27 } as unknown as Record<string, unknown>,
-      { age: { strategy: { strategy: "generalize" } } },
-    );
+    const result = anonymizeRecord({ age: 27 } as unknown as Record<string, unknown>, {
+      age: { strategy: { strategy: "generalize" } },
+    });
     expect(result.age).toBe("20-29");
   });
 
@@ -1071,13 +1063,10 @@ describe("createAnonymizer().tokenize()", () => {
 
   it("allowlist with multiple entries, caseSensitive:true, tokenize passes through allowlisted email", () => {
     const anonymizer = createAnonymizer({ categories: ["email"] });
-    const { text, tokens } = anonymizer.tokenize(
-      "alice@example.com and bob@example.com",
-      {
-        allowlist: ["alice@example.com", "bob@example.com"],
-        allowlistCaseSensitive: true,
-      },
-    );
+    const { text, tokens } = anonymizer.tokenize("alice@example.com and bob@example.com", {
+      allowlist: ["alice@example.com", "bob@example.com"],
+      allowlistCaseSensitive: true,
+    });
     // Both emails are in the case-sensitive allowlist → both pass through
     expect(text).toBe("alice@example.com and bob@example.com");
     expect(tokens).toHaveLength(0);
@@ -1120,10 +1109,9 @@ describe("anonymize() — pci-dss preset with per-category rules", () => {
     // pci-dss has rules: credit-card → mask, bank-account → mask; default: redact
     // This exercises the resolvedPreset!.rules?.find(...)?.strategy branch (both
     // found and not-found outcomes at line 421).
-    const { text } = anonymize(
-      "Card: 4111111111111111 email: alice@example.com",
-      { preset: "pci-dss" },
-    );
+    const { text } = anonymize("Card: 4111111111111111 email: alice@example.com", {
+      preset: "pci-dss",
+    });
     // Credit card is masked (ends with last 4 digits)
     expect(text).not.toContain("4111111111111111");
     // Email is redacted
@@ -1175,10 +1163,10 @@ describe("anonymizeAsync() — additional branch coverage", () => {
   it("pci-dss preset in async — applies preset per-category rules", async () => {
     // No options.rules provided: preset's own rules are used via resolvedPreset.categories.map
     // pci-dss has rules for credit-card + bank-account; other categories fallback to defaultStrategy
-    const { text } = await anonymizeAsync(
-      "Card: 4111111111111111 and alice@example.com",
-      { preset: "pci-dss", defaultStrategy: { strategy: "hash" } },
-    );
+    const { text } = await anonymizeAsync("Card: 4111111111111111 and alice@example.com", {
+      preset: "pci-dss",
+      defaultStrategy: { strategy: "hash" },
+    });
     expect(text).not.toContain("4111111111111111");
     expect(text).not.toContain("alice@example.com");
   });

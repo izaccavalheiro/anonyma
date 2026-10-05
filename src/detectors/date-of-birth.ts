@@ -19,12 +19,10 @@ const MONTH_NAMES =
 const ISO_PATTERN = /\b(19|20)\d{2}[- /](0[1-9]|1[0-2])[- /](0[1-9]|[12]\d|3[01])\b/g;
 
 /** US: MM/DD/YYYY or MM-DD-YYYY */
-const US_PATTERN =
-  /\b(0[1-9]|1[0-2])[-/](0[1-9]|[12]\d|3[01])[-/](19|20)\d{2}\b/g;
+const US_PATTERN = /\b(0[1-9]|1[0-2])[-/](0[1-9]|[12]\d|3[01])[-/](19|20)\d{2}\b/g;
 
 /** European: DD/MM/YYYY or DD.MM.YYYY */
-const EU_PATTERN =
-  /\b(0[1-9]|[12]\d|3[01])[/.](0[1-9]|1[0-2])[/.](19|20)\d{2}\b/g;
+const EU_PATTERN = /\b(0[1-9]|[12]\d|3[01])[/.](0[1-9]|1[0-2])[/.](19|20)\d{2}\b/g;
 
 /** Long-form: January 15, 1990 */
 const LONG_US_PATTERN = new RegExp(
@@ -92,8 +90,8 @@ export function detectDateOfBirth(text: string): PiiMatch[] {
 
   for (const match of sorted) {
     let overlaps = false;
-    for (const pos of seen) {
-      if (match.start < pos) {
+    for (let i = match.start; i < match.end; i++) {
+      if (seen.has(i)) {
         overlaps = true;
         break;
       }

@@ -23,8 +23,7 @@ const BANK_CONTEXT_RE =
  * US ABA routing number: 9 digits, first two digits must be 01-12, 21-32, 61-72, or 80.
  * @internal
  */
-const US_ABA_ROUTING_PATTERN =
-  /\b(?:0[1-9]|1[0-2]|2[1-9]|3[0-2]|6[1-9]|7[0-2]|80)\d{7}\b/g;
+const US_ABA_ROUTING_PATTERN = /\b(?:0[1-9]|1[0-2]|2[1-9]|3[0-2]|6[1-9]|7[0-2]|80)\d{7}\b/g;
 
 /**
  * UK sort code: XX-XX-XX
@@ -36,8 +35,7 @@ const UK_SORT_CODE_PATTERN = /\b\d{2}-\d{2}-\d{2}\b/g;
  * SWIFT/BIC code: 8 or 11 chars (4 bank + 2 country + 2 location + optional 3 branch)
  * @internal
  */
-const SWIFT_BIC_PATTERN =
-  /\b[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}(?:[A-Z0-9]{3})?\b/g;
+const SWIFT_BIC_PATTERN = /\b[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}(?:[A-Z0-9]{3})?\b/g;
 
 /**
  * Generic bank account number: 7-18 digits (only with context)
@@ -84,7 +82,7 @@ export function detectBankAccount(text: string): PiiMatch[] {
   // UK sort code — distinctive format, no context needed
   const scRe = new RegExp(UK_SORT_CODE_PATTERN.source, "g");
   while ((m = scRe.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, 0.80);
+    push(m[0], m.index, m.index + m[0].length, 0.8);
   }
 
   // SWIFT/BIC — distinctive, no context needed
@@ -100,7 +98,7 @@ export function detectBankAccount(text: string): PiiMatch[] {
   // Generic account number — only with context
   const genericRe = new RegExp(GENERIC_ACCOUNT_PATTERN.source, "g");
   while ((m = genericRe.exec(text)) !== null) {
-    if (hasContext(m.index)) push(m[0], m.index, m.index + m[0].length, 0.80);
+    if (hasContext(m.index)) push(m[0], m.index, m.index + m[0].length, 0.8);
   }
 
   return matches;

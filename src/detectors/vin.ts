@@ -70,7 +70,7 @@ export function detectVinAggressive(text: string): PiiMatch[] {
         value: m[0],
         start: m.index,
         end: m.index + m[0].length,
-        confidence: 0.70,
+        confidence: 0.7,
       });
     }
   }

@@ -1,0 +1,1699 @@
+{
+  "family": "email",
+  "items": [
+    {
+      "id": "EM-P001",
+      "kind": "pos",
+      "class": "plain",
+      "text": "Contact us at support@example.com for help.",
+      "expected": [
+        {
+          "value": "support@example.com",
+          "start": 14,
+          "end": 33
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P002",
+      "kind": "pos",
+      "class": "plain",
+      "text": "alice@example.com",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P003",
+      "kind": "pos",
+      "class": "plain",
+      "text": "Send it to first.last@example.co.uk today",
+      "expected": [
+        {
+          "value": "first.last@example.co.uk",
+          "start": 11,
+          "end": 35
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P004",
+      "kind": "pos",
+      "class": "plain",
+      "text": "My address is alice+newsletter@example.com.",
+      "expected": [
+        {
+          "value": "alice+newsletter@example.com",
+          "start": 14,
+          "end": 42
+        }
+      ],
+      "note": "plus tag, sentence-final period"
+    },
+    {
+      "id": "EM-P005",
+      "kind": "pos",
+      "class": "plain",
+      "text": "john_doe99@mail.example.org",
+      "expected": [
+        {
+          "value": "john_doe99@mail.example.org",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P006",
+      "kind": "pos",
+      "class": "plain",
+      "text": "Reply to JOHN.SMITH@EXAMPLE.COM ASAP",
+      "expected": [
+        {
+          "value": "JOHN.SMITH@EXAMPLE.COM",
+          "start": 9,
+          "end": 31
+        }
+      ],
+      "note": "upper case"
+    },
+    {
+      "id": "EM-P007",
+      "kind": "pos",
+      "class": "plain",
+      "text": "x@y.co",
+      "expected": [
+        {
+          "value": "x@y.co",
+          "start": 0,
+          "end": 6
+        }
+      ],
+      "note": "shortest realistic"
+    },
+    {
+      "id": "EM-P008",
+      "kind": "pos",
+      "class": "plain",
+      "text": "user@sub.mail.example.com is the alias",
+      "expected": [
+        {
+          "value": "user@sub.mail.example.com",
+          "start": 0,
+          "end": 25
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P009",
+      "kind": "pos",
+      "class": "plain",
+      "text": "billing@my-company.io",
+      "expected": [
+        {
+          "value": "billing@my-company.io",
+          "start": 0,
+          "end": 21
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P010",
+      "kind": "pos",
+      "class": "plain",
+      "text": "info@example.photography",
+      "expected": [
+        {
+          "value": "info@example.photography",
+          "start": 0,
+          "end": 24
+        }
+      ],
+      "note": "long gTLD"
+    },
+    {
+      "id": "EM-P011",
+      "kind": "pos",
+      "class": "plain",
+      "text": "curator@example.museum",
+      "expected": [
+        {
+          "value": "curator@example.museum",
+          "start": 0,
+          "end": 22
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P012",
+      "kind": "pos",
+      "class": "plain",
+      "text": "12345@example.com",
+      "expected": [
+        {
+          "value": "12345@example.com",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": "numeric local part"
+    },
+    {
+      "id": "EM-P013",
+      "kind": "pos",
+      "class": "plain",
+      "text": "a.b.c.d@example.net",
+      "expected": [
+        {
+          "value": "a.b.c.d@example.net",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P014",
+      "kind": "pos",
+      "class": "plain",
+      "text": "o'brien@example.ie",
+      "expected": [
+        {
+          "value": "o'brien@example.ie",
+          "start": 0,
+          "end": 18
+        }
+      ],
+      "note": "apostrophe is atext"
+    },
+    {
+      "id": "EM-P015",
+      "kind": "pos",
+      "class": "plain",
+      "text": "user-name@example-domain.com",
+      "expected": [
+        {
+          "value": "user-name@example-domain.com",
+          "start": 0,
+          "end": 28
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P016",
+      "kind": "pos",
+      "class": "plain",
+      "text": "hello@1and1.example",
+      "expected": [
+        {
+          "value": "hello@1and1.example",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": "label starting with a digit"
+    },
+    {
+      "id": "EM-P017",
+      "kind": "pos",
+      "class": "plain",
+      "text": "ceo@x.ai",
+      "expected": [
+        {
+          "value": "ceo@x.ai",
+          "start": 0,
+          "end": 8
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P018",
+      "kind": "pos",
+      "class": "plain",
+      "text": "_somename@example.com",
+      "expected": [
+        {
+          "value": "_somename@example.com",
+          "start": 0,
+          "end": 21
+        }
+      ],
+      "note": "leading underscore (RFC 3696 example)"
+    },
+    {
+      "id": "EM-P019",
+      "kind": "pos",
+      "class": "plain",
+      "text": "customer/department=shipping@example.com",
+      "expected": [
+        {
+          "value": "customer/department=shipping@example.com",
+          "start": 0,
+          "end": 40
+        }
+      ],
+      "note": "RFC 3696 example, '/' and '=' are atext"
+    },
+    {
+      "id": "EM-P020",
+      "kind": "pos",
+      "class": "plain",
+      "text": "user%example.com@example.org",
+      "expected": [
+        {
+          "value": "user%example.com@example.org",
+          "start": 0,
+          "end": 28
+        }
+      ],
+      "note": "percent hack"
+    },
+    {
+      "id": "EM-P021",
+      "kind": "pos",
+      "class": "plain",
+      "text": "user@xn--bcher-kva.example",
+      "expected": [
+        {
+          "value": "user@xn--bcher-kva.example",
+          "start": 0,
+          "end": 26
+        }
+      ],
+      "note": "IDN A-label"
+    },
+    {
+      "id": "EM-P022",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "<alice@example.com>",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 1,
+          "end": 18
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P023",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "\"Alice Example\" <alice@example.com>",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 17,
+          "end": 34
+        }
+      ],
+      "note": "RFC 5322 name-addr"
+    },
+    {
+      "id": "EM-P024",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "mailto:alice@example.com?subject=Hi",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 7,
+          "end": 24
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P025",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "(bob@example.org)",
+      "expected": [
+        {
+          "value": "bob@example.org",
+          "start": 1,
+          "end": 16
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P026",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "[carol@example.org]",
+      "expected": [
+        {
+          "value": "carol@example.org",
+          "start": 1,
+          "end": 18
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P027",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "'dave@example.org'",
+      "expected": [
+        {
+          "value": "dave@example.org",
+          "start": 1,
+          "end": 17
+        }
+      ],
+      "note": "single quotes"
+    },
+    {
+      "id": "EM-P028",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "{\"email\":\"erin@example.org\",\"id\":7}",
+      "expected": [
+        {
+          "value": "erin@example.org",
+          "start": 10,
+          "end": 26
+        }
+      ],
+      "note": "JSON"
+    },
+    {
+      "id": "EM-P029",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "frank@example.org, grace@example.org; heidi@example.org",
+      "expected": [
+        {
+          "value": "frank@example.org",
+          "start": 0,
+          "end": 17
+        },
+        {
+          "value": "grace@example.org",
+          "start": 19,
+          "end": 36
+        },
+        {
+          "value": "heidi@example.org",
+          "start": 38,
+          "end": 55
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P030",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "Email:ivan@example.org",
+      "expected": [
+        {
+          "value": "ivan@example.org",
+          "start": 6,
+          "end": 22
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P031",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "judy@example.org.",
+      "expected": [
+        {
+          "value": "judy@example.org",
+          "start": 0,
+          "end": 16
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P032",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "Is it mallory@example.org?",
+      "expected": [
+        {
+          "value": "mallory@example.org",
+          "start": 6,
+          "end": 25
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P033",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "Write to niaj@example.org!",
+      "expected": [
+        {
+          "value": "niaj@example.org",
+          "start": 9,
+          "end": 25
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P034",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "olivia@example.org\npeggy@example.org",
+      "expected": [
+        {
+          "value": "olivia@example.org",
+          "start": 0,
+          "end": 18
+        },
+        {
+          "value": "peggy@example.org",
+          "start": 19,
+          "end": 36
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P035",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "cc: walter@example.org",
+      "expected": [
+        {
+          "value": "walter@example.org",
+          "start": 4,
+          "end": 22
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P036",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "From: Wendy <wendy@example.org>",
+      "expected": [
+        {
+          "value": "wendy@example.org",
+          "start": 13,
+          "end": 30
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P037",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "Contact:alice@example.com(work)",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 8,
+          "end": 25
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P038",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "alice@example.com—call me",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": "em dash after"
+    },
+    {
+      "id": "EM-P039",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "E-mail：alice@example.com",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 7,
+          "end": 24
+        }
+      ],
+      "note": "full-width colon before"
+    },
+    {
+      "id": "EM-P040",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "alice@example.com。",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": "CJK full stop after"
+    },
+    {
+      "id": "EM-P041",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "邮箱alice@example.com",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 2,
+          "end": 19
+        }
+      ],
+      "note": "CJK text glued before"
+    },
+    {
+      "id": "EM-P042",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "`alice@example.com`",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 1,
+          "end": 18
+        }
+      ],
+      "note": "markdown code span (backtick is atext)"
+    },
+    {
+      "id": "EM-P043",
+      "kind": "pos",
+      "class": "delimited",
+      "text": "**alice@example.com**",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 2,
+          "end": 19
+        }
+      ],
+      "note": "markdown bold (asterisk is atext)"
+    },
+    {
+      "id": "EM-P044",
+      "kind": "pos",
+      "class": "kv-context",
+      "text": "user=quentin@example.org",
+      "expected": [
+        {
+          "value": "quentin@example.org",
+          "start": 5,
+          "end": 24
+        }
+      ],
+      "note": "logfmt"
+    },
+    {
+      "id": "EM-P045",
+      "kind": "pos",
+      "class": "kv-context",
+      "text": "https://example.net/unsubscribe?email=rupert@example.org&list=3",
+      "expected": [
+        {
+          "value": "rupert@example.org",
+          "start": 38,
+          "end": 56
+        }
+      ],
+      "note": "URL query string"
+    },
+    {
+      "id": "EM-P046",
+      "kind": "pos",
+      "class": "kv-context",
+      "text": "SMTP_USER=sybil@example.org",
+      "expected": [
+        {
+          "value": "sybil@example.org",
+          "start": 10,
+          "end": 27
+        }
+      ],
+      "note": ".env file"
+    },
+    {
+      "id": "EM-P047",
+      "kind": "pos",
+      "class": "kv-context",
+      "text": "WHERE email='trent@example.org'",
+      "expected": [
+        {
+          "value": "trent@example.org",
+          "start": 13,
+          "end": 30
+        }
+      ],
+      "note": "SQL literal"
+    },
+    {
+      "id": "EM-P048",
+      "kind": "pos",
+      "class": "kv-context",
+      "text": "https://example.net/users/victor@example.org/profile",
+      "expected": [
+        {
+          "value": "victor@example.org",
+          "start": 26,
+          "end": 44
+        }
+      ],
+      "note": "URL path segment"
+    },
+    {
+      "id": "EM-P049",
+      "kind": "pos",
+      "class": "kv-context",
+      "text": "name=Yan&email=yan@example.org",
+      "expected": [
+        {
+          "value": "yan@example.org",
+          "start": 15,
+          "end": 30
+        }
+      ],
+      "note": "form body"
+    },
+    {
+      "id": "EM-P050",
+      "kind": "pos",
+      "class": "kv-context",
+      "text": "alice@example.com/bob@example.com",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 0,
+          "end": 17
+        },
+        {
+          "value": "bob@example.com",
+          "start": 18,
+          "end": 33
+        }
+      ],
+      "note": "slash separated list"
+    },
+    {
+      "id": "EM-P051",
+      "kind": "pos",
+      "class": "kv-context",
+      "text": "to=<zed@example.org>",
+      "expected": [
+        {
+          "value": "zed@example.org",
+          "start": 4,
+          "end": 19
+        }
+      ],
+      "note": "postfix log style"
+    },
+    {
+      "id": "EM-P052",
+      "kind": "pos",
+      "class": "eai",
+      "text": "josé.garcia@example.com",
+      "expected": [
+        {
+          "value": "josé.garcia@example.com",
+          "start": 0,
+          "end": 23
+        }
+      ],
+      "note": "accented local part"
+    },
+    {
+      "id": "EM-P053",
+      "kind": "pos",
+      "class": "eai",
+      "text": "müller@example.de",
+      "expected": [
+        {
+          "value": "müller@example.de",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P054",
+      "kind": "pos",
+      "class": "eai",
+      "text": "françois@example.fr",
+      "expected": [
+        {
+          "value": "françois@example.fr",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P055",
+      "kind": "pos",
+      "class": "eai",
+      "text": "user@bücher.de",
+      "expected": [
+        {
+          "value": "user@bücher.de",
+          "start": 0,
+          "end": 14
+        }
+      ],
+      "note": "IDN U-label domain"
+    },
+    {
+      "id": "EM-P056",
+      "kind": "pos",
+      "class": "eai",
+      "text": "info@münchen.example",
+      "expected": [
+        {
+          "value": "info@münchen.example",
+          "start": 0,
+          "end": 20
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P057",
+      "kind": "pos",
+      "class": "eai",
+      "text": "用户@例子.广告",
+      "expected": [
+        {
+          "value": "用户@例子.广告",
+          "start": 0,
+          "end": 8
+        }
+      ],
+      "note": "RFC 6531 example shape"
+    },
+    {
+      "id": "EM-P058",
+      "kind": "pos",
+      "class": "eai",
+      "text": "ivan@пример.рф",
+      "expected": [
+        {
+          "value": "ivan@пример.рф",
+          "start": 0,
+          "end": 14
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-P059",
+      "kind": "pos",
+      "class": "eai",
+      "text": "name@example.xn--p1ai",
+      "expected": [
+        {
+          "value": "name@example.xn--p1ai",
+          "start": 0,
+          "end": 21
+        }
+      ],
+      "note": "A-label TLD (.рф)"
+    },
+    {
+      "id": "EM-P060",
+      "kind": "pos",
+      "class": "rfc-rare",
+      "text": "\"john doe\"@example.com",
+      "expected": [
+        {
+          "value": "\"john doe\"@example.com",
+          "start": 0,
+          "end": 22
+        }
+      ],
+      "note": "quoted-string local part"
+    },
+    {
+      "id": "EM-P061",
+      "kind": "pos",
+      "class": "rfc-rare",
+      "text": "user@[192.0.2.1]",
+      "expected": [
+        {
+          "value": "user@[192.0.2.1]",
+          "start": 0,
+          "end": 16
+        }
+      ],
+      "note": "address literal"
+    },
+    {
+      "id": "EM-P062",
+      "kind": "pos",
+      "class": "rfc-rare",
+      "text": "!def!xyz%abc@example.com",
+      "expected": [
+        {
+          "value": "!def!xyz%abc@example.com",
+          "start": 0,
+          "end": 24
+        }
+      ],
+      "note": "RFC 3696 example, leading atext symbol"
+    },
+    {
+      "id": "EM-P063",
+      "kind": "pos",
+      "class": "glued",
+      "text": "alice@example.com_backup.zip",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": "underscore directly after the TLD"
+    },
+    {
+      "id": "EM-P064",
+      "kind": "pos",
+      "class": "glued",
+      "text": "alice@example.com2",
+      "expected": [
+        {
+          "value": "alice@example.com",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "note": "digit directly after the TLD (footnote marker)"
+    },
+    {
+      "id": "EM-A001",
+      "kind": "agg",
+      "class": "obfuscated-bracket",
+      "text": "user [at] example [dot] com",
+      "expected": [
+        {
+          "value": "user [at] example [dot] com",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "note": "documented form"
+    },
+    {
+      "id": "EM-A002",
+      "kind": "agg",
+      "class": "obfuscated-bracket",
+      "text": "user(at)example(dot)com",
+      "expected": [
+        {
+          "value": "user(at)example(dot)com",
+          "start": 0,
+          "end": 23
+        }
+      ],
+      "note": "documented form"
+    },
+    {
+      "id": "EM-A003",
+      "kind": "agg",
+      "class": "obfuscated-bracket",
+      "text": "john.doe [at] example [dot] org",
+      "expected": [
+        {
+          "value": "john.doe [at] example [dot] org",
+          "start": 0,
+          "end": 31
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A004",
+      "kind": "agg",
+      "class": "obfuscated-bracket",
+      "text": "user (at) example (dot) com",
+      "expected": [
+        {
+          "value": "user (at) example (dot) com",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A005",
+      "kind": "agg",
+      "class": "obfuscated-bracket",
+      "text": "USER [AT] EXAMPLE [DOT] COM",
+      "expected": [
+        {
+          "value": "USER [AT] EXAMPLE [DOT] COM",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A006",
+      "kind": "agg",
+      "class": "obfuscated-bracket",
+      "text": "user [at] example.com",
+      "expected": [
+        {
+          "value": "user [at] example.com",
+          "start": 0,
+          "end": 21
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A007",
+      "kind": "agg",
+      "class": "obfuscated-bracket",
+      "text": "user @ example . com",
+      "expected": [
+        {
+          "value": "user @ example . com",
+          "start": 0,
+          "end": 20
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A008",
+      "kind": "agg",
+      "class": "obfuscated-bracket",
+      "text": "user @ example.com",
+      "expected": [
+        {
+          "value": "user @ example.com",
+          "start": 0,
+          "end": 18
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A009",
+      "kind": "agg",
+      "class": "obfuscated-multilabel",
+      "text": "user [at] mail [dot] example [dot] com",
+      "expected": [
+        {
+          "value": "user [at] mail [dot] example [dot] com",
+          "start": 0,
+          "end": 38
+        }
+      ],
+      "note": "two [dot]s"
+    },
+    {
+      "id": "EM-A010",
+      "kind": "agg",
+      "class": "obfuscated-multilabel",
+      "text": "user[at]example[dot]co[dot]uk",
+      "expected": [
+        {
+          "value": "user[at]example[dot]co[dot]uk",
+          "start": 0,
+          "end": 29
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A011",
+      "kind": "agg",
+      "class": "obfuscated-plus",
+      "text": "first+tag [at] example [dot] com",
+      "expected": [
+        {
+          "value": "first+tag [at] example [dot] com",
+          "start": 0,
+          "end": 32
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A012",
+      "kind": "agg",
+      "class": "obfuscated-words",
+      "text": "user at example dot com",
+      "expected": [
+        {
+          "value": "user at example dot com",
+          "start": 0,
+          "end": 23
+        }
+      ],
+      "note": "most common spoken-style obfuscation"
+    },
+    {
+      "id": "EM-A013",
+      "kind": "agg",
+      "class": "obfuscated-words",
+      "text": "user AT example DOT com",
+      "expected": [
+        {
+          "value": "user AT example DOT com",
+          "start": 0,
+          "end": 23
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A014",
+      "kind": "agg",
+      "class": "obfuscated-words",
+      "text": "user at example.com",
+      "expected": [
+        {
+          "value": "user at example.com",
+          "start": 0,
+          "end": 19
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A015",
+      "kind": "agg",
+      "class": "obfuscated-other",
+      "text": "user{at}example{dot}com",
+      "expected": [
+        {
+          "value": "user{at}example{dot}com",
+          "start": 0,
+          "end": 23
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A016",
+      "kind": "agg",
+      "class": "obfuscated-other",
+      "text": "user<at>example<dot>com",
+      "expected": [
+        {
+          "value": "user<at>example<dot>com",
+          "start": 0,
+          "end": 23
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A017",
+      "kind": "agg",
+      "class": "obfuscated-other",
+      "text": "user _at_ example _dot_ com",
+      "expected": [
+        {
+          "value": "user _at_ example _dot_ com",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-A018",
+      "kind": "agg",
+      "class": "defanged",
+      "text": "user[@]example[.]com",
+      "expected": [
+        {
+          "value": "user[@]example[.]com",
+          "start": 0,
+          "end": 20
+        }
+      ],
+      "note": "threat-intel defanging"
+    },
+    {
+      "id": "EM-A019",
+      "kind": "agg",
+      "class": "defanged",
+      "text": "user@example[.]com",
+      "expected": [
+        {
+          "value": "user@example[.]com",
+          "start": 0,
+          "end": 18
+        }
+      ],
+      "note": ""
+    },
+    {
+      "id": "EM-N001",
+      "kind": "neg",
+      "class": "asset-name",
+      "text": "logo@2x.png",
+      "expected": [],
+      "note": "retina image asset"
+    },
+    {
+      "id": "EM-N002",
+      "kind": "neg",
+      "class": "asset-name",
+      "text": "background-image: url(img/hero@3x.jpg)",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N003",
+      "kind": "neg",
+      "class": "asset-name",
+      "text": "loaded sprite@2x.webp in 12ms",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N004",
+      "kind": "neg",
+      "class": "ssh-scp",
+      "text": "git@github.com:izaccavalheiro/anonyma.git",
+      "expected": [],
+      "note": "scp-style git remote"
+    },
+    {
+      "id": "EM-N005",
+      "kind": "neg",
+      "class": "ssh-scp",
+      "text": "git clone git@gitlab.com:group/project.git",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N006",
+      "kind": "amb",
+      "class": "ssh-scp",
+      "text": "ssh deploy@build01.internal.example.com",
+      "expected": [],
+      "note": "A login name at a host: not a mailbox, but it identifies the account holder. Not scored."
+    },
+    {
+      "id": "EM-N007",
+      "kind": "amb",
+      "class": "ssh-scp",
+      "text": "scp report.pdf backup@files.example.net:/srv/in/",
+      "expected": [],
+      "note": "A login name at a host: not a mailbox, but it identifies the account holder. Not scored."
+    },
+    {
+      "id": "EM-N008",
+      "kind": "amb",
+      "class": "ssh-scp",
+      "text": "root@web01.example.com:~# systemctl status nginx",
+      "expected": [],
+      "note": "A login name at a host: not a mailbox, but it identifies the account holder. Not scored."
+    },
+    {
+      "id": "EM-N009",
+      "kind": "neg",
+      "class": "ssh-scp",
+      "text": "user@host:~/project$ ls",
+      "expected": [],
+      "note": "shell prompt without FQDN"
+    },
+    {
+      "id": "EM-N010",
+      "kind": "neg",
+      "class": "url-userinfo",
+      "text": "https://admin:s3cret@db.example.com/console",
+      "expected": [],
+      "note": "password@host, not an address"
+    },
+    {
+      "id": "EM-N011",
+      "kind": "neg",
+      "class": "url-userinfo",
+      "text": "postgres://app:pw123@pg.example.com:5432/prod",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N012",
+      "kind": "neg",
+      "class": "url-userinfo",
+      "text": "mongodb+srv://svc:hunter2@cluster0.example.mongodb.net/test",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N013",
+      "kind": "neg",
+      "class": "url-userinfo",
+      "text": "wget ftp://anonymous:guest@ftp.example.org/pub/file.tgz",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N014",
+      "kind": "neg",
+      "class": "url-userinfo",
+      "text": "sqlplus scott/tiger@orcl.world",
+      "expected": [],
+      "note": "Oracle connect string"
+    },
+    {
+      "id": "EM-N015",
+      "kind": "neg",
+      "class": "systemd-unit",
+      "text": "systemd[1]: Started user@1000.service - User Manager for UID 1000.",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N016",
+      "kind": "neg",
+      "class": "systemd-unit",
+      "text": "systemctl restart getty@tty1.service",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N017",
+      "kind": "neg",
+      "class": "systemd-unit",
+      "text": "postgresql@14-main.service: Succeeded.",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N018",
+      "kind": "neg",
+      "class": "package-spec",
+      "text": "npm install my-lib@1.0.0-alpha.beta",
+      "expected": [],
+      "note": "semver.org example pre-release 1.0.0-alpha.beta"
+    },
+    {
+      "id": "EM-N019",
+      "kind": "neg",
+      "class": "package-spec",
+      "text": "lodash@4.17.21",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N020",
+      "kind": "neg",
+      "class": "package-spec",
+      "text": "typescript@5.5.0-dev.20240501",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N021",
+      "kind": "neg",
+      "class": "package-spec",
+      "text": "@babel/core@7.24.0",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N022",
+      "kind": "neg",
+      "class": "package-spec",
+      "text": "brew install python@3.12",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N023",
+      "kind": "neg",
+      "class": "package-spec",
+      "text": "node@18.x",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N024",
+      "kind": "neg",
+      "class": "package-spec",
+      "text": "go get golang.org/x/tools@v0.21.0",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N025",
+      "kind": "neg",
+      "class": "package-spec",
+      "text": "import x from 'https://esm.sh/preact@10.19.2'",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N026",
+      "kind": "neg",
+      "class": "package-spec",
+      "text": "pkg:maven/org.apache.xmlgraphics/batik-anim@1.9.1?type=jar",
+      "expected": [],
+      "note": "package URL"
+    },
+    {
+      "id": "EM-N027",
+      "kind": "neg",
+      "class": "package-spec",
+      "text": "docker pull nginx@sha256:4c0fdaa8b6341bfdeca5f18f7837462c80cff90527ee35ef185571e1c327beac",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N028",
+      "kind": "neg",
+      "class": "code",
+      "text": "y = W@x.flatten()",
+      "expected": [],
+      "note": "Python matrix-multiply operator"
+    },
+    {
+      "id": "EM-N029",
+      "kind": "neg",
+      "class": "code",
+      "text": "out = A@B.transpose(0, 1)",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N030",
+      "kind": "neg",
+      "class": "code",
+      "text": "java.lang.Object@7852e922",
+      "expected": [],
+      "note": "Java default toString"
+    },
+    {
+      "id": "EM-N031",
+      "kind": "neg",
+      "class": "code",
+      "text": "git checkout HEAD@{1}",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N032",
+      "kind": "neg",
+      "class": "code",
+      "text": "git stash show stash@{0}",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N033",
+      "kind": "neg",
+      "class": "code",
+      "text": "@media.screen and (min-width: 600px)",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N034",
+      "kind": "neg",
+      "class": "kerberos-principal",
+      "text": "HTTP/web01.corp.example.com@CORP.EXAMPLE.COM",
+      "expected": [],
+      "note": "service principal"
+    },
+    {
+      "id": "EM-N035",
+      "kind": "neg",
+      "class": "kerberos-principal",
+      "text": "krbtgt/EXAMPLE.COM@EXAMPLE.COM",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N036",
+      "kind": "neg",
+      "class": "message-id",
+      "text": "Message-ID: <CAFx7=abc123xyz@mail.gmail.com>",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N037",
+      "kind": "neg",
+      "class": "message-id",
+      "text": "In-Reply-To: <20240501123456.1A2B3C@smtp.example.com>",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N038",
+      "kind": "neg",
+      "class": "handle",
+      "text": "@alice.smith thanks for the review",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N039",
+      "kind": "neg",
+      "class": "handle",
+      "text": "follow @example.com on Bluesky",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N040",
+      "kind": "neg",
+      "class": "prose-at",
+      "text": "meet @ 5.30pm",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N041",
+      "kind": "neg",
+      "class": "prose-at",
+      "text": "price: 3 @ 4.50 each",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N042",
+      "kind": "neg",
+      "class": "prose-at",
+      "text": "50% off @store.now!",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N043",
+      "kind": "neg",
+      "class": "prose-at",
+      "text": "Meet me @ noon. See you there",
+      "expected": [],
+      "note": "sentence boundary after a spaced @"
+    },
+    {
+      "id": "EM-N044",
+      "kind": "neg",
+      "class": "prose-at",
+      "text": "Lunch @ Joes. Then back to work.",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N045",
+      "kind": "neg",
+      "class": "prose-at",
+      "text": "pick up @ 5. ok",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N046",
+      "kind": "neg",
+      "class": "prose-at",
+      "text": "see you @home.Bring snacks",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N047",
+      "kind": "neg",
+      "class": "invalid-syntax",
+      "text": "user@example",
+      "expected": [],
+      "note": "no TLD"
+    },
+    {
+      "id": "EM-N048",
+      "kind": "neg",
+      "class": "invalid-syntax",
+      "text": "user@.example.com",
+      "expected": [],
+      "note": "empty first label"
+    },
+    {
+      "id": "EM-N049",
+      "kind": "neg",
+      "class": "invalid-syntax",
+      "text": "user@example..com",
+      "expected": [],
+      "note": "empty label"
+    },
+    {
+      "id": "EM-N050",
+      "kind": "neg",
+      "class": "invalid-syntax",
+      "text": "user@-example.com",
+      "expected": [],
+      "note": "label starts with hyphen"
+    },
+    {
+      "id": "EM-N051",
+      "kind": "neg",
+      "class": "invalid-syntax",
+      "text": "user@example-.com",
+      "expected": [],
+      "note": "label ends with hyphen"
+    },
+    {
+      "id": "EM-N052",
+      "kind": "neg",
+      "class": "invalid-syntax",
+      "text": "user@example.c",
+      "expected": [],
+      "note": "one-letter TLD"
+    },
+    {
+      "id": "EM-N053",
+      "kind": "neg",
+      "class": "invalid-syntax",
+      "text": "user@example.123",
+      "expected": [],
+      "note": "all-numeric TLD"
+    },
+    {
+      "id": "EM-N054",
+      "kind": "neg",
+      "class": "invalid-syntax",
+      "text": "user@@example.com",
+      "expected": [],
+      "note": "double at"
+    },
+    {
+      "id": "EM-N055",
+      "kind": "neg",
+      "class": "invalid-syntax",
+      "text": "@example.com",
+      "expected": [],
+      "note": "domain only"
+    },
+    {
+      "id": "EM-N056",
+      "kind": "neg",
+      "class": "invalid-syntax",
+      "text": "foo@bar",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-N057",
+      "kind": "neg",
+      "class": "invalid-syntax",
+      "text": "ratio a@b.c",
+      "expected": [],
+      "note": ""
+    },
+    {
+      "id": "EM-X001",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "user@localhost",
+      "expected": [],
+      "note": "valid RFC 5321 mailbox, not routable"
+    },
+    {
+      "id": "EM-X002",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "john..doe@example.com",
+      "expected": [],
+      "note": "invalid dot-atom, accepted by some providers"
+    },
+    {
+      "id": "EM-X003",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "user.@example.com",
+      "expected": [],
+      "note": "invalid dot-atom, likely a real address with a typo"
+    },
+    {
+      "id": "EM-X004",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "@alice@mastodon.social",
+      "expected": [],
+      "note": "fediverse handle"
+    },
+    {
+      "id": "EM-X005",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "sip:1001@pbx.example.com",
+      "expected": [],
+      "note": "SIP URI"
+    },
+    {
+      "id": "EM-X006",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "alice@CORP.EXAMPLE.COM",
+      "expected": [],
+      "note": "Kerberos user principal / UPN"
+    },
+    {
+      "id": "EM-X007",
+      "kind": "amb",
+      "class": "ambiguous",
+      "text": "Contact alice@example.com.Thanks",
+      "expected": [],
+      "note": "missing space after period; example.com.Thanks is a syntactically valid domain"
+    }
+  ]
+}

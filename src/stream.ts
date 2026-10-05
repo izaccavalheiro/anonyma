@@ -23,7 +23,12 @@
 import { anonymize, anonymizeAsync } from "./anonymize.js";
 import { tokenize } from "./tokenize.js";
 import { ValidationError } from "./errors.js";
-import type { AnonymizeOptions, AnonymizeResult, TokenizeResult, TokenizeOptions } from "./types.js";
+import type {
+  AnonymizeOptions,
+  AnonymizeResult,
+  TokenizeResult,
+  TokenizeOptions,
+} from "./types.js";
 
 /** Require the global `TransformStream` (Node ≥ 18 / browsers). */
 function requireTransformStream(): typeof TransformStream {

@@ -108,8 +108,6 @@ export interface CustomPattern {
   readonly label?: string;
 }
 
-
-
 // ---------------------------------------------------------------------------
 // Locale type
 // ---------------------------------------------------------------------------
@@ -139,7 +137,15 @@ export type Locale =
 /**
  * Built-in compliance preset identifiers.
  */
-export type CompliancePreset = "gdpr" | "hipaa" | "ccpa" | "pci-dss" | "sox" | "ferpa";
+export type CompliancePreset =
+  | "gdpr"
+  | "lgpd"
+  | "pipeda"
+  | "hipaa"
+  | "ccpa"
+  | "pci-dss"
+  | "sox"
+  | "ferpa";
 
 // ---------------------------------------------------------------------------
 // Tokenization types
@@ -187,9 +193,10 @@ export interface DetokenizeResult {
 
 /**
  * Token format style.
- * - `"angle"`: `<Category_N>` (default, LLM-friendly)
- * - `"bracket"`: `[CATEGORY_xxxx]`
- * - `"custom"`: Use `tokenTemplate` function
+ * - `"bracket"`: `[CATEGORY_NNNN]` (default)
+ * - `"angle"`: `<CATEGORY_N>`
+ * - `"custom"`: declared for a `tokenTemplate` function, which `tokenize()`
+ *   does not apply; it produces the angle format.
  */
 export type TokenFormat = "angle" | "bracket" | "custom";
 
@@ -206,7 +213,11 @@ export interface TokenizeOptions {
    */
   readonly format?: TokenFormat;
   /**
-   * Custom token template function. Only used when `format: "custom"`.
+   * Custom token template function, for `format: "custom"`.
+   *
+   * @remarks
+   * Not applied: `tokenize()` ignores it and produces the angle format.
+   *
    * @param category - The PII category.
    * @param counter - The incrementing counter for this category.
    * @param value - The original matched value.
@@ -214,6 +225,9 @@ export interface TokenizeOptions {
   readonly tokenTemplate?: (category: string, counter: number, value: string) => string;
   /**
    * When `true`, identical PII values receive the same token. Defaults to `true`.
+   *
+   * @remarks
+   * Not applied: identical values always receive the same token.
    */
   readonly deterministic?: boolean;
   /**
@@ -222,6 +236,9 @@ export interface TokenizeOptions {
   readonly aggressive?: boolean;
   /**
    * Locales to enable for detection. Defaults to `["global"]`.
+   *
+   * @remarks
+   * Not applied: every detector runs, whatever the locale.
    */
   readonly locales?: readonly Locale[];
   /**
@@ -331,6 +348,11 @@ export type StrategyFunction = (value: string, options?: Record<string, unknown>
 
 /**
  * An anonyma plugin that extends detection, anonymization strategy, or validation.
+ *
+ * @remarks
+ * `createAnonymizer()` does not apply plugins. To change what is detected, use
+ * the `customDetectors` and `customPatterns` options, or build a pipeline with
+ * detectors of your own with `createPipeline()` from `"anonyma/engine"`.
  */
 export interface AnonymaPlugin {
   /** Unique plugin name. */
@@ -434,7 +456,10 @@ export type StrategyOptions =
   | ({ strategy: "pseudonymize" } & PseudonymizeOptions)
   | ({ strategy: "hash" } & HashOptions)
   | ({ strategy: "generalize" } & GeneralizeOptions)
-  | ({ strategy: "tokenize" } & Omit<TokenizeOptions, "categories" | "aggressive" | "locales" | "confidenceThreshold">)
+  | ({ strategy: "tokenize" } & Omit<
+      TokenizeOptions,
+      "categories" | "aggressive" | "locales" | "confidenceThreshold"
+    >)
   | ({ strategy: "encrypt" } & EncryptOptions)
   | ({ strategy: "synthesize" } & SynthesizeOptions & { category?: PiiCategory });
 
@@ -454,6 +479,13 @@ export interface AnonymizationRule {
 
 /**
  * Options accepted by the top-level `anonymize()` function.
+ *
+ * @remarks
+ * `anonymize()`, `anonymizeAsync()` and the functions built on them apply the
+ * `redact`, `mask`, `pseudonymize` and `generalize` strategies, and `hash` in
+ * `anonymizeAsync()`. A value whose strategy is `tokenize`, `encrypt` or
+ * `synthesize` is redacted, with a warning; a pipeline from `"anonyma/engine"`
+ * applies every strategy.
  */
 export interface AnonymizeOptions {
   /**
@@ -546,7 +578,9 @@ export interface AnonymizeOptions {
   /**
    * Locales to activate for locale-specific detectors.
    * Defaults to `["global"]` which includes universally-formatted PII.
-   * Add specific locales to include region-specific patterns (e.g. `["us", "uk"]`).
+   *
+   * @remarks
+   * Not applied: every detector runs, whatever the locale.
    */
   readonly locales?: readonly Locale[];
 }
@@ -616,7 +650,10 @@ export interface Anonymizer {
    * @param text - The input text.
    * @param options - Optional per-call overrides.
    */
-  readonly anonymizeAsync: (text: string, options?: Partial<AnonymizeOptions>) => Promise<AnonymizeResult>;
+  readonly anonymizeAsync: (
+    text: string,
+    options?: Partial<AnonymizeOptions>,
+  ) => Promise<AnonymizeResult>;
 
   /**
    * Detect all PII in a text string without anonymizing.
@@ -685,6 +722,9 @@ export interface AnonymizerConfig {
   readonly aggressive?: boolean;
   /**
    * Plugins to extend detector, strategy, or validator capabilities.
+   *
+   * @remarks
+   * Not applied: `createAnonymizer()` ignores this option. See {@link AnonymaPlugin}.
    */
   readonly plugins?: readonly AnonymaPlugin[];
   /**
@@ -693,6 +733,9 @@ export interface AnonymizerConfig {
   readonly preset?: CompliancePreset;
   /**
    * Locales to activate for locale-specific detectors.
+   *
+   * @remarks
+   * Not applied: every detector runs, whatever the locale.
    */
   readonly locales?: readonly Locale[];
 }

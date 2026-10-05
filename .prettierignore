@@ -1,0 +1,3 @@
+# Benchmark results and labelled corpora are data.
+bench/results/
+tests/fixtures/

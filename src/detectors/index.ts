@@ -188,4 +188,3 @@ export const AGGRESSIVE_DETECTOR_REGISTRY: DetectorRegistry = {
   "case-number": detectCaseNumber,
   "company-registration": detectCompanyRegistration,
 } as const;
-

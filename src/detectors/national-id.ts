@@ -43,8 +43,7 @@ const CA_SIN_PATTERN = /\b\d{3}[\s-]\d{3}[\s-]\d{3}\b/g;
  * Format: 4 letters + 6 digits + 6 alphanumeric + 2 alphanumeric
  * @internal
  */
-const MX_CURP_PATTERN =
-  /\b[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]\d\b/g;
+const MX_CURP_PATTERN = /\b[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]\d\b/g;
 
 /**
  * Mexico RFC: 12-13 chars (physical person: 13, legal entity: 12)
@@ -57,8 +56,7 @@ const MX_RFC_PATTERN = /\b[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}\b/g;
  * UK NINO: AB 12 34 56 A (with or without spaces, letter [A-D] at end)
  * @internal
  */
-const UK_NINO_PATTERN =
-  /\b[A-CEGHJ-PR-TW-Z]{2}[\s-]?\d{2}[\s-]?\d{2}[\s-]?\d{2}[\s-]?[A-D]\b/gi;
+const UK_NINO_PATTERN = /\b[A-CEGHJ-PR-TW-Z]{2}[\s-]?\d{2}[\s-]?\d{2}[\s-]?\d{2}[\s-]?[A-D]\b/gi;
 
 /**
  * India Aadhaar: 12 digits, groups of 4 optionally separated by spaces.
@@ -92,8 +90,7 @@ const DE_PERSONALAUSWEIS_PATTERN = /\b[A-Z0-9]{9}\b/g;
  * Starts with 1 or 2 (gender digit).
  * @internal
  */
-const FR_NIR_PATTERN =
-  /\b[12]\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{3}\s?\d{3}\s?\d{2}\b/g;
+const FR_NIR_PATTERN = /\b[12]\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{3}\s?\d{3}\s?\d{2}\b/g;
 
 /**
  * Brazil CPF: XXX.XXX.XXX-XX
@@ -141,8 +138,7 @@ const ES_DNIE_PATTERN = /\b(?:\d{8}[A-Z]|[XYZ]\d{7}[A-Z])\b/gi;
  * Italy Codice Fiscale: 16 chars (6 letters + 2 digits + letter + 2 digits + letter + 3 digits + letter)
  * @internal
  */
-const IT_CF_PATTERN =
-  /\b[A-Z]{6}\d{2}[A-EHLMPRST]\d{2}[A-Z]\d{3}[A-Z]\b/gi;
+const IT_CF_PATTERN = /\b[A-Z]{6}\d{2}[A-EHLMPRST]\d{2}[A-Z]\d{3}[A-Z]\b/gi;
 
 /**
  * Portugal NIF: 9 digits starting with 1-9
@@ -180,11 +176,11 @@ interface NationalIdEntry {
 
 const NATIONAL_ID_ENTRIES: readonly NationalIdEntry[] = [
   { pattern: CA_SIN_PATTERN, confidence: 0.85, requiresContext: false },
-  { pattern: MX_CURP_PATTERN, confidence: 0.90, requiresContext: false },
+  { pattern: MX_CURP_PATTERN, confidence: 0.9, requiresContext: false },
   { pattern: MX_RFC_PATTERN, confidence: 0.78, requiresContext: true },
-  { pattern: UK_NINO_PATTERN, confidence: 0.90, requiresContext: false },
+  { pattern: UK_NINO_PATTERN, confidence: 0.9, requiresContext: false },
   { pattern: IN_AADHAAR_PATTERN, confidence: 0.82, requiresContext: false },
-  { pattern: CN_RESIDENT_ID_PATTERN, confidence: 0.80, requiresContext: true },
+  { pattern: CN_RESIDENT_ID_PATTERN, confidence: 0.8, requiresContext: true },
   { pattern: KR_RRN_PATTERN, confidence: 0.87, requiresContext: false },
   { pattern: BR_CPF_PATTERN, confidence: 0.92, requiresContext: false },
   { pattern: SE_PERSONNUMMER_PATTERN, confidence: 0.87, requiresContext: false },
@@ -194,11 +190,11 @@ const NATIONAL_ID_ENTRIES: readonly NationalIdEntry[] = [
   // More ambiguous — require context
   { pattern: AR_DNI_PATTERN, confidence: 0.75, requiresContext: true },
   { pattern: ZA_ID_PATTERN, confidence: 0.72, requiresContext: true },
-  { pattern: NG_NIN_PATTERN, confidence: 0.70, requiresContext: true },
+  { pattern: NG_NIN_PATTERN, confidence: 0.7, requiresContext: true },
   { pattern: AU_TFN_PATTERN, confidence: 0.75, requiresContext: true },
   { pattern: DE_PERSONALAUSWEIS_PATTERN, confidence: 0.75, requiresContext: true },
-  { pattern: PT_NIF_PATTERN, confidence: 0.70, requiresContext: true },
-  { pattern: NL_BSN_PATTERN, confidence: 0.70, requiresContext: true },
+  { pattern: PT_NIF_PATTERN, confidence: 0.7, requiresContext: true },
+  { pattern: NL_BSN_PATTERN, confidence: 0.7, requiresContext: true },
 ];
 
 /**

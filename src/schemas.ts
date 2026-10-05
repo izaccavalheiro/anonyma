@@ -5,19 +5,20 @@
  *
  * These schemas enable:
  * - Runtime input validation
- * - OpenAI / Anthropic function-calling definitions
- * - MCP (Model Context Protocol) tool definitions
+ * - Function-calling tool definitions (OpenAI format) and a capability manifest
  * - Automatic form generation
+ *
+ * The Model Context Protocol declarations and server are in `"anonyma/mcp"`.
  *
  * @example
  * ```ts
- * import { AnonymizeOptionsSchema, toJsonSchema } from "anonyma/schemas";
+ * import { AnonymizeOptionsSchema, ANONYMIZE_TOOL_DEFINITION } from "anonyma/schemas";
  *
  * // Validate at runtime:
  * const opts = AnonymizeOptionsSchema.parse(unknownInput);
  *
- * // Obtain JSON Schema for an AI tool definition:
- * const jsonSchema = toJsonSchema(AnonymizeOptionsSchema);
+ * // Offer anonymization to a model as a tool:
+ * const tools = [{ type: "function", function: ANONYMIZE_TOOL_DEFINITION }];
  * ```
  *
  * @remarks
@@ -69,11 +70,7 @@ export const PiiCategorySchema = z.enum([
  */
 export const MaskOptionsSchema = z.object({
   strategy: z.literal("mask"),
-  maskChar: z
-    .string()
-    .length(1, "maskChar must be exactly one character")
-    .default("*")
-    .optional(),
+  maskChar: z.string().length(1, "maskChar must be exactly one character").default("*").optional(),
   keepLeading: z.number().int().nonnegative().default(0).optional(),
   keepTrailing: z.number().int().nonnegative().default(0).optional(),
 });
@@ -315,8 +312,7 @@ export const DETECT_TOOL_DEFINITION: OpenAiFunctionDefinition = {
       categories: {
         type: "array",
         description:
-          "Optional subset of PII categories to detect. " +
-          "Defaults to all supported categories.",
+          "Optional subset of PII categories to detect. " + "Defaults to all supported categories.",
         items: {
           type: "string",
           enum: [
@@ -449,18 +445,40 @@ export const ANONYMIZE_OBJECT_TOOL_DEFINITION: OpenAiFunctionDefinition = {
  */
 export const ANONYMA_MANIFEST = {
   name: "anonyma",
-  version: "1.0.0",
+  version: "1.1.0",
   description:
-    "TypeScript-first PII detection & anonymization — 26 built-in detectors (email, SSN, IBAN, passport, credit card, and more), 8 strategies (mask, redact, hash, AES-256 encrypt, tokenize, pseudonymize, generalize, synthesize), 6 compliance presets (GDPR, HIPAA, CCPA, PCI-DSS, SOX, FERPA), reversible tokenization, LLM/AI pipeline helpers, WHATWG streaming, batch processing, checksum validators, and optional Zod/MCP schemas. Zero runtime dependencies.",
+    "TypeScript-first PII detection & anonymization — 27 built-in detectors (email, SSN, IBAN, passport, credit card, and more), 8 strategies (mask, redact, hash, AES-256 encrypt, tokenize, pseudonymize, generalize, synthesize), 8 compliance presets (GDPR, LGPD, PIPEDA, HIPAA, CCPA, PCI-DSS, SOX, FERPA), reversible tokenization, LLM/AI pipeline helpers, WHATWG streaming, batch processing, checksum validators, and optional Zod/MCP schemas. Zero runtime dependencies.",
   capabilities: {
     detect: {
       description: "Detect PII in free text without modifying it.",
       supportedCategories: [
-        "email", "phone", "ssn", "credit-card", "ipv4", "ipv6", "url",
-        "iban", "date-of-birth", "name", "address", "passport", "drivers-license",
-        "national-id", "bank-account", "cryptocurrency", "tax-id", "medical-record",
-        "health-insurance", "prescription", "api-key", "social-media", "vin",
-        "license-plate", "tracking-number", "case-number", "company-registration",
+        "email",
+        "phone",
+        "ssn",
+        "credit-card",
+        "ipv4",
+        "ipv6",
+        "url",
+        "iban",
+        "date-of-birth",
+        "name",
+        "address",
+        "passport",
+        "drivers-license",
+        "national-id",
+        "bank-account",
+        "cryptocurrency",
+        "tax-id",
+        "medical-record",
+        "health-insurance",
+        "prescription",
+        "api-key",
+        "social-media",
+        "vin",
+        "license-plate",
+        "tracking-number",
+        "case-number",
+        "company-registration",
       ],
       notes: {
         name:
@@ -480,8 +498,7 @@ export const ANONYMA_MANIFEST = {
       strategies: {
         mask: "Replace characters with a mask char, keeping optional leading/trailing chars.",
         redact: "Replace the entire value with a label such as [REDACTED].",
-        pseudonymize:
-          "Replace with a deterministic pseudonym (requires seed for reproducibility).",
+        pseudonymize: "Replace with a deterministic pseudonym (requires seed for reproducibility).",
         hash: "Replace with a one-way SHA-256 hash (requires Node.js ≥ 18).",
         generalize: "Replace a numeric value with a bucket range (e.g. 27 → 20-29).",
         tokenize: "Replace with a reversible opaque token ([CATEGORY_NNNN]) for LLM pipelines.",
@@ -490,22 +507,20 @@ export const ANONYMA_MANIFEST = {
       },
       options: {
         globalReplacement: "Override ALL strategy outputs with a single replacement string.",
-        consistentTokens:
-          "Same PII value → same token (EMAIL_1, PHONE_2, etc.) within a call.",
-        aggressive:
-          "Use expanded, more permissive regex patterns to catch obfuscated PII.",
+        consistentTokens: "Same PII value → same token (EMAIL_1, PHONE_2, etc.) within a call.",
+        aggressive: "Use expanded, more permissive regex patterns to catch obfuscated PII.",
         enabledCategories: "Convenience boolean map for enabling/disabling categories.",
         customPatterns: "Ad-hoc regex patterns merged into the detection pipeline.",
         customDetectors: "Override built-in detectors on a per-category basis.",
-        preset: "Apply a compliance preset (gdpr | hipaa | ccpa | pci-dss | sox | ferpa).",
+        preset:
+          "Apply a compliance preset (gdpr | lgpd | pipeda | hipaa | ccpa | pci-dss | sox | ferpa).",
         allowlist: "String values that should never be anonymized even when detected as PII.",
         confidenceThreshold: "Minimum confidence score (0-1) for a match to be anonymized.",
       },
       returns: "AnonymizeResult { text: string; matches: PiiMatch[] }",
     },
     tokenize: {
-      description:
-        "Replace PII with reversible opaque tokens. Use detokenize() to restore.",
+      description: "Replace PII with reversible opaque tokens. Use detokenize() to restore.",
       returns: "TokenizeResult { text: string; mapping: Map<string, string> }",
     },
     anonymizeObject: {
@@ -525,8 +540,8 @@ export const ANONYMA_MANIFEST = {
       returns: "BatchResult<T>[] where ok/error per item is available.",
     },
     presets: {
-      description: "GDPR, HIPAA, CCPA, PCI-DSS, SOX, FERPA compliance presets.",
-      available: ["gdpr", "hipaa", "ccpa", "pci-dss", "sox", "ferpa"],
+      description: "GDPR, LGPD, PIPEDA, HIPAA, CCPA, PCI-DSS, SOX, FERPA compliance presets.",
+      available: ["gdpr", "lgpd", "pipeda", "hipaa", "ccpa", "pci-dss", "sox", "ferpa"],
     },
   },
   toolDefinitions: {
@@ -543,12 +558,21 @@ export const ANONYMA_MANIFEST = {
 // Inferred TypeScript types from Zod schemas
 // ---------------------------------------------------------------------------
 
+/** A PII category accepted by {@link PiiCategorySchema}. */
 export type PiiCategoryInput = z.infer<typeof PiiCategorySchema>;
+/** Strategy options accepted by {@link StrategyOptionsSchema}. */
 export type StrategyOptionsInput = z.infer<typeof StrategyOptionsSchema>;
+/** Anonymization options accepted by {@link AnonymizeOptionsSchema}. */
 export type AnonymizeOptionsInput = z.infer<typeof AnonymizeOptionsSchema>;
+/** A per-category rule accepted by {@link AnonymizationRuleSchema}. */
 export type AnonymizationRuleInput = z.infer<typeof AnonymizationRuleSchema>;
+/** A custom pattern accepted by {@link CustomPatternSchema}. */
 export type CustomPatternInput = z.infer<typeof CustomPatternSchema>;
+/** A detected match as validated by {@link PiiMatchSchema}. */
 export type PiiMatchOutput = z.infer<typeof PiiMatchSchema>;
+/** An anonymization result as validated by {@link AnonymizeResultSchema}. */
 export type AnonymizeResultOutput = z.infer<typeof AnonymizeResultSchema>;
+/** A field rule accepted by {@link FieldRuleSchema}. */
 export type FieldRuleInput = z.infer<typeof FieldRuleSchema>;
+/** A field rule map accepted by {@link FieldRuleMapSchema}. */
 export type FieldRuleMapInput = z.infer<typeof FieldRuleMapSchema>;

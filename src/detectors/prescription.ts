@@ -77,14 +77,14 @@ export function detectPrescription(text: string): PiiMatch[] {
   const deaRe = new RegExp(DEA_PATTERN.source, "gi");
   while ((m = deaRe.exec(text)) !== null) {
     if (deaChecksum(m[0])) {
-      push(m[0], m.index, m.index + m[0].length, 0.90);
+      push(m[0], m.index, m.index + m[0].length, 0.9);
     }
   }
 
   // NDC codes — distinctive format
   const ndcRe = new RegExp(NDC_PATTERN.source, "g");
   while ((m = ndcRe.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, hasContextAt(m.index) ? 0.90 : 0.78);
+    push(m[0], m.index, m.index + m[0].length, hasContextAt(m.index) ? 0.9 : 0.78);
   }
 
   // Rx numbers — require context

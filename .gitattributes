@@ -1,0 +1,6 @@
+# One line ending on every platform, so that tests and formatting agree.
+* text=auto eol=lf
+
+# Data, not prose: no diffs in pull requests.
+package-lock.json linguist-generated=true
+bench/results/*.json linguist-generated=true

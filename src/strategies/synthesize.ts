@@ -68,14 +68,54 @@ function pick<T>(rng: () => number, arr: readonly T[]): T {
 
 const DOMAINS = ["example.com", "test.org", "sample.net", "demo.io", "placeholder.dev"] as const;
 const NAMES_FIRST = [
-  "Alice", "Bob", "Carol", "Dave", "Eve", "Frank", "Grace", "Hank",
-  "Irene", "Jack", "Karen", "Leo", "Mina", "Neal", "Olivia", "Paul",
-  "Quinn", "Rosa", "Sam", "Tina", "Uma", "Victor", "Wendy", "Xena", "Yuri", "Zoe",
+  "Alice",
+  "Bob",
+  "Carol",
+  "Dave",
+  "Eve",
+  "Frank",
+  "Grace",
+  "Hank",
+  "Irene",
+  "Jack",
+  "Karen",
+  "Leo",
+  "Mina",
+  "Neal",
+  "Olivia",
+  "Paul",
+  "Quinn",
+  "Rosa",
+  "Sam",
+  "Tina",
+  "Uma",
+  "Victor",
+  "Wendy",
+  "Xena",
+  "Yuri",
+  "Zoe",
 ] as const;
 const NAMES_LAST = [
-  "Smith", "Jones", "Williams", "Taylor", "Brown", "Davies", "Evans",
-  "Wilson", "Thomas", "Roberts", "Johnson", "White", "Martin", "Anderson",
-  "Thompson", "Garcia", "Martinez", "Robinson", "Clark", "Rodriguez",
+  "Smith",
+  "Jones",
+  "Williams",
+  "Taylor",
+  "Brown",
+  "Davies",
+  "Evans",
+  "Wilson",
+  "Thomas",
+  "Roberts",
+  "Johnson",
+  "White",
+  "Martin",
+  "Anderson",
+  "Thompson",
+  "Garcia",
+  "Martinez",
+  "Robinson",
+  "Clark",
+  "Rodriguez",
 ] as const;
 
 function synthEmail(rng: () => number): string {
@@ -163,12 +203,17 @@ function synthGeneric(rng: () => number, value: string): string {
   const lowers = "abcdefghijklmnopqrstuvwxyz";
   const uppers = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const digits = "0123456789";
-  return value
-    .split("")
+  return Array.from(value)
     .map((ch) => {
       if (/[a-z]/.test(ch)) return lowers[Math.floor(rng() * lowers.length)];
       if (/[A-Z]/.test(ch)) return uppers[Math.floor(rng() * uppers.length)];
       if (/\d/.test(ch)) return digits[Math.floor(rng() * digits.length)];
+      // Letters and digits of other scripts are replaced too, never copied.
+      if (/\p{L}/u.test(ch)) {
+        const pool = ch !== ch.toLowerCase() ? uppers : lowers;
+        return pool[Math.floor(rng() * pool.length)];
+      }
+      if (/\p{N}/u.test(ch)) return digits[Math.floor(rng() * digits.length)];
       return ch;
     })
     .join("");
@@ -225,7 +270,8 @@ export function synthesize(
   const seedStr = (options.seed ?? "") + category + ":" + value;
   const rng = makePrng(strHash(seedStr));
 
-  const gen = GENERATORS[category as PiiCategory];
+  // An own-property lookup: a category named "constructor" has no generator.
+  const gen = Object.hasOwn(GENERATORS, category) ? GENERATORS[category as PiiCategory] : undefined;
   if (gen) return gen(rng, value);
   return synthGeneric(rng, value);
 }

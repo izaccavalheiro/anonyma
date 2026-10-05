@@ -1,0 +1,3081 @@
+{
+  "environment": {
+    "node": "v25.9.0",
+    "cpu": "Intel(R) Core(TM) i5-10400F CPU @ 2.90GHz",
+    "cores": 12,
+    "dist": "/home/izac/anonyma/dist",
+    "quick": false
+  },
+  "results": [
+    {
+      "op": "detect",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3671,
+      "medianMs": 0.07745900000000461,
+      "p95Ms": 0.09655899999999917,
+      "opsPerSec": 12910.05564233905,
+      "mbPerSec": 1.2910055642339051
+    },
+    {
+      "op": "hasPII",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3703,
+      "medianMs": 0.07537300000001323,
+      "p95Ms": 0.12311699999997927,
+      "opsPerSec": 13267.35037745379,
+      "mbPerSec": 1.3267350377453788
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3760,
+      "medianMs": 0.07661799999993946,
+      "p95Ms": 0.09136100000000624,
+      "opsPerSec": 13051.763293231228,
+      "mbPerSec": 1.3051763293231229
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3779,
+      "medianMs": 0.07484899999985828,
+      "p95Ms": 0.10992400000009184,
+      "opsPerSec": 13360.231933651665,
+      "mbPerSec": 1.3360231933651665
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3754,
+      "medianMs": 0.076528000000053,
+      "p95Ms": 0.10018599999989419,
+      "opsPerSec": 13067.112690770797,
+      "mbPerSec": 1.3067112690770797
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3804,
+      "medianMs": 0.07679099999995742,
+      "p95Ms": 0.08741099999997459,
+      "opsPerSec": 13022.359391081696,
+      "mbPerSec": 1.3022359391081697
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3024,
+      "medianMs": 0.09542599999986123,
+      "p95Ms": 0.10757100000000719,
+      "opsPerSec": 10479.324293184814,
+      "mbPerSec": 1.0479324293184817
+    },
+    {
+      "op": "detect",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 4063,
+      "medianMs": 0.0713490000002821,
+      "p95Ms": 0.08242499999960273,
+      "opsPerSec": 14015.613393264743,
+      "mbPerSec": 1.4015613393264743
+    },
+    {
+      "op": "hasPII",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 20000,
+      "medianMs": 0.0007799999998496787,
+      "p95Ms": 0.001408999999966909,
+      "opsPerSec": 1282051.2822983584,
+      "mbPerSec": 128.20512822983585
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3859,
+      "medianMs": 0.07524399999965681,
+      "p95Ms": 0.08694999999988795,
+      "opsPerSec": 13290.096220357253,
+      "mbPerSec": 1.3290096220357253
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3908,
+      "medianMs": 0.07453200000009019,
+      "p95Ms": 0.08435599999984333,
+      "opsPerSec": 13417.055761267507,
+      "mbPerSec": 1.341705576126751
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3858,
+      "medianMs": 0.07483999999976731,
+      "p95Ms": 0.09182899999996152,
+      "opsPerSec": 13361.838589031388,
+      "mbPerSec": 1.336183858903139
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3694,
+      "medianMs": 0.07904000000007727,
+      "p95Ms": 0.08974399999988236,
+      "opsPerSec": 12651.82186233581,
+      "mbPerSec": 1.265182186233581
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 2037,
+      "medianMs": 0.1343309999997473,
+      "p95Ms": 0.18013599999994767,
+      "opsPerSec": 7444.298039930331,
+      "mbPerSec": 0.7444298039930332
+    },
+    {
+      "op": "detect",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 4133,
+      "medianMs": 0.06991600000037579,
+      "p95Ms": 0.08158600000024308,
+      "opsPerSec": 14302.877738924211,
+      "mbPerSec": 1.4302877738924213
+    },
+    {
+      "op": "hasPII",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 20000,
+      "medianMs": 0.0008370000005015754,
+      "p95Ms": 0.0009159999999610591,
+      "opsPerSec": 1194743.129511047,
+      "mbPerSec": 119.4743129511047
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 3926,
+      "medianMs": 0.07459599999947386,
+      "p95Ms": 0.08367500000076689,
+      "opsPerSec": 13405.54453331349,
+      "mbPerSec": 1.3405544533313491
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 3704,
+      "medianMs": 0.07607800000005227,
+      "p95Ms": 0.11814599999979691,
+      "opsPerSec": 13144.40442702638,
+      "mbPerSec": 1.3144404427026382
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 3703,
+      "medianMs": 0.07893299999977899,
+      "p95Ms": 0.09445400000004156,
+      "opsPerSec": 12668.972419682515,
+      "mbPerSec": 1.2668972419682516
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 3588,
+      "medianMs": 0.08280999999988126,
+      "p95Ms": 0.08790399999998044,
+      "opsPerSec": 12075.836251677743,
+      "mbPerSec": 1.2075836251677745
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 1853,
+      "medianMs": 0.1562549999998737,
+      "p95Ms": 0.19406100000014703,
+      "opsPerSec": 6399.795206558563,
+      "mbPerSec": 0.6399795206558564
+    },
+    {
+      "op": "detect",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 989,
+      "medianMs": 0.3030699999999342,
+      "p95Ms": 0.31062500000007276,
+      "opsPerSec": 3299.5677566245986,
+      "mbPerSec": 3.2995677566245987
+    },
+    {
+      "op": "hasPII",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 986,
+      "medianMs": 0.299619000000348,
+      "p95Ms": 0.3372589999999036,
+      "opsPerSec": 3337.572049832749,
+      "mbPerSec": 3.3375720498327492
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 977,
+      "medianMs": 0.3033629999999903,
+      "p95Ms": 0.32599500000014814,
+      "opsPerSec": 3296.380903406256,
+      "mbPerSec": 3.296380903406256
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 982,
+      "medianMs": 0.3027560000000449,
+      "p95Ms": 0.34394199999951525,
+      "opsPerSec": 3302.9898664266,
+      "mbPerSec": 3.3029898664266
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 979,
+      "medianMs": 0.30318199999965145,
+      "p95Ms": 0.33553200000005745,
+      "opsPerSec": 3298.3488465712003,
+      "mbPerSec": 3.2983488465712
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 965,
+      "medianMs": 0.30541400000038266,
+      "p95Ms": 0.3443090000000666,
+      "opsPerSec": 3274.244140736008,
+      "mbPerSec": 3.2742441407360077
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 914,
+      "medianMs": 0.32291299999997136,
+      "p95Ms": 0.36219699999946897,
+      "opsPerSec": 3096.8093573194287,
+      "mbPerSec": 3.096809357319429
+    },
+    {
+      "op": "detect",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 887,
+      "medianMs": 0.33421699999962584,
+      "p95Ms": 0.3662559999993391,
+      "opsPerSec": 2992.0680276620265,
+      "mbPerSec": 2.9920680276620266
+    },
+    {
+      "op": "hasPII",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 20000,
+      "medianMs": 0.0073350000002392335,
+      "p95Ms": 0.007560000000012224,
+      "opsPerSec": 136332.65166562845,
+      "mbPerSec": 136.33265166562845
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 891,
+      "medianMs": 0.33335799999986193,
+      "p95Ms": 0.34516599999915343,
+      "opsPerSec": 2999.778016428027,
+      "mbPerSec": 2.999778016428027
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 890,
+      "medianMs": 0.3345850000005157,
+      "p95Ms": 0.35744100000010803,
+      "opsPerSec": 2988.7771418278126,
+      "mbPerSec": 2.9887771418278124
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 881,
+      "medianMs": 0.3360560000000987,
+      "p95Ms": 0.375330999999278,
+      "opsPerSec": 2975.6945271017516,
+      "mbPerSec": 2.975694527101752
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 866,
+      "medianMs": 0.3424460000005638,
+      "p95Ms": 0.3676660000000993,
+      "opsPerSec": 2920.168435310541,
+      "mbPerSec": 2.9201684353105417
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 616,
+      "medianMs": 0.47502499999973224,
+      "p95Ms": 0.5514860000002955,
+      "opsPerSec": 2105.152360403271,
+      "mbPerSec": 2.1051523604032707
+    },
+    {
+      "op": "detect",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 733,
+      "medianMs": 0.40081500000087544,
+      "p95Ms": 0.4546149999987392,
+      "opsPerSec": 2494.916607406948,
+      "mbPerSec": 2.494916607406948
+    },
+    {
+      "op": "hasPII",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 20000,
+      "medianMs": 0.006519000000480446,
+      "p95Ms": 0.006706000000122003,
+      "opsPerSec": 153397.76038139296,
+      "mbPerSec": 153.39776038139294
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 710,
+      "medianMs": 0.40211599999929604,
+      "p95Ms": 0.5919250000006286,
+      "opsPerSec": 2486.844592112104,
+      "mbPerSec": 2.486844592112104
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 728,
+      "medianMs": 0.4056160000000091,
+      "p95Ms": 0.4528229999996256,
+      "opsPerSec": 2465.3859808291036,
+      "mbPerSec": 2.4653859808291037
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 728,
+      "medianMs": 0.40792700000019977,
+      "p95Ms": 0.4354609999991226,
+      "opsPerSec": 2451.4190038892016,
+      "mbPerSec": 2.4514190038892014
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 652,
+      "medianMs": 0.43081100000017614,
+      "p95Ms": 0.6305349999984173,
+      "opsPerSec": 2321.2034975884812,
+      "mbPerSec": 2.321203497588481
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 307,
+      "medianMs": 0.956199000000197,
+      "p95Ms": 1.0879509999995207,
+      "opsPerSec": 1045.807410381933,
+      "mbPerSec": 1.045807410381933
+    },
+    {
+      "op": "detect",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 136,
+      "medianMs": 2.206745999999839,
+      "p95Ms": 2.366431000000375,
+      "opsPerSec": 453.1559137300228,
+      "mbPerSec": 4.531559137300229
+    },
+    {
+      "op": "hasPII",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 130,
+      "medianMs": 2.2105499999997846,
+      "p95Ms": 3.2466540000004898,
+      "opsPerSec": 452.3761054941519,
+      "mbPerSec": 4.523761054941518
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 133,
+      "medianMs": 2.2640059999994264,
+      "p95Ms": 2.3600289999994857,
+      "opsPerSec": 441.69494250468125,
+      "mbPerSec": 4.416949425046813
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 134,
+      "medianMs": 2.212093999998615,
+      "p95Ms": 2.372347999998965,
+      "opsPerSec": 452.0603554824642,
+      "mbPerSec": 4.520603554824643
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 135,
+      "medianMs": 2.2075799999984156,
+      "p95Ms": 2.3258289999994304,
+      "opsPerSec": 452.9847162959973,
+      "mbPerSec": 4.529847162959973
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 130,
+      "medianMs": 2.2111020000011194,
+      "p95Ms": 3.282719000000725,
+      "opsPerSec": 452.2631701294168,
+      "mbPerSec": 4.522631701294168
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 134,
+      "medianMs": 2.228971000000456,
+      "p95Ms": 2.3931850000008126,
+      "opsPerSec": 448.63751031296295,
+      "mbPerSec": 4.48637510312963
+    },
+    {
+      "op": "stream/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 42,
+      "medianMs": 7.005715999999666,
+      "p95Ms": 7.9893969999993715,
+      "opsPerSec": 142.74058497376254,
+      "mbPerSec": 1.4274058497376254
+    },
+    {
+      "op": "stream/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 128,
+      "medianMs": 2.2486099999987346,
+      "p95Ms": 3.335268000000724,
+      "opsPerSec": 444.71918207273063,
+      "mbPerSec": 4.447191820727307
+    },
+    {
+      "op": "detect",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 125,
+      "medianMs": 2.385771000001114,
+      "p95Ms": 2.520386000000144,
+      "opsPerSec": 419.1517123812525,
+      "mbPerSec": 4.191517123812525
+    },
+    {
+      "op": "hasPII",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 4123,
+      "medianMs": 0.07192199999917648,
+      "p95Ms": 0.0739770000000135,
+      "opsPerSec": 13903.95150317636,
+      "mbPerSec": 139.0395150317636
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 118,
+      "medianMs": 2.4243719999994937,
+      "p95Ms": 3.5896780000002764,
+      "opsPerSec": 412.4779530534954,
+      "mbPerSec": 4.124779530534955
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 122,
+      "medianMs": 2.424765000001571,
+      "p95Ms": 2.612691000000268,
+      "opsPerSec": 412.41109963206833,
+      "mbPerSec": 4.124110996320683
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 122,
+      "medianMs": 2.4323199999998906,
+      "p95Ms": 2.6291700000001583,
+      "opsPerSec": 411.13011445864237,
+      "mbPerSec": 4.111301144586424
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 121,
+      "medianMs": 2.469989999999598,
+      "p95Ms": 2.6132070000003296,
+      "opsPerSec": 404.8599387042712,
+      "mbPerSec": 4.048599387042713
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 83,
+      "medianMs": 3.5807930000009947,
+      "p95Ms": 3.97931299999982,
+      "opsPerSec": 279.26774879187997,
+      "mbPerSec": 2.7926774879188
+    },
+    {
+      "op": "stream/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 41,
+      "medianMs": 7.4217830000015965,
+      "p95Ms": 7.71854500000336,
+      "opsPerSec": 134.7385122954666,
+      "mbPerSec": 1.3473851229546658
+    },
+    {
+      "op": "stream/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 120,
+      "medianMs": 2.4498659999990196,
+      "p95Ms": 2.694488999997702,
+      "opsPerSec": 408.1855905589939,
+      "mbPerSec": 4.081855905589939
+    },
+    {
+      "op": "detect",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 109,
+      "medianMs": 2.7237850000019534,
+      "p95Ms": 2.9002069999987725,
+      "opsPerSec": 367.1361726418505,
+      "mbPerSec": 3.671361726418505
+    },
+    {
+      "op": "hasPII",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 4039,
+      "medianMs": 0.07241699999940465,
+      "p95Ms": 0.07924999999886495,
+      "opsPerSec": 13808.912272093861,
+      "mbPerSec": 138.08912272093863
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 100,
+      "medianMs": 2.9428289999996196,
+      "p95Ms": 3.51021000000037,
+      "opsPerSec": 339.80907487323566,
+      "mbPerSec": 3.3980907487323564
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 101,
+      "medianMs": 2.940425000000687,
+      "p95Ms": 3.2344670000020415,
+      "opsPerSec": 340.0868922008779,
+      "mbPerSec": 3.400868922008779
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 100,
+      "medianMs": 2.9672409999984666,
+      "p95Ms": 3.2292229999984556,
+      "opsPerSec": 337.01340740456095,
+      "mbPerSec": 3.3701340740456094
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 95,
+      "medianMs": 3.1243519999989076,
+      "p95Ms": 3.4281949999967765,
+      "opsPerSec": 320.06636896237995,
+      "mbPerSec": 3.2006636896237994
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 36,
+      "medianMs": 8.406087999999727,
+      "p95Ms": 8.918731999998272,
+      "opsPerSec": 118.96140035650738,
+      "mbPerSec": 1.189614003565074
+    },
+    {
+      "op": "stream/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 46,
+      "medianMs": 6.608862000000954,
+      "p95Ms": 6.776122999999643,
+      "opsPerSec": 151.31198079183005,
+      "mbPerSec": 1.5131198079183006
+    },
+    {
+      "op": "stream/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 102,
+      "medianMs": 2.914629999999306,
+      "p95Ms": 3.186040000000503,
+      "opsPerSec": 343.0967223970926,
+      "mbPerSec": 3.430967223970926
+    },
+    {
+      "op": "detect",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 19.96494999999777,
+      "p95Ms": 21.113987999997335,
+      "opsPerSec": 50.08777883240938,
+      "mbPerSec": 5.008777883240938
+    },
+    {
+      "op": "hasPII",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 20.13374500000282,
+      "p95Ms": 20.995867999998154,
+      "opsPerSec": 49.66785861248665,
+      "mbPerSec": 4.966785861248665
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 16,
+      "medianMs": 19.99063699999897,
+      "p95Ms": 20.490638999999646,
+      "opsPerSec": 50.0234184633562,
+      "mbPerSec": 5.002341846335621
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 16,
+      "medianMs": 19.874470999999176,
+      "p95Ms": 21.023568000000523,
+      "opsPerSec": 50.31580463198449,
+      "mbPerSec": 5.031580463198449
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 20.105610999999044,
+      "p95Ms": 20.853311999999278,
+      "opsPerSec": 49.737359386891924,
+      "mbPerSec": 4.973735938689193
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 16,
+      "medianMs": 19.86592600000222,
+      "p95Ms": 20.371047999997245,
+      "opsPerSec": 50.33744714441644,
+      "mbPerSec": 5.033744714441644
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 20.009091000003536,
+      "p95Ms": 20.79459599999973,
+      "opsPerSec": 49.977282826082565,
+      "mbPerSec": 4.997728282608257
+    },
+    {
+      "op": "stream/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 71.00232899999901,
+      "p95Ms": 71.85765999999785,
+      "opsPerSec": 14.084045045902846,
+      "mbPerSec": 1.4084045045902847
+    },
+    {
+      "op": "stream/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 15,
+      "medianMs": 20.815270999999484,
+      "p95Ms": 21.432082999999693,
+      "opsPerSec": 48.04165172771591,
+      "mbPerSec": 4.804165172771591
+    },
+    {
+      "op": "detect",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 14,
+      "medianMs": 21.83143199999904,
+      "p95Ms": 21.970754999998462,
+      "opsPerSec": 45.80551564368494,
+      "mbPerSec": 4.580551564368494
+    },
+    {
+      "op": "hasPII",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 416,
+      "medianMs": 0.717850000000908,
+      "p95Ms": 0.7676829999982147,
+      "opsPerSec": 1393.0486870498503,
+      "mbPerSec": 139.30486870498504
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 12,
+      "medianMs": 25.758292999998957,
+      "p95Ms": 26.0497260000011,
+      "opsPerSec": 38.82244836643641,
+      "mbPerSec": 3.8822448366436415
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 12,
+      "medianMs": 25.84069300000192,
+      "p95Ms": 29.018239000000904,
+      "opsPerSec": 38.698652547744196,
+      "mbPerSec": 3.86986525477442
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 12,
+      "medianMs": 26.06336100000044,
+      "p95Ms": 26.50696500000049,
+      "opsPerSec": 38.368037030987026,
+      "mbPerSec": 3.836803703098703
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 12,
+      "medianMs": 26.537748999999167,
+      "p95Ms": 27.702876999999717,
+      "opsPerSec": 37.68217115928074,
+      "mbPerSec": 3.7682171159280746
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 8,
+      "medianMs": 39.34965399999783,
+      "p95Ms": 39.97106100000019,
+      "opsPerSec": 25.413184065101444,
+      "mbPerSec": 2.5413184065101446
+    },
+    {
+      "op": "stream/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 5,
+      "medianMs": 72.87414300000091,
+      "p95Ms": 74.39416400000118,
+      "opsPerSec": 13.722288301901369,
+      "mbPerSec": 1.3722288301901369
+    },
+    {
+      "op": "stream/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 13,
+      "medianMs": 24.201453999998193,
+      "p95Ms": 25.363682000002882,
+      "opsPerSec": 41.31983144484107,
+      "mbPerSec": 4.131983144484107
+    },
+    {
+      "op": "detect",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 12,
+      "medianMs": 24.810584999999264,
+      "p95Ms": 25.523026999999274,
+      "opsPerSec": 40.30537772487145,
+      "mbPerSec": 4.030537772487145
+    },
+    {
+      "op": "hasPII",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 410,
+      "medianMs": 0.729204999999638,
+      "p95Ms": 0.7589330000009795,
+      "opsPerSec": 1371.3564772601621,
+      "mbPerSec": 137.13564772601623
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 8,
+      "medianMs": 42.28094200000123,
+      "p95Ms": 53.56917600000088,
+      "opsPerSec": 23.651317891639472,
+      "mbPerSec": 2.3651317891639474
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 7,
+      "medianMs": 45.05341699999917,
+      "p95Ms": 45.858508000001166,
+      "opsPerSec": 22.195874732431914,
+      "mbPerSec": 2.2195874732431915
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 7,
+      "medianMs": 44.36828400000013,
+      "p95Ms": 45.431250999998156,
+      "opsPerSec": 22.538622408745784,
+      "mbPerSec": 2.2538622408745783
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 7,
+      "medianMs": 46.96941799999695,
+      "p95Ms": 52.9841579999993,
+      "opsPerSec": 21.29044903217802,
+      "mbPerSec": 2.1290449032178023
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 5,
+      "medianMs": 107.54563399999824,
+      "p95Ms": 107.72012199999881,
+      "opsPerSec": 9.298378398141354,
+      "mbPerSec": 0.9298378398141355
+    },
+    {
+      "op": "stream/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 5,
+      "medianMs": 61.66149999999834,
+      "p95Ms": 62.576271000001725,
+      "opsPerSec": 16.217574986012778,
+      "mbPerSec": 1.621757498601278
+    },
+    {
+      "op": "stream/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 9,
+      "medianMs": 34.888709999999264,
+      "p95Ms": 35.75380999999834,
+      "opsPerSec": 28.662567346285407,
+      "mbPerSec": 2.866256734628541
+    },
+    {
+      "op": "detect",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 196.4660499999991,
+      "p95Ms": 198.56022400000074,
+      "opsPerSec": 5.089937930751927,
+      "mbPerSec": 5.089937930751927
+    },
+    {
+      "op": "hasPII",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 196.02438900000197,
+      "p95Ms": 198.51668600000266,
+      "opsPerSec": 5.101406029634353,
+      "mbPerSec": 5.1014060296343535
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 198.01879799999733,
+      "p95Ms": 198.5885549999948,
+      "opsPerSec": 5.050025604134883,
+      "mbPerSec": 5.050025604134883
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 194.8076130000045,
+      "p95Ms": 196.8050790000052,
+      "opsPerSec": 5.133269612004213,
+      "mbPerSec": 5.133269612004214
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 194.80262399999629,
+      "p95Ms": 197.21460600000137,
+      "opsPerSec": 5.133401077800775,
+      "mbPerSec": 5.133401077800775
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 196.01111300000048,
+      "p95Ms": 199.15142500000366,
+      "opsPerSec": 5.101751552219376,
+      "mbPerSec": 5.101751552219376
+    },
+    {
+      "op": "stream/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 683.37068,
+      "p95Ms": 694.1361429999961,
+      "opsPerSec": 1.4633346575536428,
+      "mbPerSec": 1.4633346575536428
+    },
+    {
+      "op": "stream/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 204.13860399999976,
+      "p95Ms": 206.90828200000396,
+      "opsPerSec": 4.89863249971084,
+      "mbPerSec": 4.89863249971084
+    },
+    {
+      "op": "detect",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 215.55112699999881,
+      "p95Ms": 215.6988660000061,
+      "opsPerSec": 4.639270570828449,
+      "mbPerSec": 4.639270570828449
+    },
+    {
+      "op": "hasPII",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 41,
+      "medianMs": 7.267463999996835,
+      "p95Ms": 7.6877909999966505,
+      "opsPerSec": 137.5995808166969,
+      "mbPerSec": 137.59958081669694
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 1878.7202039999975,
+      "p95Ms": 1891.2360950000002,
+      "opsPerSec": 0.5322772373826036,
+      "mbPerSec": 0.5322772373826036
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 1925.6419260000039,
+      "p95Ms": 1961.7369379999946,
+      "opsPerSec": 0.5193073470711284,
+      "mbPerSec": 0.5193073470711282
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 1918.4953470000037,
+      "p95Ms": 1949.0297979999887,
+      "opsPerSec": 0.521241816699594,
+      "mbPerSec": 0.521241816699594
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 1926.5105320000002,
+      "p95Ms": 1938.4399140000023,
+      "opsPerSec": 0.519073206914604,
+      "mbPerSec": 0.519073206914604
+    },
+    {
+      "op": "stream/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 718.1271430000052,
+      "p95Ms": 740.2877509999962,
+      "opsPerSec": 1.392511075159281,
+      "mbPerSec": 1.392511075159281
+    },
+    {
+      "op": "stream/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 246.56939499999862,
+      "p95Ms": 247.57863399999042,
+      "opsPerSec": 4.055653379041651,
+      "mbPerSec": 4.055653379041651
+    },
+    {
+      "op": "detect",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 274.60284600000887,
+      "p95Ms": 276.91300200000114,
+      "opsPerSec": 3.641622854848226,
+      "mbPerSec": 3.6416228548482255
+    },
+    {
+      "op": "hasPII",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 41,
+      "medianMs": 7.353951999990386,
+      "p95Ms": 7.633117000004859,
+      "opsPerSec": 135.9813063780274,
+      "mbPerSec": 135.9813063780274
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 7866.892292000004,
+      "p95Ms": 7888.412733000005,
+      "opsPerSec": 0.12711499825883207,
+      "mbPerSec": 0.12711499825883207
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 8943.410279000003,
+      "p95Ms": 9317.481173000007,
+      "opsPerSec": 0.11181417030012558,
+      "mbPerSec": 0.11181417030012558
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 7761.879796000023,
+      "p95Ms": 7896.400297000015,
+      "opsPerSec": 0.12883477022091172,
+      "mbPerSec": 0.12883477022091172
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 8267.647595999995,
+      "p95Ms": 8319.670970000006,
+      "opsPerSec": 0.12095338950874178,
+      "mbPerSec": 0.1209533895087418
+    },
+    {
+      "op": "stream/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 593.606708999956,
+      "p95Ms": 606.5684140000376,
+      "opsPerSec": 1.6846170786794024,
+      "mbPerSec": 1.6846170786794024
+    },
+    {
+      "op": "stream/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 359.62095800001407,
+      "p95Ms": 361.00141299999086,
+      "opsPerSec": 2.7807055672210317,
+      "mbPerSec": 2.7807055672210317
+    },
+    {
+      "op": "engine/scan",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 4407,
+      "medianMs": 0.06556200003251433,
+      "p95Ms": 0.08072800002992153,
+      "opsPerSec": 15252.737858882698,
+      "mbPerSec": 1.5252737858882697
+    },
+    {
+      "op": "engine/test",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 4670,
+      "medianMs": 0.06261700001778081,
+      "p95Ms": 0.06697300000814721,
+      "opsPerSec": 15970.103960841921,
+      "mbPerSec": 1.5970103960841924
+    },
+    {
+      "op": "engine/transform",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 4633,
+      "medianMs": 0.0631470000371337,
+      "p95Ms": 0.0717329999897629,
+      "opsPerSec": 15836.065045242822,
+      "mbPerSec": 1.5836065045242822
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 4272,
+      "medianMs": 0.0679680000175722,
+      "p95Ms": 0.07806700002402067,
+      "opsPerSec": 14712.806022561554,
+      "mbPerSec": 1.4712806022561555
+    },
+    {
+      "op": "engine/scan",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 4311,
+      "medianMs": 0.06799200002569705,
+      "p95Ms": 0.07513599999947473,
+      "opsPerSec": 14707.61265475435,
+      "mbPerSec": 1.470761265475435
+    },
+    {
+      "op": "engine/test",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 4450,
+      "medianMs": 0.06606899999314919,
+      "p95Ms": 0.07450400001835078,
+      "opsPerSec": 15135.69147563444,
+      "mbPerSec": 1.5135691475634439
+    },
+    {
+      "op": "engine/transform",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 4348,
+      "medianMs": 0.0673160000005737,
+      "p95Ms": 0.07473100000061095,
+      "opsPerSec": 14855.309287412763,
+      "mbPerSec": 1.4855309287412763
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 4052,
+      "medianMs": 0.07201299996813759,
+      "p95Ms": 0.07838299998547882,
+      "opsPerSec": 13886.381631683911,
+      "mbPerSec": 1.3886381631683913
+    },
+    {
+      "op": "engine/scan",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 4215,
+      "medianMs": 0.06968299997970462,
+      "p95Ms": 0.07661400001961738,
+      "opsPerSec": 14350.702471065439,
+      "mbPerSec": 1.435070247106544
+    },
+    {
+      "op": "engine/test",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 4291,
+      "medianMs": 0.0681769999791868,
+      "p95Ms": 0.07403900002827868,
+      "opsPerSec": 14667.703188836143,
+      "mbPerSec": 1.4667703188836143
+    },
+    {
+      "op": "engine/transform",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 4130,
+      "medianMs": 0.0706169999903068,
+      "p95Ms": 0.08054300001822412,
+      "opsPerSec": 14160.896103449091,
+      "mbPerSec": 1.4160896103449092
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 4088,
+      "medianMs": 0.07138400000985712,
+      "p95Ms": 0.07884800003375858,
+      "opsPerSec": 14008.741452733304,
+      "mbPerSec": 1.4008741452733307
+    },
+    {
+      "op": "engine/scan",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 1122,
+      "medianMs": 0.2613800000399351,
+      "p95Ms": 0.29743099998449907,
+      "opsPerSec": 3825.847424620148,
+      "mbPerSec": 3.825847424620149
+    },
+    {
+      "op": "engine/test",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 1119,
+      "medianMs": 0.2639130000025034,
+      "p95Ms": 0.30123800004366785,
+      "opsPerSec": 3789.127477579787,
+      "mbPerSec": 3.7891274775797874
+    },
+    {
+      "op": "engine/transform",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 1128,
+      "medianMs": 0.2639140000101179,
+      "p95Ms": 0.2860799999907613,
+      "opsPerSec": 3789.1131200378236,
+      "mbPerSec": 3.7891131200378236
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 1081,
+      "medianMs": 0.2733400000142865,
+      "p95Ms": 0.3040699999546632,
+      "opsPerSec": 3658.4473547513485,
+      "mbPerSec": 3.6584473547513485
+    },
+    {
+      "op": "engine/scan",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 956,
+      "medianMs": 0.30859899998176843,
+      "p95Ms": 0.34707399999024346,
+      "opsPerSec": 3240.4512006165883,
+      "mbPerSec": 3.240451200616588
+    },
+    {
+      "op": "engine/test",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 970,
+      "medianMs": 0.3067919999593869,
+      "p95Ms": 0.3343790000071749,
+      "opsPerSec": 3259.5374068827737,
+      "mbPerSec": 3.259537406882774
+    },
+    {
+      "op": "engine/transform",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 964,
+      "medianMs": 0.3070329999900423,
+      "p95Ms": 0.34054499998455867,
+      "opsPerSec": 3256.9788916254342,
+      "mbPerSec": 3.2569788916254345
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 931,
+      "medianMs": 0.3160639999550767,
+      "p95Ms": 0.3509910000138916,
+      "opsPerSec": 3163.916169326888,
+      "mbPerSec": 3.1639161693268876
+    },
+    {
+      "op": "engine/scan",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 714,
+      "medianMs": 0.4106639999663457,
+      "p95Ms": 0.476319000008516,
+      "opsPerSec": 2435.080747477137,
+      "mbPerSec": 2.4350807474771368
+    },
+    {
+      "op": "engine/test",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 754,
+      "medianMs": 0.3904329999932088,
+      "p95Ms": 0.4349830000428483,
+      "opsPerSec": 2561.258910023984,
+      "mbPerSec": 2.5612589100239838
+    },
+    {
+      "op": "engine/transform",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 742,
+      "medianMs": 0.40186600002925843,
+      "p95Ms": 0.4283539999742061,
+      "opsPerSec": 2488.3916527578685,
+      "mbPerSec": 2.4883916527578687
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 772,
+      "medianMs": 0.3839750000042841,
+      "p95Ms": 0.4233820000081323,
+      "opsPerSec": 2604.3362197769197,
+      "mbPerSec": 2.60433621977692
+    },
+    {
+      "op": "engine/scan",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 155,
+      "medianMs": 1.9460839999956079,
+      "p95Ms": 2.0223560000304133,
+      "opsPerSec": 513.8524339145982,
+      "mbPerSec": 5.138524339145982
+    },
+    {
+      "op": "engine/test",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 156,
+      "medianMs": 1.905306999979075,
+      "p95Ms": 2.0081409999984317,
+      "opsPerSec": 524.849801113932,
+      "mbPerSec": 5.24849801113932
+    },
+    {
+      "op": "engine/transform",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 156,
+      "medianMs": 1.9310050000203773,
+      "p95Ms": 2.030933999980334,
+      "opsPerSec": 517.8650495412737,
+      "mbPerSec": 5.178650495412738
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 140,
+      "medianMs": 2.1463179999846034,
+      "p95Ms": 2.3619449999532662,
+      "opsPerSec": 465.9141842015831,
+      "mbPerSec": 4.659141842015831
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 117,
+      "medianMs": 2.5344500000355765,
+      "p95Ms": 2.693685000005644,
+      "opsPerSec": 394.56292291659446,
+      "mbPerSec": 3.9456292291659443
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 133,
+      "medianMs": 2.207801999989897,
+      "p95Ms": 2.6603790000081062,
+      "opsPerSec": 452.9391675542354,
+      "mbPerSec": 4.529391675542354
+    },
+    {
+      "op": "engine/scan",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 50,
+      "iterations": 123,
+      "medianMs": 2.3767900000093505,
+      "p95Ms": 2.910941999987699,
+      "opsPerSec": 420.73552985163434,
+      "mbPerSec": 4.207355298516344
+    },
+    {
+      "op": "engine/test",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 50,
+      "iterations": 126,
+      "medianMs": 2.308041999989655,
+      "p95Ms": 2.6622369999531657,
+      "opsPerSec": 433.26767883967545,
+      "mbPerSec": 4.332676788396755
+    },
+    {
+      "op": "engine/transform",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 50,
+      "iterations": 127,
+      "medianMs": 2.3549609999754466,
+      "p95Ms": 2.4977380000054836,
+      "opsPerSec": 424.6354822905459,
+      "mbPerSec": 4.246354822905459
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 130,
+      "medianMs": 2.2992879999801517,
+      "p95Ms": 2.5180210000253282,
+      "opsPerSec": 434.91724395057616,
+      "mbPerSec": 4.349172439505762
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 50,
+      "iterations": 105,
+      "medianMs": 2.852790000033565,
+      "p95Ms": 3.026179000036791,
+      "opsPerSec": 350.53403860369474,
+      "mbPerSec": 3.5053403860369476
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 50,
+      "iterations": 119,
+      "medianMs": 2.542786000005435,
+      "p95Ms": 2.650216000038199,
+      "opsPerSec": 393.2694296719671,
+      "mbPerSec": 3.9326942967196707
+    },
+    {
+      "op": "engine/scan",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 104,
+      "medianMs": 2.8031189999892376,
+      "p95Ms": 3.277954999997746,
+      "opsPerSec": 356.7454681745011,
+      "mbPerSec": 3.5674546817450117
+    },
+    {
+      "op": "engine/test",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 110,
+      "medianMs": 2.7347200000076555,
+      "p95Ms": 2.931778999976814,
+      "opsPerSec": 365.6681488405397,
+      "mbPerSec": 3.656681488405397
+    },
+    {
+      "op": "engine/transform",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 109,
+      "medianMs": 2.761904999963008,
+      "p95Ms": 3.014644999988377,
+      "opsPerSec": 362.06893430925163,
+      "mbPerSec": 3.6206893430925167
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 115,
+      "medianMs": 2.593192999949679,
+      "p95Ms": 2.7710729999816976,
+      "opsPerSec": 385.6249804852185,
+      "mbPerSec": 3.8562498048521845
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 84,
+      "medianMs": 3.5854509999626316,
+      "p95Ms": 3.8356269999640062,
+      "opsPerSec": 278.90494111073394,
+      "mbPerSec": 2.7890494111073396
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 100,
+      "medianMs": 2.977461000031326,
+      "p95Ms": 3.247097000014037,
+      "opsPerSec": 335.8566241470431,
+      "mbPerSec": 3.358566241470431
+    },
+    {
+      "op": "engine/scan",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 17,
+      "medianMs": 17.616917999985162,
+      "p95Ms": 18.336339999979828,
+      "opsPerSec": 56.76361779062843,
+      "mbPerSec": 5.676361779062843
+    },
+    {
+      "op": "engine/test",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 18,
+      "medianMs": 17.539807999972254,
+      "p95Ms": 18.596707999997307,
+      "opsPerSec": 57.01316684889492,
+      "mbPerSec": 5.701316684889492
+    },
+    {
+      "op": "engine/transform",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 18,
+      "medianMs": 17.236450000025798,
+      "p95Ms": 18.35082599997986,
+      "opsPerSec": 58.01658694211994,
+      "mbPerSec": 5.801658694211994
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 17,
+      "medianMs": 18.369573000003584,
+      "p95Ms": 19.255678999994416,
+      "opsPerSec": 54.43784675886614,
+      "mbPerSec": 5.443784675886614
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 13,
+      "medianMs": 24.302137000020593,
+      "p95Ms": 25.029517000017222,
+      "opsPerSec": 41.14864466442406,
+      "mbPerSec": 4.114864466442406
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 17,
+      "medianMs": 18.49900000001071,
+      "p95Ms": 19.349986000044737,
+      "opsPerSec": 54.05697605272831,
+      "mbPerSec": 5.405697605272831
+    },
+    {
+      "op": "engine/scan",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 514,
+      "iterations": 15,
+      "medianMs": 20.111605999991298,
+      "p95Ms": 21.302046000026166,
+      "opsPerSec": 49.722533347184346,
+      "mbPerSec": 4.972253334718435
+    },
+    {
+      "op": "engine/test",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 514,
+      "iterations": 15,
+      "medianMs": 20.3887420000392,
+      "p95Ms": 21.50568999996176,
+      "opsPerSec": 49.04667487567783,
+      "mbPerSec": 4.9046674875677825
+    },
+    {
+      "op": "engine/transform",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 514,
+      "iterations": 15,
+      "medianMs": 20.165940000035334,
+      "p95Ms": 20.42781099997228,
+      "opsPerSec": 49.58856368700134,
+      "mbPerSec": 4.958856368700134
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 15,
+      "medianMs": 20.618458000011742,
+      "p95Ms": 21.469014999980573,
+      "opsPerSec": 48.50023217058378,
+      "mbPerSec": 4.850023217058378
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 514,
+      "iterations": 11,
+      "medianMs": 27.835832000011578,
+      "p95Ms": 28.69986999995308,
+      "opsPerSec": 35.9249186444143,
+      "mbPerSec": 3.5924918644414294
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 514,
+      "iterations": 14,
+      "medianMs": 21.46792899997672,
+      "p95Ms": 22.209073000005446,
+      "opsPerSec": 46.58111175982948,
+      "mbPerSec": 4.658111175982949
+    },
+    {
+      "op": "engine/scan",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2507,
+      "iterations": 12,
+      "medianMs": 25.120555999979842,
+      "p95Ms": 25.995143000036478,
+      "opsPerSec": 39.80803609604829,
+      "mbPerSec": 3.980803609604829
+    },
+    {
+      "op": "engine/test",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2507,
+      "iterations": 12,
+      "medianMs": 25.02322199998889,
+      "p95Ms": 25.835785000002943,
+      "opsPerSec": 39.96287928071149,
+      "mbPerSec": 3.996287928071149
+    },
+    {
+      "op": "engine/transform",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2507,
+      "iterations": 12,
+      "medianMs": 25.296786000020802,
+      "p95Ms": 26.0762790000299,
+      "opsPerSec": 39.53071350641847,
+      "mbPerSec": 3.9530713506418476
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 13,
+      "medianMs": 24.249492999981157,
+      "p95Ms": 25.337085000006482,
+      "opsPerSec": 41.23797557337702,
+      "mbPerSec": 4.123797557337702
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2507,
+      "iterations": 9,
+      "medianMs": 35.20418999996036,
+      "p95Ms": 36.062945000012405,
+      "opsPerSec": 28.405709661296736,
+      "mbPerSec": 2.8405709661296736
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2507,
+      "iterations": 12,
+      "medianMs": 26.462668999971356,
+      "p95Ms": 27.095750000036787,
+      "opsPerSec": 37.789083179821446,
+      "mbPerSec": 3.7789083179821445
+    },
+    {
+      "op": "engine/scan",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 171.2350040000165,
+      "p95Ms": 174.98661600000923,
+      "opsPerSec": 5.839927448478371,
+      "mbPerSec": 5.839927448478371
+    },
+    {
+      "op": "engine/test",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 171.16500199999427,
+      "p95Ms": 173.37635799997952,
+      "opsPerSec": 5.842315825755276,
+      "mbPerSec": 5.842315825755276
+    },
+    {
+      "op": "engine/transform",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 171.95201400003862,
+      "p95Ms": 174.33442999998806,
+      "opsPerSec": 5.815575966442449,
+      "mbPerSec": 5.815575966442449
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 181.4414509999915,
+      "p95Ms": 183.90353199996753,
+      "opsPerSec": 5.511419769234798,
+      "mbPerSec": 5.511419769234798
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 242.50575800001388,
+      "p95Ms": 246.70342599996366,
+      "opsPerSec": 4.123613427768353,
+      "mbPerSec": 4.123613427768353
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 180.6056019999669,
+      "p95Ms": 184.8151760000037,
+      "opsPerSec": 5.536926811385304,
+      "mbPerSec": 5.536926811385304
+    },
+    {
+      "op": "engine/scan",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5094,
+      "iterations": 5,
+      "medianMs": 205.21192600001814,
+      "p95Ms": 207.58646700001555,
+      "opsPerSec": 4.873011132890549,
+      "mbPerSec": 4.873011132890549
+    },
+    {
+      "op": "engine/test",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5094,
+      "iterations": 5,
+      "medianMs": 203.77707399998326,
+      "p95Ms": 206.4865310000023,
+      "opsPerSec": 4.90732338221758,
+      "mbPerSec": 4.90732338221758
+    },
+    {
+      "op": "engine/transform",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5094,
+      "iterations": 5,
+      "medianMs": 204.09917099995073,
+      "p95Ms": 205.75233200000366,
+      "opsPerSec": 4.899578940476154,
+      "mbPerSec": 4.899578940476154
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 207.36605499999132,
+      "p95Ms": 208.42442200001096,
+      "opsPerSec": 4.822390048361782,
+      "mbPerSec": 4.822390048361782
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5094,
+      "iterations": 5,
+      "medianMs": 280.7720500000287,
+      "p95Ms": 284.93731000000844,
+      "opsPerSec": 3.561608073167888,
+      "mbPerSec": 3.5616080731678874
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5094,
+      "iterations": 5,
+      "medianMs": 211.18378199997824,
+      "p95Ms": 214.83185700001195,
+      "opsPerSec": 4.735212100710002,
+      "mbPerSec": 4.735212100710002
+    },
+    {
+      "op": "engine/scan",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25168,
+      "iterations": 5,
+      "medianMs": 265.98023499996634,
+      "p95Ms": 267.78078800003277,
+      "opsPerSec": 3.759677857266825,
+      "mbPerSec": 3.7596778572668246
+    },
+    {
+      "op": "engine/test",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25168,
+      "iterations": 5,
+      "medianMs": 269.77396800002316,
+      "p95Ms": 272.3617320000194,
+      "opsPerSec": 3.7068068776744023,
+      "mbPerSec": 3.7068068776744023
+    },
+    {
+      "op": "engine/transform",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25168,
+      "iterations": 5,
+      "medianMs": 277.53335700003663,
+      "p95Ms": 290.41090199997416,
+      "opsPerSec": 3.60317048303447,
+      "mbPerSec": 3.60317048303447
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 261.3399770000251,
+      "p95Ms": 263.24262799997814,
+      "opsPerSec": 3.8264333359144054,
+      "mbPerSec": 3.8264333359144054
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25168,
+      "iterations": 5,
+      "medianMs": 345.9450100000249,
+      "p95Ms": 355.38729199999943,
+      "opsPerSec": 2.8906328205165552,
+      "mbPerSec": 2.8906328205165552
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25168,
+      "iterations": 5,
+      "medianMs": 261.01101000001654,
+      "p95Ms": 266.16665199998533,
+      "opsPerSec": 3.831256007169723,
+      "mbPerSec": 3.8312560071697233
+    },
+    {
+      "op": "anonymizeObject",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": -1,
+      "iterations": 299,
+      "medianMs": 0.9847309999749996,
+      "p95Ms": 1.1428520000190474,
+      "opsPerSec": 1015.5057574356733,
+      "mbPerSec": 1.0155057574356734
+    },
+    {
+      "op": "anonymizeBatch",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 8,
+      "iterations": 432,
+      "medianMs": 0.6827000000048429,
+      "p95Ms": 0.7335849999799393,
+      "opsPerSec": 1464.772227908168,
+      "mbPerSec": 1.464772227908168
+    },
+    {
+      "op": "anonymizeObject",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": -1,
+      "iterations": 23,
+      "medianMs": 13.41482200002065,
+      "p95Ms": 13.934038000006694,
+      "opsPerSec": 74.54441065252009,
+      "mbPerSec": 0.7454441065252008
+    },
+    {
+      "op": "anonymizeBatch",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 77,
+      "iterations": 46,
+      "medianMs": 6.581426999997348,
+      "p95Ms": 6.832777999981772,
+      "opsPerSec": 151.94273217653299,
+      "mbPerSec": 1.51942732176533
+    },
+    {
+      "op": "anonymizeObject",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": -1,
+      "iterations": 5,
+      "medianMs": 139.9546449999907,
+      "p95Ms": 143.17129999998724,
+      "opsPerSec": 7.145171923376079,
+      "mbPerSec": 0.7145171923376079
+    },
+    {
+      "op": "anonymizeBatch",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 745,
+      "iterations": 5,
+      "medianMs": 64.67916400003014,
+      "p95Ms": 65.97594999999274,
+      "opsPerSec": 15.460929581581079,
+      "mbPerSec": 1.546092958158108
+    },
+    {
+      "op": "anonymizeObject",
+      "size": 999995,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": -1,
+      "iterations": 5,
+      "medianMs": 1364.2090869999956,
+      "p95Ms": 1375.8366779999924,
+      "opsPerSec": 0.7330254647394847,
+      "mbPerSec": 0.7330217996121611
+    },
+    {
+      "op": "anonymizeBatch",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 7407,
+      "iterations": 5,
+      "medianMs": 650.1780060000019,
+      "p95Ms": 655.1907679999713,
+      "opsPerSec": 1.5380403378332625,
+      "mbPerSec": 1.5380403378332628
+    },
+    {
+      "op": "encrypt/passphrase",
+      "size": 17,
+      "sizeLabel": "17B",
+      "density": "-",
+      "matches": 1,
+      "iterations": 8,
+      "medianMs": 38.081609999993816,
+      "p95Ms": 39.11053400003584,
+      "opsPerSec": 26.25939396995459,
+      "mbPerSec": 0.000446409697489228
+    },
+    {
+      "op": "encrypt/keyBytes",
+      "size": 17,
+      "sizeLabel": "17B",
+      "density": "-",
+      "matches": 1,
+      "iterations": 5531,
+      "medianMs": 0.04985000001033768,
+      "p95Ms": 0.06043499999213964,
+      "opsPerSec": 20060.18053746488,
+      "mbPerSec": 0.34102306913690295
+    }
+  ],
+  "scaling": [
+    {
+      "op": "detect",
+      "density": "none",
+      "slope": 0.9391749572827761
+    },
+    {
+      "op": "detect",
+      "density": "sparse",
+      "slope": 0.9390018752213276
+    },
+    {
+      "op": "detect",
+      "density": "dense",
+      "slope": 0.9466747384252459
+    },
+    {
+      "op": "hasPII",
+      "density": "none",
+      "slope": 0.9406646497236514
+    },
+    {
+      "op": "hasPII",
+      "density": "sparse",
+      "slope": 0.9987120261830884
+    },
+    {
+      "op": "hasPII",
+      "density": "dense",
+      "slope": 1.0160028537762749
+    },
+    {
+      "op": "anonymize/redact",
+      "density": "none",
+      "slope": 0.9390180488064722
+    },
+    {
+      "op": "anonymize/redact",
+      "density": "sparse",
+      "slope": 1.2279171491364786
+    },
+    {
+      "op": "anonymize/redact",
+      "density": "dense",
+      "slope": 1.4031735178516846
+    },
+    {
+      "op": "anonymize/mask",
+      "density": "none",
+      "slope": 0.9379031498643761
+    },
+    {
+      "op": "anonymize/mask",
+      "density": "sparse",
+      "slope": 1.2307841700177824
+    },
+    {
+      "op": "anonymize/mask",
+      "density": "dense",
+      "slope": 1.4215481858007637
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "density": "none",
+      "slope": 0.9383074991830843
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "density": "sparse",
+      "slope": 1.2299656997925164
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "density": "dense",
+      "slope": 1.4012873194760072
+    },
+    {
+      "op": "tokenize+detokenize",
+      "density": "none",
+      "slope": 0.9375675297179232
+    },
+    {
+      "op": "tokenize+detokenize",
+      "density": "sparse",
+      "slope": 1.2281706756739346
+    },
+    {
+      "op": "tokenize+detokenize",
+      "density": "dense",
+      "slope": 1.4026340741029149
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "density": "none",
+      "slope": 0.8960709149727473
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "density": "sparse",
+      "slope": 0.9591122256748352
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "density": "dense",
+      "slope": 1.0255222494890581
+    },
+    {
+      "op": "stream/lines",
+      "density": "none",
+      "slope": 0.9946019068513311
+    },
+    {
+      "op": "stream/lines",
+      "density": "sparse",
+      "slope": 0.9928465449249864
+    },
+    {
+      "op": "stream/lines",
+      "density": "dense",
+      "slope": 0.976686058648835
+    },
+    {
+      "op": "stream/64KB",
+      "density": "none",
+      "slope": 0.9790055014016271
+    },
+    {
+      "op": "stream/64KB",
+      "density": "sparse",
+      "slope": 1.0013984195437147
+    },
+    {
+      "op": "stream/64KB",
+      "density": "dense",
+      "slope": 1.045630781442656
+    },
+    {
+      "op": "engine/scan",
+      "density": "none",
+      "slope": 0.9405728934488907
+    },
+    {
+      "op": "engine/scan",
+      "density": "sparse",
+      "slope": 0.9395880186833324
+    },
+    {
+      "op": "engine/scan",
+      "density": "dense",
+      "slope": 0.9386475909667973
+    },
+    {
+      "op": "engine/test",
+      "density": "none",
+      "slope": 0.9399922429962431
+    },
+    {
+      "op": "engine/test",
+      "density": "sparse",
+      "slope": 0.9413080597054896
+    },
+    {
+      "op": "engine/test",
+      "density": "dense",
+      "slope": 0.9479790928307132
+    },
+    {
+      "op": "engine/transform",
+      "density": "none",
+      "slope": 0.9392498938892843
+    },
+    {
+      "op": "engine/transform",
+      "density": "sparse",
+      "slope": 0.940060330537772
+    },
+    {
+      "op": "engine/transform",
+      "density": "dense",
+      "slope": 0.947955838468979
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "density": "none",
+      "slope": 0.9398504954104578
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "density": "sparse",
+      "slope": 0.9403550710376012
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "density": "dense",
+      "slope": 0.9469576520768015
+    },
+    {
+      "op": "engine/chunks/lines",
+      "density": "none",
+      "slope": 0.9904191635111571
+    },
+    {
+      "op": "engine/chunks/lines",
+      "density": "sparse",
+      "slope": 0.9965420347156284
+    },
+    {
+      "op": "engine/chunks/lines",
+      "density": "dense",
+      "slope": 0.9922316394761841
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "density": "none",
+      "slope": 0.956385547325106
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "density": "sparse",
+      "slope": 0.9596753757835661
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "density": "dense",
+      "slope": 0.9714063727801123
+    },
+    {
+      "op": "anonymizeObject",
+      "density": "sparse",
+      "slope": 1.044309932881567
+    },
+    {
+      "op": "anonymizeBatch",
+      "density": "sparse",
+      "slope": 0.9928851443489569
+    }
+  ],
+  "matchScaling": {
+    "rows": [
+      {
+        "size": 400000,
+        "matches": 505,
+        "detectMs": 78.14550300000701,
+        "anonymizeMs": 150.95605600002455,
+        "replaceMs": 72.81055300001753
+      },
+      {
+        "size": 400000,
+        "matches": 1003,
+        "detectMs": 78.89834199997131,
+        "anonymizeMs": 221.68936999997823,
+        "replaceMs": 142.79102800000692
+      },
+      {
+        "size": 400000,
+        "matches": 2027,
+        "detectMs": 81.50032900000224,
+        "anonymizeMs": 364.5430199999828,
+        "replaceMs": 283.04269099998055
+      },
+      {
+        "size": 400000,
+        "matches": 4046,
+        "detectMs": 85.52268399996683,
+        "anonymizeMs": 627.1301310000126,
+        "replaceMs": 541.6074470000458
+      },
+      {
+        "size": 400000,
+        "matches": 8043,
+        "detectMs": 91.66729000001214,
+        "anonymizeMs": 1110.9218250000267,
+        "replaceMs": 1019.2545350000146
+      },
+      {
+        "size": 400000,
+        "matches": 11139,
+        "detectMs": 100.15351099998225,
+        "anonymizeMs": 1495.5252489999984,
+        "replaceMs": 1395.3717380000162
+      }
+    ],
+    "slopes": {
+      "detect": 0.07523992342075815,
+      "anonymize": 0.7487174820614377,
+      "replace": 0.9514960533627909
+    }
+  },
+  "perDetector": [
+    {
+      "category": "ipv6",
+      "medianMs": 2.8200820000492968,
+      "matches": 13,
+      "share": 0.1396349098925681
+    },
+    {
+      "category": "national-id",
+      "medianMs": 2.48332300002221,
+      "matches": 29,
+      "share": 0.1229604611980012
+    },
+    {
+      "category": "api-key",
+      "medianMs": 1.6161229999852367,
+      "matches": 12,
+      "share": 0.08002149918842805
+    },
+    {
+      "category": "cryptocurrency",
+      "medianMs": 1.534226999967359,
+      "matches": 4,
+      "share": 0.07596646086583381
+    },
+    {
+      "category": "license-plate",
+      "medianMs": 1.0069120000116527,
+      "matches": 16,
+      "share": 0.04985672983583984
+    },
+    {
+      "category": "drivers-license",
+      "medianMs": 0.9877369999885559,
+      "matches": 7,
+      "share": 0.04890728957120628
+    },
+    {
+      "category": "health-insurance",
+      "medianMs": 0.9142359999823384,
+      "matches": 10,
+      "share": 0.04526792535672514
+    },
+    {
+      "category": "tracking-number",
+      "medianMs": 0.8456190000288188,
+      "matches": 4,
+      "share": 0.04187038989306112
+    },
+    {
+      "category": "medical-record",
+      "medianMs": 0.841056999983266,
+      "matches": 5,
+      "share": 0.04164450480699641
+    },
+    {
+      "category": "email",
+      "medianMs": 0.6891000000177883,
+      "matches": 96,
+      "share": 0.03412043210366596
+    },
+    {
+      "category": "vin",
+      "medianMs": 0.687900000018999,
+      "matches": 4,
+      "share": 0.03406101472087387
+    },
+    {
+      "category": "address",
+      "medianMs": 0.6526930000400171,
+      "matches": 19,
+      "share": 0.03231775822352136
+    },
+    {
+      "category": "tax-id",
+      "medianMs": 0.647687999997288,
+      "matches": 4,
+      "share": 0.032069938220426926
+    },
+    {
+      "category": "prescription",
+      "medianMs": 0.6123849999858066,
+      "matches": 4,
+      "share": 0.030321928330837064
+    },
+    {
+      "category": "case-number",
+      "medianMs": 0.5725790000287816,
+      "matches": 6,
+      "share": 0.02835095471479129
+    },
+    {
+      "category": "company-registration",
+      "medianMs": 0.5630540000274777,
+      "matches": 7,
+      "share": 0.027879329238338645
+    },
+    {
+      "category": "bank-account",
+      "medianMs": 0.49332399998093024,
+      "matches": 4,
+      "share": 0.024426684147473125
+    },
+    {
+      "category": "date-of-birth",
+      "medianMs": 0.43047200003638864,
+      "matches": 19,
+      "share": 0.02131459969437199
+    },
+    {
+      "category": "social-media",
+      "medianMs": 0.3666959999827668,
+      "matches": 15,
+      "share": 0.018156763851073735
+    },
+    {
+      "category": "passport",
+      "medianMs": 0.3658940000459552,
+      "matches": 28,
+      "share": 0.018117053236663027
+    },
+    {
+      "category": "name",
+      "medianMs": 0.3630620000185445,
+      "matches": 41,
+      "share": 0.017976828211774983
+    },
+    {
+      "category": "credit-card",
+      "medianMs": 0.21818599995458499,
+      "matches": 27,
+      "share": 0.010803367576881016
+    },
+    {
+      "category": "phone",
+      "medianMs": 0.193371000001207,
+      "matches": 59,
+      "share": 0.00957466561629496
+    },
+    {
+      "category": "iban",
+      "medianMs": 0.1193349999957718,
+      "matches": 18,
+      "share": 0.005908811151997681
+    },
+    {
+      "category": "ssn",
+      "medianMs": 0.08352599997306243,
+      "matches": 28,
+      "share": 0.004135746932082591
+    },
+    {
+      "category": "ipv4",
+      "medianMs": 0.0558420000015758,
+      "matches": 50,
+      "share": 0.0027649879110978044
+    },
+    {
+      "category": "url",
+      "medianMs": 0.03168700000969693,
+      "matches": 39,
+      "share": 0.0015689655091740205
+    }
+  ],
+  "memory": {
+    "perCall": [
+      {
+        "op": "detect",
+        "size": 1000,
+        "transientBytes": 75968,
+        "retainedBytes": 14304,
+        "keep": 1
+      },
+      {
+        "op": "anonymize",
+        "size": 1000,
+        "transientBytes": 366640,
+        "retainedBytes": 8000,
+        "keep": 1
+      },
+      {
+        "op": "tokenize",
+        "size": 1000,
+        "transientBytes": 66880,
+        "retainedBytes": 2000,
+        "keep": 1
+      },
+      {
+        "op": "engine",
+        "size": 1000,
+        "transientBytes": 214824,
+        "retainedBytes": 17016,
+        "keep": 1
+      },
+      {
+        "op": "detect",
+        "size": 10000,
+        "transientBytes": 268728,
+        "retainedBytes": 11504,
+        "keep": 1
+      },
+      {
+        "op": "anonymize",
+        "size": 10000,
+        "transientBytes": 769824,
+        "retainedBytes": 19936,
+        "keep": 1
+      },
+      {
+        "op": "tokenize",
+        "size": 10000,
+        "transientBytes": 777640,
+        "retainedBytes": 10784,
+        "keep": 1
+      },
+      {
+        "op": "engine",
+        "size": 10000,
+        "transientBytes": 1556208,
+        "retainedBytes": 60896,
+        "keep": 1
+      },
+      {
+        "op": "detect",
+        "size": 100000,
+        "transientBytes": 258680,
+        "retainedBytes": 16232,
+        "keep": 1
+      },
+      {
+        "op": "anonymize",
+        "size": 100000,
+        "transientBytes": 4149936,
+        "retainedBytes": 34656,
+        "keep": 1
+      },
+      {
+        "op": "tokenize",
+        "size": 100000,
+        "transientBytes": 3216264,
+        "retainedBytes": 97352,
+        "keep": 1
+      },
+      {
+        "op": "engine",
+        "size": 100000,
+        "transientBytes": 6363608,
+        "retainedBytes": 35144,
+        "keep": 1
+      },
+      {
+        "op": "detect",
+        "size": 1000000,
+        "transientBytes": 4860312,
+        "retainedBytes": 433520,
+        "keep": 1
+      },
+      {
+        "op": "anonymize",
+        "size": 1000000,
+        "transientBytes": 93003840,
+        "retainedBytes": 856576,
+        "keep": 1
+      },
+      {
+        "op": "tokenize",
+        "size": 1000000,
+        "transientBytes": 137582528,
+        "retainedBytes": 932000,
+        "keep": 1
+      },
+      {
+        "op": "engine",
+        "size": 1000000,
+        "transientBytes": 7323856,
+        "retainedBytes": -116048,
+        "keep": 1
+      }
+    ],
+    "stream": {
+      "bytes": 50000000,
+      "peakHeapGrowthBytes": 71201648,
+      "retainedBytes": -787392,
+      "mbPerSec": 1.4551173005325089
+    }
+  }
+}

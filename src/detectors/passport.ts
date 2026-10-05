@@ -26,17 +26,16 @@ const PASSPORT_PATTERNS: readonly { pattern: RegExp; confidence: number }[] = [
   // Australia: 1 letter + 7 digits
   { pattern: /\b[A-Z]\d{7}\b/g, confidence: 0.73 },
   // UK: 9 digits (no letters)
-  { pattern: /\b\d{9}\b/g, confidence: 0.60 }, // lower confidence — many false positives
+  { pattern: /\b\d{9}\b/g, confidence: 0.6 }, // lower confidence — many false positives
   // EU generic: 1-2 letters + 5-8 digits
-  { pattern: /\b[A-Z]{1,2}\d{5,8}\b/g, confidence: 0.70 },
+  { pattern: /\b[A-Z]{1,2}\d{5,8}\b/g, confidence: 0.7 },
 ];
 
 /**
  * Context keywords that precede a passport number.
  * @internal
  */
-const PASSPORT_CONTEXT_RE =
-  /\b(?:passport(?:\s+(?:number|no\.?|#))?)\s*:?\s*/gi;
+const PASSPORT_CONTEXT_RE = /\b(?:passport(?:\s+(?:number|no\.?|#))?)\s*:?\s*/gi;
 
 /**
  * Detect passport numbers in `text`.
@@ -74,7 +73,7 @@ export function detectPassport(text: string): PiiMatch[] {
       const adjustedConfidence = hasContext ? Math.min(confidence + 0.15, 0.95) : confidence;
 
       // Skip low-confidence matches without context (avoid FP spam)
-      if (adjustedConfidence < 0.70 && !hasContext) continue;
+      if (adjustedConfidence < 0.7 && !hasContext) continue;
 
       seen.add(key);
       matches.push({

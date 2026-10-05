@@ -25,15 +25,13 @@ const US_STREET_PATTERN =
  * UK postcode: e.g. SW1A 2AA, EC1A 1BB, W1A 0AX
  * @internal
  */
-const UK_POSTCODE_PATTERN =
-  /\b[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}\b/gi;
+const UK_POSTCODE_PATTERN = /\b[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}\b/gi;
 
 /**
  * PO Box pattern.
  * @internal
  */
-const PO_BOX_PATTERN =
-  /\bP\.?O\.?\s+Box\s+\d+\b/gi;
+const PO_BOX_PATTERN = /\bP\.?O\.?\s+Box\s+\d+\b/gi;
 
 /**
  * Context-keyword prefixed addresses.
@@ -63,7 +61,7 @@ export function detectAddress(text: string): PiiMatch[] {
   const usPattern = new RegExp(US_STREET_PATTERN.source, "gi");
   let m: RegExpExecArray | null;
   while ((m = usPattern.exec(text)) !== null) {
-    push(m[0], m.index, m.index + m[0].length, 0.80);
+    push(m[0], m.index, m.index + m[0].length, 0.8);
   }
 
   // UK postcodes

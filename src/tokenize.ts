@@ -23,12 +23,7 @@
 import { detect } from "./anonymize.js";
 import { createTokenStore, assignToken, detokenizeText } from "./strategies/tokenize.js";
 import { ValidationError } from "./errors.js";
-import type {
-  TokenizeResult,
-  DetokenizeResult,
-  TokenizeOptions,
-  TokenMatch,
-} from "./types.js";
+import type { TokenizeResult, DetokenizeResult, TokenizeOptions, TokenMatch } from "./types.js";
 
 // Category → token prefix mapping (mirrors TOKEN_PREFIX_MAP in anonymize.ts).
 const TOKEN_PREFIX_MAP: Record<string, string> = {
@@ -166,10 +161,7 @@ export function tokenizeAsync(
  * // { text: "alice@example.com", unresolved: [] }
  * ```
  */
-export function detokenize(
-  text: string,
-  mapping: ReadonlyMap<string, string>,
-): DetokenizeResult {
+export function detokenize(text: string, mapping: ReadonlyMap<string, string>): DetokenizeResult {
   if (typeof text !== "string") throw new ValidationError("text", "must be a string");
 
   // Build a temporary store from the mapping.

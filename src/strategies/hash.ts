@@ -6,25 +6,13 @@
  * `pepper` makes the output specific to your deployment and prevents
  * rainbow-table attacks.
  *
- * ⚠️  Requires Node.js ≥ 18 or an environment that exposes `globalThis.crypto.subtle`.
+ * Uses the Web Crypto API: `globalThis.crypto` where the runtime exposes it,
+ * and Node's own implementation (`node:crypto`) on Node.js 18, which does not.
  */
 
-import { CryptoNotAvailableError, ValidationError } from "../errors.js";
+import { ValidationError } from "../errors.js";
+import { webCrypto } from "../internal/webcrypto.js";
 import type { HashOptions } from "../types.js";
-
-/**
- * Assert that the Web Crypto API is present.
- *
- * @throws {@link CryptoNotAvailableError}
- * @internal
- */
-function assertCrypto(): SubtleCrypto {
-  const subtle = (globalThis.crypto as Crypto | undefined)?.subtle;
-  if (typeof subtle === "undefined") {
-    throw new CryptoNotAvailableError();
-  }
-  return subtle;
-}
 
 /**
  * Compute a SHA-256 hash of `value`, returning a hex string.
@@ -33,7 +21,7 @@ function assertCrypto(): SubtleCrypto {
  * @param options - Hashing configuration.
  * @returns A Promise that resolves to a hex-encoded (possibly truncated) hash.
  *
- * @throws {@link CryptoNotAvailableError} When `globalThis.crypto.subtle` is not available.
+ * @throws {@link CryptoNotAvailableError} When the runtime has no Web Crypto API at all.
  * @throws {@link ValidationError} When `truncate` is not a positive integer ≤ 64.
  *
  * @example
@@ -54,7 +42,7 @@ export async function hash(value: string, options: HashOptions = {}): Promise<st
     throw new ValidationError("truncate", "must be an integer between 1 and 64 (inclusive)");
   }
 
-  const subtle = assertCrypto();
+  const { subtle } = await webCrypto();
   const input = pepper !== undefined ? `${pepper}:${value}` : value;
   const encoded = new TextEncoder().encode(input);
   const buffer = await subtle.digest("SHA-256", encoded);

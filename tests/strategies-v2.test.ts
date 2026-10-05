@@ -177,9 +177,7 @@ describe("encrypt() / decrypt()", () => {
 
   it("wrong passphrase throws EncryptionError on decrypt", async () => {
     const ciphertext = await encrypt("secret", { passphrase: "correctKey" });
-    await expect(decrypt(ciphertext, { passphrase: "wrongKey" })).rejects.toThrow(
-      EncryptionError,
-    );
+    await expect(decrypt(ciphertext, { passphrase: "wrongKey" })).rejects.toThrow(EncryptionError);
   });
 
   it("throws EncryptionError with operation: 'decrypt' on corrupt data", async () => {
