@@ -193,9 +193,10 @@ export interface DetokenizeResult {
 
 /**
  * Token format style.
- * - `"angle"`: `<Category_N>` (default, LLM-friendly)
- * - `"bracket"`: `[CATEGORY_xxxx]`
- * - `"custom"`: Use `tokenTemplate` function
+ * - `"bracket"`: `[CATEGORY_NNNN]` (default)
+ * - `"angle"`: `<CATEGORY_N>`
+ * - `"custom"`: declared for a `tokenTemplate` function, which `tokenize()`
+ *   does not apply; it produces the angle format.
  */
 export type TokenFormat = "angle" | "bracket" | "custom";
 
@@ -212,7 +213,11 @@ export interface TokenizeOptions {
    */
   readonly format?: TokenFormat;
   /**
-   * Custom token template function. Only used when `format: "custom"`.
+   * Custom token template function, for `format: "custom"`.
+   *
+   * @remarks
+   * Not applied: `tokenize()` ignores it and produces the angle format.
+   *
    * @param category - The PII category.
    * @param counter - The incrementing counter for this category.
    * @param value - The original matched value.
@@ -220,6 +225,9 @@ export interface TokenizeOptions {
   readonly tokenTemplate?: (category: string, counter: number, value: string) => string;
   /**
    * When `true`, identical PII values receive the same token. Defaults to `true`.
+   *
+   * @remarks
+   * Not applied: identical values always receive the same token.
    */
   readonly deterministic?: boolean;
   /**
@@ -228,6 +236,9 @@ export interface TokenizeOptions {
   readonly aggressive?: boolean;
   /**
    * Locales to enable for detection. Defaults to `["global"]`.
+   *
+   * @remarks
+   * Not applied: every detector runs, whatever the locale.
    */
   readonly locales?: readonly Locale[];
   /**
@@ -567,7 +578,9 @@ export interface AnonymizeOptions {
   /**
    * Locales to activate for locale-specific detectors.
    * Defaults to `["global"]` which includes universally-formatted PII.
-   * Add specific locales to include region-specific patterns (e.g. `["us", "uk"]`).
+   *
+   * @remarks
+   * Not applied: every detector runs, whatever the locale.
    */
   readonly locales?: readonly Locale[];
 }
@@ -720,6 +733,9 @@ export interface AnonymizerConfig {
   readonly preset?: CompliancePreset;
   /**
    * Locales to activate for locale-specific detectors.
+   *
+   * @remarks
+   * Not applied: every detector runs, whatever the locale.
    */
   readonly locales?: readonly Locale[];
 }
