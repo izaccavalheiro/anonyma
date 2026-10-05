@@ -127,7 +127,7 @@ function applyStrategySync(value: string, opts: StrategyOptions): string {
       console.warn(
         "[anonyma] The `hash` strategy is async and cannot be used in the synchronous " +
           "`anonymize()` pipeline. Falling back to a deterministic pseudonym. " +
-          "Use `hash()` directly if you need true SHA-256 output.",
+          "Use `anonymizeAsync()` or `hash()` for SHA-256 output.",
       );
       return pseudonymize(value, { seed: opts.pepper ?? "__hash_fallback__", prefix: "hsh_" });
     case "generalize":
@@ -135,11 +135,13 @@ function applyStrategySync(value: string, opts: StrategyOptions): string {
     case "tokenize":
     case "encrypt":
     case "synthesize":
-      // These strategies are async-only. In sync contexts we fall back to redact.
+      // Neither anonymize() nor anonymizeAsync() applies these strategies: the
+      // value is redacted. The span engine applies all of them.
       // eslint-disable-next-line no-console
       console.warn(
-        `[anonyma] The \`${opts.strategy}\` strategy requires async execution. ` +
-          `Falling back to redact in the synchronous pipeline. Use anonymizeAsync() instead.`,
+        `[anonyma] anonymize() and anonymizeAsync() do not apply the \`${opts.strategy}\` ` +
+          `strategy; the value is redacted instead. Use a pipeline from "anonyma/engine" ` +
+          `to apply it.`,
       );
       return redact(value);
     default: {
