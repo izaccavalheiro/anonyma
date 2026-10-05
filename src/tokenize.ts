@@ -23,6 +23,7 @@
 import { detect } from "./anonymize.js";
 import { createTokenStore, assignToken, detokenizeText } from "./strategies/tokenize.js";
 import { ValidationError } from "./errors.js";
+import { compileAllowlist } from "./internal/allowlist.js";
 import type { TokenizeResult, DetokenizeResult, TokenizeOptions, TokenMatch } from "./types.js";
 
 // Category → token prefix mapping (mirrors TOKEN_PREFIX_MAP in anonymize.ts).
@@ -93,11 +94,7 @@ export function tokenize(text: string, options: TokenizeOptions = {}): TokenizeR
     allowlistCaseSensitive = false,
   } = options;
 
-  const compiledAllowlist = allowlist.map(
-    (entry) =>
-      new RegExp(entry.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), allowlistCaseSensitive ? "" : "i"),
-  );
-  const isAllowlisted = (v: string): boolean => compiledAllowlist.some((re) => re.test(v));
+  const isAllowlisted = compileAllowlist(allowlist, [], allowlistCaseSensitive);
 
   // Detect PII.
   const allMatches = detect(text, categories, customDetectors, aggressive).filter(

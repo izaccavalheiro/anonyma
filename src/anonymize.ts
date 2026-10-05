@@ -16,6 +16,7 @@ import {
   PresetNotFoundError,
 } from "./errors.js";
 import { getPreset } from "./presets.js";
+import { compileAllowlist } from "./internal/allowlist.js";
 import type {
   AnonymizeOptions,
   AnonymizeResult,
@@ -447,23 +448,8 @@ export function anonymize(text: string, options: AnonymizeOptions = {}): Anonymi
     ...(enabledCategories !== undefined ? { enabledCategories } : {}),
   });
 
-  // Pre-compile allowlist patterns for performance.
-  const compiledAllowlistPatterns: RegExp[] = [
-    ...allowlistPatterns,
-    ...allowlist.map(
-      (entry) =>
-        new RegExp(entry.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), allowlistCaseSensitive ? "" : "i"),
-    ),
-  ];
-
-  /**
-   * Returns true if `value` matches any allowlist entry — i.e. it should
-   * NOT be anonymized even if detected as PII.
-   */
-  function isAllowlisted(value: string): boolean {
-    if (compiledAllowlistPatterns.length === 0) return false;
-    return compiledAllowlistPatterns.some((re) => re.test(value));
-  }
+  // True for a value that must NOT be anonymized even if detected as PII.
+  const isAllowlisted = compileAllowlist(allowlist, allowlistPatterns, allowlistCaseSensitive);
 
   // Run built-in detectors.
   const builtInMatches = detect(text, categories, customDetectors, aggressive);
@@ -632,15 +618,7 @@ export async function anonymizeAsync(
   const builtInMatches = detect(text, categories, customDetectors, aggressive);
   const customMatches = customPatterns.length > 0 ? detectCustomPatterns(text, customPatterns) : [];
 
-  const compiledAllowlistPatterns: RegExp[] = [
-    ...allowlistPatterns,
-    ...allowlist.map(
-      (entry) =>
-        new RegExp(entry.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), allowlistCaseSensitive ? "" : "i"),
-    ),
-  ];
-  const isAllowlisted = (value: string): boolean =>
-    compiledAllowlistPatterns.some((re) => re.test(value));
+  const isAllowlisted = compileAllowlist(allowlist, allowlistPatterns, allowlistCaseSensitive);
 
   const filteredBuiltInMatches = builtInMatches.filter(
     (m) => m.confidence >= confidenceThreshold && !isAllowlisted(m.value),
@@ -1000,12 +978,7 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
         allowlistCaseSensitive: tCaseSensitive = false,
       } = options ?? {};
 
-      const tCompiledAllowlist = tAllowlist.map(
-        (entry: string) =>
-          new RegExp(entry.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"), tCaseSensitive ? "" : "i"),
-      );
-      const isAllowlisted = (v: string): boolean =>
-        tCompiledAllowlist.some((re: RegExp) => re.test(v));
+      const isAllowlisted = compileAllowlist(tAllowlist, [], tCaseSensitive);
 
       const tMatches = detect(text, tCats ?? categories, tCustDet ?? customDetectors, tAgg).filter(
         (m) => m.confidence >= tConfidence && !isAllowlisted(m.value),

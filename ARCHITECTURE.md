@@ -111,7 +111,7 @@ modules of its own layer or of the layers below, never of a layer above:
 ├──────────────────────────────────────────────────────────────────────────┤
 │ 1.x core      detectors/ · strategies/ · presets.ts · validators.ts      │
 └──────────────────────────────────────────────────────────────────────────┘
-  internal/  Web Crypto lookup, byte encodings and lossless JSON numbers, for every layer
+  internal/  Web Crypto lookup, byte encodings, lossless JSON numbers and allowlist matching, for every layer
 ```
 
 The 1.x core does not depend on the subpath modules; only `errors.ts` imports a type from
@@ -484,7 +484,9 @@ neither depends on its framework.
 Not exported. `webcrypto.ts` finds the Web Crypto API (the global, or `node:crypto` on Node.js 18),
 `encoding.ts` converts between bytes and UTF-8, hex, base64url and Crockford base32 without
 `Buffer`, and `json-numbers.ts` parses and writes JSON without rounding numbers a JavaScript number
-cannot hold.
+cannot hold. `allowlist.ts` turns the `allowlist` and `allowlistPatterns` options of the 1.x
+functions into one predicate: an entry matches a value equal to it, a pattern a value it finds a
+match in.
 
 ---
 

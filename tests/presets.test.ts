@@ -126,13 +126,16 @@ describe("anonymize() allowlist option", () => {
     expect(text).toContain("SAFE@EXAMPLE.COM");
   });
 
-  it("allowlist entry 'alice' protects value because it matches as a substring", () => {
-    // Allowlist entries are tested with regex, so 'alice' matches 'alice@example.com'
+  it("allowlist entry protects a value equal to it, not a value that contains it", () => {
     const { text } = anonymize("Email alice@example.com for help", {
       allowlist: ["alice@example.com"],
     });
     // Exact value in allowlist → value preserved
     expect(text).toContain("alice@example.com");
+    // A part of the value is not enough
+    expect(anonymize("Email alice@example.com", { allowlist: ["alice"] }).text).toBe(
+      "Email [REDACTED]",
+    );
   });
 
   it("allowlistPatterns accept RegExp objects", () => {
