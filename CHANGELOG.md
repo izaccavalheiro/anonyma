@@ -11,17 +11,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.1.0-beta.0] — 2026-10-04
+## [1.1.0] — 2026-10-05
 
-Pre-release, published under the `next` dist-tag: `npm install anonyma@next`.
+Additive release. The 1.0 functions (`anonymize`, `tokenize`, `anonymizeObject`, the streams,
+`sanitizeForLLM`, …) keep their behaviour, apart from the fixes listed under "Fixed". Text
+processed with the `hipaa` and `ccpa` presets may have more values replaced (see "Changed").
 
-Additive modernization. The 1.x functions (`anonymize`, `tokenize`, `anonymizeObject`,
-the 1.x streams, `sanitizeForLLM`, …) keep their behaviour, apart from the fixes listed
-under "Fixed".
+The subpath exports `anonyma/engine`, `/vault`, `/audit`, `/compliance`, `/ai`, `/mcp` and
+`/middleware` are new. They were experimental in 1.1.0-beta.0 and are stable from this release:
+they follow semantic versioning like the rest of the package.
 
-The new subpath exports (`anonyma/engine`, `/vault`, `/audit`, `/compliance`, `/ai`,
-`/mcp`, `/middleware`) are **experimental** until 1.1.0 is released: their APIs may
-still change between pre-releases.
+Changes since 1.1.0-beta.0:
+
+- The error classes added in this release are exported from `"anonyma"`. The pre-release did
+  not export them from any entry point, so they could not be used with `instanceof`.
+- The subpath exports are no longer experimental.
+- The warnings that `anonymize()` and `anonymizeAsync()` print for a strategy they do not apply
+  name the span engine, which applies it, instead of `anonymizeAsync()`, which does not.
+- The README and the TSDoc describe the subpath modules, and say which declared options the 1.x
+  functions do not apply (see "Known limitations").
+- Releases are published through npm trusted publishing only, and a stable version only from a
+  commit on `main`. The tests also run on Node.js 26.
 
 ### Added
 
@@ -57,7 +67,7 @@ still change between pre-releases.
   **`"anonyma/middleware/hono"`** — `createScrubber()`, `anonymaExpress()`, `anonymaHono()`.
 - **Presets `lgpd` and `pipeda`.**
 - **Error classes** `AsyncStrategyError`, `KeyManagementError`, `TokenVaultError`,
-  `PolicyError`, `AuditIntegrityError`.
+  `PolicyError` and `AuditIntegrityError`, exported from `"anonyma"` like the others.
 - **`./package.json`** in the export map.
 - **Benchmark** (`npm run bench`, `bench/`) and labelled detector corpora
   (`tests/fixtures/corpus/`).
@@ -75,9 +85,9 @@ still change between pre-releases.
   uses the same class instances, so `instanceof AnonymaError` holds for errors thrown
   by any subpath. The `dist/` layout gains `chunk-*.js` files.
 - `PresetNotFoundError` lists the eight presets.
-- **Releases** are built and published by GitHub Actions from a version tag, with an npm
-  provenance attestation, a GitHub build attestation and a CycloneDX SBOM attached to the
-  GitHub release.
+- **Releases** are built and published by GitHub Actions from a version tag, through npm
+  trusted publishing, with an npm provenance attestation, a GitHub build attestation and a
+  CycloneDX SBOM attached to the GitHub release.
 - **Development** needs Node.js 22.22 or newer. The package still supports Node.js 18:
   every release is installed and exercised on Node.js 18, 20, 22, 24 and 26.
 
@@ -94,6 +104,32 @@ still change between pre-releases.
   replaced.
 - **`synthesize()`** no longer crashes, or returns `[object Undefined]`, for a category
   named like an `Object.prototype` member (`constructor`, `toString`, …).
+- The warning printed when `anonymize()` or `anonymizeAsync()` redacts a value whose rule is
+  `tokenize`, `encrypt` or `synthesize` advised `anonymizeAsync()`, which redacts it too.
+
+### Known limitations
+
+The 1.0 documentation described behaviour that the 1.x functions do not have. The
+documentation now describes what they do; the behaviour itself is unchanged:
+
+- `anonymize()`, `anonymizeAsync()` and the functions built on them redact a value whose rule
+  is `tokenize`, `encrypt` or `synthesize`, with a warning, and the synchronous functions
+  replace a `hash` rule with a seeded pseudonym. A pipeline from `"anonyma/engine"` applies
+  every strategy.
+- `createAnonymizer()` does not apply `plugins` (`AnonymaPlugin`).
+- With `preset` set, `anonymize()` ignores `enabledCategories`; a pipeline can add categories
+  to a preset.
+- `tokenize()` does not apply `format: "custom"` with `tokenTemplate`, nor
+  `deterministic: false`, and no function applies `locales`.
+- `AnonymizeOptionsSchema.parse()` removes `preset`, `allowlist`, `confidenceThreshold`,
+  `locales` and the other options the schema does not describe.
+
+---
+
+## [1.1.0-beta.0] — 2026-10-04
+
+Pre-release of 1.1.0, published under the `next` dist-tag. Its changes are listed under
+[1.1.0], together with the changes made since.
 
 ---
 
@@ -544,5 +580,7 @@ All types are zero-cost, type-only exports (stripped by `tsc`; no runtime overhe
 - **Prettier** code formatting.
 - **MIT License**.
 
+[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.0
 [1.1.0-beta.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.0-beta.0
 [1.0.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.0.0
