@@ -557,12 +557,21 @@ export const ANONYMA_MANIFEST = {
 // Inferred TypeScript types from Zod schemas
 // ---------------------------------------------------------------------------
 
+/** A PII category accepted by {@link PiiCategorySchema}. */
 export type PiiCategoryInput = z.infer<typeof PiiCategorySchema>;
+/** Strategy options accepted by {@link StrategyOptionsSchema}. */
 export type StrategyOptionsInput = z.infer<typeof StrategyOptionsSchema>;
+/** Anonymization options accepted by {@link AnonymizeOptionsSchema}. */
 export type AnonymizeOptionsInput = z.infer<typeof AnonymizeOptionsSchema>;
+/** A per-category rule accepted by {@link AnonymizationRuleSchema}. */
 export type AnonymizationRuleInput = z.infer<typeof AnonymizationRuleSchema>;
+/** A custom pattern accepted by {@link CustomPatternSchema}. */
 export type CustomPatternInput = z.infer<typeof CustomPatternSchema>;
+/** A detected match as validated by {@link PiiMatchSchema}. */
 export type PiiMatchOutput = z.infer<typeof PiiMatchSchema>;
+/** An anonymization result as validated by {@link AnonymizeResultSchema}. */
 export type AnonymizeResultOutput = z.infer<typeof AnonymizeResultSchema>;
+/** A field rule accepted by {@link FieldRuleSchema}. */
 export type FieldRuleInput = z.infer<typeof FieldRuleSchema>;
+/** A field rule map accepted by {@link FieldRuleMapSchema}. */
 export type FieldRuleMapInput = z.infer<typeof FieldRuleMapSchema>;

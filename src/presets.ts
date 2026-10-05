@@ -93,10 +93,12 @@ const GDPR_PRESET: PresetConfig = {
 
 /**
  * HIPAA — US Health Insurance Portability and Accountability Act.
- * Covers the 18 HIPAA Safe Harbor identifiers.
+ * Covers the HIPAA Safe Harbor identifiers that can be detected in text.
  * Default strategy: redact (no reconstructability).
  *
- * The 18 Safe Harbor identifiers are:
+ * The 18 Safe Harbor identifiers are listed below. City, county, ZIP code,
+ * dates other than birth dates, ages over 89, device identifiers, biometrics
+ * and photographs have no detector and need field-level rules:
  * 1. Names, 2. Geographic data, 3. Dates (except year), 4. Phone numbers,
  * 5. Fax numbers, 6. Email addresses, 7. SSNs, 8. MRN, 9. Health plan beneficiary numbers,
  * 10. Account numbers, 11. Certificate/license numbers, 12. VINs, 13. Device identifiers,
@@ -245,8 +247,11 @@ const PIPEDA_PRESET: PresetConfig = {
 
 /**
  * PCI-DSS — Payment Card Industry Data Security Standard.
- * Covers cardholder data (CHD) and sensitive authentication data (SAD).
- * Default strategy: mask with last 4 visible (industry standard).
+ * Covers the card number and the cardholder data around it. Sensitive
+ * authentication data (card verification codes, track data, PINs) has no
+ * detector.
+ * Default strategy: redact. Card and bank account numbers are masked with
+ * the last 4 digits visible (industry standard).
  */
 const PCI_DSS_PRESET: PresetConfig = {
   name: "pci-dss",
