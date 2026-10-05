@@ -140,7 +140,7 @@ function applyStrategySync(value: string, opts: StrategyOptions): string {
       // eslint-disable-next-line no-console
       console.warn(
         `[anonyma] anonymize() and anonymizeAsync() do not apply the \`${opts.strategy}\` ` +
-          `strategy; the value is redacted instead. Use a pipeline from "anonyma/engine" ` +
+          `strategy; the value is redacted instead. Use a pipeline of "anonyma/engine" ` +
           `to apply it.`,
       );
       return redact(value);
