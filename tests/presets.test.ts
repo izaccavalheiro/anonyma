@@ -23,8 +23,8 @@ describe("getPreset()", () => {
     expect(config.defaultStrategy).toBeDefined();
   });
 
-  it("returns a PresetConfig for each of the 6 presets", () => {
-    const names = ["gdpr", "hipaa", "ccpa", "pci-dss", "sox", "ferpa"] as const;
+  it("returns a PresetConfig for each of the 8 presets", () => {
+    const names = ["gdpr", "lgpd", "pipeda", "hipaa", "ccpa", "pci-dss", "sox", "ferpa"] as const;
     for (const name of names) {
       const config = getPreset(name);
       expect(config.name).toBe(name);
@@ -36,7 +36,7 @@ describe("getPreset()", () => {
     expect(() => getPreset("unknown-preset" as "gdpr")).toThrow();
   });
 
-  it("PRESET_REGISTRY has all 6 presets", () => {
+  it("PRESET_REGISTRY has all 8 presets", () => {
     expect(Object.keys(PRESET_REGISTRY)).toHaveLength(8);
     expect(PRESET_REGISTRY["gdpr"]).toBeDefined();
     expect(PRESET_REGISTRY["hipaa"]).toBeDefined();
