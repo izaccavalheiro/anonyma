@@ -250,7 +250,9 @@ export interface TokenizeOptions {
    */
   readonly customDetectors?: Partial<Record<PiiCategory, Detector>>;
   /**
-   * Values that should never be tokenized even when detected as PII.
+   * Values that should never be tokenized even when detected as PII. A
+   * detected value is skipped only when it equals an entry (case-insensitive
+   * by default); a value that merely contains an entry is tokenized.
    */
   readonly allowlist?: readonly string[];
   /**
@@ -549,13 +551,19 @@ export interface AnonymizeOptions {
   readonly enabledCategories?: Partial<Record<PiiCategory, boolean>>;
   /**
    * Exact values to exclude from detection (case-insensitive by default).
-   * Matches in the allowlist are skipped before strategy application.
+   * Matches in the allowlist are skipped before strategy application. A
+   * detected value is skipped only when it equals an entry; a value that
+   * merely contains an entry is anonymized. Use `allowlistPatterns` to skip
+   * values by a part of them.
    *
    * @example `allowlist: ["noreply@company.com"]`
    */
   readonly allowlist?: readonly string[];
   /**
-   * RegExp patterns for values to skip. Matches against the full PII value.
+   * RegExp patterns for values to skip. Each is tested against the full PII
+   * value and skips it when it matches anywhere in it, so anchor a pattern
+   * with `^` and `$` to require a full match. The `g` and `y` flags are
+   * ignored.
    *
    * @example `allowlistPatterns: [/^192\.168\./]`
    */

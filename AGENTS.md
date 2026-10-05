@@ -48,7 +48,7 @@ src/
 ├── ai/                   # "anonyma/ai" — JSON and chat-message sanitizers, stream restoration, LLM guard
 ├── mcp/                  # "anonyma/mcp" — MCP declarations and server
 ├── middleware/           # "anonyma/middleware", "/express", "/hono" — HTTP payload scrubbing
-└── internal/             # Web Crypto lookup, byte encodings and lossless JSON numbers shared by the modules above
+└── internal/             # Web Crypto lookup, byte encodings, lossless JSON numbers and allowlist matching shared by the modules above
 bench/                    # Benchmark (run.mjs), corpus generator, saved results
 scripts/                  # Repository checks run by CI: package smoke test, size budget, privacy invariants, benchmark scaling
 tests/fixtures/corpus/    # Labelled detector corpora used by tests/engine/precision.test.ts
