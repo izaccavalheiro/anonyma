@@ -127,7 +127,9 @@ export type {
   Anonymizer,
   AnonymizerConfig,
   ValidatorFunction,
+  StrategyFunction,
   AnonymaPlugin,
+  PluginStrategyOptions,
 } from "./types.js";
 
 export type { PresetConfig } from "./presets.js";

@@ -24,7 +24,7 @@
 - 🌳 **Deep object anonymization** — `anonymizeObject()` recursively cleans entire JSON trees
 - ✅ **PII presence check** — `hasPII()` with early-exit for fast gating
 - 🔎 **Aggressive mode** — expanded, permissive patterns for obfuscated PII
-- 🧩 **Custom patterns & detectors** — inject ad-hoc `RegExp` patterns, fully replace per-category detectors, or define detectors for your own categories
+- 🧩 **Custom patterns, detectors & plugins** — inject ad-hoc `RegExp` patterns, fully replace per-category detectors, define detectors for your own categories, or give an anonymizer detectors, strategies and validators as plugins
 - 🚫 **Allowlist support** — skip known-safe values by exact string or `RegExp` pattern
 - 🔢 **Confidence threshold** — filter out low-confidence matches
 - 🔒 **Encryption** — reversible AES-GCM `encrypt()` / `decrypt()` strategy (Web Crypto API)
@@ -579,8 +579,61 @@ pipeline.transform("EMP-001234 wrote from alice@example.com").text;
 // "[EMPLOYEE] wrote from [REDACTED]"
 ```
 
-`AnonymaPlugin` and the `plugins` option of `createAnonymizer()` are declared in the types, but
-`createAnonymizer()` does not apply plugins.
+---
+
+## Plugins
+
+A plugin gives the anonymizer that `createAnonymizer()` creates detectors, strategies and
+validators of its own:
+
+- A **detector** replaces the built-in detector of its category. `customDetectors` take
+  precedence over it.
+- A **strategy** is named in rules and default strategies as `{ strategy, options }`, and
+  receives the `options` as its second argument.
+- A **validator** decides which matches of its category count: a match is anonymized only when
+  every validator of its category accepts it.
+
+```ts
+import { createAnonymizer, type AnonymaPlugin } from "anonyma";
+import { cpfChecksum } from "anonyma/validators";
+
+const acme: AnonymaPlugin = {
+  name: "acme",
+  detectors: {
+    "case-number": (text) =>
+      [...text.matchAll(/\bACME-\d{6}\b/g)].map((m) => ({
+        category: "case-number" as const,
+        value: m[0],
+        start: m.index,
+        end: m.index + m[0].length,
+        confidence: 0.95,
+      })),
+  },
+  strategies: {
+    "keep-domain": (value, options) =>
+      `${String(options?.["user"] ?? "[USER]")}@${value.slice(value.indexOf("@") + 1)}`,
+  },
+  validators: {
+    // A CPF-shaped national ID counts only with the right check digits.
+    "national-id": (value) => !/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(value) || cpfChecksum(value),
+  },
+};
+
+const anonymizer = createAnonymizer({ plugins: [acme] });
+anonymizer.anonymize("ACME-004211: alice@example.com, CPF 529.982.247-25, ref 529.982.247-26", {
+  rules: [
+    { category: "case-number", strategy: { strategy: "redact", label: "[CASE]" } },
+    { category: "email", strategy: { strategy: "keep-domain" } },
+    { category: "national-id", strategy: { strategy: "redact" } },
+  ],
+}).text;
+// "[CASE]: [USER]@example.com, CPF [REDACTED], ref 529.982.247-26"
+```
+
+Plugins apply to the methods of their anonymizer only: `anonymize()` and the other standalone
+functions do not use them. `createAnonymizer()` throws a `ValidationError` when two plugins have
+the same name, register a detector for the same category or a strategy under the same name, or
+when a strategy has the name of a built-in one.
 
 ---
 

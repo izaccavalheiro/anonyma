@@ -17,6 +17,7 @@ import {
 } from "./errors.js";
 import { getPreset } from "./presets.js";
 import type {
+  AnonymaPlugin,
   AnonymizeOptions,
   AnonymizeResult,
   AnonymizerConfig,
@@ -24,11 +25,15 @@ import type {
   FieldRuleMap,
   PiiCategory,
   PiiMatch,
+  PluginStrategyOptions,
+  StrategyFunction,
+  StrategyName,
   StrategyOptions,
   Detector,
   CustomPattern,
   TokenizeOptions,
   TokenMatch,
+  ValidatorFunction,
 } from "./types.js";
 
 // ---------------------------------------------------------------------------
@@ -101,6 +106,67 @@ const TOKEN_PREFIX_MAP: Readonly<Record<PiiCategory, string>> = {
 } as const;
 
 /**
+ * Names of the built-in strategies. A plugin cannot register a strategy under
+ * one of them.
+ *
+ * @internal
+ */
+const STRATEGY_NAMES: ReadonlySet<string> = new Set<StrategyName>([
+  "mask",
+  "redact",
+  "pseudonymize",
+  "hash",
+  "generalize",
+  "tokenize",
+  "encrypt",
+  "synthesize",
+]);
+
+/**
+ * What the plugins of an anonymizer register, checked and merged by
+ * {@link resolvePlugins}.
+ *
+ * @internal
+ */
+interface PluginRegistry {
+  /** Detectors by category. */
+  readonly detectors: Partial<Record<PiiCategory, Detector>>;
+  /** Strategies by name. */
+  readonly strategies: ReadonlyMap<string, StrategyFunction>;
+  /** Validators by category; a match is kept only when each of them accepts its value. */
+  readonly validators: ReadonlyMap<PiiCategory, readonly ValidatorFunction[]>;
+}
+
+/**
+ * The registry of the standalone functions, which apply no plugin.
+ *
+ * @internal
+ */
+const NO_PLUGINS: PluginRegistry = {
+  detectors: {},
+  strategies: new Map(),
+  validators: new Map(),
+};
+
+/**
+ * Whether `name` is a built-in PII category.
+ *
+ * @internal
+ */
+function isCategory(name: string): name is PiiCategory {
+  return (ALL_CATEGORIES as readonly string[]).includes(name);
+}
+
+/**
+ * Whether `opts` names a built-in strategy rather than a plugin strategy.
+ *
+ * @internal
+ */
+function isBuiltinStrategy(opts: StrategyOptions | PluginStrategyOptions): opts is StrategyOptions {
+  return STRATEGY_NAMES.has(opts.strategy);
+}
+
+/**
  * Apply a single strategy synchronously. The `hash` strategy is async but
  * for text-level anonymization we need synchronous replacement. We use
  * pseudonymize as a deterministic fallback for hash in sync contexts.
@@ -144,12 +210,42 @@ function applyStrategySync(value: string, opts: StrategyOptions): string {
           `to apply it.`,
       );
       return redact(value);
+    /* v8 ignore start -- applyStrategy() passes built-in strategies only */
     default: {
       // Exhaustiveness check — TypeScript should never reach here.
       const _exhaustive: never = opts;
       throw new UnsupportedStrategyError((_exhaustive as StrategyOptions).strategy);
     }
+    /* v8 ignore stop */
   }
+}
+
+/**
+ * Apply a built-in strategy with {@link applyStrategySync}, or a strategy that
+ * a plugin registers.
+ *
+ * @throws {@link UnsupportedStrategyError} When neither anonyma nor a plugin
+ *   provides the strategy.
+ * @throws {@link ValidationError} When the plugin strategy returns no string.
+ *
+ * @internal
+ */
+function applyStrategy(
+  value: string,
+  opts: StrategyOptions | PluginStrategyOptions,
+  plugins: PluginRegistry,
+): string {
+  if (isBuiltinStrategy(opts)) return applyStrategySync(value, opts);
+
+  const strategy = plugins.strategies.get(opts.strategy);
+  if (strategy === undefined) throw new UnsupportedStrategyError(opts.strategy);
+
+  const replacement = strategy(value, opts.options);
+  // Checked at runtime because plugins may be plain JavaScript.
+  if (typeof replacement !== "string") {
+    throw new ValidationError(`strategies.${opts.strategy}`, "must return a string");
+  }
+  return replacement;
 }
 
 /**
@@ -180,17 +276,40 @@ function deduplicateMatches<T extends { start: number; end: number; confidence: 
 }
 
 /**
- * Get the active detector for a category, merging custom overrides.
+ * Get the active detector for a category: a custom override, else a plugin
+ * detector, else the built-in one.
  *
  * @internal
  */
 function resolveDetector(
   category: PiiCategory,
-  customDetectors?: Partial<Record<PiiCategory, Detector>>,
-  aggressive?: boolean,
+  customDetectors: Partial<Record<PiiCategory, Detector>> | undefined,
+  aggressive: boolean | undefined,
+  plugins: PluginRegistry,
 ): Detector {
   if (customDetectors?.[category]) return customDetectors[category];
+  const pluginDetector = plugins.detectors[category];
+  if (pluginDetector) return pluginDetector;
   return aggressive ? AGGRESSIVE_DETECTOR_REGISTRY[category] : DETECTOR_REGISTRY[category];
+}
+
+/**
+ * Run the active detector of a category and keep the matches that every
+ * plugin validator of the category accepts.
+ *
+ * @internal
+ */
+function runDetector(
+  text: string,
+  category: PiiCategory,
+  customDetectors: Partial<Record<PiiCategory, Detector>> | undefined,
+  aggressive: boolean | undefined,
+  plugins: PluginRegistry,
+): PiiMatch[] {
+  const matches = resolveDetector(category, customDetectors, aggressive, plugins)(text);
+  const validators = plugins.validators.get(category);
+  if (validators === undefined) return matches;
+  return matches.filter((match) => validators.every((validate) => validate(match.value)));
 }
 
 /**
@@ -253,7 +372,9 @@ function detectCustomPatterns(
  *
  * @internal
  */
-function resolveCategories(options: AnonymizeOptions): PiiCategory[] {
+function resolveCategories(
+  options: AnonymizeOptions<StrategyOptions | PluginStrategyOptions>,
+): PiiCategory[] {
   const { rules = [], enabledCategories } = options;
 
   if (rules.length > 0) {
@@ -298,6 +419,21 @@ export function detect(
   customDetectors?: Partial<Record<PiiCategory, Detector>>,
   aggressive?: boolean,
 ): PiiMatch[] {
+  return detectWith(text, categories, customDetectors, aggressive, NO_PLUGINS);
+}
+
+/**
+ * {@link detect} with the detectors and validators of an anonymizer's plugins.
+ *
+ * @internal
+ */
+function detectWith(
+  text: string,
+  categories: readonly PiiCategory[],
+  customDetectors: Partial<Record<PiiCategory, Detector>> | undefined,
+  aggressive: boolean | undefined,
+  plugins: PluginRegistry,
+): PiiMatch[] {
   if (typeof text !== "string") {
     throw new ValidationError("text", "must be a string");
   }
@@ -308,8 +444,7 @@ export function detect(
     if (!ALL_CATEGORIES.includes(category)) {
       throw new UnknownCategoryError(category);
     }
-    const detector = resolveDetector(category, customDetectors, aggressive);
-    raw.push(...detector(text));
+    raw.push(...runDetector(text, category, customDetectors, aggressive, plugins));
   }
 
   return deduplicateMatches(raw);
@@ -344,6 +479,20 @@ export function hasPII(
   categories: readonly PiiCategory[] = ALL_CATEGORIES,
   customDetectors?: Partial<Record<PiiCategory, Detector>>,
 ): boolean {
+  return hasPIIWith(text, categories, customDetectors, NO_PLUGINS);
+}
+
+/**
+ * {@link hasPII} with the detectors and validators of an anonymizer's plugins.
+ *
+ * @internal
+ */
+function hasPIIWith(
+  text: string,
+  categories: readonly PiiCategory[],
+  customDetectors: Partial<Record<PiiCategory, Detector>> | undefined,
+  plugins: PluginRegistry,
+): boolean {
   if (typeof text !== "string") {
     throw new ValidationError("text", "must be a string");
   }
@@ -352,8 +501,7 @@ export function hasPII(
     if (!ALL_CATEGORIES.includes(category)) {
       throw new UnknownCategoryError(category);
     }
-    const detector = resolveDetector(category, customDetectors);
-    if (detector(text).length > 0) return true;
+    if (runDetector(text, category, customDetectors, undefined, plugins).length > 0) return true;
   }
 
   return false;
@@ -391,6 +539,20 @@ export function hasPII(
  * ```
  */
 export function anonymize(text: string, options: AnonymizeOptions = {}): AnonymizeResult {
+  return anonymizeWith(text, options, NO_PLUGINS);
+}
+
+/**
+ * {@link anonymize} with the detectors, strategies and validators of an
+ * anonymizer's plugins.
+ *
+ * @internal
+ */
+function anonymizeWith(
+  text: string,
+  options: AnonymizeOptions<StrategyOptions | PluginStrategyOptions>,
+  plugins: PluginRegistry,
+): AnonymizeResult {
   if (typeof text !== "string") {
     throw new ValidationError("text", "must be a string");
   }
@@ -433,7 +595,7 @@ export function anonymize(text: string, options: AnonymizeOptions = {}): Anonymi
   } = options;
 
   // Build a category → strategy map from the rules array.
-  const ruleMap = new Map<PiiCategory, StrategyOptions>();
+  const ruleMap = new Map<PiiCategory, StrategyOptions | PluginStrategyOptions>();
   for (const rule of rules) {
     if (!ALL_CATEGORIES.includes(rule.category)) {
       throw new UnknownCategoryError(rule.category);
@@ -466,7 +628,7 @@ export function anonymize(text: string, options: AnonymizeOptions = {}): Anonymi
   }
 
   // Run built-in detectors.
-  const builtInMatches = detect(text, categories, customDetectors, aggressive);
+  const builtInMatches = detectWith(text, categories, customDetectors, aggressive, plugins);
 
   // Run custom patterns.
   const customMatches = customPatterns.length > 0 ? detectCustomPatterns(text, customPatterns) : [];
@@ -516,7 +678,7 @@ export function anonymize(text: string, options: AnonymizeOptions = {}): Anonymi
     } else {
       // Built-in PII match: look up per-category rule or fall back to default.
       const strategy = ruleMap.get(match.category) ?? defaultStrategy;
-      replacement = applyStrategySync(match.value, strategy);
+      replacement = applyStrategy(match.value, strategy, plugins);
     }
 
     result = result.slice(0, match.start) + replacement + result.slice(match.end);
@@ -562,12 +724,26 @@ export async function anonymizeAsync(
   text: string,
   options: AnonymizeOptions = {},
 ): Promise<AnonymizeResult> {
+  return anonymizeAsyncWith(text, options, NO_PLUGINS);
+}
+
+/**
+ * {@link anonymizeAsync} with the detectors, strategies and validators of an
+ * anonymizer's plugins.
+ *
+ * @internal
+ */
+async function anonymizeAsyncWith(
+  text: string,
+  options: AnonymizeOptions<StrategyOptions | PluginStrategyOptions>,
+  plugins: PluginRegistry,
+): Promise<AnonymizeResult> {
   if (typeof text !== "string") {
     throw new ValidationError("text", "must be a string");
   }
 
   // For strategies that don't involve async primitives, delegate to sync.
-  const hasAsyncStrategy = (opts: StrategyOptions): boolean =>
+  const hasAsyncStrategy = (opts: StrategyOptions | PluginStrategyOptions): boolean =>
     opts.strategy === "hash" ||
     opts.strategy === "encrypt" ||
     opts.strategy === "tokenize" ||
@@ -578,7 +754,7 @@ export async function anonymizeAsync(
     (options.rules ?? []).some((r) => hasAsyncStrategy(r.strategy));
 
   if (!needsAsync) {
-    return anonymize(text, options);
+    return anonymizeWith(text, options, plugins);
   }
 
   // Lazy-import to avoid circular dependency on strategies not yet in the
@@ -618,7 +794,7 @@ export async function anonymizeAsync(
     confidenceThreshold = 0,
   } = options;
 
-  const ruleMap = new Map<PiiCategory, StrategyOptions>();
+  const ruleMap = new Map<PiiCategory, StrategyOptions | PluginStrategyOptions>();
   for (const rule of rules) {
     if (!ALL_CATEGORIES.includes(rule.category)) throw new UnknownCategoryError(rule.category);
     ruleMap.set(rule.category, rule.strategy);
@@ -629,7 +805,7 @@ export async function anonymizeAsync(
     ...(enabledCategories !== undefined ? { enabledCategories } : {}),
   });
 
-  const builtInMatches = detect(text, categories, customDetectors, aggressive);
+  const builtInMatches = detectWith(text, categories, customDetectors, aggressive, plugins);
   const customMatches = customPatterns.length > 0 ? detectCustomPatterns(text, customPatterns) : [];
 
   const compiledAllowlistPatterns: RegExp[] = [
@@ -680,10 +856,10 @@ export async function anonymizeAsync(
       replacement = match.replacement;
     } else {
       const strategy = ruleMap.get(match.category) ?? defaultStrategy;
-      if (strategy.strategy === "hash") {
+      if (isBuiltinStrategy(strategy) && strategy.strategy === "hash") {
         replacement = await hashFn(match.value, strategy);
       } else {
-        replacement = applyStrategySync(match.value, strategy);
+        replacement = applyStrategy(match.value, strategy, plugins);
       }
     }
 
@@ -731,10 +907,24 @@ export async function anonymizeAsync(
  * ```
  */
 export function anonymizeObject<T extends object>(obj: T, options?: AnonymizeOptions): T {
+  return anonymizeObjectWith(obj, options, NO_PLUGINS);
+}
+
+/**
+ * {@link anonymizeObject} with the detectors, strategies and validators of an
+ * anonymizer's plugins.
+ *
+ * @internal
+ */
+function anonymizeObjectWith<T extends object>(
+  obj: T,
+  options: AnonymizeOptions<StrategyOptions | PluginStrategyOptions> | undefined,
+  plugins: PluginRegistry,
+): T {
   if (typeof obj !== "object") {
     throw new ValidationError("obj", "must be an object");
   }
-  return deepAnonymizeValue(obj, options, new WeakSet()) as T;
+  return deepAnonymizeValue(obj, options, new WeakSet(), plugins) as T;
 }
 
 /**
@@ -745,13 +935,14 @@ export function anonymizeObject<T extends object>(obj: T, options?: AnonymizeOpt
  */
 function deepAnonymizeValue(
   value: unknown,
-  options: AnonymizeOptions | undefined,
+  options: AnonymizeOptions<StrategyOptions | PluginStrategyOptions> | undefined,
   seen: WeakSet<object>,
+  plugins: PluginRegistry,
 ): unknown {
   if (value === null || value === undefined) return value;
 
   if (typeof value === "string") {
-    return anonymize(value, options).text;
+    return anonymizeWith(value, options ?? {}, plugins).text;
   }
 
   if (typeof value !== "object") {
@@ -765,7 +956,7 @@ function deepAnonymizeValue(
   seen.add(value);
 
   if (Array.isArray(value)) {
-    const result = value.map((item) => deepAnonymizeValue(item, options, seen));
+    const result = value.map((item) => deepAnonymizeValue(item, options, seen, plugins));
     seen.delete(value as object);
     return result;
   }
@@ -773,7 +964,12 @@ function deepAnonymizeValue(
   // Plain object.
   const result: Record<string, unknown> = {};
   for (const key of Object.keys(value as Record<string, unknown>)) {
-    result[key] = deepAnonymizeValue((value as Record<string, unknown>)[key], options, seen);
+    result[key] = deepAnonymizeValue(
+      (value as Record<string, unknown>)[key],
+      options,
+      seen,
+      plugins,
+    );
   }
   seen.delete(value);
   return result;
@@ -859,6 +1055,19 @@ export function anonymizeRecord<T extends Record<string, unknown>>(
   record: T,
   rules: FieldRuleMap,
 ): T {
+  return anonymizeRecordWith(record, rules, NO_PLUGINS);
+}
+
+/**
+ * {@link anonymizeRecord} with the strategies of an anonymizer's plugins.
+ *
+ * @internal
+ */
+function anonymizeRecordWith<T extends Record<string, unknown>>(
+  record: T,
+  rules: FieldRuleMap<StrategyOptions | PluginStrategyOptions>,
+  plugins: PluginRegistry,
+): T {
   if (typeof record !== "object" || Array.isArray(record)) {
     throw new ValidationError("record", "must be a plain object");
   }
@@ -872,12 +1081,86 @@ export function anonymizeRecord<T extends Record<string, unknown>>(
       if (typeof raw !== "string" && typeof raw !== "number" && typeof raw !== "boolean") continue;
 
       const strValue = String(raw);
-      const anonymized = applyStrategySync(strValue, rule.strategy);
+      const anonymized = applyStrategy(strValue, rule.strategy, plugins);
       result = setByPath(result, path, anonymized);
     }
   }
 
   return result as T;
+}
+
+// ---------------------------------------------------------------------------
+// Plugins
+// ---------------------------------------------------------------------------
+
+/**
+ * Check the plugins of an anonymizer and merge what they register.
+ *
+ * @throws {@link ValidationError} When a plugin has no name or the name of
+ *   another, when two plugins register a detector for the same category or a
+ *   strategy under the same name, or when a strategy has a built-in name.
+ * @throws {@link UnknownCategoryError} When a detector or validator is keyed by
+ *   a name that is not a category.
+ *
+ * @internal
+ */
+function resolvePlugins(plugins: readonly AnonymaPlugin[]): PluginRegistry {
+  const names = new Set<string>();
+  const detectors: Partial<Record<PiiCategory, Detector>> = {};
+  const detectorOwners = new Map<PiiCategory, string>();
+  const strategies = new Map<string, StrategyFunction>();
+  const strategyOwners = new Map<string, string>();
+  const validators = new Map<PiiCategory, ValidatorFunction[]>();
+
+  plugins.forEach((plugin, index) => {
+    const field = `plugins[${String(index)}]`;
+    const { name } = plugin;
+    if (typeof name !== "string" || name.length === 0) {
+      throw new ValidationError(`${field}.name`, "must be a non-empty string");
+    }
+    if (names.has(name)) {
+      throw new ValidationError(`${field}.name`, `another plugin is named "${name}"`);
+    }
+    names.add(name);
+
+    for (const [category, detector] of Object.entries(plugin.detectors ?? {})) {
+      if (!isCategory(category)) throw new UnknownCategoryError(category);
+      const owner = detectorOwners.get(category);
+      if (owner !== undefined) {
+        throw new ValidationError(
+          `${field}.detectors.${category}`,
+          `plugin "${owner}" registers a detector for this category`,
+        );
+      }
+      detectorOwners.set(category, name);
+      detectors[category] = detector;
+    }
+
+    for (const [strategyName, strategy] of Object.entries(plugin.strategies ?? {})) {
+      if (STRATEGY_NAMES.has(strategyName)) {
+        throw new ValidationError(
+          `${field}.strategies.${strategyName}`,
+          "a built-in strategy has this name",
+        );
+      }
+      const owner = strategyOwners.get(strategyName);
+      if (owner !== undefined) {
+        throw new ValidationError(
+          `${field}.strategies.${strategyName}`,
+          `plugin "${owner}" registers a strategy with this name`,
+        );
+      }
+      strategyOwners.set(strategyName, name);
+      strategies.set(strategyName, strategy);
+    }
+
+    for (const [category, validator] of Object.entries(plugin.validators ?? {})) {
+      if (!isCategory(category)) throw new UnknownCategoryError(category);
+      validators.set(category, [...(validators.get(category) ?? []), validator]);
+    }
+  });
+
+  return { detectors, strategies, validators };
 }
 
 // ---------------------------------------------------------------------------
@@ -887,8 +1170,13 @@ export function anonymizeRecord<T extends Record<string, unknown>>(
 /**
  * Create a reusable, pre-configured {@link Anonymizer} instance.
  *
+ * The anonymizer applies the detectors, strategies and validators of the
+ * `plugins` of its configuration (see {@link AnonymaPlugin}).
+ *
  * @param config - Anonymizer configuration.
  * @returns A configured {@link Anonymizer}.
+ * @throws {@link UnsupportedStrategyError} When `defaultStrategy` names a
+ *   strategy that neither anonyma nor one of the plugins provides.
  *
  * @example
  * ```ts
@@ -928,6 +1216,7 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
     globalReplacement,
     consistentTokens,
     aggressive,
+    plugins = [],
   } = config;
 
   // Validate categories up-front.
@@ -937,9 +1226,17 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
     }
   }
 
+  const registry = resolvePlugins(plugins);
+  // The types accept any strategy name here, so check it before a value needs it.
+  if (!isBuiltinStrategy(defaultStrategy) && !registry.strategies.has(defaultStrategy.strategy)) {
+    throw new UnsupportedStrategyError(defaultStrategy.strategy);
+  }
+
   /** Shared base options derived from config. */
-  function baseOptions(overrides?: Partial<AnonymizeOptions>): AnonymizeOptions {
-    const base: AnonymizeOptions = {
+  function baseOptions(
+    overrides?: Partial<AnonymizeOptions<StrategyOptions | PluginStrategyOptions>>,
+  ): AnonymizeOptions<StrategyOptions | PluginStrategyOptions> {
+    const base: AnonymizeOptions<StrategyOptions | PluginStrategyOptions> = {
       defaultStrategy,
       ...(customDetectors !== undefined ? { customDetectors } : {}),
       ...(customPatterns !== undefined ? { customPatterns } : {}),
@@ -965,27 +1262,36 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
   }
 
   return {
-    anonymize(text: string, options?: Partial<AnonymizeOptions>): AnonymizeResult {
-      return anonymize(text, baseOptions(options));
+    anonymize(
+      text: string,
+      options?: Partial<AnonymizeOptions<StrategyOptions | PluginStrategyOptions>>,
+    ): AnonymizeResult {
+      return anonymizeWith(text, baseOptions(options), registry);
     },
 
     detect(text: string): PiiMatch[] {
-      return detect(text, categories, customDetectors, aggressive);
+      return detectWith(text, categories, customDetectors, aggressive, registry);
     },
 
-    anonymizeRecord<T extends Record<string, unknown>>(record: T, rules: FieldRuleMap): T {
-      return anonymizeRecord(record, rules);
+    anonymizeRecord<T extends Record<string, unknown>>(
+      record: T,
+      rules: FieldRuleMap<StrategyOptions | PluginStrategyOptions>,
+    ): T {
+      return anonymizeRecordWith(record, rules, registry);
     },
 
-    anonymizeObject<T extends object>(obj: T, options?: AnonymizeOptions): T {
-      return anonymizeObject(obj, baseOptions(options));
+    anonymizeObject<T extends object>(
+      obj: T,
+      options?: AnonymizeOptions<StrategyOptions | PluginStrategyOptions>,
+    ): T {
+      return anonymizeObjectWith(obj, baseOptions(options), registry);
     },
 
     async anonymizeAsync(
       text: string,
-      options?: Partial<AnonymizeOptions>,
+      options?: Partial<AnonymizeOptions<StrategyOptions | PluginStrategyOptions>>,
     ): Promise<AnonymizeResult> {
-      return anonymizeAsync(text, baseOptions(options));
+      return anonymizeAsyncWith(text, baseOptions(options), registry);
     },
 
     tokenize(text: string, options?: TokenizeOptions): ReturnType<Anonymizer["tokenize"]> {
@@ -1007,9 +1313,13 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
       const isAllowlisted = (v: string): boolean =>
         tCompiledAllowlist.some((re: RegExp) => re.test(v));
 
-      const tMatches = detect(text, tCats ?? categories, tCustDet ?? customDetectors, tAgg).filter(
-        (m) => m.confidence >= tConfidence && !isAllowlisted(m.value),
-      );
+      const tMatches = detectWith(
+        text,
+        tCats ?? categories,
+        tCustDet ?? customDetectors,
+        tAgg,
+        registry,
+      ).filter((m) => m.confidence >= tConfidence && !isAllowlisted(m.value));
 
       const store = createTokenStore();
       let tResult = text;
@@ -1033,7 +1343,7 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
     },
 
     hasPII(text: string): boolean {
-      return hasPII(text, categories, customDetectors);
+      return hasPIIWith(text, categories, customDetectors, registry);
     },
   };
 }

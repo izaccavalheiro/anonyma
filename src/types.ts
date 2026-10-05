@@ -343,26 +343,79 @@ export type ValidatorFunction = (value: string) => boolean;
 
 /**
  * A strategy function that transforms a PII value to its anonymized form.
+ *
+ * @remarks
+ * A plugin strategy receives the detected value and the `options` of the
+ * {@link PluginStrategyOptions} that name it, and returns the replacement.
  */
 export type StrategyFunction = (value: string, options?: Record<string, unknown>) => string;
 
 /**
- * An anonyma plugin that extends detection, anonymization strategy, or validation.
+ * An anonyma plugin: detectors, strategies and validators that
+ * `createAnonymizer()` adds to the anonymizer it creates.
  *
  * @remarks
- * `createAnonymizer()` does not apply plugins. To change what is detected, use
- * the `customDetectors` and `customPatterns` options, or build a pipeline with
- * detectors of your own with `createPipeline()` from `"anonyma/engine"`.
+ * Plugins apply to the methods of that anonymizer. `anonymize()` and the other
+ * standalone functions do not use them.
+ *
+ * `createAnonymizer()` throws a `ValidationError` when two plugins have the
+ * same name, register a detector for the same category or a strategy under the
+ * same name, or when a strategy has the name of a built-in one. It throws an
+ * `UnknownCategoryError` for a detector or validator keyed by a name that is
+ * not a {@link PiiCategory}.
+ *
+ * @example
+ * ```ts
+ * const initials: AnonymaPlugin = {
+ *   name: "initials",
+ *   strategies: {
+ *     initials: (value) => value.split(" ").map((word) => `${word.charAt(0)}.`).join(" "),
+ *   },
+ * };
+ *
+ * createAnonymizer({ plugins: [initials] }).anonymize("Dear Jane Doe,", {
+ *   rules: [{ category: "name", strategy: { strategy: "initials" } }],
+ * }).text;
+ * // "Dear J. D.,"
+ * ```
  */
 export interface AnonymaPlugin {
-  /** Unique plugin name. */
+  /** Plugin name, unique among the plugins of an anonymizer. */
   readonly name: string;
-  /** Additional or replacement detectors (keyed by category name). */
+  /**
+   * Detectors keyed by {@link PiiCategory}. Each replaces the built-in detector
+   * of its category, in the categories the anonymizer detects. The
+   * anonymizer's `customDetectors` take precedence over it.
+   */
   readonly detectors?: Record<string, Detector>;
-  /** Additional anonymization strategy implementations. */
+  /**
+   * Strategies keyed by name, which {@link PluginStrategyOptions} name in the
+   * rules, the default strategy and the field rules of the anonymizer.
+   */
   readonly strategies?: Record<string, StrategyFunction>;
-  /** Additional checksum/format validators. */
+  /**
+   * Validators keyed by {@link PiiCategory}. A match of the category is kept,
+   * anonymized and reported only when every validator registered for the
+   * category accepts its value, whichever detector found it.
+   */
   readonly validators?: Record<string, ValidatorFunction>;
+}
+
+/**
+ * Strategy options that name a strategy registered by a plugin
+ * ({@link AnonymaPlugin.strategies}). The methods of an anonymizer created
+ * with that plugin accept them wherever they accept {@link StrategyOptions}.
+ *
+ * @example
+ * ```ts
+ * { strategy: "initials", options: { separator: "-" } }
+ * ```
+ */
+export interface PluginStrategyOptions {
+  /** The name the plugin registers the strategy under. */
+  readonly strategy: string;
+  /** Passed to the strategy function as its second argument. */
+  readonly options?: Readonly<Record<string, unknown>>;
 }
 
 // ---------------------------------------------------------------------------
@@ -469,12 +522,17 @@ export type StrategyOptions =
 
 /**
  * A rule that maps a PII category to an anonymization strategy.
+ *
+ * @typeParam S - The strategy options a rule can hold. The methods of an
+ *   anonymizer also accept {@link PluginStrategyOptions}.
  */
-export interface AnonymizationRule {
+export interface AnonymizationRule<
+  S extends StrategyOptions | PluginStrategyOptions = StrategyOptions,
+> {
   /** The PII category this rule applies to. */
   readonly category: PiiCategory;
   /** The strategy to apply. */
-  readonly strategy: StrategyOptions;
+  readonly strategy: S;
 }
 
 /**
@@ -486,18 +544,23 @@ export interface AnonymizationRule {
  * `anonymizeAsync()`. A value whose strategy is `tokenize`, `encrypt` or
  * `synthesize` is redacted, with a warning; a pipeline from `"anonyma/engine"`
  * applies every strategy.
+ *
+ * @typeParam S - The strategy options that `rules` and `defaultStrategy` can
+ *   hold. The methods of an anonymizer also accept {@link PluginStrategyOptions}.
  */
-export interface AnonymizeOptions {
+export interface AnonymizeOptions<
+  S extends StrategyOptions | PluginStrategyOptions = StrategyOptions,
+> {
   /**
    * Per-category overrides. When specified, only the listed categories are processed;
    * all others are left untouched.
    */
-  readonly rules?: readonly AnonymizationRule[];
+  readonly rules?: readonly AnonymizationRule<S>[];
   /**
    * Default strategy applied to any category not covered by `rules`.
    * Defaults to `{ strategy: "redact" }`.
    */
-  readonly defaultStrategy?: StrategyOptions;
+  readonly defaultStrategy?: S;
   /**
    * When `true`, detected matches are included in the result object.
    * Defaults to `false` for performance.
@@ -601,17 +664,24 @@ export interface AnonymizeResult {
 
 /**
  * A field-level rule for `anonymizeObject()` / `anonymizeRecord()`.
+ *
+ * @typeParam S - The strategy options the rule can hold. The methods of an
+ *   anonymizer also accept {@link PluginStrategyOptions}.
  */
-export interface FieldRule {
+export interface FieldRule<S extends StrategyOptions | PluginStrategyOptions = StrategyOptions> {
   /** The strategy to apply to this field's value. */
-  readonly strategy: StrategyOptions;
+  readonly strategy: S;
 }
 
 /**
  * A mapping of object field paths → `FieldRule`.
  * Dot-notation is supported for nested paths (e.g. `"user.email"`).
+ *
+ * @typeParam S - The strategy options the rules can hold. The methods of an
+ *   anonymizer also accept {@link PluginStrategyOptions}.
  */
-export type FieldRuleMap = Readonly<Record<string, FieldRule>>;
+export type FieldRuleMap<S extends StrategyOptions | PluginStrategyOptions = StrategyOptions> =
+  Readonly<Record<string, FieldRule<S>>>;
 
 // ---------------------------------------------------------------------------
 // Detector types
@@ -636,6 +706,11 @@ export type DetectorRegistry = Readonly<Record<PiiCategory, Detector>>;
 
 /**
  * A configured, reusable anonymizer instance produced by `createAnonymizer()`.
+ *
+ * @remarks
+ * Its methods apply the plugins of its configuration
+ * ({@link AnonymizerConfig.plugins}): their rules and default strategy can
+ * name a plugin strategy with {@link PluginStrategyOptions}.
  */
 export interface Anonymizer {
   /**
@@ -643,7 +718,10 @@ export interface Anonymizer {
    * @param text - The input text.
    * @param options - Optional per-call overrides.
    */
-  readonly anonymize: (text: string, options?: Partial<AnonymizeOptions>) => AnonymizeResult;
+  readonly anonymize: (
+    text: string,
+    options?: Partial<AnonymizeOptions<StrategyOptions | PluginStrategyOptions>>,
+  ) => AnonymizeResult;
 
   /**
    * Anonymize a text string asynchronously (supports `hash` and `encrypt` strategies natively).
@@ -652,7 +730,7 @@ export interface Anonymizer {
    */
   readonly anonymizeAsync: (
     text: string,
-    options?: Partial<AnonymizeOptions>,
+    options?: Partial<AnonymizeOptions<StrategyOptions | PluginStrategyOptions>>,
   ) => Promise<AnonymizeResult>;
 
   /**
@@ -668,7 +746,7 @@ export interface Anonymizer {
    */
   readonly anonymizeRecord: <T extends Record<string, unknown>>(
     record: T,
-    rules: FieldRuleMap,
+    rules: FieldRuleMap<StrategyOptions | PluginStrategyOptions>,
   ) => T;
 
   /**
@@ -676,7 +754,10 @@ export interface Anonymizer {
    * @param obj - The input object. Must be free of circular references.
    * @param options - Optional per-call anonymization overrides.
    */
-  readonly anonymizeObject: <T extends object>(obj: T, options?: AnonymizeOptions) => T;
+  readonly anonymizeObject: <T extends object>(
+    obj: T,
+    options?: AnonymizeOptions<StrategyOptions | PluginStrategyOptions>,
+  ) => T;
 
   /**
    * Tokenize PII in text for LLM-safe transmission.
@@ -699,8 +780,11 @@ export interface Anonymizer {
 export interface AnonymizerConfig {
   /** Ordered list of categories to detect. Defaults to all built-in categories. */
   readonly categories?: readonly PiiCategory[];
-  /** Default strategy applied when no per-category rule is provided. */
-  readonly defaultStrategy?: StrategyOptions;
+  /**
+   * Default strategy applied when no per-category rule is provided. It can name
+   * a strategy of one of the `plugins`.
+   */
+  readonly defaultStrategy?: StrategyOptions | PluginStrategyOptions;
   /** Additional or overriding custom detectors. */
   readonly customDetectors?: Partial<Record<PiiCategory, Detector>>;
   /** Ad-hoc regex patterns applied alongside built-in detectors. */
@@ -721,10 +805,8 @@ export interface AnonymizerConfig {
    */
   readonly aggressive?: boolean;
   /**
-   * Plugins to extend detector, strategy, or validator capabilities.
-   *
-   * @remarks
-   * Not applied: `createAnonymizer()` ignores this option. See {@link AnonymaPlugin}.
+   * Plugins whose detectors, strategies and validators the anonymizer applies.
+   * See {@link AnonymaPlugin}.
    */
   readonly plugins?: readonly AnonymaPlugin[];
   /**
