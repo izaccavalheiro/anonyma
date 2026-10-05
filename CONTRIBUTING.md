@@ -80,15 +80,28 @@ src/
 │   ├── email.ts
 │   ├── phone.ts
 │   └── ...
-└── strategies/           # One file per anonymization strategy
-    ├── mask.ts
-    ├── redact.ts
-    └── ...
-tests/
+├── strategies/           # One file per anonymization strategy
+│   ├── mask.ts
+│   ├── redact.ts
+│   └── ...
+├── engine/               # "anonyma/engine": span detectors, pipelines, replacers, streams
+├── vault/                # "anonyma/vault": key ring, tokenizers, token vault, rotation
+├── audit/                # "anonyma/audit": hash-chained audit log
+├── compliance/           # "anonyma/compliance": regulation profiles, policies, erasure
+├── ai/                   # "anonyma/ai": JSON and chat-message sanitizers, LLM guard
+├── mcp/                  # "anonyma/mcp": MCP declarations and server
+├── middleware/           # "anonyma/middleware": HTTP payload scrubbing, Express, Hono
+└── internal/             # Helpers shared by the modules above; not exported
+tests/                    # Mirrors src/, with a folder per subpath module
 ├── detectors.test.ts
 ├── strategies.test.ts
 ├── anonymize.test.ts
-└── errors.test.ts
+├── errors.test.ts
+├── engine/
+├── ...
+└── fixtures/corpus/      # Labelled detector corpora (precision and recall floors)
+bench/                    # Benchmark and corpus generator (`npm run bench`)
+scripts/                  # Checks run by CI: smoke test, size budget, privacy, scaling
 docs/
 └── api.md
 ```
@@ -148,8 +161,12 @@ that needs it.
 1. Create `src/detectors/<category>.ts`.
 2. Export a single named function `detect<Category>(text: string): PiiMatch[]`.
 3. Re-export it from `src/detectors/index.ts` and add it to `DETECTOR_REGISTRY`.
-4. Add `"<category>"` to the `PiiCategory` union in `src/types.ts`.
-5. Write tests in `tests/detectors.test.ts`.
+4. Add `"<category>"` to the `PiiCategory` union in `src/types.ts`, to `ALL_CATEGORIES` and
+   `TOKEN_PREFIX_MAP` in `src/anonymize.ts`, and to `TOKEN_PREFIX_MAP` in `src/tokenize.ts`.
+5. Wrap it for the span engine in `src/engine/builtin.ts` (`LEGACY_DETECTORS`,
+   `BUILTIN_CATEGORIES` and a named export), and add it to `PiiCategorySchema` in
+   `src/schemas.ts`.
+6. Write tests in `tests/detectors.test.ts`.
 
 ---
 
@@ -159,9 +176,11 @@ that needs it.
 2. Export a named function with a typed options interface.
 3. Re-export from `src/strategies/index.ts`.
 4. Handle the new case in `applyStrategySync()` in `src/anonymize.ts`.
-5. Add the new option shape to the `StrategyOptions` discriminated union in `src/types.ts`.
-6. Add a Zod schema in `src/schemas.ts`.
-7. Write tests in `tests/strategies.test.ts`.
+5. Handle it in `strategyReplacer()` in `src/engine/replacers.ts`, and describe the protection it
+   gives in `describeStrategy()` in `src/compliance/traits.ts`.
+6. Add the new option shape to the `StrategyOptions` discriminated union in `src/types.ts`.
+7. Add a Zod schema in `src/schemas.ts`.
+8. Write tests in `tests/strategies.test.ts`.
 
 ---
 

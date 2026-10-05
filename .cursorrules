@@ -38,7 +38,7 @@ src/
   tokenize.ts          ← tokenize() / detokenize() API
   llm.ts               ← sanitizeForLLM() / restoreFromLLM()
   batch.ts             ← anonymizeBatch(), anonymizeBatchAsync(), detectBatch(), tokenizeBatch()
-  presets.ts           ← GDPR/HIPAA/CCPA/PCI-DSS/SOX/FERPA PresetConfig objects
+  presets.ts           ← GDPR/LGPD/PIPEDA/HIPAA/CCPA/PCI-DSS/SOX/FERPA PresetConfig objects
   stream.ts            ← WHATWG TransformStream wrappers (Node ≥ 18 / browser)
   crypto.ts            ← low-level Web Crypto helpers
   validators.ts        ← checksum validators: luhn, verhoeff, nhsMod11, cpfChecksum, …
@@ -47,6 +47,14 @@ src/
     index.ts           ← builds DETECTOR_REGISTRY and AGGRESSIVE_DETECTOR_REGISTRY
   strategies/          ← one file per anonymization strategy
     mask.ts, redact.ts, pseudonymize.ts, hash.ts, generalize.ts, encrypt.ts, synthesize.ts, tokenize.ts
+  engine/              ← "anonyma/engine": span detectors, overlap resolution, pipelines, replacers, chunk-safe streams
+  vault/               ← "anonyma/vault": key ring, session / keyed / sealed tokenizers, token vault, rotation
+  audit/               ← "anonyma/audit": hash-chained audit logger, sinks, verification
+  compliance/          ← "anonyma/compliance": regulation profiles, policy parser, erasure planning
+  ai/                  ← "anonyma/ai": JSON and chat-message sanitizers, stream restoration, LLM guard
+  mcp/                 ← "anonyma/mcp": MCP declarations and server
+  middleware/          ← "anonyma/middleware", "/express", "/hono": HTTP payload scrubbing
+  internal/            ← Web Crypto lookup, byte encodings, lossless JSON numbers (not exported)
 tests/                 ← Vitest test suite mirroring src/
 ```
 
@@ -76,17 +84,24 @@ tests/                 ← Vitest test suite mirroring src/
 - `CryptoNotAvailableError` — when Web Crypto API is absent.
 - `EncryptionError` — when AES-GCM fails.
 - `PresetNotFoundError(preset)` — when preset name is not in registry.
+- `AsyncStrategyError(category)` — a synchronous pipeline transform met an asynchronous replacer.
+- `KeyManagementError(reason, keyId?)` — a key version is unknown, destroyed, malformed or cannot be derived.
+- `TokenVaultError(reason)` — a vault operation failed or would corrupt the vault.
+- `PolicyError(issues)` — a policy document is malformed or weaker than a regulation it extends.
+- `AuditIntegrityError(reason)` — the audit chain cannot be extended or does not verify.
+- Export every error class from `src/index.ts`, so applications can use `instanceof`.
 - Never `throw new Error(...)` directly in library code.
 
 ---
 
 ## Crypto / Security Rules
 
-- Use Web Crypto API exclusively: `globalThis.crypto.subtle`. Never import `node:crypto`.
+- Use the Web Crypto API exclusively, through `webCrypto()` in `src/internal/webcrypto.ts` (it falls back to `node:crypto` on Node.js 18). Never import `node:crypto` anywhere else.
 - Use `Uint8Array` for binary data. Never use `Buffer`.
 - AES-256-GCM for encryption, PBKDF2+SHA-256 (100,000 iterations) for passphrase key derivation.
 - Always generate a fresh 12-byte random IV per encrypt() call via `crypto.getRandomValues()`.
 - SHA-256 with optional pepper for the hash strategy.
+- Key ring: HKDF-SHA-256 per purpose and namespace, PBKDF2-SHA-256 with 600,000 iterations by default (never fewer than 100,000) for passphrases, an HMAC-SHA-256 over the manifest. Do not weaken these.
 - async only for crypto operations, `Promise.allSettled` for batch async. All other paths must be synchronous.
 
 ---
@@ -103,7 +118,9 @@ tests/                 ← Vitest test suite mirroring src/
 5. Add `TOKEN_PREFIX_MAP` entry in `src/anonymize.ts`
 6. Add `TOKEN_PREFIX_MAP` entry in `src/tokenize.ts`
 7. Add to `ALL_CATEGORIES` array in `src/anonymize.ts`
-8. Write tests in `tests/detectors.test.ts`
+8. Wrap it for the span engine in `src/engine/builtin.ts` (`LEGACY_DETECTORS`, `BUILTIN_CATEGORIES`, a named export) and export it from `src/engine/index.ts`
+9. Add the category to `PiiCategorySchema` in `src/schemas.ts`
+10. Write tests in `tests/detectors.test.ts`
 
 ---
 
@@ -113,10 +130,12 @@ tests/                 ← Vitest test suite mirroring src/
    - Export `<strategy>(value: string, options?: <Strategy>Options): string` (sync) or `Promise<string>` (async crypto only)
 2. Add strategy string literal to `StrategyName` in `src/types.ts`
 3. Add `<Strategy>Options` interface to `src/types.ts`
-4. Register in `applyStrategy` / `applyStrategyAsync` switch in `src/anonymize.ts`
-5. Re-export from `src/strategies/index.ts`
-6. Re-export from `src/index.ts`
-7. Write tests in `tests/strategies.test.ts`
+4. Register in the `applyStrategySync()` switch in `src/anonymize.ts` (an asynchronous strategy is awaited in `anonymizeAsync()`)
+5. Handle it in `strategyReplacer()` in `src/engine/replacers.ts` and in `describeStrategy()` in `src/compliance/traits.ts`
+6. Add its options to `StrategyOptionsSchema` in `src/schemas.ts`
+7. Re-export from `src/strategies/index.ts`
+8. Re-export from `src/index.ts`
+9. Write tests in `tests/strategies.test.ts`
 
 ---
 
@@ -147,7 +166,7 @@ tests/                 ← Vitest test suite mirroring src/
 
 ## What NEVER to Suggest
 
-- `import ... from "node:crypto"` → use `globalThis.crypto.subtle`
+- `import ... from "node:crypto"` → use `webCrypto()` from `src/internal/webcrypto.ts`
 - `Buffer` → use `Uint8Array`
 - Adding npm packages for hashing, UUID, string utilities, etc. (zero-dependency constraint)
 - `// @ts-ignore` or `// @ts-expect-error` without a documented reason
@@ -172,6 +191,13 @@ tests/                 ← Vitest test suite mirroring src/
 | Checksum validators | `"anonyma/validators"` |
 | Low-level Web Crypto helpers | `"anonyma/crypto"` |
 | TransformStream wrappers | `"anonyma/stream"` |
+| Span engine: pipelines, span detectors, replacers, chunk-safe streams | `"anonyma/engine"` |
+| Tokenizers, key ring, token vault, rotation | `"anonyma/vault"` |
+| Zero-PII audit log and verification | `"anonyma/audit"` |
+| Regulation profiles, policies, erasure planning | `"anonyma/compliance"` |
+| JSON and chat-message sanitizers, LLM guard | `"anonyma/ai"` |
+| MCP declarations and server | `"anonyma/mcp"` |
+| HTTP payload scrubbing (Express, Hono, Fetch) | `"anonyma/middleware"`, `"anonyma/middleware/express"`, `"anonyma/middleware/hono"` |
 
 ---
 
@@ -180,11 +206,15 @@ tests/                 ← Vitest test suite mirroring src/
 | Regulation | Strategy | Categories focus |
 |---|---|---|
 | GDPR | `pseudonymize` | All personal data identifiers |
-| HIPAA | `redact` | 18 PHI Safe Harbor identifiers |
-| PCI-DSS | `mask` | credit-card, bank-account, CVV |
-| CCPA | `mask` | personal + household data |
-| FERPA | `redact` | student education records |
-| SOX | `hash` | financial records + employee data |
+| LGPD | `redact` | Personal data, including the CPF |
+| PIPEDA | `redact` | Personal information, including the SIN |
+| HIPAA | `redact` | Safe Harbor identifiers that can be detected in text (ZIP codes, other dates, devices, biometrics and photos need field-level rules) |
+| PCI-DSS | `redact`; `mask` (last 4) for credit-card and bank-account | Cardholder data (no detector for CVV, track data or PINs) |
+| CCPA | `redact` | Consumer identifiers, financial and health data, online activity |
+| FERPA | `redact` | Student education records |
+| SOX | `redact` | Financial records and corporate officer identifiers |
+
+The profiles in `src/compliance/regulations.ts` are authoritative where they differ from this table.
 
 ---
 
@@ -200,3 +230,6 @@ tests/                 ← Vitest test suite mirroring src/
 - LLM integration example → `src/llm.ts`
 - Streaming wrappers → `src/stream.ts`
 - Validators → `src/validators.ts`
+- Span engine contracts → `src/engine/types.ts`
+- Tokenization and key ring contracts → `src/vault/types.ts`
+- Regulation profiles → `src/compliance/regulations.ts`

@@ -6,7 +6,7 @@
 
 ## Project Identity
 
-**anonyma** is a zero-dependency TypeScript library for PII detection and data anonymization. It is published as an npm package targeting Node.js ≥ 18 with full Dual ESM + CJS output. The library ships 27 PII detectors, 8 anonymization strategies, 6 compliance presets, reversible tokenization, LLM pipeline helpers, WHATWG streaming support, batch processing, checksum validators, and optional Zod/MCP schemas.
+**anonyma** is a zero-dependency TypeScript library for PII detection and data anonymization. It is published as an npm package targeting Node.js ≥ 18 with full Dual ESM + CJS output. The library ships 27 PII detectors, 8 anonymization strategies, 8 compliance presets, reversible tokenization, LLM pipeline helpers, WHATWG streaming support, batch processing, checksum validators, and optional Zod/MCP schemas. Since 1.1.0 it also ships a span-based engine, keyed tokenization with key management, a zero-PII audit log, regulation profiles, LLM and JSON sanitizers, an MCP server and HTTP middleware, each as a subpath export.
 
 ---
 
@@ -109,6 +109,9 @@ the tests. Do not bypass them with `--no-verify`.
 6. Add the category to `ALL_CATEGORIES` in `src/anonymize.ts`.
 7. Write tests in `tests/detectors.test.ts` (and `tests/new-detectors.test.ts` for new additions).
 8. Export from `src/detectors/index.ts`.
+9. Wrap it for the span engine in `src/engine/builtin.ts`: a camel-cased detector export (`bankAccountDetector`), an entry in `LEGACY_DETECTORS` (and `LEGACY_AGGRESSIVE_DETECTORS` for an aggressive variant) and in `BUILTIN_CATEGORIES`, which the MCP declarations also read. Export it from `src/engine/index.ts`.
+10. Add the category to `PiiCategorySchema` in `src/schemas.ts`.
+11. If a regulation in `src/compliance/regulations.ts` names this kind of data, map the category to the provision there.
 
 ---
 
@@ -116,9 +119,11 @@ the tests. Do not bypass them with `--no-verify`.
 
 1. Create `src/strategies/<strategy>.ts` exporting a pure function (or async function for crypto-dependent strategies).
 2. Add the strategy name to `StrategyName` in `src/types.ts` and add the corresponding `*Options` interface.
-3. Register the strategy handler inside the `applyStrategy` / `applyStrategyAsync` switch in `src/anonymize.ts`.
-4. Re-export from `src/strategies/index.ts` and from `src/index.ts`.
-5. Add tests and update the `UnsupportedStrategyError` message.
+3. Register the strategy handler in the `applyStrategySync()` switch in `src/anonymize.ts`; an asynchronous strategy is awaited in `anonymizeAsync()`.
+4. Handle it in `strategyReplacer()` in `src/engine/replacers.ts` (with a `<strategy>With()` replacer factory), and describe the protection it gives in `describeStrategy()` in `src/compliance/traits.ts`.
+5. Add its options to `StrategyOptionsSchema` in `src/schemas.ts`.
+6. Re-export from `src/strategies/index.ts` and from `src/index.ts`.
+7. Add tests and update the `UnsupportedStrategyError` message.
 
 ---
 
@@ -126,7 +131,8 @@ the tests. Do not bypass them with `--no-verify`.
 
 - All presets live in `src/presets.ts`.
 - A `PresetConfig` requires: `name`, `description`, `categories`, `defaultStrategy`, and optional per-category `rules`.
-- Register the new preset in `PRESET_REGISTRY`.
+- Register the new preset in `PRESET_REGISTRY`, and add its name to `CompliancePreset` in `src/types.ts`, to the preset enum in `src/mcp/definitions.ts` and to the preset lists in `src/schemas.ts`.
+- A preset for a regulation that has a profile in `src/compliance/regulations.ts` must detect every category of the profile with a sufficient strategy; `tests/compliance/compliance.test.ts` checks this.
 - Write tests in `tests/presets.test.ts`.
 
 ---
@@ -196,6 +202,9 @@ Scope examples: `detectors`, `strategies`, `presets`, `stream`, `batch`, `llm`, 
 - IV (initialization vector) is always freshly generated (12 random bytes) per `encrypt()` call.
 - The `hash` strategy uses SHA-256 with an optional pepper. Never persist raw PII after anonymization.
 - The `tokenize` / `sanitizeForLLM` flow is designed so that the token map never leaves the server — validate this in any integration.
+- The key ring (`src/vault/keyring.ts`) derives a key per purpose and namespace with HKDF-SHA-256, stretches passphrases with PBKDF2-SHA-256 (600,000 iterations by default, never fewer than 100,000) and authenticates its manifest with HMAC-SHA-256. Derived keys are non-extractable. Do not weaken these parameters.
+- Hashing, encryption, HMAC and key derivation reach Web Crypto through `webCrypto()` in `src/internal/webcrypto.ts`, which falls back to `node:crypto` on Node.js 18. No other module imports `node:crypto`.
+- Audit records (`src/audit/`) describe what was done, never the data; keep personal data out of every field you add to them.
 
 ---
 
@@ -213,3 +222,8 @@ Scope examples: `detectors`, `strategies`, `presets`, `stream`, `batch`, `llm`, 
 | Streaming                  | `src/stream.ts`                                                                        |
 | Zod schemas + AI tool defs | `src/schemas.ts`                                                                       |
 | Validators                 | `src/validators.ts`                                                                    |
+| Span engine contracts      | `src/engine/types.ts`                                                                  |
+| Tokenization and key rings | `src/vault/types.ts`                                                                   |
+| Audit log contracts        | `src/audit/types.ts`                                                                   |
+| Regulation profiles        | `src/compliance/regulations.ts`                                                        |
+| MCP tools and server       | `src/mcp/definitions.ts` · `src/mcp/server.ts`                                         |
