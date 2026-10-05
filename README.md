@@ -628,6 +628,12 @@ const opts = AnonymizeOptionsSchema.parse(req.body.options);
 const result = anonymize(req.body.text as string, opts);
 ```
 
+The schema covers `rules`, `defaultStrategy`, `customPatterns`, `enabledCategories`,
+`globalReplacement`, `consistentTokens`, `aggressive` and `includeMatches`. `parse()` removes the
+other options, such as `preset`, `allowlist`, `confidenceThreshold` and `locales`. To accept a
+whole pipeline from untrusted input, check a policy document with `parsePolicy()` from
+`"anonyma/compliance"` instead.
+
 ---
 
 ## Subpath Imports
