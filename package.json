@@ -246,11 +246,11 @@
     "hono": "^4.13.13",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
-    "prettier": "^3.0.0",
+    "prettier": "^3.9.9",
     "publint": "^0.3.25",
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
-    "typescript-eslint": "^8.0.0",
+    "typescript-eslint": "^8.70.1",
     "vitest": "^4.1.11",
     "zod": "^3.23.0"
   },
