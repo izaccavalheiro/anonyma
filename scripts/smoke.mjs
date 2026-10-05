@@ -143,7 +143,7 @@ assert.equal((await verifyAuditChain(sink.records())).ok, true);
 assert.ok(!JSON.stringify(sink.records()).includes("alice"));
 
 // 6. Compliance profiles, JSON and prompts, MCP, HTTP scrubbing.
-const { REGULATIONS } = await import("anonyma/compliance");
+const { REGULATIONS, parsePolicy } = await import("anonyma/compliance");
 assert.ok(REGULATIONS.gdpr !== undefined && REGULATIONS.lgpd !== undefined);
 
 const { createLlmGuard, sanitizeJson } = await import("anonyma/ai");
@@ -162,6 +162,29 @@ assert.deepEqual(await createMcpServer().handle({ jsonrpc: "2.0", id: 1, method:
 
 const { createScrubber } = await import("anonyma/middleware");
 assert.ok(!JSON.stringify(createScrubber().json({ email: "alice@example.com" }, "smoke")).includes("alice"));
+
+// 7. The errors that the subpaths throw are classes exported by "anonyma".
+const errors = await import("anonyma");
+for (const name of ["AsyncStrategyError", "KeyManagementError", "TokenVaultError", "PolicyError", "AuditIntegrityError"]) {
+  assert.equal(typeof errors[name], "function", name + " is not exported by anonyma");
+}
+assert.throws(
+  () => compilePipeline({ defaultStrategy: { strategy: "hash" } }).transform(text),
+  errors.AsyncStrategyError,
+);
+await assert.rejects(
+  vaultModule.createKeyRing({
+    namespace: "smoke",
+    keys: [{ id: "k1", material: { kind: "raw", bytes: new Uint8Array(4) } }],
+  }),
+  errors.KeyManagementError,
+);
+assert.throws(
+  () => parsePolicy({ version: 1, id: "p", extends: ["hipaa"], defaultStrategy: { strategy: "tokenize" } }),
+  errors.PolicyError,
+);
+const failing = createAuditLogger({ sinks: [{ append: () => { throw new Error("disk full"); } }] });
+await assert.rejects(failing.record({ operation: "anonymize", fields: [] }), errors.AuditIntegrityError);
 
 console.log("ESM: " + subpaths.length + " subpaths and the feature checks passed" + (withPeer ? " (with the optional peer)" : ""));
 `;

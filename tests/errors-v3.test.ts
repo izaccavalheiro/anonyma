@@ -10,6 +10,17 @@ import {
   PolicyError,
   TokenVaultError,
 } from "../src/errors.js";
+import * as publicApi from "../src/index.js";
+import { createAuditLogger } from "../src/audit/index.js";
+import { parsePolicy } from "../src/compliance/index.js";
+import { createPipeline, emailDetector } from "../src/engine/index.js";
+import {
+  createKeyedTokenizer,
+  createKeyRing,
+  createMemoryVault,
+  type KeyMaterial,
+  type VaultRecord,
+} from "../src/vault/index.js";
 import {
   fromBase64Url,
   fromUtf8,
@@ -52,6 +63,65 @@ describe("errors", () => {
     expect(
       new PolicyError([{ severity: "warning", path: "/a", code: "c", message: "m" }]).issues,
     ).toHaveLength(1);
+  });
+
+  it("exports from the main entry point the classes that the subpaths throw", async () => {
+    const raw = (bytes: number): KeyMaterial => ({ kind: "raw", bytes: new Uint8Array(bytes) });
+    for (const name of [
+      "AsyncStrategyError",
+      "KeyManagementError",
+      "TokenVaultError",
+      "PolicyError",
+      "AuditIntegrityError",
+    ]) {
+      expect(publicApi, name).toHaveProperty(name, expect.any(Function));
+    }
+
+    expect(() =>
+      createPipeline({
+        detectors: [emailDetector],
+        replace: { fallback: () => Promise.resolve("x") },
+      }).transform("Mail alice@example.com"),
+    ).toThrow(publicApi.AsyncStrategyError);
+
+    await expect(
+      createKeyRing({ namespace: "t", keys: [{ id: "k1", material: raw(4) }] }),
+    ).rejects.toThrow(publicApi.KeyManagementError);
+
+    const vault = createMemoryVault();
+    const keyring = await createKeyRing({
+      namespace: "t",
+      keys: [{ id: "k1", material: raw(32) }],
+    });
+    const tokenizer = createKeyedTokenizer({ keyring, vault });
+    const token = await tokenizer.tokenize("alice@example.com", { category: "email" });
+    const record = vault.get(token) as VaultRecord;
+    vault.replace({ ...record, check: "someone-else" }, record);
+    await expect(tokenizer.tokenize("alice@example.com", { category: "email" })).rejects.toThrow(
+      publicApi.TokenVaultError,
+    );
+
+    expect(() =>
+      parsePolicy({
+        version: 1,
+        id: "p",
+        extends: ["hipaa"],
+        defaultStrategy: { strategy: "tokenize" },
+      }),
+    ).toThrow(publicApi.PolicyError);
+
+    const audit = createAuditLogger({
+      sinks: [
+        {
+          append: () => {
+            throw new Error("disk full");
+          },
+        },
+      ],
+    });
+    await expect(audit.record({ operation: "anonymize", fields: [] })).rejects.toThrow(
+      publicApi.AuditIntegrityError,
+    );
   });
 });
 

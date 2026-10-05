@@ -89,6 +89,11 @@ export {
   PresetNotFoundError,
   AllowlistMatchError,
   BatchProcessingError,
+  AsyncStrategyError,
+  KeyManagementError,
+  TokenVaultError,
+  PolicyError,
+  AuditIntegrityError,
 } from "./errors.js";
 
 // TypeScript types (type-only exports — zero runtime cost)
