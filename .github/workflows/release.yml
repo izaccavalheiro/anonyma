@@ -11,12 +11,15 @@
 #   4. attests the tarball on GitHub and creates the GitHub release with the
 #      changelog section, the tarball and a CycloneDX SBOM.
 #
+# A pre-release may be tagged on a release branch; a stable version must be
+# tagged on a commit of `main`.
+#
 # Running it by hand from the Actions tab rehearses everything but step 3
 # and 4: nothing is published.
 #
 # The publish job runs in the `npm` environment, which only accepts version
-# tags and holds the registry credential. With an npm trusted publisher
-# configured for this workflow no credential is needed at all.
+# tags. npm trusts this workflow as a publisher through OpenID Connect, so no
+# registry credential is stored anywhere.
 
 name: Release
 
@@ -113,6 +116,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          # The history of main, to check where a stable version was tagged.
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -155,6 +160,18 @@ jobs:
           esac
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
+      # `latest` is what every `npm install anonyma` gets, so it is only
+      # published from what was merged.
+      - name: Require a stable version to be on main
+        if: steps.version.outputs.prerelease == 'false'
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+            echo "::error::$TAG is a stable version, but the tagged commit is not on main. Merge first, then tag the merged commit."
+            exit 1
+          fi
+
       - name: Extract the release notes
         env:
           VERSION: ${{ steps.version.outputs.version }}
@@ -167,12 +184,12 @@ jobs:
       - name: Pack
         run: npm pack --ignore-scripts
 
+      # npm exchanges the job's OpenID Connect token for a short-lived
+      # publish token (trusted publishing); there is no stored credential.
       - name: Publish
         env:
           VERSION: ${{ steps.version.outputs.version }}
           DIST_TAG: ${{ steps.version.outputs.dist_tag }}
-          # Empty when the registry trusts this workflow through OpenID Connect.
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish "anonyma-$VERSION.tgz" --provenance --access public --tag "$DIST_TAG"
 
       - name: Write the SBOM
