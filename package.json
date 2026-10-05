@@ -252,10 +252,10 @@
     "typescript": "^5.4.0",
     "typescript-eslint": "^8.0.0",
     "vitest": "^4.1.11",
-    "zod": "^3.23.0"
+    "zod": "^4.6.5"
   },
   "peerDependencies": {
-    "zod": "^3.23.0"
+    "zod": "^4.6.5"
   },
   "peerDependenciesMeta": {
     "zod": {
