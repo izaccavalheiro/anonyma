@@ -29,6 +29,33 @@ to match a part of a value instead. The span engine (`"anonyma/engine"`) is unch
   because `RegExp.test()` kept its `lastIndex` between values, and left the caller's pattern
   with a changed `lastIndex`. These flags are now ignored.
 
+### Added
+
+- **Plugins.** `createAnonymizer()` applies the `plugins` of its configuration, which 1.1.0
+  listed under "Known limitations" ([#6](https://github.com/izaccavalheiro/anonyma/issues/6)).
+  The methods of the anonymizer use their detectors, strategies and validators: a plugin
+  detector replaces the built-in detector of its category (`customDetectors` take precedence
+  over it), rules, default strategies and field rules name a plugin strategy as
+  `{ strategy, options }`, and a match is kept only when every plugin validator of its category
+  accepts it. `createAnonymizer()` throws a `ValidationError` when two plugins have the same
+  name, register a detector for the same category or a strategy under the same name, or when a
+  strategy has the name of a built-in one, and an `UnknownCategoryError` for a detector or
+  validator keyed by a name that is not a category. The standalone functions do not apply
+  plugins.
+- **Types** `PluginStrategyOptions` and `StrategyFunction`, exported from `"anonyma"`.
+  `AnonymizationRule`, `AnonymizeOptions`, `FieldRule` and `FieldRuleMap` take an optional type
+  parameter for the strategy options they hold, `StrategyOptions` by default.
+
+### Changed
+
+- The methods of `Anonymizer` and `AnonymizerConfig.defaultStrategy` accept
+  `PluginStrategyOptions` wherever they accepted `StrategyOptions`; the options of a built-in
+  strategy are type-checked as before. An object that implements `Anonymizer` with parameter
+  types of its own, such as a test double, may have to widen them.
+- `createAnonymizer()` throws `UnsupportedStrategyError` when `defaultStrategy` names a
+  strategy that neither anonyma nor one of the plugins provides, instead of when it first
+  applies it.
+
 ---
 
 ## [1.1.0] — 2026-10-05

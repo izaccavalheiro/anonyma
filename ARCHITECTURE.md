@@ -205,6 +205,8 @@ Key types:
 - `AnonymizationRule` — `{ category, strategy: StrategyOptions }`
 - `Detector` / `DetectorRegistry` — function signatures for custom detectors
 - `AnonymaPlugin` — hook interface for extending detectors, strategies, validators
+- `PluginStrategyOptions` — `{ strategy, options? }`, naming a plugin strategy in the rules of an
+  anonymizer
 
 ### 4.2 `errors.ts` — Error Hierarchy
 
@@ -274,7 +276,8 @@ The largest and most complex module. Responsibilities:
 - `anonymizeRecord()` — field-level anonymization of plain objects using dot-notation paths
 - `anonymizeObject()` — deep recursive anonymization of arbitrary JSON trees
 - `hasPII()` — optimised early-exit boolean scan
-- `createAnonymizer()` — factory that closes over a reusable `AnonymizerConfig`
+- `createAnonymizer()` — factory that closes over a reusable `AnonymizerConfig` and applies its
+  plugins (see [Plugin Architecture](#11-plugin-architecture))
 
 Internal overlap resolution: matches are sorted by `start` index, ties going to the higher confidence, then iterated. When a match's start index is inside the last consumed region, it is skipped (first wins).
 
@@ -696,9 +699,27 @@ interface AnonymaPlugin {
 }
 ```
 
-It is declared only: `createAnonymizer()` accepts a `plugins` option but does not apply it. The
-working extension points are `customDetectors` and `customPatterns` in the 1.x API, and span
-detectors and replacers of your own in the span engine (see [Extension Points](#16-extension-points)).
+`createAnonymizer()` checks its `plugins` once, in `resolvePlugins()`, and merges them into a
+registry that every method of the anonymizer passes down. The standalone functions pass an empty
+registry, so they do not apply plugins.
+
+- **Detectors** are keyed by category. The detector of a scanned category is the one in
+  `customDetectors`, else the one of a plugin, else the built-in one (aggressive or not).
+- **Strategies** are keyed by name. `applyStrategy()` hands a built-in strategy to
+  `applyStrategySync()` and looks any other name up in the registry, passing the `options` of the
+  `PluginStrategyOptions` to the function. A name found in neither throws
+  `UnsupportedStrategyError`; the default strategy of the configuration is checked when the
+  anonymizer is created.
+- **Validators** are keyed by category. The matches of a category are filtered by all of its
+  validators before overlaps are resolved, so a rejected match hides no other match.
+
+`resolvePlugins()` throws a `ValidationError` for a duplicate plugin name, a second detector for a
+category, a second strategy with a name or a strategy with a built-in name, and an
+`UnknownCategoryError` for a detector or validator keyed by a name that is not a category.
+
+`customDetectors` and `customPatterns` remain the per-call extension points of the 1.x API. The
+span engine takes span detectors and replacers of your own (see
+[Extension Points](#16-extension-points)).
 
 ---
 
