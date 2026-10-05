@@ -337,6 +337,11 @@ export type StrategyFunction = (value: string, options?: Record<string, unknown>
 
 /**
  * An anonyma plugin that extends detection, anonymization strategy, or validation.
+ *
+ * @remarks
+ * `createAnonymizer()` does not apply plugins. To change what is detected, use
+ * the `customDetectors` and `customPatterns` options, or build a pipeline with
+ * detectors of your own with `createPipeline()` from `"anonyma/engine"`.
  */
 export interface AnonymaPlugin {
   /** Unique plugin name. */
@@ -463,6 +468,13 @@ export interface AnonymizationRule {
 
 /**
  * Options accepted by the top-level `anonymize()` function.
+ *
+ * @remarks
+ * `anonymize()`, `anonymizeAsync()` and the functions built on them apply the
+ * `redact`, `mask`, `pseudonymize` and `generalize` strategies, and `hash` in
+ * `anonymizeAsync()`. A value whose strategy is `tokenize`, `encrypt` or
+ * `synthesize` is redacted, with a warning; a pipeline from `"anonyma/engine"`
+ * applies every strategy.
  */
 export interface AnonymizeOptions {
   /**
@@ -697,6 +709,9 @@ export interface AnonymizerConfig {
   readonly aggressive?: boolean;
   /**
    * Plugins to extend detector, strategy, or validator capabilities.
+   *
+   * @remarks
+   * Not applied: `createAnonymizer()` ignores this option. See {@link AnonymaPlugin}.
    */
   readonly plugins?: readonly AnonymaPlugin[];
   /**

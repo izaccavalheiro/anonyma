@@ -16,8 +16,9 @@
  * // Apply HIPAA preset — redacts the Safe Harbor identifiers that have a detector
  * anonymize(text, { preset: "hipaa" });
  *
- * // Extend GDPR preset with API key detection
- * anonymize(text, { preset: "gdpr", enabledCategories: { "api-key": true } });
+ * // Extend GDPR preset with API key detection (anonymize() uses the preset's categories)
+ * import { compilePipeline } from "anonyma/engine";
+ * compilePipeline({ preset: "gdpr", categories: [...getPreset("gdpr").categories, "api-key"] });
  * ```
  */
 
