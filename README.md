@@ -16,7 +16,7 @@
 - 🛡️ **8 anonymization strategies** — mask, redact, pseudonymize, hash (SHA-256), generalize, tokenize, encrypt (AES-GCM), synthesize
 - 🔁 **Reversible tokenization** — `tokenize()` / `detokenize()` for round-trip fidelity
 - 🤖 **LLM pipeline helpers** — `sanitizeForLLM()` / `restoreFromLLM()` for safe prompt injection with reversible tokens
-- 📋 **Compliance presets** — built-in `gdpr`, `hipaa`, `ccpa`, `pci-dss`, `sox`, and `ferpa` presets
+- 📋 **Compliance presets** — built-in `gdpr`, `lgpd`, `pipeda`, `hipaa`, `ccpa`, `pci-dss`, `sox` and `ferpa` presets
 - 🌍 **Locale-aware detection** — locale flags for US, UK, EU, CA, AU, BR, IN, CN, JP, KR, ZA, and global
 - ⚡ **Batch processing** — `anonymizeBatch()`, `anonymizeBatchAsync()`, `tokenizeBatch()`, `detectBatch()`
 - 🌊 **Streaming support** — WHATWG `TransformStream` wrappers (`createAnonymizeStream()`, `createTokenizeStream()`)
@@ -24,16 +24,21 @@
 - 🌳 **Deep object anonymization** — `anonymizeObject()` recursively cleans entire JSON trees
 - ✅ **PII presence check** — `hasPII()` with early-exit for fast gating
 - 🔎 **Aggressive mode** — expanded, permissive patterns for obfuscated PII
-- 🧩 **Custom patterns & detectors** — inject ad-hoc `RegExp` patterns or fully replace per-category detectors
+- 🧩 **Custom patterns & detectors** — inject ad-hoc `RegExp` patterns, fully replace per-category detectors, or define detectors for your own categories
 - 🚫 **Allowlist support** — skip known-safe values by exact string or `RegExp` pattern
 - 🔢 **Confidence threshold** — filter out low-confidence matches
-- 🔌 **Plugin architecture** — extend detectors, strategies, and validators via `AnonymaPlugin`
 - 🔒 **Encryption** — reversible AES-GCM `encrypt()` / `decrypt()` strategy (Web Crypto API)
 - 🎭 **Synthesis** — format-preserving synthetic data replacement (deterministic, seeded)
 - ✔️ **Checksum validators** — `luhn`, `verhoeff`, `nhsMod11`, `cpfChecksum`, `vinChecksum`, `deaChecksum`, `ibanMod97`, `ninoValid`, `aadhaarFormat` via `"anonyma/validators"`
 - ⚡ **Zero runtime dependencies** — Zod is an optional peer dependency
 - 🌲 **Tree-shakeable** — import only what you use
 - 🤖 **AI-ready** — OpenAI/MCP tool definitions and Zod schemas included
+- 🧵 **Span engine** — compiled pipelines that leave no detected character in the output, validating detectors for email, SSN, IBAN, IP addresses and payment cards, and streams that catch values split across chunks (`"anonyma/engine"`)
+- 🔑 **Keyed tokenization** — session, keyed and sealed tokenizers, a versioned key ring with rotation, and erasure by deleting a record or shredding a key (`"anonyma/vault"`)
+- 🧾 **Audit trail without personal data** — hash-chained records of what was replaced, and chain verification (`"anonyma/audit"`)
+- ⚖️ **Regulation profiles** — GDPR, LGPD, PIPEDA, CCPA/CPRA, HIPAA and PCI DSS mapped to their provisions, with policy documents checked against them (`"anonyma/compliance"`)
+- 💬 **LLM guard** — chat messages and JSON sanitized with reversible tokens, restored in complete and streamed model output (`"anonyma/ai"`)
+- 🔌 **MCP server and HTTP middleware** — a dependency-free Model Context Protocol server, and payload scrubbing for Express, Hono and Fetch handlers (`"anonyma/mcp"`, `"anonyma/middleware"`)
 - 📦 **Dual ESM + CJS** — works everywhere Node.js ≥ 18 runs
 - 🔒 **Strict TypeScript** — no `any`, full declaration files
 
@@ -97,7 +102,7 @@ const { text } = anonymize("Contact alice@example.com or call 555-867-5309.");
 const { text: hashed } = await anonymizeAsync("alice@example.com", {
   defaultStrategy: { strategy: "hash", pepper: "my-pepper" },
 });
-// "5f3e4b3a9c1d8f2a"
+// "e2a233272b2a9f2b"
 
 // ── Consistent token mapping ───────────────────────────────────────────────
 anonymize("From alice@example.com (alice@example.com)", { consistentTokens: true }).text;
@@ -125,7 +130,7 @@ anonymizeObject({
 });
 // {
 //   user: { email: "[REDACTED]", phone: "[REDACTED]" },
-//   notes: ["Call later", "[REDACTED]"],
+//   notes: ["Call later", "IP: [REDACTED]"],
 // }
 
 // ── Custom strategy per category ───────────────────────────────────────────
@@ -135,7 +140,7 @@ const { text: masked } = anonymize("alice@example.com and 192.168.1.1", {
     { category: "ipv4", strategy: { strategy: "redact", label: "[IP REMOVED]" } },
   ],
 });
-// "a***************com and [IP REMOVED]"
+// "a*************com and [IP REMOVED]"
 
 // ── Format-preserving mask ─────────────────────────────────────────────────
 anonymize("123-45-6789", {
@@ -181,10 +186,9 @@ anonymizeRecord(
 const anonymizer = createAnonymizer({
   categories: ["email", "phone"],
   defaultStrategy: { strategy: "pseudonymize", seed: "my-secret" },
-  consistentTokens: true,
 });
 anonymizer.anonymize("alice@example.com").text;
-// "id_3a7f1c2b9e4d0f1a"
+// "id_a908a815c8327f0b"
 anonymizer.hasPII("no pii here"); // false
 
 // ── Reversible tokenization ────────────────────────────────────────────────
@@ -217,10 +221,9 @@ const original = await decrypt(ciphertext, { passphrase: "s3cr3t" });
 // "alice@example.com"
 
 // ── Synthetic data replacement ────────────────────────────────────────────
-anonymize("alice@example.com", {
-  defaultStrategy: { strategy: "synthesize", seed: "project-x" },
-}).text;
-// "carol.smith42@example.com" (deterministic, structurally valid)
+import { synthesize } from "anonyma";
+synthesize("alice@example.com", "email", { seed: "project-x" });
+// "dave.wilson99@placeholder.dev" (deterministic, structurally valid)
 ```
 
 ---
@@ -239,6 +242,16 @@ anonymize("alice@example.com", {
 | `synthesize`   | Format-preserving synthetic replacement (seeded, no real PII) |  ❌   |      ✅†      |     ❌     |
 
 † Deterministic when `seed` is provided. ‡ Random IV per encryption; decryptable with the same key.
+
+The strategy functions (`mask()`, `hash()`, `encrypt()`, `synthesize()`, …) implement every
+strategy. As rules of `anonymize()`, `anonymizeAsync()` and the helpers built on them
+(`anonymizeObject()`, `anonymizeRecord()`, `createAnonymizer()`, the batch and stream functions),
+`redact`, `mask`, `pseudonymize` and `generalize` apply everywhere, and `hash` applies in the
+asynchronous functions; the synchronous ones replace a hashed value with a seeded pseudonym
+(`hsh_…`). Values whose rule is `tokenize`, `encrypt` or `synthesize` are redacted, with a
+warning. Use `tokenize()` or `sanitizeForLLM()` for reversible tokens, and a pipeline from
+`"anonyma/engine"` to apply any of the eight strategies to text
+([Span engine](#span-engine-anonymaengine)).
 
 ---
 
@@ -307,14 +320,21 @@ anonymize("alice@example.com", {
 
 Built-in presets pre-configure which categories are detected and which default strategy is applied.
 
-| Preset    | Categories Covered                                                   | Default Strategy |
-| --------- | -------------------------------------------------------------------- | ---------------- |
-| `gdpr`    | All personal, financial, healthcare, and digital identity categories | `pseudonymize`   |
-| `hipaa`   | All 18 HIPAA Safe Harbor PHI identifiers                             | `redact`         |
-| `ccpa`    | Consumer identifiers, financial data, online activity                | `redact`         |
-| `pci-dss` | Credit card, cardholder name, bank account, address                  | `mask` (last 4)  |
-| `sox`     | Financial identifiers for audit trails                               | `redact`         |
-| `ferpa`   | Student PII — name, SSN, DOB, address                                | `redact`         |
+| Preset    | Categories Covered                                                         | Default Strategy                                   |
+| --------- | -------------------------------------------------------------------------- | -------------------------------------------------- |
+| `gdpr`    | Personal, financial, health and online identifiers (EU GDPR)               | `pseudonymize`                                     |
+| `lgpd`    | Personal data, including the CPF (Brazil, LGPD)                            | `redact`                                           |
+| `pipeda`  | Personal information, including the Social Insurance Number (Canada)       | `redact`                                           |
+| `hipaa`   | The HIPAA Safe Harbor identifiers that can be detected in text             | `redact`                                           |
+| `ccpa`    | Consumer identifiers, financial and health data, online activity, API keys | `redact`                                           |
+| `pci-dss` | Card and bank account numbers, cardholder name and contact details         | `redact`; card and account numbers keep the last 4 |
+| `sox`     | Financial and corporate officer identifiers for audit trails               | `redact`                                           |
+| `ferpa`   | Student PII — name, contact details, date of birth, SSN, national ID       | `redact`                                           |
+
+A preset selects what the library can detect. Some data that a regulation names has no detector —
+for HIPAA, ZIP codes, dates other than birth dates, device identifiers and photographs; for PCI DSS,
+card verification codes. `REGULATIONS[id].gaps` from `"anonyma/compliance"` lists them, with the
+provision that names each one.
 
 ```ts
 import { anonymize, getPreset, PRESET_REGISTRY } from "anonyma";
@@ -322,12 +342,23 @@ import { anonymize, getPreset, PRESET_REGISTRY } from "anonyma";
 // Apply a preset
 anonymize(text, { preset: "hipaa" });
 
-// Extend a preset — add API key detection on top of GDPR
-anonymize(text, { preset: "gdpr", enabledCategories: { "api-key": true } });
-
 // Inspect a preset's configuration
 const hipaa = getPreset("hipaa");
-console.log(hipaa.categories); // [...18 categories...]
+console.log(hipaa.categories); // ["name", "address", "date-of-birth", "phone", ...]
+```
+
+To add a category to a preset, compile a pipeline from `"anonyma/engine"` with the preset's
+categories and yours — `anonymize()` uses the preset's categories when `preset` is set:
+
+```ts
+import { compilePipeline } from "anonyma/engine";
+
+const gdprWithKeys = compilePipeline({
+  preset: "gdpr",
+  categories: [...getPreset("gdpr").categories, "api-key"],
+});
+gdprWithKeys.transform("Key AKIAIOSFODNN7EXAMPLE, mail alice@example.com").text;
+// "Key id_…, mail id_…" — random pseudonyms, since the preset sets no seed
 ```
 
 ---
@@ -341,7 +372,7 @@ import { tokenize, detokenize } from "anonyma";
 
 const { text, mapping, tokens } = tokenize("alice@example.com called 555-867-5309", {
   format: "bracket", // "[EMAIL_0001]", "[PHONE_0001]" (default)
-  // format: "angle",   // "<Email_1>", "<Phone_1>" (LLM-friendly)
+  // format: "angle",   // "<EMAIL_1>", "<PHONE_1>" (LLM-friendly)
   // format: "custom", tokenTemplate: (cat, n) => `{{${cat}_${n}}}`,
   deterministic: true, // same value → same token (default: true)
 });
@@ -452,10 +483,15 @@ const ct = await encrypt("alice@example.com", { keyBytes: myKeyBytes, encoding: 
 const original = await decrypt(ciphertext, { passphrase: "s3cr3t" });
 // "alice@example.com"
 
-// Use as a strategy inside anonymize
-const { text } = await anonymizeAsync("alice@example.com", {
-  rules: [{ category: "email", strategy: { strategy: "encrypt", passphrase: "s3cr3t" } }],
-});
+// Encrypt what a pipeline detects; the key is passed apart from the specification
+import { compilePipeline } from "anonyma/engine";
+
+const pipeline = compilePipeline(
+  { rules: { email: { strategy: "encrypt" } } },
+  { encryption: { passphrase: "s3cr3t" } },
+);
+const { text } = await pipeline.transformAsync("Mail alice@example.com");
+// "Mail base64:<iv>:<ciphertext>"
 ```
 
 ---
@@ -466,15 +502,15 @@ Replace PII with structurally valid, format-preserving synthetic data. Determini
 
 ```ts
 import { synthesize } from "anonyma";
-import { anonymize } from "anonyma";
+import { compilePipeline } from "anonyma/engine";
 
-synthesize("alice@example.com", { category: "email", seed: "project-x" });
-// "carol.smith42@example.com"
+synthesize("alice@example.com", "email", { seed: "project-x" });
+// "dave.wilson99@placeholder.dev"
 
-anonymize("Call 555-867-5309 or email alice@example.com", {
-  defaultStrategy: { strategy: "synthesize", seed: "my-seed" },
-}).text;
-// "Call +1-312-408-7291 or email bob.jones15@test.org"
+compilePipeline({ defaultStrategy: { strategy: "synthesize", seed: "my-seed" } }).transform(
+  "Call 555-867-5309 or email alice@example.com",
+).text;
+// "Call +1-271-864-7239 or email dave.rodriguez53@demo.io"
 ```
 
 ---
@@ -503,38 +539,47 @@ nhsMod11("943-476-5919"); // true
 
 ---
 
-## Plugin Architecture
+## Custom Detectors
 
-Extend anonyma with custom detectors, strategies, and validators using `AnonymaPlugin`.
+Replace the detector of a built-in category with `customDetectors`, or catch values of your own
+format with `customPatterns`:
 
 ```ts
-import { createAnonymizer } from "anonyma";
-import type { AnonymaPlugin } from "anonyma";
+import { anonymize } from "anonyma";
 
-const myPlugin: AnonymaPlugin = {
-  name: "my-plugin",
-  detectors: {
-    // Override or add custom category detection
-    "employee-id": (text) => {
-      const matches = [];
-      for (const m of text.matchAll(/\bEMP-\d{6}\b/g)) {
-        matches.push({
-          category: "employee-id",
-          value: m[0],
-          start: m.index!,
-          end: m.index! + m[0].length,
-          confidence: 0.95,
-        });
-      }
-      return matches;
-    },
-  },
-};
-
-const anonymizer = createAnonymizer({ plugins: [myPlugin] });
-anonymizer.anonymize("Employee EMP-001234 called.").text;
-// "Employee [REDACTED] called."
+anonymize("Employee EMP-001234 called.", {
+  customPatterns: [{ pattern: /\bEMP-\d{6}\b/g, label: "[EMPLOYEE_ID]" }],
+}).text;
+// "Employee [EMPLOYEE_ID] called."
 ```
+
+The span engine takes detectors for categories of your own, each with its own strategy:
+
+```ts
+import {
+  constant,
+  createPipeline,
+  defineRegexDetector,
+  emailDetector,
+  redactWith,
+} from "anonyma/engine";
+
+const employeeId = defineRegexDetector({
+  category: "employee-id",
+  pattern: /\bEMP-\d{6}\b/g,
+  confidence: 0.95,
+  requires: ["EMP-"], // skip texts that cannot contain a hit
+});
+const pipeline = createPipeline({
+  detectors: [emailDetector, employeeId],
+  replace: { fallback: redactWith(), byCategory: { "employee-id": constant("[EMPLOYEE]") } },
+});
+pipeline.transform("EMP-001234 wrote from alice@example.com").text;
+// "[EMPLOYEE] wrote from [REDACTED]"
+```
+
+`AnonymaPlugin` and the `plugins` option of `createAnonymizer()` are declared in the types, but
+`createAnonymizer()` does not apply plugins.
 
 ---
 
@@ -608,32 +653,206 @@ const result = anonymize(req.body.text as string, opts);
 ## Span Engine, Tokenization, Audit and AI Modules
 
 The subpaths `anonyma/engine`, `anonyma/vault`, `anonyma/audit`, `anonyma/compliance`,
-`anonyma/ai`, `anonyma/mcp` and `anonyma/middleware` are a newer, separate set of APIs.
-They do not change the functions described above.
+`anonyma/ai`, `anonyma/mcp` and `anonyma/middleware` were added in 1.1.0. They are a second,
+span-based API next to the functions above, which keep their 1.0 behaviour, and they follow
+semantic versioning like the rest of the package.
 
-They ship from `1.1.0-beta.0` (`npm install anonyma@next`) and are **experimental** until
-1.1.0 is released: their APIs may still change between pre-releases.
+### Span engine (`"anonyma/engine"`)
+
+A pipeline is compiled once and reused. Detectors report offsets, overlapping detections are
+resolved so that no detected character is left in the output, and the output is assembled in one
+pass. Email addresses, US SSNs, IBANs, IP addresses and card numbers are found by validating
+detectors (checksums, issuer ranges, allocation rules) that reject look-alikes such as version
+strings; the other categories use the 1.0 detectors.
 
 ```ts
 import { compilePipeline, createPipelineStream } from "anonyma/engine";
-import { createSessionTokenizer } from "anonyma/vault";
 
-// Irreversible, with a compliance preset:
 const pipeline = compilePipeline({ preset: "hipaa" });
-pipeline.transform("Patient jane@example.org, SSN 123-45-6789").text;
-// "Patient [REDACTED], SSN [REDACTED]"
+const { text, spans } = pipeline.transform("Patient jane@example.org, SSN 123-45-6789");
+// text: "Patient [REDACTED], SSN [REDACTED]"
+// spans: offsets, categories and detectors, never the detected text
 
-// Reversible tokens for an LLM round trip:
+// Text that arrives in arbitrary chunks, with values split between them:
+const scrubbed = source.pipeThrough(createPipelineStream(pipeline));
+```
+
+`compilePipeline()` takes plain data — a preset, categories, strategies, patterns — so a pipeline
+can live in a configuration file; keys and seeds are passed next to it, never inside it.
+`createPipeline()` builds one from detectors and replacers imported one by one, so that bundlers
+keep only those.
+
+### Keyed tokenization (`"anonyma/vault"`)
+
+| Tokenizer                                | Reversible             | Same value, same token              | Token                     |
+| ---------------------------------------- | ---------------------- | ----------------------------------- | ------------------------- |
+| `createSessionTokenizer()`               | within the session     | within the session                  | `[EMAIL_0001]`            |
+| `createKeyedTokenizer()` with a vault    | through the vault      | across calls and processes, per key | `[EMAIL_k1_7ZK3M9QW2ABC]` |
+| `createKeyedTokenizer()` without a vault | no                     | across calls and processes, per key | `[EMAIL_k1_7ZK3M9QW2ABC]` |
+| `createSealedTokenizer()`                | with the key, no vault | across calls and processes, per key | `[EMAIL_k1.5wq…]`         |
+
+```ts
+import { compilePipeline } from "anonyma/engine";
+import {
+  createKeyedTokenizer,
+  createKeyRing,
+  createMemoryVault,
+  createSessionTokenizer,
+  generateKeyMaterial,
+  restoreTokens,
+} from "anonyma/vault";
+
+// One conversation: tokens that only this session can restore
 const session = createSessionTokenizer();
 const tokenizing = compilePipeline(
   { defaultStrategy: { strategy: "tokenize" } },
   { tokenization: session },
 );
-const prompt = tokenizing.transform("Email alice@example.com").text; // "Email [EMAIL_0001]"
+tokenizing.transform("Email alice@example.com").text; // "Email [EMAIL_0001]"
 session.restore("Sent to [EMAIL_0001].").text; // "Sent to alice@example.com."
 
-// Text that arrives in arbitrary chunks:
-const scrubbed = source.pipeThrough(createPipelineStream(pipeline));
+// Stable tokens across processes, restorable through a vault
+const keyring = await createKeyRing({
+  namespace: "crm",
+  keys: [{ id: "k1", material: await generateKeyMaterial() }],
+});
+const keyed = createKeyedTokenizer({ keyring, vault: createMemoryVault() });
+const crm = compilePipeline({ defaultStrategy: { strategy: "tokenize" } }, { tokenization: keyed });
+const { text } = await crm.transformAsync("Mail alice@example.com"); // "Mail [EMAIL_k1_Y5DMH9ED2DTF]"
+(await restoreTokens(text, keyed)).text; // "Mail alice@example.com"
+```
+
+Keys are versioned and derived per purpose with HKDF. `keyring.rotate()` adds a version,
+`rewrapVault()` re-seals the vault under it without changing any token, and `shredKey()` destroys a
+version so that nothing sealed under it can be recovered, not even from a backup of the vault.
+`forgetSubject()` deletes the records of one data subject. `createMemoryVault()` is the reference
+implementation of the `TokenVault` interface; implement it over your own database.
+
+### Audit trail (`"anonyma/audit"`)
+
+A record says what was replaced — fields, categories, detectors, rules, counts — and never what the
+data was. Each record's hash covers its predecessor, so removing, reordering or editing a record
+breaks the chain; with a key, the hash is an HMAC. When a sink fails, the logger stops instead of
+leaving a gap.
+
+```ts
+import { createAuditLogger, memorySink, summarizeSpans, verifyAuditChain } from "anonyma/audit";
+
+const sink = memorySink();
+const audit = createAuditLogger({ sinks: [sink] });
+await audit.record({
+  operation: "anonymize",
+  policy: { id: "hipaa" },
+  fields: summarizeSpans(spans, { rule: "redact" }),
+});
+(await verifyAuditChain(sink.records())).ok; // true
+```
+
+### Regulation profiles and policies (`"anonyma/compliance"`)
+
+`REGULATIONS` maps GDPR, LGPD, PIPEDA, CCPA/CPRA, HIPAA and PCI DSS to the categories they bring
+into scope, the provision behind each one, the protection a replacement must give, and the data
+they name that no detector covers. A policy document extends regulations and is checked against
+them:
+
+```ts
+import { compilePipeline } from "anonyma/engine";
+import { parsePolicy, policyToSpec } from "anonyma/compliance";
+
+const policy = parsePolicy({ version: 1, id: "clinic", extends: ["hipaa", "gdpr"] });
+const clinic = compilePipeline(policyToSpec(policy));
+
+parsePolicy({
+  version: 1,
+  id: "clinic",
+  extends: ["hipaa"],
+  rules: { email: { strategy: "mask", keepLeading: 3 } },
+});
+// throws PolicyError: /rules/email "mask" is not sufficient for "email" under HIPAA …
+// (45 CFR § 164.514(b)(2)(i)(F))
+```
+
+The profiles describe technical measures. They are not legal advice, and they do not make a system
+compliant on their own.
+
+### LLM guard and JSON (`"anonyma/ai"`)
+
+```ts
+import { createLlmGuard, sanitizeJson } from "anonyma/ai";
+
+const exchange = createLlmGuard().begin();
+const { messages } = exchange.sanitizeMessages([
+  { role: "user", content: "Email alice@example.com" },
+]);
+// messages[0].content: "Email [EMAIL_0001]"; the mapping never leaves the process
+const reply = await callLLM(messages); // "Sent to [EMAIL_0001]."
+exchange.restoreText(reply).text; // "Sent to alice@example.com."
+// Streamed output: stream.pipeThrough(exchange.restoreStream()), tokens split across chunks too
+
+sanitizeJson({ user: { email: "alice@example.com" }, id: 7 }, { pipeline }).value;
+// { user: { email: "[REDACTED]" }, id: 7 } — same shape, sanitized strings
+```
+
+`toLanguageModelMiddleware()` adapts a guard to the middleware of the Vercel AI SDK
+(`wrapLanguageModel()`). It is typed structurally and tested against stand-ins for the SDK, so check
+it against the SDK version you use.
+
+### MCP server (`"anonyma/mcp"`)
+
+A Model Context Protocol server without dependencies. Its tools are `anonyma_detect`,
+`anonyma_anonymize`, `anonyma_tokenize` and `anonyma_check_policy`, plus `anonyma_detokenize` when
+the operator enables it (`allowDetokenize`). The values behind tokens stay in server memory, and
+`anonyma_detect` reports positions, not the detected text.
+
+```js
+// anonyma-mcp.mjs — register with: claude mcp add anonyma -- node anonyma-mcp.mjs
+import { createMcpServer, serveStdio } from "anonyma/mcp";
+
+await serveStdio(createMcpServer(), {
+  input: process.stdin,
+  write: (line) => void process.stdout.write(line),
+});
+```
+
+### HTTP middleware (`"anonyma/middleware"`)
+
+```ts
+import express from "express";
+import { anonymaExpress } from "anonyma/middleware/express";
+
+const app = express();
+app.use(express.json());
+// Scrubs responses and, with `request: true`, the parsed request bodies
+app.use("/support", anonymaExpress({ spec: { preset: "gdpr" }, request: true }));
+```
+
+`anonymaHono()` from `"anonyma/middleware/hono"` does the same for Hono, on every runtime Hono
+supports. `createScrubber()` from `"anonyma/middleware"` scrubs JSON values, text and Fetch API
+responses directly. Neither adapter depends on its framework.
+
+---
+
+## Errors
+
+The library's errors are `AnonymaError`s with a machine-readable `code`. The classes are exported
+from `"anonyma"`, including those thrown by the subpaths: `ValidationError`,
+`UnsupportedStrategyError`, `UnknownCategoryError`, `CryptoNotAvailableError`, `EncryptionError`,
+`PresetNotFoundError`, `AllowlistMatchError`, `BatchProcessingError`, `AsyncStrategyError`,
+`KeyManagementError`, `TokenVaultError`, `PolicyError` and `AuditIntegrityError`.
+
+```ts
+import { AnonymaError, PolicyError } from "anonyma";
+import { parsePolicy } from "anonyma/compliance";
+
+try {
+  parsePolicy(document);
+} catch (error) {
+  if (error instanceof PolicyError) {
+    for (const issue of error.issues) console.error(issue.path, issue.message);
+  } else if (error instanceof AnonymaError) {
+    console.error(error.code, error.message);
+  }
+}
 ```
 
 ---
