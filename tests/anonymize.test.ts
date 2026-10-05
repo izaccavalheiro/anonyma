@@ -742,14 +742,12 @@ describe("anonymize() — allowlist options", () => {
     expect(text).toBe("alice@example.com");
   });
 
-  it("allowlist (string array) without allowlistCaseSensitive uses case-insensitive flag", () => {
-    // Exercises the `allowlistCaseSensitive ? "" : "i"` false-branch (line ~461):
-    // allowlist.map is called and RegExp is built with the "i" flag.
-    const { text } = anonymize("alice@example.com", {
+  it("allowlist (string array) without allowlistCaseSensitive ignores case", () => {
+    const { text } = anonymize("ALICE@example.com", {
       allowlist: ["alice@example.com"],
-      // allowlistCaseSensitive intentionally omitted → defaults to false → "i" flag
+      // allowlistCaseSensitive intentionally omitted → defaults to false
     });
-    expect(text).toBe("alice@example.com");
+    expect(text).toBe("ALICE@example.com");
   });
 });
 

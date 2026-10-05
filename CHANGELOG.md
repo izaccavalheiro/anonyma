@@ -7,7 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [1.1.1] — 2026-10-05
+
+Patch release. The 1.x functions now exempt a detected value only when it equals an `allowlist`
+entry, as documented; since 1.0.0 they also exempted every value that contained one. Code that
+relied on such partial matches will see those values anonymized, and can use `allowlistPatterns`
+to match a part of a value instead. The span engine (`"anonyma/engine"`) is unchanged.
+
+### Fixed
+
+- **`allowlist`** skips a detected value only when the value equals an entry, as documented.
+  Entries were matched as substrings, so `allowlist: ["bob@example.com"]` also left
+  `jimbob@example.com` in the output of `anonymize()`, `anonymizeAsync()`, `tokenize()`,
+  `sanitizeForLLM()` and the methods of `createAnonymizer()`; an entry naming a domain left
+  every address of that domain, and an empty entry left every value. A value that merely
+  contains an entry is now anonymized. `allowlistPatterns` still match a part of a value.
+- **`createAnonymizer().tokenize()`** matched `allowlist` entries as regular expressions: an
+  entry containing `(` threw a `SyntaxError`, and `"x.y@example.com"` also exempted
+  `"xzy@example.com"`.
+- **`allowlistPatterns`** with the `g` or `y` flag skipped only every other matching value,
+  because `RegExp.test()` kept its `lastIndex` between values, and left the caller's pattern
+  with a changed `lastIndex`. These flags are now ignored.
 
 ---
 
@@ -580,7 +600,8 @@ All types are zero-cost, type-only exports (stripped by `tsc`; no runtime overhe
 - **Prettier** code formatting.
 - **MIT License**.
 
-[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.1
 [1.1.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.0
 [1.1.0-beta.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.0-beta.0
 [1.0.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.0.0

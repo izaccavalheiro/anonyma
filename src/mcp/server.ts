@@ -153,7 +153,7 @@ const STRATEGY_NOTES: Readonly<Record<string, string>> = {
  */
 export function createMcpServer(options: McpServerOptions = {}): McpServer {
   const { allowDetokenize = false, audit, maxSessions = 256, maxJsonLength = 1_000_000 } = options;
-  const serverInfo = options.serverInfo ?? { name: "anonyma", version: "1.1.0" };
+  const serverInfo = options.serverInfo ?? { name: "anonyma", version: "1.1.1" };
   const tools = MCP_TOOLS.filter((tool) => allowDetokenize || tool.name !== "anonyma_detokenize");
   const sessions = new Map<string, SessionTokenizer>();
 
