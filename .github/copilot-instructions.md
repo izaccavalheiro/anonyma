@@ -183,21 +183,21 @@ describe("detectEmail()", () => {
 
 ## Subpath Exports Reference
 
-| Import path            | Contents                                                                           |
-| ---------------------- | ---------------------------------------------------------------------------------- |
-| `"anonyma"`            | Core API: `anonymize`, `detect`, `hasPII`, `tokenize`, strategies, errors, types   |
-| `"anonyma/detectors"`  | Individual `detect*` functions + `DETECTOR_REGISTRY`                               |
-| `"anonyma/schemas"`    | Zod schemas + `toJsonSchema()` + MCP tool defs (requires `zod`)                    |
-| `"anonyma/validators"` | `luhn`, `verhoeff`, `nhsMod11`, `cpfChecksum`, etc.                                |
-| `"anonyma/crypto"`     | Low-level Web Crypto helpers                                                       |
-| `"anonyma/stream"`     | `createAnonymizeStream`, `createTokenizeStream`                                    |
-| `"anonyma/engine"`     | `createPipeline`, `compilePipeline`, span detectors, replacers, chunk-safe streams |
-| `"anonyma/vault"`      | Session, keyed and sealed tokenizers, key ring, token vault, rotation              |
-| `"anonyma/audit"`      | Hash-chained audit logger without personal data, chain verification                |
-| `"anonyma/compliance"` | `REGULATIONS`, policy parser, erasure planning                                     |
-| `"anonyma/ai"`         | `sanitizeJson`, `createLlmGuard`, stream restoration                               |
-| `"anonyma/mcp"`        | MCP tool and resource declarations, `createMcpServer`, `serveStdio`                |
-| `"anonyma/middleware"` | `createScrubber`; adapters in `/middleware/express` and `/middleware/hono`         |
+| Import path            | Contents                                                                            |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| `"anonyma"`            | Core API: `anonymize`, `detect`, `hasPII`, `tokenize`, strategies, errors, types    |
+| `"anonyma/detectors"`  | Individual `detect*` functions + `DETECTOR_REGISTRY`                                |
+| `"anonyma/schemas"`    | Zod schemas, function-calling tool definitions, `ANONYMA_MANIFEST` (requires `zod`) |
+| `"anonyma/validators"` | `luhn`, `verhoeff`, `nhsMod11`, `cpfChecksum`, etc.                                 |
+| `"anonyma/crypto"`     | Low-level Web Crypto helpers                                                        |
+| `"anonyma/stream"`     | `createAnonymizeStream`, `createTokenizeStream`                                     |
+| `"anonyma/engine"`     | `createPipeline`, `compilePipeline`, span detectors, replacers, chunk-safe streams  |
+| `"anonyma/vault"`      | Session, keyed and sealed tokenizers, key ring, token vault, rotation               |
+| `"anonyma/audit"`      | Hash-chained audit logger without personal data, chain verification                 |
+| `"anonyma/compliance"` | `REGULATIONS`, policy parser, erasure planning                                      |
+| `"anonyma/ai"`         | `sanitizeJson`, `createLlmGuard`, stream restoration                                |
+| `"anonyma/mcp"`        | MCP tool and resource declarations, `createMcpServer`, `serveStdio`                 |
+| `"anonyma/middleware"` | `createScrubber`; adapters in `/middleware/express` and `/middleware/hono`          |
 
 ---
 

@@ -5,19 +5,20 @@
  *
  * These schemas enable:
  * - Runtime input validation
- * - OpenAI / Anthropic function-calling definitions
- * - MCP (Model Context Protocol) tool definitions
+ * - Function-calling tool definitions (OpenAI format) and a capability manifest
  * - Automatic form generation
+ *
+ * The Model Context Protocol declarations and server are in `"anonyma/mcp"`.
  *
  * @example
  * ```ts
- * import { AnonymizeOptionsSchema, toJsonSchema } from "anonyma/schemas";
+ * import { AnonymizeOptionsSchema, ANONYMIZE_TOOL_DEFINITION } from "anonyma/schemas";
  *
  * // Validate at runtime:
  * const opts = AnonymizeOptionsSchema.parse(unknownInput);
  *
- * // Obtain JSON Schema for an AI tool definition:
- * const jsonSchema = toJsonSchema(AnonymizeOptionsSchema);
+ * // Offer anonymization to a model as a tool:
+ * const tools = [{ type: "function", function: ANONYMIZE_TOOL_DEFINITION }];
  * ```
  *
  * @remarks
