@@ -123,7 +123,7 @@ Every push and pull request runs the `CI` workflow. Each job answers one questio
 | Job            | Question                                                                                     |
 | -------------- | -------------------------------------------------------------------------------------------- |
 | `static`       | Does the code type-check, lint and follow the format? Are the commit messages conventional?  |
-| `test`         | Do the tests pass on Node.js 20, 22 and 24, and on Linux, macOS and Windows?                 |
+| `test`         | Do the tests pass on Node.js 20, 22, 24 and 26, and on Linux, macOS and Windows?             |
 | `coverage`     | Is the code covered above the thresholds in `vitest.config.ts`?                              |
 | `package`      | Is the build a valid dual ESM/CJS package (publint, are-the-types-wrong), within its budget? |
 | `smoke`        | Does the packed tarball work for a consumer on Node.js 18, 20, 22, 24 and 26?                |
@@ -220,15 +220,18 @@ Releases are published by GitHub Actions, never from a local machine.
 1. Set the version in `package.json` (and `package-lock.json`), and give
    `CHANGELOG.md` a section `## [<version>]`. A test fails when the version
    the code reports differs from `package.json`.
-2. Merge, then push a tag `v<version>` on that commit.
+2. Merge into `main`, then push a tag `v<version>` on the merged commit. A
+   pre-release may be tagged on its release branch instead; the workflow
+   refuses a stable version whose commit is not on `main`.
 3. The `Release` workflow runs the whole CI pipeline on the tag, publishes to
    npm with a provenance attestation, and creates the GitHub release with the
    changelog section, the tarball and an SBOM. A version with a prerelease
    suffix (`1.2.0-beta.0`) is published under the `next` dist-tag, any other
    under `latest`.
 
-Running the `Release` workflow by hand from the Actions tab rehearses all of it
-without publishing.
+npm trusts the `Release` workflow as a publisher (trusted publishing through
+OpenID Connect), so there is no npm token to store or rotate. Running the
+workflow by hand from the Actions tab rehearses all of it without publishing.
 
 ---
 
