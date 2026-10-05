@@ -24,6 +24,14 @@
    - 4.12 [crypto.ts — Web Crypto Helpers](#412-cryptots--web-crypto-helpers)
    - 4.13 [schemas.ts — Zod Schemas & AI Definitions](#413-schematsts--zod-schemas--ai-definitions)
    - 4.14 [index.ts — Public API Barrel](#414-indexts--public-api-barrel)
+   - 4.15 [engine/ — Span Engine](#415-engine--span-engine)
+   - 4.16 [vault/ — Tokenization and Key Management](#416-vault--tokenization-and-key-management)
+   - 4.17 [audit/ — Audit Log](#417-audit--audit-log)
+   - 4.18 [compliance/ — Regulations and Policies](#418-compliance--regulations-and-policies)
+   - 4.19 [ai/ — LLM and JSON Sanitization](#419-ai--llm-and-json-sanitization)
+   - 4.20 [mcp/ — Model Context Protocol](#420-mcp--model-context-protocol)
+   - 4.21 [middleware/ — HTTP Payload Scrubbing](#421-middleware--http-payload-scrubbing)
+   - 4.22 [internal/ — Shared Helpers](#422-internal--shared-helpers)
 5. [Detector Architecture](#5-detector-architecture)
 6. [Strategy Architecture](#6-strategy-architecture)
 7. [Anonymization Engine Deep-Dive](#7-anonymization-engine-deep-dive)
@@ -41,15 +49,16 @@
 
 ## 1. Design Philosophy
 
-anonyma is built around five immutable principles:
+anonyma is built around six principles:
 
-| Principle                         | Manifestation                                                                                                                                   |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Zero runtime dependencies**     | `package.json` has an empty `dependencies` object; `zod` is a peer/optional                                                                     |
-| **Strict type safety**            | `tsconfig.json` enables every strict flag + `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`                                            |
-| **Pure, deterministic functions** | Detectors and most strategies are pure functions; async is confined to cryptographic operations                                                 |
-| **Tree-shakeable by design**      | Each detector and strategy is a standalone module; the barrel re-exports but does not merge namespaces                                          |
-| **Separation of concerns**        | Detection (`detectors/`), transformation (`strategies/`), orchestration (`anonymize.ts`), and I/O (`stream.ts`, `batch.ts`) are fully decoupled |
+| Principle                         | Manifestation                                                                                                                                                                |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Zero runtime dependencies**     | `package.json` has an empty `dependencies` object; `zod` is a peer/optional                                                                                                  |
+| **Strict type safety**            | `tsconfig.json` enables every strict flag + `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`                                                                         |
+| **Pure, deterministic functions** | Detectors and most strategies are pure functions; async is confined to cryptographic operations                                                                              |
+| **Tree-shakeable by design**      | Each detector and strategy is a standalone module; the barrel re-exports but does not merge namespaces                                                                       |
+| **Separation of concerns**        | Detection (`detectors/`), transformation (`strategies/`), orchestration (`anonymize.ts`), and I/O (`stream.ts`, `batch.ts`) are fully decoupled                              |
+| **Fail closed**                   | A built-in replacer redacts a value its strategy would leave unchanged; a synchronous transform throws on an asynchronous replacer; the audit logger stops when a sink fails |
 
 ---
 
@@ -84,6 +93,31 @@ anonyma is built around five immutable principles:
    └──────────────────────────────────────────┘
 ```
 
+The subpath modules added in 1.1 form layers on top of this core. At runtime, a module uses
+modules of its own layer or of the layers below, never of a layer above:
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Integrations  middleware/   HTTP scrubbing: Fetch, Express, Hono         │
+│               mcp/          Model Context Protocol server and tools      │
+│               ai/           LLM guard, JSON sanitizer, stream restoring  │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Services      vault/        tokenizers, key ring, token vault, rotation  │
+│               audit/        hash-chained audit log without personal data │
+│               compliance/   regulation profiles, policies, erasure       │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Span engine   engine/       span detectors, overlap resolution,          │
+│                             replacers, pipelines, chunk-safe streams     │
+├──────────────────────────────────────────────────────────────────────────┤
+│ 1.x core      detectors/ · strategies/ · presets.ts · validators.ts      │
+└──────────────────────────────────────────────────────────────────────────┘
+  internal/  Web Crypto lookup, byte encodings and lossless JSON numbers, for every layer
+```
+
+The 1.x core does not depend on the subpath modules; only `errors.ts` imports a type from
+`compliance/`. `engine/` and `vault/` share types and nothing else: the engine calls a
+`TokenizationProvider` for the `tokenize` strategy, and the vault's tokenizers implement it.
+
 ---
 
 ## 3. Core Data Flow
@@ -115,7 +149,43 @@ Input string
 
 ### Async anonymization (`anonymizeAsync`)
 
-Same flow but `applyStrategy` is awaited, enabling hash (SHA-256) and encrypt (AES-GCM) strategies that require the Web Crypto API.
+Same flow, except that a `hash` rule is awaited and produces a SHA-256 digest. Like `anonymize()`,
+`anonymizeAsync()` redacts a value whose rule is `tokenize`, `encrypt` or `synthesize`, and prints a
+warning; the span engine applies those strategies.
+
+### Span engine (`pipeline.transform`)
+
+```
+Input string
+    │
+    ▼
+  for each detector (skipped when its prefilter rules the text out):
+    detector.scan(text, emit) → (start, end, confidence) hits, in any order
+    │  drop hits below minConfidence
+    │  mark hits matched by an allow rule: they take part in resolution, then stay untouched
+    ▼
+  resolveSpans(candidates, overlap)
+    │  "cover" (default): accept by confidence, then length, then position, then detector
+    │                     order; keep the uncovered parts of a losing hit as residual spans,
+    │                     so no detected character is left in the output
+    │  "legacy": the 1.x rule — the earliest start wins, losing hits are dropped
+    ▼
+  replacer per category (or the fallback), called in document order
+    │  built-in replacers redact a value their strategy would leave unchanged
+    │  transform(): a replacer that returns a promise → AsyncStrategyError
+    │  transformAsync(): replacers awaited one at a time
+    ▼
+  one left-to-right pass assembles the output
+    │
+    ▼
+ TransformResult { text, spans }   spans carry offsets and categories, never the matched text
+```
+
+`createChunkTransformer()` and `createPipelineStream()` run a pipeline over text that arrives in
+chunks. They hold back the last `window` characters (by default the largest `maxMatchLength` of
+the pipeline's detectors, or 256) and rescan them with left context, so that a value split across
+chunks is replaced as if the text had arrived whole. An unbroken run of printable ASCII characters
+of up to `tokenLimit` characters — a key, a token, a URL — is held back until it ends.
 
 ---
 
@@ -149,8 +219,17 @@ AnonymaError (base)
 ├── EncryptionError          (AES-GCM operation failure)
 ├── PresetNotFoundError      (unknown preset name — carries preset)
 ├── AllowlistMatchError      (value matched allowlist — internal, not thrown publicly)
-└── BatchProcessingError     (batch-level failure — carries index + cause)
+├── BatchProcessingError     (batch-level failure — carries index + cause)
+├── AsyncStrategyError       (synchronous transform met an asynchronous replacer — carries category)
+├── KeyManagementError       (unknown, destroyed or malformed key version — carries keyId)
+├── TokenVaultError          (vault operation failed or would corrupt the vault)
+├── PolicyError              (policy document rejected — carries every issue)
+└── AuditIntegrityError      (audit chain cannot be extended or does not verify)
 ```
+
+Every class is exported from `"anonyma"`. Because the build emits shared code once (see
+[Build System](#12-build-system--package-outputs)), an error thrown by a subpath is an instance of
+the class exported there.
 
 Every error class calls `Object.setPrototypeOf(this, new.target.prototype)` to maintain correct prototype chains in transpiled environments.
 
@@ -191,13 +270,13 @@ The largest and most complex module. Responsibilities:
 
 - `detect()` — multi-category scan with allowlist, confidence filtering, overlap deduplication
 - `anonymize()` — sync orchestration
-- `anonymizeAsync()` — async orchestration (all 8 strategies)
+- `anonymizeAsync()` — async orchestration (adds `hash`; `tokenize`, `encrypt` and `synthesize` are redacted, as in `anonymize()`)
 - `anonymizeRecord()` — field-level anonymization of plain objects using dot-notation paths
 - `anonymizeObject()` — deep recursive anonymization of arbitrary JSON trees
 - `hasPII()` — optimised early-exit boolean scan
 - `createAnonymizer()` — factory that closes over a reusable `AnonymizerConfig`
 
-Internal overlap resolution: matches are sorted by `start` index, then iterated. When a match's start index is inside the last consumed region, it is skipped (first-wins, longest-first tiebreaker).
+Internal overlap resolution: matches are sorted by `start` index, ties going to the higher confidence, then iterated. When a match's start index is inside the last consumed region, it is skipped (first wins).
 
 ### 4.6 `tokenize.ts` — Reversible Tokenization
 
@@ -212,9 +291,8 @@ The `mapping` maps every token string (e.g. `"[EMAIL_0001]"`) back to the origin
 Token formats (controlled by `TokenFormat`):
 
 - `"bracket"` — `[EMAIL_0001]` (default, LLM-safe)
-- `"angle"` — `<EMAIL_0001>`
-- `"curly"` — `{EMAIL_0001}`
-- `"plain"` — `EMAIL_0001`
+- `"angle"` — `<EMAIL_1>`
+- `"custom"` — declared for a `tokenTemplate` function, which `tokenize()` does not apply; it produces the angle format
 
 ### 4.7 `llm.ts` — LLM Pipeline Helpers
 
@@ -233,16 +311,22 @@ Functions:
 
 ### 4.9 `presets.ts` — Compliance Presets
 
-Six built-in regulatory presets:
+Eight built-in regulatory presets:
 
-| Preset    | Regulation           | Primary Strategy | Focus                             |
-| --------- | -------------------- | ---------------- | --------------------------------- |
-| `gdpr`    | EU GDPR              | pseudonymize     | All personal data identifiers     |
-| `hipaa`   | US HIPAA Safe Harbor | redact           | 18 PHI identifier classes         |
-| `ccpa`    | California CCPA      | mask             | Personal + household data         |
-| `pci-dss` | PCI DSS v4           | mask             | Payment card data                 |
-| `sox`     | US Sarbanes-Oxley    | hash             | Financial records + employee data |
-| `ferpa`   | US FERPA             | redact           | Student education records         |
+| Preset    | Regulation           | Default Strategy                        | Focus                                               |
+| --------- | -------------------- | --------------------------------------- | --------------------------------------------------- |
+| `gdpr`    | EU GDPR              | pseudonymize                            | All personal data identifiers                       |
+| `lgpd`    | Brazil LGPD          | redact                                  | Personal data, including the CPF                    |
+| `pipeda`  | Canada PIPEDA        | redact                                  | Personal information, including the SIN             |
+| `hipaa`   | US HIPAA Safe Harbor | redact                                  | The Safe Harbor identifiers detectable in text      |
+| `ccpa`    | California CCPA/CPRA | redact                                  | Consumer identifiers, financial and health data     |
+| `pci-dss` | PCI DSS v4           | redact; mask (last 4) for card and bank | Cardholder data                                     |
+| `sox`     | US Sarbanes-Oxley    | redact                                  | Financial records and corporate officer identifiers |
+| `ferpa`   | US FERPA             | redact                                  | Student education records                           |
+
+A preset lists what the library can detect. The regulation profiles in `compliance/` (4.18) record,
+for GDPR, LGPD, PIPEDA, CCPA, HIPAA and PCI DSS, the provision behind each category and the data
+that no detector covers; a test checks every preset against its profile.
 
 Each `PresetConfig` specifies the activated `categories[]`, a `defaultStrategy`, and optional per-category `rules[]` overrides. Presets are resolved at runtime in `anonymize.ts` via `getPreset()`.
 
@@ -270,7 +354,7 @@ These validators are used internally by the corresponding detectors to reduce fa
 
 ### 4.12 `crypto.ts` — Web Crypto Helpers
 
-Low-level utilities re-used by `strategies/encrypt.ts`. Exposes encoding helpers (`toBase64`, `fromBase64`, `toHex`, `fromHex`) and the key derivation pipeline. Exported from the `"anonyma/crypto"` subpath.
+Re-exports `encrypt()` and `decrypt()` from `strategies/encrypt.ts` (and the `EncryptOptions` type) under the `"anonyma/crypto"` subpath, for code that needs reversible encryption without the rest of the API.
 
 ### 4.13 `schemas.ts` — Zod Schemas & AI Definitions
 
@@ -279,9 +363,11 @@ Low-level utilities re-used by `strategies/encrypt.ts`. Exposes encoding helpers
 Provides:
 
 - `PiiCategorySchema` — Zod enum for all 27 categories
-- `AnonymizeOptionsSchema` — Full Zod object schema with `.parse()` for runtime validation
-- `toJsonSchema()` — Converts Zod schemas to JSON Schema compatible with OpenAI function-calling and Anthropic tool definitions
-- MCP (Model Context Protocol) tool definitions for `anonymize`, `detect`, and `tokenize`
+- `AnonymizeOptionsSchema` — Zod object schema with `.parse()` for runtime validation. It covers `rules`, `defaultStrategy`, `customPatterns`, `enabledCategories`, `globalReplacement`, `consistentTokens`, `aggressive` and `includeMatches`; `.parse()` removes the other options.
+- Strategy, rule, match and field-rule schemas
+- Function-calling tool definitions in the OpenAI format (`ANONYMIZE_TOOL_DEFINITION`, `DETECT_TOOL_DEFINITION`, `HAS_PII_TOOL_DEFINITION`, `ANONYMIZE_OBJECT_TOOL_DEFINITION`) and the `ANONYMA_MANIFEST` capability description
+
+The Model Context Protocol declarations, with their JSON Schemas, live in `mcp/` (4.20).
 
 ### 4.14 `index.ts` — Public API Barrel
 
@@ -295,6 +381,110 @@ The single entry point for `import ... from "anonyma"`. Exports are organized by
 6. Individual strategies (tree-shakeable)
 7. Error classes
 8. TypeScript types (type-only `export type`)
+
+### 4.15 `engine/` — Span Engine
+
+Exported as `"anonyma/engine"`. Works on spans — offsets into the scanned text — rather than on
+copied substrings. Contracts are in `engine/types.ts`.
+
+| File           | Responsibility                                                                                                                                                                                              |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `detector.ts`  | `defineDetector()`, `defineRegexDetector()` (with prefilter substrings, validation and a maximum match length) and `fromLegacyDetector()` for 1.x `(text) => PiiMatch[]` functions                          |
+| `precise.ts`   | Validating detectors for email, US SSN, IBAN, IPv4, IPv6 and payment cards: issuer ranges and Luhn, the ISO 13616 length table and mod-97, SSA allocation rules, the RFC 4291 grammar, look-alike rejection |
+| `builtin.ts`   | The 27 1.x detectors as span detectors (`LEGACY_DETECTORS`, `LEGACY_AGGRESSIVE_DETECTORS`, `BUILTIN_CATEGORIES`), each a separate export                                                                    |
+| `resolve.ts`   | `resolveSpans()`: the `cover` and `legacy` overlap policies                                                                                                                                                 |
+| `pipeline.ts`  | `createPipeline()`: `scan`, `test`, `replace`, `transform`, `transformAsync`                                                                                                                                |
+| `replacers.ts` | One factory per strategy (`maskWith()`, `hashWith()`, `encryptWith()`, …), `constant()`, and `strategyReplacer()` for a `StrategySpec`                                                                      |
+| `compile.ts`   | `compilePipeline()`: a pipeline from a `PipelineSpec` — plain data, storable in a configuration file — and `CompileDependencies` (tokenization provider, encryption key, peppers and seeds)                 |
+| `stream.ts`    | `createChunkTransformer()`, `createAsyncChunkTransformer()` and `createPipelineStream()`                                                                                                                    |
+
+`compilePipeline()` uses the validating detectors by default (`detection: "precise"`) and the 1.x
+detectors for the other categories; `detection: "legacy"` uses the 1.x detectors throughout.
+
+### 4.16 `vault/` — Tokenization and Key Management
+
+Exported as `"anonyma/vault"`.
+
+| File              | Responsibility                                                                                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `keyring.ts`      | Versioned keys. Each version holds one secret from which purpose-bound, non-extractable keys are derived with HKDF-SHA-256; the manifest is authenticated with HMAC |
+| `session.ts`      | `createSessionTokenizer()`: synchronous, in memory, tokens numbered per category (`[EMAIL_0001]`), snapshots to continue a session                                  |
+| `keyed.ts`        | `createKeyedTokenizer()`: the token identifier is an HMAC-SHA-256 of category and value; with a vault the value is stored sealed with AES-256-GCM                   |
+| `sealed.ts`       | `createSealedTokenizer()`: stateless; the token carries the value sealed with AES-256-GCM under a synthetic IV, so equal values give equal tokens                   |
+| `memory-vault.ts` | `createMemoryVault()`: the reference `TokenVault`                                                                                                                   |
+| `rotation.ts`     | `rewrapVault()` re-seals every record under the active key version without changing tokens; `shredKey()` destroys a version                                         |
+| `restore.ts`      | `restoreTokens()` and `tokenizeWith()`, which connect a provider to text and to the engine                                                                          |
+
+Erasure works per record (`forgetToken()`, `forgetSubject()`) or per key version (`shredKey()`):
+without the key, nothing sealed under it can be recovered, not even from a backup of the vault.
+
+### 4.17 `audit/` — Audit Log
+
+Exported as `"anonyma/audit"`. A record describes what was done — fields, categories, detectors,
+rules, counts — and has no member for values.
+
+| File           | Responsibility                                                                                                                                       |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `logger.ts`    | `createAuditLogger()`: records sealed in call order, each hash covering the record and its predecessor (an HMAC with a key); stops when a sink fails |
+| `canonical.ts` | Canonical JSON and digests, so that equal data always hashes the same; `inputChecksum()`                                                             |
+| `fields.ts`    | `summarizeSpans()` and `jsonPointer()`, which turn engine results into field entries                                                                 |
+| `sinks.ts`     | `memorySink()`, `lineSink()` and `parseAuditLog()`                                                                                                   |
+| `verify.ts`    | `verifyAuditChain()`                                                                                                                                 |
+
+Every caller-supplied string in a record (actor, source, policy reference, path segment, …) also
+passes a guard — a pipeline — and is blanked if it looks like personal data.
+
+### 4.18 `compliance/` — Regulations and Policies
+
+Exported as `"anonyma/compliance"`. The profiles describe technical measures; they are not legal
+advice.
+
+| File             | Responsibility                                                                                                                                                   |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `regulations.ts` | `REGULATIONS` for GDPR, LGPD, PIPEDA, CCPA/CPRA, HIPAA and PCI DSS: per category the provision and the protection a replacement must give, and the coverage gaps |
+| `traits.ts`      | `describeStrategy()` (is a strategy reversible, keyed, deterministic, …) and `checkRequirement()`                                                                |
+| `policy.ts`      | `parsePolicy()`: untrusted JSON to a checked `Policy`, or a `PolicyError` listing every issue; `checkPolicy()`, `policyToSpec()`, `regulationPolicy()`           |
+| `erasure.ts`     | `planErasure()`: what honouring an erasure request takes, depending on how the data was transformed                                                              |
+
+### 4.19 `ai/` — LLM and JSON Sanitization
+
+Exported as `"anonyma/ai"`. The mapping between tokens and values never leaves the process.
+
+| File         | Responsibility                                                                                                                                                             |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `json.ts`    | `sanitizeJson()` / `sanitizeJsonAsync()`: same nesting and array lengths; strings, long numbers, values under key rules and keys are sanitized; the input is never mutated |
+| `guard.ts`   | `createLlmGuard()`: one exchange per model call sanitizes prompts and chat messages and restores the reply; `toLanguageModelMiddleware()` adapts it to the Vercel AI SDK   |
+| `restore.ts` | Restoration in streamed output: a trailing fragment that could still become a token is held back; lenses read the text of SDK-specific chunk shapes                        |
+
+### 4.20 `mcp/` — Model Context Protocol
+
+Exported as `"anonyma/mcp"`.
+
+| File             | Responsibility                                                                                                                                                                      |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `definitions.ts` | Tools (`anonyma_detect`, `anonyma_anonymize`, `anonyma_tokenize`, `anonyma_detokenize`, `anonyma_check_policy`), resources and resource templates, with JSON Schema (draft 2020-12) |
+| `schema.ts`      | A validator for the subset of JSON Schema the declarations use, so arguments are checked against exactly what is advertised                                                         |
+| `server.ts`      | `createMcpServer()`: transport-agnostic `handle()` for one JSON-RPC message; `serveStdio()` for newline-delimited streams                                                           |
+
+Values behind tokens stay in server memory, per session. `anonyma_detokenize` is offered only when
+the operator sets `allowDetokenize`, `anonyma_detect` reports positions rather than text, the model
+cannot select strategies that need key material, and with an audit logger each call is recorded
+without its content.
+
+### 4.21 `middleware/` — HTTP Payload Scrubbing
+
+Exported as `"anonyma/middleware"`, `"anonyma/middleware/express"` and `"anonyma/middleware/hono"`.
+`core.ts` holds `createScrubber()`, which sanitizes JSON values, text, bodies by content type and
+Fetch API responses, and records what it did in the audit log. `express.ts` and `hono.ts` adapt it;
+they are typed against the few members of the request, response and context objects they use, so
+neither depends on its framework.
+
+### 4.22 `internal/` — Shared Helpers
+
+Not exported. `webcrypto.ts` finds the Web Crypto API (the global, or `node:crypto` on Node.js 18),
+`encoding.ts` converts between bytes and UTF-8, hex, base64url and Crockford base32 without
+`Buffer`, and `json-numbers.ts` parses and writes JSON without rounding numbers a JavaScript number
+cannot hold.
 
 ---
 
@@ -348,7 +538,7 @@ The engine iterates `Object.entries(DETECTOR_REGISTRY)` filtered by `enabledCate
 (value: string, options: StrategyOptions) => Promise<string>;
 ```
 
-The core engine calls strategies via `applyStrategy` (sync) or `applyStrategyAsync` (async), keyed by the `strategy` discriminant on the `StrategyOptions` union. Unknown strategy names throw `UnsupportedStrategyError`.
+The core engine calls strategies via `applyStrategySync()`, keyed by the `strategy` discriminant on the `StrategyOptions` union; `anonymizeAsync()` awaits `hash` itself. Unknown strategy names throw `UnsupportedStrategyError`. `applyStrategySync()` replaces a `hash` rule with a seeded pseudonym and redacts values whose rule is `tokenize`, `encrypt` or `synthesize`, with a warning. The span engine has a replacer for every strategy (`engine/replacers.ts`).
 
 ### Strategy Selection Priority
 
@@ -380,7 +570,7 @@ For any given PII match, the strategy is resolved in this order (highest priorit
 3. Merge custom pattern matches (same filtering)
 
 4. Run all matches through overlap deduplication:
-   a. Sort by start index ascending; ties broken by length descending
+   a. Sort by start index ascending; ties broken by confidence descending
    b. Walk sorted list keeping a "cursor" at the end of last accepted match
    c. Skip any match whose start < cursor (overlapping)
    d. Accept match, advance cursor to match.end
@@ -479,28 +669,34 @@ Key properties:
 
 Presets are loaded lazily via `getPreset(name)` which looks up `PRESET_REGISTRY[name]`. The registry is a plain `Record<CompliancePreset, PresetConfig>` — no dynamic imports or code splitting.
 
-When a preset is active, the engine:
+When a preset is active, `anonymize()`:
 
-1. Restricts detection to `preset.categories` (unless `enabledCategories` further narrows it).
+1. Restricts detection to `preset.categories`; `enabledCategories` is ignored.
 2. Applies `preset.defaultStrategy` to all matches.
 3. Applies `preset.rules` per-category overrides on top.
-4. User-supplied `options.rules` still take highest precedence within the preset.
+4. Gives user-supplied `options.rules` the highest precedence; as without a preset, only the categories they list are then processed.
+
+A `PipelineSpec` for the span engine takes a preset as a starting point: its `categories`,
+`defaultStrategy` and `rules` override the preset's, so a pipeline can add categories to a preset.
 
 ---
 
 ## 11. Plugin Architecture
 
-The `AnonymaPlugin` interface enables third-party extensions:
+The `AnonymaPlugin` interface describes a third-party extension:
 
 ```ts
 interface AnonymaPlugin {
-  detectors?: Partial<DetectorRegistry>;
+  name: string;
+  detectors?: Record<string, Detector>;
   strategies?: Record<string, StrategyFunction>;
   validators?: Record<string, ValidatorFunction>;
 }
 ```
 
-Plugins are applied at `createAnonymizer()` time and their entries extend (not replace) the built-in registries.
+It is declared only: `createAnonymizer()` accepts a `plugins` option but does not apply it. The
+working extension points are `customDetectors` and `customPatterns` in the 1.x API, and span
+detectors and replacers of your own in the span engine (see [Extension Points](#16-extension-points)).
 
 ---
 
@@ -519,16 +715,35 @@ Plugins are applied at `createAnonymizer()` time and their entries extend (not r
 ### Entry Points & Output Files
 
 ```
-tsup.config.ts defines 6 entry points:
-  src/index.ts          → dist/index.js (ESM) + dist/index.cjs (CJS) + .d.ts
-  src/schemas.ts        → dist/schemas.js + dist/schemas.cjs + .d.ts
-  src/validators.ts     → dist/validators.js + dist/validators.cjs + .d.ts
-  src/crypto.ts         → dist/crypto.js + dist/crypto.cjs + .d.ts
-  src/stream.ts         → dist/stream.js + dist/stream.cjs + .d.ts
-  src/detectors/index.ts→ dist/detectors/index.js + .cjs + .d.ts
+tsup.config.ts defines 15 entry points, each built to .js (ESM), .cjs (CJS), .d.ts and .d.cts:
+  src/index.ts               → dist/index.*
+  src/schemas.ts             → dist/schemas.*
+  src/validators.ts          → dist/validators.*
+  src/crypto.ts              → dist/crypto.*
+  src/stream.ts              → dist/stream.*
+  src/detectors/index.ts     → dist/detectors/index.*
+  src/engine/index.ts        → dist/engine/index.*
+  src/vault/index.ts         → dist/vault/index.*
+  src/audit/index.ts         → dist/audit/index.*
+  src/compliance/index.ts    → dist/compliance/index.*
+  src/ai/index.ts            → dist/ai/index.*
+  src/mcp/index.ts           → dist/mcp/index.*
+  src/middleware/index.ts    → dist/middleware/index.*
+  src/middleware/express.ts  → dist/middleware/express.*
+  src/middleware/hono.ts     → dist/middleware/hono.*
 ```
 
-The `package.json` `exports` map routes each subpath to the correct file with proper `import`/`require` conditions and `.d.ts` type declarations.
+The `package.json` `exports` map routes each subpath to the correct file with proper `import`/`require` conditions and type declarations.
+
+Code shared between entry points is emitted once, as `chunk-*.js` and `chunk-*.cjs` files
+(`splitting: true`). Every entry point therefore uses the same module instances: one
+`AnonymaError` class, one copy of each detector.
+
+Before a release, CI checks the build from the outside: `publint` and `are-the-types-wrong`
+validate the package and its type resolution, `scripts/check-size.mjs` holds each entry point to
+the budget in `scripts/size-budget.json`, and `scripts/smoke.mjs` installs the packed tarball into
+an empty project and uses every entry point through `import` and `require` on Node.js 18, 20, 22,
+24 and 26.
 
 ### Tree-Shaking
 
@@ -555,7 +770,18 @@ tests/
 ├── strategies-v2.test.ts  # Edge cases for strategies
 ├── stream.test.ts         # TransformStream wrappers
 ├── tokenize.test.ts       # tokenize/detokenize round-trips
-└── validators.test.ts     # All checksum validator functions
+├── validators.test.ts     # All checksum validator functions
+├── errors-v3.test.ts      # Error classes of the subpath modules, through the public entry points
+├── version.test.ts        # package.json, the code and the changelog agree on the version
+├── engine/                # Pipelines, detectors, overlap, replacers, chunked streams,
+│                          # precision floors and property-based tests (fast-check)
+├── vault/                 # Key ring, session and keyed tokenizers
+├── audit/                 # Logger, sinks and chain verification
+├── compliance/            # Profiles, citations, policies, erasure, presets against profiles
+├── ai/                    # JSON sanitizer, LLM guard, stream restoration
+├── mcp/                   # MCP server and declarations
+├── middleware/            # Scrubber, and the adapters against real Express and Hono apps
+└── fixtures/corpus/       # Labelled corpora for email, SSN, IBAN, IPv4, IPv6 and cards
 ```
 
 ### Vitest Configuration
@@ -564,11 +790,11 @@ tests/
 coverage: {
   provider: "v8",
   thresholds: { lines: 90, functions: 90, branches: 85, statements: 90 },
-  exclude: ["src/index.ts", "src/schemas.ts", "src/types.ts"],
+  exclude: ["src/index.ts", "src/schemas.ts", "src/types.ts", "src/**/types.ts"],
 }
 ```
 
-`src/index.ts` and `src/types.ts` are excluded because they contain only re-exports and zero-runtime type declarations respectively. `src/schemas.ts` is excluded because it depends on the optional `zod` peer.
+`src/index.ts` and the `types.ts` files are excluded because they contain only re-exports and zero-runtime type declarations respectively. `src/schemas.ts` is excluded because it depends on the optional `zod` peer.
 
 ### ESM Resolver Plugin
 
@@ -580,7 +806,7 @@ Vitest cannot natively resolve TypeScript files referenced with `.js` extensions
 
 ### AES-256-GCM Encryption
 
-- Uses the **Web Crypto API** (`globalThis.crypto.subtle`) — no third-party crypto library.
+- Uses the **Web Crypto API** — no third-party crypto library. `internal/webcrypto.ts` finds it: the global `crypto` where the runtime defines one, `node:crypto`'s `webcrypto` on Node.js 18.
 - Each `encrypt()` call generates a fresh **12-byte random IV** via `crypto.getRandomValues()`.
 - Key derivation: **PBKDF2 + SHA-256 + 100,000 iterations** from passphrase strings.
 - Raw key import: supports 16-byte (AES-128) and 32-byte (AES-256) `Uint8Array` keys.
@@ -597,6 +823,27 @@ Vitest cannot natively resolve TypeScript files referenced with `.js` extensions
 - Tokens are deterministic within a single `tokenize()` call but not across calls (counters reset).
 - The `mapping` Map should be treated as a secret: it contains the original PII values.
 - `sanitizeForLLM` / `restoreFromLLM` is designed exclusively for server-side use — the mapping must never be sent to the client or the LLM.
+
+### Key Ring and Tokens
+
+- Each key version holds one secret: raw material (at least 32 bytes) or a passphrase stretched
+  with PBKDF2-HMAC-SHA-256 (600,000 iterations by default, never fewer than 100,000) with a random
+  32-byte salt per version.
+- Keys are derived with HKDF-SHA-256; the `info` binds each key to its purpose and namespace.
+  Derived keys are non-extractable `CryptoKey` objects.
+- The manifest is authenticated with HMAC-SHA-256 under the active version, and an edited
+  manifest (another active version, a lower iteration count, another salt) is refused.
+- Keyed tokens are HMAC-SHA-256 identifiers; vault records and sealed tokens use AES-256-GCM. The
+  sealed scheme derives its nonce from the value with a keyed PRF, so it is deterministic; rotate
+  a key version well before 2^32 distinct values have been sealed under it.
+
+### Audit Chain
+
+- Records are canonical JSON; each hash covers the record and the previous hash, starting from
+  `GENESIS_HASH`. With a key the hash is an HMAC-SHA-256, so rewriting the log needs the key;
+  without one, store `head()` where the log writer cannot reach it.
+- Records have no member for values, and caller-supplied strings are blanked when they look like
+  personal data.
 
 ### Input Validation
 
@@ -619,18 +866,30 @@ All public functions validate their arguments and throw `ValidationError` with a
 
 Overlap deduplication adds an O(M log M) sort over matches but M is typically small.
 
+The span engine is linear in the size of its input: detectors with a prefilter skip texts that
+cannot contain a hit, overlap resolution sorts the hits once, and the output is assembled in a
+single pass. The chunked transformer adds no more than `window + batch` characters of lag. The CI
+`performance` job runs the benchmark and fails when an engine operation stops scaling linearly
+(`scripts/check-bench.mjs` limits the log-log slope of time against input size to 1.15).
+
 ---
 
 ## 16. Extension Points
 
-| Extension Point           | Mechanism                                  | Type                                       |
-| ------------------------- | ------------------------------------------ | ------------------------------------------ | ---------- |
-| Custom PII patterns       | `customPatterns` in `AnonymizeOptions`     | `CustomPattern[]`                          |
-| Replace built-in detector | `customDetectors` in `AnonymizeOptions`    | `Partial<DetectorRegistry>`                |
-| Additional categories     | `customDetectors` + custom string category | `Record<string, Detector>`                 |
-| Skip known-safe values    | `allowlist` in `AnonymizeOptions`          | `(string                                   | RegExp)[]` |
-| Field-level control       | `anonymizeRecord(obj, FieldRuleMap)`       | dot-notation paths                         |
-| Full plugin               | `createAnonymizer({ plugins })`            | `AnonymaPlugin[]`                          |
-| Runtime validation        | `"anonyma/schemas"` + Zod                  | `AnonymizeOptionsSchema.parse()`           |
-| AI tool definitions       | `"anonyma/schemas"` + `toJsonSchema()`     | JSON Schema / OpenAI function              |
-| Streaming ingestion       | `createAnonymizeStream()`                  | `TransformStream<string, AnonymizeResult>` |
+| Extension Point           | Mechanism                                              | Type                                       |
+| ------------------------- | ------------------------------------------------------ | ------------------------------------------ |
+| Custom PII patterns       | `customPatterns` in `AnonymizeOptions`                 | `CustomPattern[]`                          |
+| Replace built-in detector | `customDetectors` in `AnonymizeOptions`                | `Partial<DetectorRegistry>`                |
+| Additional categories     | a span detector with a category of its own (engine)    | `SpanDetector` (`Category` is any string)  |
+| Skip known-safe values    | `allowlist`, `allowlistPatterns` in `AnonymizeOptions` | `string[]`, `RegExp[]`                     |
+| Field-level control       | `anonymizeRecord(obj, FieldRuleMap)`                   | dot-notation paths                         |
+| Runtime validation        | `"anonyma/schemas"` + Zod                              | `AnonymizeOptionsSchema.parse()`           |
+| AI tool definitions       | `"anonyma/schemas"` tool definitions; `"anonyma/mcp"`  | OpenAI function / MCP tool (JSON Schema)   |
+| Streaming ingestion       | `createAnonymizeStream()`                              | `TransformStream<string, AnonymizeResult>` |
+| Span detector             | `defineDetector()`, `defineRegexDetector()`            | `SpanDetector`                             |
+| Replacement               | a function in a `ReplacementPlan`                      | `Replacer`                                 |
+| Pipeline as data          | `compilePipeline(spec, dependencies)`                  | `PipelineSpec`, `CompileDependencies`      |
+| Token storage             | an implementation of the vault interface               | `TokenVault`                               |
+| Tokenization scheme       | an implementation of the provider interface            | `TokenizationProvider`                     |
+| Audit destination         | an implementation of the sink interface                | `AuditSink`                                |
+| Organisation policy       | a policy document, checked by `parsePolicy()`          | `PolicyDocument`                           |
