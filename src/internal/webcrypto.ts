@@ -18,8 +18,8 @@ async function importNodeWebCrypto(): Promise<Crypto | undefined> {
     const specifier = "node:crypto";
     const mod = (await import(/* @vite-ignore */ specifier)) as { webcrypto?: Crypto };
     return mod.webcrypto;
-    /* v8 ignore next 3 -- only reachable on a runtime that has neither a global crypto nor node:crypto */
   } catch {
+    // A runtime that has neither a global crypto nor node:crypto.
     return undefined;
   }
 }
@@ -36,7 +36,6 @@ export async function webCrypto(): Promise<Crypto> {
 
   nodeFallback ??= importNodeWebCrypto();
   const fallback = await nodeFallback;
-  /* v8 ignore next -- see importNodeWebCrypto */
   if (fallback?.subtle === undefined) throw new CryptoNotAvailableError();
   return fallback;
 }

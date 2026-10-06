@@ -271,9 +271,11 @@ export function createSessionTokenizer(options: SessionTokenizerOptions = {}): S
       v: 1,
       format,
       ...(tag !== undefined ? { tag } : {}),
-      entries: [...values].map(
-        ([token, value]) => [token, value, categories.get(token) ?? ""] as const,
-      ),
+      entries: [...values].map(([token, value]) => {
+        /* v8 ignore next -- register() and forget() keep both maps in step */
+        const category = categories.get(token) ?? "";
+        return [token, value, category] as const;
+      }),
       counters: [...counters],
     };
   }

@@ -313,3 +313,75 @@ describe("vault/session", () => {
     });
   });
 });
+
+describe("vault/session", () => {
+  describe("createSessionTokenizer", () => {
+    it("continues from a snapshot without counters, or with counters of unused prefixes", () => {
+      const entries = [["[EMAIL_0007]", "alice@example.com", "email"]] as const;
+      const withoutCounters = createSessionTokenizer({
+        snapshot: { v: 1, format: "bracket", entries },
+      });
+      expect(withoutCounters.tokenize("bob@example.com", { category: "email" })).toBe(
+        "[EMAIL_0008]",
+      );
+      const withCounters = createSessionTokenizer({
+        snapshot: { v: 1, format: "bracket", entries, counters: [["PHONE", 4]] },
+      });
+      expect(withCounters.tokenize("555-867-5309", { category: "phone" })).toBe("[PHONE_0005]");
+      expect(withCounters.tokenize("bob@example.com", { category: "email" })).toBe("[EMAIL_0008]");
+      const malformed = { v: 1, format: "bracket", entries, counters: ["EMAIL"] } as unknown as {
+        v: 1;
+        format: "bracket";
+        entries: typeof entries;
+      };
+      expect(() => createSessionTokenizer({ snapshot: malformed })).toThrow(/malformed counters/);
+    });
+
+    it("keeps the keys of a value or a number that a later entry of a snapshot shares", () => {
+      const sharedValue = createSessionTokenizer({
+        snapshot: {
+          v: 1,
+          format: "bracket",
+          entries: [
+            ["[EMAIL_0001]", "alice@example.com", "email"],
+            ["[EMAIL_0002]", "alice@example.com", "email"],
+          ],
+        },
+      });
+      expect(sharedValue.forget("[EMAIL_0001]")).toBe(true);
+      // The value still has the token of the later entry.
+      expect(sharedValue.tokenize("alice@example.com", { category: "email" })).toBe("[EMAIL_0002]");
+
+      const sharedNumber = createSessionTokenizer({
+        lenient: true,
+        snapshot: {
+          v: 1,
+          format: "bracket",
+          entries: [
+            ["[EMAIL_0001]", "alice@example.com", "email"],
+            ["[EMAIL_1]", "bob@example.com", "email"],
+          ],
+        },
+      });
+      expect(sharedNumber.forget("[EMAIL_0001]")).toBe(true);
+      // A rewritten spelling of number 1 still resolves, to the entry that holds it now.
+      expect(sharedNumber.restore("to [email_01]").text).toBe("to bob@example.com");
+    });
+  });
+
+  describe("restoreTokens", () => {
+    it("returns the text as it was when a provider without restore() resolves no token", async () => {
+      const { restore: _unused, ...provider } = createSessionTokenizer();
+      expect(await restoreTokens("nothing to restore", provider)).toEqual({
+        text: "nothing to restore",
+        restored: 0,
+        unresolved: [],
+      });
+      expect(await restoreTokens("to [EMAIL_0009]", provider)).toEqual({
+        text: "to [EMAIL_0009]",
+        restored: 0,
+        unresolved: ["[EMAIL_0009]"],
+      });
+    });
+  });
+});

@@ -90,6 +90,7 @@ export function detectBankAccount(text: string): PiiMatch[] {
   while ((m = swiftRe.exec(text)) !== null) {
     // Basic SWIFT validity: country code must be valid 2-letter ISO
     const countryCode = m[0].slice(4, 6);
+    /* v8 ignore else -- SWIFT_BIC_PATTERN already requires two letters at this position */
     if (/^[A-Z]{2}$/.test(countryCode)) {
       push(m[0], m.index, m.index + m[0].length, 0.82);
     }

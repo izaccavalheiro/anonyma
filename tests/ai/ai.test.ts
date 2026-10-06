@@ -1,7 +1,12 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import { AsyncStrategyError, ValidationError } from "../../src/errors.js";
-import { compilePipeline } from "../../src/engine/index.js";
+import {
+  compilePipeline,
+  createPipeline,
+  defineRegexDetector,
+  redactWith,
+} from "../../src/engine/index.js";
 import {
   contentLens,
   createLlmGuard,
@@ -1348,6 +1353,127 @@ describe("ai/guard", () => {
       });
       await reader.cancel("enough");
       expect(cancelled).toBe("enough");
+    });
+  });
+});
+
+describe("ai/json", () => {
+  describe("sanitizeJson", () => {
+    it("copies a skipped member as it is: shared objects, holes and objects that are not plain", () => {
+      const shared = { email: "alice@example.com" };
+      const holes: number[] = [];
+      holes[0] = 1;
+      holes[2] = 3;
+      const date = new Date(0);
+      const input = { meta: { a: shared, b: shared, holes, date }, email: "bob@example.com" };
+      const { value, replaced } = sanitizeJson(input, { pipeline, skipKeys: ["meta"] });
+      expect(replaced).toBe(1);
+      expect(value.email).toBe("[REDACTED]");
+      expect(value.meta).not.toBe(input.meta);
+      expect(value.meta.a).toEqual(shared);
+      expect(value.meta.a).not.toBe(shared);
+      expect(value.meta.b).toBe(value.meta.a);
+      expect(value.meta.holes).toHaveLength(3);
+      expect(1 in value.meta.holes).toBe(false);
+      expect(value.meta.date).toBe(date);
+    });
+
+    it("applies a key rule to every member that has the key", () => {
+      const { value } = sanitizeJson([{ password: "hunter2" }, { password: "letmein" }], {
+        pipeline,
+        keyRules: [{ match: "password", category: "credential" }],
+      });
+      expect(value).toEqual([{ password: "[REDACTED]" }, { password: "[REDACTED]" }]);
+    });
+
+    it("counts the digits of a negative number without its sign", () => {
+      const digits = createPipeline({
+        detectors: [defineRegexDetector({ category: "number", pattern: /\d+/ })],
+        replace: { fallback: redactWith() },
+      });
+      const { value } = sanitizeJson(
+        { short: -12345678901, long: -123456789012 },
+        { pipeline: digits },
+      );
+      expect(value).toEqual({ short: -12345678901, long: "-[REDACTED]" });
+    });
+
+    it("swallows the rejection of an asynchronous replacement it refuses", async () => {
+      const rejecting = createPipeline({
+        detectors: [],
+        replace: { fallback: () => Promise.reject(new Error("vault offline")) },
+      });
+      expect(() =>
+        sanitizeJson(
+          { password: "hunter2" },
+          { pipeline: rejecting, keyRules: [{ match: "password", category: "credential" }] },
+        ),
+      ).toThrow(AsyncStrategyError);
+      // The rejection has been handled by now; an unhandled one would fail the run.
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+  });
+});
+
+describe("ai/restore", () => {
+  describe("createRestoreTransformer", () => {
+    it("emits a whole token before the cut at once for a provider without a partial pattern", async () => {
+      const session = createSessionTokenizer();
+      const email = session.tokenize("alice@example.com", { category: "email" });
+      const { partialTokenPattern: _unused, ...provider } = session;
+      const restorer = createRestoreTransformer(provider);
+      const tail = "x".repeat(100);
+      const first = await restorer.push(`${email} ${tail}`);
+      expect(first.startsWith("alice@example.com x")).toBe(true);
+      expect(first + (await restorer.flush())).toBe(`alice@example.com ${tail}`);
+    });
+  });
+
+  describe("textDeltaLens", () => {
+    it("identifies the block of a text delta by its id, and no block without one", () => {
+      expect(textDeltaLens.block?.({ type: "text-delta", id: "a", delta: "x" })).toBe("a");
+      expect(textDeltaLens.block?.({ type: "text-delta", delta: "x" })).toBe(undefined);
+    });
+  });
+});
+
+describe("ai/guard", () => {
+  describe("toLanguageModelMiddleware", () => {
+    it("drops a text delta whose text is all held back until the token is complete", async () => {
+      const middleware = toLanguageModelMiddleware(createLlmGuard());
+      const params = await middleware.transformParams({
+        params: { prompt: "Mail alice@example.com" },
+      });
+      const parts = [
+        { type: "text-delta", id: "0", delta: "Sent to " },
+        { type: "text-delta", id: "0", delta: "[EMAIL" },
+        { type: "text-delta", id: "0", delta: "_0001]." },
+        { type: "finish" },
+      ];
+      const { stream } = await middleware.wrapStream({
+        params,
+        doStream: () =>
+          Promise.resolve({
+            stream: new ReadableStream<unknown>({
+              start(controller): void {
+                for (const part of parts) controller.enqueue(part);
+                controller.close();
+              },
+            }),
+          }),
+      });
+      const seen: unknown[] = [];
+      const reader = stream.getReader();
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        seen.push(value);
+      }
+      expect(seen).toEqual([
+        { type: "text-delta", id: "0", delta: "Sent to " },
+        { type: "text-delta", id: "0", delta: "alice@example.com." },
+        { type: "finish" },
+      ]);
     });
   });
 });

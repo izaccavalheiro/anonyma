@@ -31,7 +31,8 @@ function createMarker(): string {
   const random = new Uint8Array(MARKER_LENGTH);
   const source = (globalThis as { crypto?: Crypto }).crypto;
   if (source !== undefined) source.getRandomValues(random);
-  /* v8 ignore next 3 -- Node.js 18 scripts have no global crypto; the marker need not be secret */ else {
+  else {
+    // Node.js 18 scripts have no global crypto; the marker need not be secret.
     for (let i = 0; i < MARKER_LENGTH; i++) random[i] = Math.floor(Math.random() * 256);
   }
   let marker = "";

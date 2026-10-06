@@ -324,6 +324,8 @@ describe("vault/keyring", () => {
         { ...manifest, versions: [{ ...k1, state: "bogus" }, p2] },
         { ...manifest, versions: [{ ...k1, salt: "" }, p2] },
         { ...manifest, versions: [{ ...k1, salt: "AA" }, p2] },
+        { ...manifest, versions: [{ ...k1, salt: 7 }, p2] },
+        { ...manifest, versions: [k1, { ...p2, state: "retired" }] },
         { ...manifest, versions: [{ ...k1, kdf: "bogus-kdf" }, p2] },
         { ...manifest, versions: [{ ...k1, iterations: 100_000 }, p2] },
         { ...manifest, versions: [{ ...k1, createdAt: "today" }, p2] },

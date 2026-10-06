@@ -169,6 +169,7 @@ function resolveCover(text: string, candidates: readonly Candidate[]): Resolved[
     cluster.push(candidate);
     clusterEnd = Math.max(clusterEnd, candidate.end);
   }
+  /* v8 ignore else -- resolveSpans() passes at least one candidate */
   if (cluster.length > 0) resolveCluster(text, cluster, clusterStart, clusterEnd, out);
 
   return out.sort((a, b) => a.start - b.start);

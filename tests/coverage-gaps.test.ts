@@ -1,7 +1,7 @@
 /**
- * Additional tests to achieve close to 100% code coverage.
- * This file targets specific uncovered branches and statements
- * identified via coverage analysis.
+ * Additional tests that keep code coverage at 100%.
+ * This file targets specific branches and statements that the other
+ * test files do not reach, identified via coverage analysis.
  */
 
 import { describe, it, expect, vi, afterEach } from "vitest";
@@ -32,13 +32,15 @@ import { detectNationalId } from "../src/detectors/national-id.js";
 import { detectBankAccount } from "../src/detectors/bank-account.js";
 import { detectLicensePlate } from "../src/detectors/license-plate.js";
 import { detectApiKey } from "../src/detectors/api-key.js";
-import { detectCreditCard } from "../src/detectors/credit-card.js";
+import { detectCreditCard, detectCreditCardAggressive } from "../src/detectors/credit-card.js";
 import { detectIban } from "../src/detectors/iban.js";
 import { detectPhone } from "../src/detectors/phone.js";
 import { detectCryptocurrency } from "../src/detectors/cryptocurrency.js";
 import { detectCaseNumber } from "../src/detectors/case-number.js";
 import { detectCompanyRegistration } from "../src/detectors/company-registration.js";
 import { detectName, detectNameAggressive } from "../src/detectors/name.js";
+import { detectVinAggressive } from "../src/detectors/vin.js";
+import { anonymizeRecord } from "../src/anonymize.js";
 
 // Restore any stubbed globals after each test
 afterEach(() => {
@@ -1107,5 +1109,114 @@ describe("detectIban() — IBAN length > 34 (line 28 true branch)", () => {
     const matches = detectIban(longIban);
     // isValidIban returns false (length > 34), so no match is pushed
     expect(matches.length).toBe(0);
+  });
+});
+
+// =============================================================================
+// src/anonymize.ts — anonymizeRecord() with a rule map that changes while it is applied
+// =============================================================================
+describe("anonymizeRecord() — a rule map that changes while it is applied", () => {
+  it("does not apply a rule that applying an earlier rule removed from the map", () => {
+    const rules: Parameters<typeof anonymizeRecord>[1] = {
+      email: {
+        get strategy() {
+          delete (rules as Record<string, unknown>)["phone"];
+          return { strategy: "redact" as const };
+        },
+      },
+      phone: { strategy: { strategy: "redact" } },
+    };
+    expect(anonymizeRecord({ email: "alice@example.com", phone: "555-867-5309" }, rules)).toEqual({
+      email: "[REDACTED]",
+      phone: "555-867-5309",
+    });
+  });
+});
+
+// =============================================================================
+// Detectors — values that lack the context or the checksum they need
+// =============================================================================
+describe("detectors — values without the context or the checksum they need", () => {
+  it("detectHealthInsurance() reports an EHIC-shaped value only after a keyword", () => {
+    expect(detectHealthInsurance("Reference AB123456")).toEqual([]);
+    expect(detectHealthInsurance("EHIC AB123456")).toHaveLength(1);
+  });
+
+  it("detectMedicalRecord() and detectPrescription() ignore a DEA number with a wrong check digit", () => {
+    expect(detectMedicalRecord("AB1234567")).toEqual([]);
+    expect(detectPrescription("AB1234567")).toEqual([]);
+    expect(detectMedicalRecord("AB1234563")).toHaveLength(1);
+    expect(detectPrescription("AB1234563")).toHaveLength(1);
+  });
+
+  it("detectTaxId() reports an ABN-shaped number only after a keyword", () => {
+    expect(detectTaxId("Reference 51 824 753 556")).toEqual([]);
+    expect(detectTaxId("ABN 51 824 753 556")).toHaveLength(1);
+  });
+
+  it("detectTrackingNumber() reports long numeric tracking numbers only after a keyword", () => {
+    expect(detectTrackingNumber("Reference 12345678901234567890")).toEqual([]);
+    expect(detectTrackingNumber("Reference 123456789012")).toEqual([]);
+    expect(detectTrackingNumber("Tracking number 12345678901234567890")).not.toEqual([]);
+    expect(detectTrackingNumber("Tracking number 123456789012")).not.toEqual([]);
+  });
+});
+
+// =============================================================================
+// src/detectors/vin.ts — detectVinAggressive() with a VIN that passes the checksum
+// =============================================================================
+describe("detectVinAggressive() — a VIN that passes the checksum", () => {
+  it("reports it once, with the confidence of the strict detector", () => {
+    expect(detectVinAggressive("VIN: 1HGBH41JXMN109186")).toEqual([
+      { category: "vin", value: "1HGBH41JXMN109186", start: 5, end: 22, confidence: 0.95 },
+    ]);
+  });
+});
+
+// =============================================================================
+// src/detectors/credit-card.ts — masked numbers next to full ones
+// =============================================================================
+describe("detectCreditCardAggressive() — masked numbers next to full ones", () => {
+  const values = (text: string): string[] =>
+    detectCreditCardAggressive(text)
+      .map((match) => match.value)
+      .sort();
+
+  it("reports a masked number before or after a full one", () => {
+    expect(values("4111 1111 1111 1111, then ****-****-****-1234")).toEqual([
+      "****-****-****-1234",
+      "4111 1111 1111 1111",
+    ]);
+    expect(values("****-****-****-1234, then 4111 1111 1111 1111")).toEqual([
+      "****-****-****-1234",
+      "4111 1111 1111 1111",
+    ]);
+  });
+
+  it("does not report a masked number that overlaps a full one", () => {
+    expect(values("****-****-****-4111 1111 1111 1111")).toEqual(["4111 1111 1111 1111"]);
+  });
+});
+
+// =============================================================================
+// src/detectors/name.ts — names that two patterns find in overlapping places
+// =============================================================================
+describe("detectName() — overlapping matches of different patterns", () => {
+  it("keeps the earlier of two overlapping names", () => {
+    // The greeting pattern reads "Dr Alice Smith"; the title pattern reads "Alice Smith" inside it.
+    const matches = detectName("Dear Dr Alice Smith, welcome.");
+    expect(matches).toHaveLength(1);
+    expect(matches[0]).toMatchObject({ start: 5, end: 19 });
+  });
+});
+
+// =============================================================================
+// src/strategies/synthesize.ts — letters of other scripts
+// =============================================================================
+describe("synthesize() — upper-case letters of other scripts", () => {
+  it("replaces them with upper-case letters", () => {
+    expect(synthesize("\u00c9COLE \u00dcnal", "custom-category")).toMatch(
+      /^[A-Z]{5} [A-Z][a-z]{3}$/,
+    );
   });
 });

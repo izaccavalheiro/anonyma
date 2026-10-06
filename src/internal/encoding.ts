@@ -75,6 +75,7 @@ export function decodeText(bytes: Uint8Array): string | undefined {
   if (bytes.length % 2 !== 1) return undefined;
   let out = "";
   for (let i = 1; i < bytes.length; i += 2) {
+    /* v8 ignore next -- the length is odd, so i and i + 1 are always in range */
     out += String.fromCharCode((bytes[i] ?? 0) | ((bytes[i + 1] ?? 0) << 8));
   }
   return out;

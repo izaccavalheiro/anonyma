@@ -656,3 +656,34 @@ describe("vault/sealed", () => {
     });
   });
 });
+
+describe("vault/keyed", () => {
+  describe("erasure", () => {
+    /** A vault whose records another process deletes between listing and deletion. */
+    const racing = (vault: TokenVault): TokenVault => ({ ...vault, delete: () => false });
+
+    it("does not count a record of the subject that was gone when it was deleted", async () => {
+      const vault = racing(createMemoryVault());
+      const tokenizer = createKeyedTokenizer({ keyring: await ringOf(), vault });
+      await tokenizer.tokenize("alice@example.com", { category: "email", subject: "customer-42" });
+      expect(await tokenizer.forgetSubject("customer-42")).toMatchObject({
+        method: "vault-delete",
+        erased: 0,
+        keyIds: [],
+      });
+    });
+
+    it("does not count a record of the shredded version that was gone when it was deleted", async () => {
+      const keyring = await ringOf();
+      const vault = racing(createMemoryVault());
+      const tokenizer = createKeyedTokenizer({ keyring, vault });
+      await tokenizer.tokenize("alice@example.com", { category: "email" });
+      await keyring.rotate({ id: "k2", material: raw(2) });
+      expect(await shredKey(keyring, "k1", vault)).toMatchObject({
+        method: "crypto-shred",
+        erased: 0,
+        keyIds: ["k1"],
+      });
+    });
+  });
+});

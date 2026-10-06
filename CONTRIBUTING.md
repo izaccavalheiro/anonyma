@@ -122,7 +122,7 @@ All PRs must satisfy these requirements before merge:
 
 - Every new code path requires at least one test in the `tests/` directory.
 - Tests live in `tests/` and use [Vitest](https://vitest.dev/).
-- Run the full suite: `npm run test:coverage` — maintain ≥ 90% coverage.
+- Run the full suite: `npm run test:coverage` — coverage must stay at 100%.
 
 ### Code Style
 

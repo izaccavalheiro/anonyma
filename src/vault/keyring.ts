@@ -109,6 +109,7 @@ async function importBase(
         name: "PBKDF2",
         hash: "SHA-256",
         salt,
+        /* v8 ignore next -- resolveIterations() gives every passphrase a count */
         iterations: iterations ?? DEFAULT_PBKDF2_ITERATIONS,
       },
       passphraseKey,
@@ -220,6 +221,7 @@ export async function createKeyRing(options: KeyRingOptions): Promise<KeyRing> {
     for (const info of infos) {
       const material = supplied.get(info.id);
       supplied.delete(info.id);
+      /* v8 ignore next -- readManifest() has checked that the salt decodes */
       const salt = fromBase64Url(info.salt) ?? new Uint8Array(0);
       if (info.state === "destroyed") {
         versions.set(info.id, { ...info, salt, iterations: info.iterations, base: undefined });
