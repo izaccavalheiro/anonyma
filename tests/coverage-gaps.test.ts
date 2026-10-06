@@ -1150,8 +1150,8 @@ describe("detectors — values without the context or the checksum they need", (
   });
 
   it("detectTaxId() reports an ABN-shaped number only after a keyword", () => {
-    expect(detectTaxId("Reference 51 824 753 556")).toEqual([]);
-    expect(detectTaxId("ABN 51 824 753 556")).toHaveLength(1);
+    expect(detectTaxId("Reference 12 345 678 901")).toEqual([]);
+    expect(detectTaxId("ABN 12 345 678 901")).toHaveLength(1);
   });
 
   it("detectTrackingNumber() reports long numeric tracking numbers only after a keyword", () => {
