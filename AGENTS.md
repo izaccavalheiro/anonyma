@@ -62,7 +62,7 @@ tests/fixtures/corpus/    # Labelled detector corpora used by tests/engine/preci
 2. **Strict TypeScript.** `tsconfig.json` uses `"strict": true` plus `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noImplicitOverride`. Every change must compile with `tsc --noEmit` without error.
 3. **No `any`.** Use proper type narrowing. Prefer `unknown` and type guards when the type cannot be determined statically.
 4. **Pure functions.** Detectors and strategies are pure, deterministic, and side-effect-free unless they require async crypto (hash, encrypt).
-5. **Coverage gates.** Vitest coverage thresholds are 90% lines/functions/statements and 85% branches. A PR that drops coverage below these gates must include new tests.
+5. **Coverage gates.** Vitest coverage thresholds are 100% for lines, functions, statements and branches. A PR that leaves code uncovered must include new tests; code that no input can reach carries a `v8 ignore` hint that says why (see Testing Conventions).
 6. **ESM-first with `.js` extensions.** Source imports use `.js` extensions even though the files are `.ts` — this is required by TypeScript `NodeNext` module resolution.
 
 ---
@@ -158,6 +158,18 @@ the tests. Do not bypass them with `--no-verify`.
 - For async tests (hash, encrypt), use `await` and mark the callback `async`.
 - Never mock internal modules; test through the public API as much as possible.
 - Add coverage-gap tests to `tests/coverage-gaps.test.ts` when covering difficult branches.
+- Do not rely on the property tests (`fast-check`) for coverage. Their inputs are random, so a
+  branch that only they reach is covered in some runs and not in others, and the gate fails at
+  random. Give every branch an example-based test.
+- Only code that no input can reach gets a hint, such as a `?? ""` fallback for a capture group
+  that always participates. Give the reason after `--`.
+  - `/* v8 ignore next */` before a statement, an object member, a call argument or a branch of
+    `?:` ignores that node; `/* v8 ignore if */` or `/* v8 ignore else */` before an `if` ignores
+    one of its branches. Vitest 4 reads these from the compiled code and applies them to the node
+    that starts right after the comment: a count (`next 3`) is not read, and a hint inside an
+    array literal, after `=` or `=>`, or inside a loop condition is lost in compilation.
+  - A `/* v8 ignore start */` … `/* v8 ignore stop */` pair ignores the source lines between
+    them, wherever they are.
 
 ---
 

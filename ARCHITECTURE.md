@@ -812,7 +812,7 @@ tests/
 ```ts
 coverage: {
   provider: "v8",
-  thresholds: { lines: 90, functions: 90, branches: 85, statements: 90 },
+  thresholds: { lines: 100, functions: 100, branches: 100, statements: 100 },
   exclude: ["src/index.ts", "src/schemas.ts", "src/types.ts", "src/**/types.ts"],
 }
 ```

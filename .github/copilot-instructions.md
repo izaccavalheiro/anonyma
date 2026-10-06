@@ -132,7 +132,7 @@ After creating the file:
 - Test at least: normal case, empty string, unicode/multibyte input, boundary values, and invalid inputs.
 - For async strategies: mark callback `async` and use `await expect(...)`.
 - Never mock internal modules; test through the public API surface.
-- Coverage gates: 90% lines/functions/statements, 85% branches.
+- Coverage gates: 100% lines/functions/statements/branches.
 
 ```ts
 describe("detectEmail()", () => {

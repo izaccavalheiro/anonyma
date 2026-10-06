@@ -433,3 +433,18 @@ describe("engine/compile", () => {
     });
   });
 });
+
+describe("engine/replacers", () => {
+  describe("compilePipeline", () => {
+    it("compiles an encrypt strategy into a pipeline whose ciphertext decrypt() restores", async () => {
+      const pipeline = compilePipeline(
+        { defaultStrategy: { strategy: "encrypt" } },
+        { encryption: { keyBytes } },
+      );
+      const { text } = await pipeline.transformAsync("mail alice@example.com");
+      const ciphertext = text.slice("mail ".length);
+      expect(ciphertext).toMatch(/^base64:/);
+      expect(await decrypt(ciphertext, { keyBytes })).toBe("alice@example.com");
+    });
+  });
+});

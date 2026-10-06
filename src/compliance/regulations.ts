@@ -863,6 +863,7 @@ export interface MatrixRow {
 
 function describeRequirement(requirement: ProtectionRequirement): string {
   const parts: string[] = [];
+  /* v8 ignore if -- no built-in profile requires an irreversible replacement yet */
   if (requirement.irreversible === true) parts.push("irreversible");
   if (requirement.notDerived === true) parts.push("not derived from the value");
   if (requirement.keyed === true) parts.push("keyed if derived from the value");

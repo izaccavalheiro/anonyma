@@ -358,6 +358,7 @@ export function createLlmGuard(options: LlmGuardOptions = {}): LlmGuard {
         const judge: Exempt = (name, object) =>
           skipMember(name, object === holder ? siblings : object);
         const [entry] = Object.entries(json(holder, parent, judge) as Record<string, unknown>);
+        /* v8 ignore next -- the copy of the holder keeps its one member, renamed or not */
         return entry ?? [key, undefined];
       };
 
@@ -660,7 +661,8 @@ export function toLanguageModelMiddleware(
         set: (part: unknown, text: string): unknown =>
           textDeltaLens.set(part as Record<string, unknown>, text),
         block: (part: unknown): string | undefined =>
-          isPlainObject(part) ? textDeltaLens.block?.(part) : undefined,
+          // Only asked about a part that get() found text in, which is a plain object.
+          isPlainObject(part) ? textDeltaLens.block?.(part) : /* v8 ignore next */ undefined,
       };
       // Held text is delivered before the next part without text, so nothing
       // arrives after the part that ends its block.
