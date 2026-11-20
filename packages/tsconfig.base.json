@@ -16,8 +16,8 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "paths": {
-      "anonyma": ["../dist/index.d.ts"],
-      "anonyma/*": ["../dist/*/index.d.ts"]
+      "anonyma": ["../dist/index.d.ts", "../src/index.ts"],
+      "anonyma/*": ["../dist/*/index.d.ts", "../src/*/index.ts"]
     }
   }
 }
