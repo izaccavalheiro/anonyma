@@ -113,7 +113,7 @@ function resolveModel(model: LanguageModel): LanguageModelObject {
   if (typeof model !== "string") return model;
   const configured = (globalThis as { AI_SDK_DEFAULT_PROVIDER?: DefaultProvider })
     .AI_SDK_DEFAULT_PROVIDER;
-  return (configured ?? (gateway as DefaultProvider)).languageModel(model);
+  return (configured ?? gateway).languageModel(model);
 }
 
 /**

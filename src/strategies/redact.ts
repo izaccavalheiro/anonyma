@@ -33,9 +33,6 @@ export function redact(value: string, options: RedactOptions = {}): string {
     throw new ValidationError("label", "must not be an empty string");
   }
 
-  // `value` is validated to be a string by TypeScript; no runtime check needed
-  // other than ensuring it is not undefined at the call-site.
-  void value; // explicitly acknowledge the parameter (pure function, input unused)
-
+  // The value itself is not needed: whatever it is, it becomes the label.
   return label;
 }
