@@ -29,6 +29,12 @@
  * const { text: sanitized, mapping } = sanitizeForLLM("Email alice@example.com");
  * const restored = restoreFromLLM(llmResponse, mapping);
  *
+ * // Tokens kept in a vault, restored later from any text
+ * import { InMemoryVault, restore } from "anonyma";
+ * const vault = new InMemoryVault();
+ * tokenize("Mail john@example.com", { vault }).text; // "Mail {{EMAIL_1}}"
+ * restore("Sent to {{EMAIL_1}}", vault).text;        // "Sent to john@example.com"
+ *
  * // Compliance presets
  * const { text } = anonymize("...", { preset: "hipaa" });
  *
@@ -59,6 +65,11 @@ export {
 
 // Reversible tokenization
 export { tokenize, tokenizeAsync, detokenize } from "./tokenize.js";
+
+// Token vaults: store tokens, restore them in any text
+export { InMemoryVault, restore } from "./vault/anonyma-vault.js";
+export type { AnonymaVault, RestoreOptions, SyncAnonymaVault } from "./vault/anonyma-vault.js";
+export type { RestoreResult } from "./vault/types.js";
 
 // LLM helpers
 export { sanitizeForLLM, restoreFromLLM } from "./llm.js";

@@ -133,6 +133,12 @@ assert.equal(
   await sealed.detokenize(await sealed.tokenize("bob@example.com", { category: "email" })),
   "bob@example.com",
 );
+// An AnonymaVault: {{CATEGORY_N}} tokens restored from any text.
+const root = await import("anonyma");
+const anonymaVault = new root.InMemoryVault();
+assert.equal(root.tokenize("Mail alice@example.com", { vault: anonymaVault }).text, "Mail {{EMAIL_1}}");
+assert.equal(root.restore("Sent to {{EMAIL_1}}.", anonymaVault).text, "Sent to alice@example.com.");
+assert.equal(vaultModule.InMemoryVault, root.InMemoryVault, "one InMemoryVault class across entry points");
 
 // 5. Audit: a chain that verifies and holds no personal data.
 const { createAuditLogger, memorySink, summarizeSpans, verifyAuditChain } = await import("anonyma/audit");
