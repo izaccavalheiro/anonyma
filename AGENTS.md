@@ -51,8 +51,24 @@ src/
 └── internal/             # Web Crypto lookup, byte encodings, lossless JSON numbers and allowlist matching shared by the modules above
 bench/                    # Benchmark (run.mjs), corpus generator, saved results
 scripts/                  # Repository checks run by CI: package smoke test, size budget, privacy invariants, benchmark scaling
+scripts/runtime/          # Feature checks of dist/ on Node.js, Bun, Deno and Cloudflare Workers (run.mjs, workerd.mjs)
 tests/fixtures/corpus/    # Labelled detector corpora used by tests/engine/precision.test.ts
 ```
+
+Companion packages live in `packages/` (npm workspaces). They are published
+separately, take `anonyma` as a peer dependency and are not covered by the
+zero-dependency rule; `src/` must never import from them.
+
+```
+packages/
+├── tsconfig.base.json    # Shared strict settings; maps `anonyma/*` to the root dist/*.d.ts
+├── vitest.shared.mjs     # Shared alias: `anonyma/*` resolves to the root dist/*.js
+├── vercel-ai/            # "@anonyma/vercel-ai" — AI SDK 7 middleware, withAnonyma(), generateText/streamText
+└── mcp/                  # "@anonyma/mcp" — MCP connection guard, anonyma-mcp-proxy, guardMcpClient()
+```
+
+The packages are type-checked and tested against the root build: run
+`npm run build` before `npm run typecheck:packages` or `npm run test:packages`.
 
 ---
 
@@ -90,6 +106,14 @@ npm run build
 
 # Everything CI runs, in one command
 npm run validate
+
+# The build on other runtimes (after npm run build)
+bun scripts/runtime/run.mjs
+deno run --no-config scripts/runtime/run.mjs
+npm install --no-save miniflare && npm run check:workerd
+
+# Companion packages (after npm run build)
+npm run typecheck:packages && npm run test:packages && npm run build:packages
 ```
 
 `npm install` also installs git hooks (Husky): staged files are linted and
@@ -204,6 +228,8 @@ Scope examples: `detectors`, `strategies`, `presets`, `stream`, `batch`, `llm`, 
 - The `tokenize` / `sanitizeForLLM` flow is designed so that the token map never leaves the server — validate this in any integration.
 - The key ring (`src/vault/keyring.ts`) derives a key per purpose and namespace with HKDF-SHA-256, stretches passphrases with PBKDF2-SHA-256 (600,000 iterations by default, never fewer than 100,000) and authenticates its manifest with HMAC-SHA-256. Derived keys are non-extractable. Do not weaken these parameters.
 - Hashing, encryption, HMAC and key derivation reach Web Crypto through `webCrypto()` in `src/internal/webcrypto.ts`, which falls back to `node:crypto` on Node.js 18. No other module imports `node:crypto`.
+- `src/` runs on Bun, Deno and Cloudflare Workers: use only the Web platform (no `Buffer`, `process` or `node:` imports). `scripts/runtime/checks.mjs` checks the build on each runtime; extend it when you add a feature that touches crypto or streams.
+- An `AnonymaVault` holds original values in clear. Keep restoration scoped to the vault of the conversation that issued the tokens.
 - Audit records (`src/audit/`) describe what was done, never the data; keep personal data out of every field you add to them.
 
 ---
