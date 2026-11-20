@@ -230,6 +230,21 @@ anonyma follows **Semantic Versioning (SemVer)**:
 - **Minor** (`x.MINOR.x`): New features, no breaking changes.
 - **Major** (`MAJOR.x.x`): Breaking API changes.
 
+Widening a type that the library returns (a new member of a union in a result)
+is a minor change; say so in the changelog, since an exhaustive `switch` over it
+needs a new case. Removing or narrowing anything public is a major change.
+
+The companion packages in `packages/` are versioned independently of
+`anonyma`, each with its own `CHANGELOG.md`:
+
+- While a package is at `0.x`, a minor version may change its API and a patch
+  version may not.
+- A package names the lowest `anonyma` it needs as a caret peer range
+  (`^1.2.0`). Raise it when the package starts relying on a newer release, and
+  release that `anonyma` first.
+- A change to `anonyma` that a package depends on goes into the `anonyma`
+  changelog; the package's changelog records the new peer range.
+
 ---
 
 ## Releasing
@@ -247,6 +262,11 @@ Releases are published by GitHub Actions, never from a local machine.
    changelog section, the tarball and an SBOM. A version with a prerelease
    suffix (`1.2.0-beta.0`) is published under the `next` dist-tag, any other
    under `latest`.
+
+The `Release` workflow publishes `anonyma` only. Publishing `@anonyma/vercel-ai`
+and `@anonyma/mcp` needs the `@anonyma` organisation on npm and a trusted
+publisher configured for each package; until that is set up, their versions are
+recorded in their changelogs but not published.
 
 npm trusts the `Release` workflow as a publisher (trusted publishing through
 OpenID Connect), so there is no npm token to store or rotate. Running the

@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] — 2026-11-20
+
+Minor release: token vaults, edge runtimes, and companion packages for the Vercel AI SDK and MCP.
+Everything is additive or a fix. One type is wider: `SessionSnapshot.format` (and `TokenFormat`)
+now include `"brace"`, so an exhaustive `switch` over a snapshot's format needs a case for it.
+The new packages, `@anonyma/vercel-ai` 0.1.0 and `@anonyma/mcp` 0.1.0, are versioned on their
+own and require `anonyma` ^1.2.0.
+
+### Added
+
+- **Token vaults.** `AnonymaVault` — any object with `store(key, value)` and `retrieve(key)`,
+  synchronous or asynchronous — `InMemoryVault`, and `restore(text, vault)`, exported from
+  `"anonyma"` and `"anonyma/vault"`. `restore()` scans once and matches whole tokens, so
+  `{{PERSON_1}}` is never found inside `{{PERSON_10}}`, and restored values are not scanned again.
+- **`tokenize(text, { vault })`** and **`tokenizeAsync(text, { vault })`** store their tokens in a
+  vault, numbered after those it already holds; a value the vault already holds keeps its token.
+  With a vault, `format` defaults to `"brace"`.
+- **`createVaultTokenizer()`** (`"anonyma/vault"`): a tokenization provider backed by an
+  `AnonymaVault`, for the span engine, the LLM guard and the streaming restorers. It probes the
+  vault before issuing a number, so a new tokenizer never overwrites an earlier one's tokens, and
+  serialises allocations against an asynchronous vault.
+- **`format: "brace"`** (`{{EMAIL_1}}`) for `tokenize()`, the session tokenizer and the LLM guard,
+  with stream hold-back for tokens split inside `{{` or `}}`, and lenient restoration of
+  `{EMAIL_1}` and `{{ email_01 }}`.
+- **Runtime checks** (`scripts/runtime/`): the same feature checks run against the build on
+  Node.js, Bun, Deno and Cloudflare Workers (workerd through Miniflare, bundled with esbuild as
+  `wrangler deploy` does, without `nodejs_compat`). CI runs them in a new `runtimes` job.
+- **`@anonyma/vercel-ai` 0.1.0** (`packages/vercel-ai`): a typed AI SDK 7 middleware, `withAnonyma()`
+  and drop-in `generateText()` / `streamText()`, tested against the real SDK.
+- **`@anonyma/mcp` 0.1.0** (`packages/mcp`): a privacy guard for MCP connections, the
+  `anonyma-mcp-proxy` command that puts any stdio MCP server behind it, and `guardMcpClient()`
+  for MCP SDK clients. Tested against the official MCP SDK.
+- The repository is an npm workspace; `packages/*` are type-checked, tested, built and validated
+  in a new `packages` CI job.
+
+### Fixed
+
+- **`detokenize()`** and **`restoreFromLLM()`** left tokens whose prefix contains a digit —
+  `[IPV4_0001]`, `[IPV6_0001]` — unresolved.
+- **`toLanguageModelMiddleware()`** restored tokens in streamed text but not in streamed
+  reasoning (`reasoning-delta`), although `wrapGenerate` restored both.
+- **`sanitizeJson()`** and the LLM guard listed exempted members whose value is `undefined` or
+  `null` as `unscanned`. The Vercel AI SDK sends `providerOptions: undefined` on every message, so
+  an `onSanitized` hook that refuses unscanned content refused every request.
+
+---
+
 ## [1.1.1] — 2026-10-05
 
 Patch release. The 1.x functions now exempt a detected value only when it equals an `allowlist`
@@ -600,7 +647,8 @@ All types are zero-cost, type-only exports (stripped by `tsc`; no runtime overhe
 - **Prettier** code formatting.
 - **MIT License**.
 
-[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.2.0
 [1.1.1]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.1
 [1.1.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.0
 [1.1.0-beta.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.0-beta.0
