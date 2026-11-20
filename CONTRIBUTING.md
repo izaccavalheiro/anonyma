@@ -263,10 +263,20 @@ Releases are published by GitHub Actions, never from a local machine.
    suffix (`1.2.0-beta.0`) is published under the `next` dist-tag, any other
    under `latest`.
 
-The `Release` workflow publishes `anonyma` only. Publishing `@anonyma/vercel-ai`
-and `@anonyma/mcp` needs the `@anonyma` organisation on npm and a trusted
-publisher configured for each package; until that is set up, their versions are
-recorded in their changelogs but not published.
+The same tag also publishes the companion packages. After anonyma, the
+workflow runs `scripts/publish-packages.mjs`, which publishes every package in
+`packages/` whose version is not on the registry yet, provided a published
+anonyma satisfies its peer range. To release a package, raise its version and
+add its changelog section; it goes out with the next release tag. A package's
+version can also be released alone by tagging an anonyma patch release.
+
+Trusted publishing is configured per package on npm. A new package needs the
+`@anonyma` scope on npm and a trusted publisher for the `Release` workflow
+(`release.yml`, environment `npm`) before its first release. npm's command line
+only configures a package that already exists, so the first version of a new
+package may have to be published once by hand, from a clean checkout of the
+tagged commit (`npm run build && npm run build:packages`, then `npm publish
+--access public` in its directory), and the trusted publisher added after it.
 
 npm trusts the `Release` workflow as a publisher (trusted publishing through
 OpenID Connect), so there is no npm token to store or rotate. Running the

@@ -9,13 +9,16 @@
 #      (a version with a prerelease suffix goes to the `next` dist-tag, any
 #      other to `latest`),
 #   4. attests the tarball on GitHub and creates the GitHub release with the
-#      changelog section, the tarball and a CycloneDX SBOM.
+#      changelog section, the tarball and a CycloneDX SBOM,
+#   5. publishes every companion package in packages/ whose version is not on
+#      the registry yet, attests it and adds it to the GitHub release. It runs
+#      after anonyma, which the packages take as a peer dependency.
 #
 # A pre-release may be tagged on a release branch; a stable version must be
 # tagged on a commit of `main`.
 #
-# Running it by hand from the Actions tab rehearses everything but step 3
-# and 4: nothing is published.
+# Running it by hand from the Actions tab rehearses everything but steps 3
+# to 5: nothing is published.
 #
 # The publish job runs in the `npm` environment, which only accepts version
 # tags. npm trusts this workflow as a publisher through OpenID Connect, so no
@@ -95,6 +98,12 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
           DIST_TAG: ${{ steps.version.outputs.dist_tag }}
         run: npm publish "anonyma-$VERSION.tgz" --dry-run --access public --tag "$DIST_TAG"
+
+      - name: Build the packages
+        run: npm run build:packages
+
+      - name: Publish the packages (dry run)
+        run: node scripts/publish-packages.mjs --dry-run --out "$RUNNER_TEMP/packages"
 
   publish:
     name: Publish to npm
@@ -220,3 +229,66 @@ jobs:
             --title "$TAG" \
             --notes-file "$RUNNER_TEMP/release-notes.md" \
             $flags
+
+  publish-packages:
+    name: Publish the packages to npm
+    if: github.event_name == 'push'
+    # anonyma first: the packages require the version that was just published.
+    needs: publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: npm
+    permissions:
+      # The assets of the GitHub release.
+      contents: write
+      # npm provenance, npm trusted publishing and the GitHub attestation.
+      id-token: write
+      attestations: write
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Update npm
+        run: npm install --global npm@^11.5.1
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The packages' declarations are built against anonyma's.
+      - name: Build
+        run: |
+          npm run build
+          npm run build:packages
+
+      - name: Validate the packages
+        run: npm run check:packages
+
+      # Publishes only the packages whose version is not on the registry yet.
+      # Each one needs a trusted publisher on npm for this workflow.
+      - name: Publish
+        id: packages
+        run: node scripts/publish-packages.mjs --out "$RUNNER_TEMP/packages"
+
+      - name: Attest the tarballs
+        if: steps.packages.outputs.packed == 'true'
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: ${{ runner.temp }}/packages/*.tgz
+
+      - name: Add the tarballs to the GitHub release
+        if: steps.packages.outputs.packed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: gh release upload "$TAG" "$RUNNER_TEMP"/packages/*.tgz
