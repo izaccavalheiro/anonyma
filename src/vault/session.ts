@@ -11,7 +11,8 @@
  */
 
 import { ValidationError } from "../errors.js";
-import { PREFIX_SOURCE, prefixResolver } from "./tokens.js";
+import { PREFIX_SOURCE, SHAPES, isTokenShape, prefixResolver } from "./tokens.js";
+import type { TokenShape } from "./tokens.js";
 import type { RestoreResult, TokenContext, TokenizationProvider } from "./types.js";
 
 /**
@@ -23,7 +24,7 @@ export interface SessionSnapshot {
   /** Snapshot format version. */
   readonly v: 1;
   /** Token shape of the session. */
-  readonly format: "bracket" | "angle";
+  readonly format: TokenShape;
   /** The session tag, when the session has one. */
   readonly tag?: string;
   /** Every token with its original value and category, in creation order. */
@@ -40,8 +41,12 @@ export interface SessionSnapshot {
  * Options accepted by {@link createSessionTokenizer}.
  */
 export interface SessionTokenizerOptions {
-  /** Token shape: `[EMAIL_0001]` (`"bracket"`, default) or `<EMAIL_1>` (`"angle"`). */
-  readonly format?: "bracket" | "angle";
+  /**
+   * Token shape: `[EMAIL_0001]` (`"bracket"`, default), `<EMAIL_1>`
+   * (`"angle"`) or `{{EMAIL_1}}` (`"brace"`). Avoid `"brace"` when prompts go
+   * through a template engine that treats `{{…}}` as a placeholder.
+   */
+  readonly format?: TokenShape;
   /**
    * 2 to 12 letters or digits inserted into every token (`[EMAIL_k3Xf_0001]`).
    * With an unpredictable tag, text that merely looks like a token — in the
@@ -82,7 +87,6 @@ export interface SessionTokenizer extends TokenizationProvider {
 }
 
 const TAG_PATTERN = /^[A-Za-z0-9]{2,12}$/;
-const FORMATS: ReadonlySet<string> = new Set(["bracket", "angle"]);
 
 /**
  * Create a session tokenizer.
@@ -111,30 +115,31 @@ export function createSessionTokenizer(options: SessionTokenizerOptions = {}): S
   const { lenient = false } = options;
   const normalize = options.normalize ?? ((value: string): string => value);
 
-  if (!FORMATS.has(format)) {
-    throw new ValidationError("format", 'must be "bracket" or "angle"');
+  if (!isTokenShape(format)) {
+    throw new ValidationError("format", 'must be "bracket", "angle" or "brace"');
   }
   if (tag !== undefined && !TAG_PATTERN.test(tag)) {
     throw new ValidationError("tag", "must be 2-12 letters or digits");
   }
 
   const prefixOf = prefixResolver(options.prefixes);
-  const [open, close] = format === "bracket" ? ["[", "]"] : ["<", ">"];
+  const shape = SHAPES[format];
+  const { open, close } = shape;
   const infix = tag === undefined ? "" : `${tag}_`;
-  const escapedOpen = format === "bracket" ? "\\[" : "<";
-  const escapedClose = format === "bracket" ? "\\]" : ">";
+  const escapedOpen = shape.openSource;
+  const escapedClose = shape.closeSource;
   const body = `(${PREFIX_SOURCE})_${infix}(\\d+)`;
 
   const tokenPattern = new RegExp(`${escapedOpen}${body}${escapedClose}`, "g");
   // What a language model may turn a token into: other brackets, escapes, spaces, case, padding.
   // Every part is bounded, so text that only looks like the start of a token costs a fixed amount.
   const lenientPattern = new RegExp(
-    String.raw`\\?[\[<(\uff3b]\s{0,4}([A-Za-z][A-Za-z0-9]{0,39}(?:\\?_[A-Za-z0-9]{1,40}){0,12}?)\\?_(\d{1,12})\s{0,4}\\?[\]>)\uff3d]`,
+    String.raw`\\?(?:\{\{?|[\[<(\uff3b])\s{0,4}([A-Za-z][A-Za-z0-9]{0,39}(?:\\?_[A-Za-z0-9]{1,40}){0,12}?)\\?_(\d{1,12})\s{0,4}\\?(?:\}\}?|[\]>)\uff3d])`,
     "g",
   );
   const partialTokenPattern = lenient
-    ? /\\?[[<(\uff3b][A-Za-z0-9_\\ \t]{0,90}$|\\$/
-    : new RegExp(`${escapedOpen}[A-Za-z0-9_]{0,60}$`);
+    ? /\\?(?:\{\{?|[[<(\uff3b])[A-Za-z0-9_\\ \t]{0,90}\}?$|\\$/
+    : new RegExp(shape.partialSource);
 
   /** token -> original value */
   const values = new Map<string, string>();
@@ -211,7 +216,7 @@ export function createSessionTokenizer(options: SessionTokenizerOptions = {}): S
     if (existing !== undefined) return existing;
 
     const number = (counters.get(prefix) ?? 0) + 1;
-    const digits = format === "bracket" ? String(number).padStart(4, "0") : String(number);
+    const digits = String(number).padStart(shape.pad, "0");
     const token = `${open}${prefix}_${infix}${digits}${close}`;
     register(token, value, context.category);
     return token;
@@ -284,7 +289,7 @@ export function createSessionTokenizer(options: SessionTokenizerOptions = {}): S
     tokenPattern,
     partialTokenPattern,
     // Escapes and spaces a model may add make a lenient token longer.
-    maxTokenLength: lenient ? 96 : 64,
+    maxTokenLength: (lenient ? 96 : 64) + open.length + close.length - 2,
     tokenize,
     detokenize,
     restore,

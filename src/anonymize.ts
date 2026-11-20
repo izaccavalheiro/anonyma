@@ -750,7 +750,7 @@ function deepAnonymizeValue(
 
   // Plain object.
   const result: Record<string, unknown> = {};
-  for (const key of Object.keys(value as Record<string, unknown>)) {
+  for (const key of Object.keys(value)) {
     result[key] = deepAnonymizeValue((value as Record<string, unknown>)[key], options, seen);
   }
   seen.delete(value);

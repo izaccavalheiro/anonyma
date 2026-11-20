@@ -101,7 +101,8 @@ export interface JsonSanitizeResult<T> {
   /**
    * JSON Pointers of what was not inspected: objects that are not plain
    * (dates, maps, class instances), which are copied by reference; functions,
-   * which are left out; and members that `skipMember` exempted.
+   * which are left out; and members that `skipMember` exempted, unless their
+   * value is `undefined` or `null`.
    */
   readonly skipped: readonly string[];
 }
@@ -412,7 +413,10 @@ function buildPlan(
       const member = { node: child, value: undefined as unknown };
       pending.members.push(member);
       if (skipMember?.(memberKey, value) === true) {
-        plan.skipped.push(pointer(child));
+        // A member without a value holds nothing that went unread.
+        if (value[memberKey] !== undefined && value[memberKey] !== null) {
+          plan.skipped.push(pointer(child));
+        }
         member.value = plainCopy(value[memberKey], untouched);
         continue;
       }

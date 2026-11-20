@@ -1,3 +1,7 @@
 # Benchmark results and labelled corpora are data.
 bench/results/
 tests/fixtures/
+
+# Build output and reports of the packages.
+packages/*/dist/
+packages/*/coverage/

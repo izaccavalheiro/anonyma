@@ -230,6 +230,21 @@ anonyma follows **Semantic Versioning (SemVer)**:
 - **Minor** (`x.MINOR.x`): New features, no breaking changes.
 - **Major** (`MAJOR.x.x`): Breaking API changes.
 
+Widening a type that the library returns (a new member of a union in a result)
+is a minor change; say so in the changelog, since an exhaustive `switch` over it
+needs a new case. Removing or narrowing anything public is a major change.
+
+The companion packages in `packages/` are versioned independently of
+`anonyma`, each with its own `CHANGELOG.md`:
+
+- While a package is at `0.x`, a minor version may change its API and a patch
+  version may not.
+- A package names the lowest `anonyma` it needs as a caret peer range
+  (`^1.2.0`). Raise it when the package starts relying on a newer release, and
+  release that `anonyma` first.
+- A change to `anonyma` that a package depends on goes into the `anonyma`
+  changelog; the package's changelog records the new peer range.
+
 ---
 
 ## Releasing
@@ -247,6 +262,21 @@ Releases are published by GitHub Actions, never from a local machine.
    changelog section, the tarball and an SBOM. A version with a prerelease
    suffix (`1.2.0-beta.0`) is published under the `next` dist-tag, any other
    under `latest`.
+
+The same tag also publishes the companion packages. After anonyma, the
+workflow runs `scripts/publish-packages.mjs`, which publishes every package in
+`packages/` whose version is not on the registry yet, provided a published
+anonyma satisfies its peer range. To release a package, raise its version and
+add its changelog section; it goes out with the next release tag. A package's
+version can also be released alone by tagging an anonyma patch release.
+
+Trusted publishing is configured per package on npm. A new package needs the
+`@anonyma` scope on npm and a trusted publisher for the `Release` workflow
+(`release.yml`, environment `npm`) before its first release. npm's command line
+only configures a package that already exists, so the first version of a new
+package may have to be published once by hand, from a clean checkout of the
+tagged commit (`npm run build && npm run build:packages`, then `npm publish
+--access public` in its directory), and the trusted publisher added after it.
 
 npm trusts the `Release` workflow as a publisher (trusted publishing through
 OpenID Connect), so there is no npm token to store or rotate. Running the

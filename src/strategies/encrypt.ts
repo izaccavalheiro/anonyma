@@ -128,7 +128,7 @@ export async function encrypt(value: string, options: EncryptOptions): Promise<s
     const cipherBuf = await subtle.encrypt(
       { name: "AES-GCM", iv: iv as unknown as ArrayBuffer },
       key,
-      enc.encode(value) as unknown as ArrayBuffer,
+      enc.encode(value),
     );
 
     const encode = encoding === "hex" ? toHex : toBase64;

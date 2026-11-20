@@ -15,6 +15,7 @@
 - 🔍 **Detect 27 PII categories** — email, phone, SSN, credit card, IBAN, passport, address, VIN, API keys, crypto wallets, and more
 - 🛡️ **8 anonymization strategies** — mask, redact, pseudonymize, hash (SHA-256), generalize, tokenize, encrypt (AES-GCM), synthesize
 - 🔁 **Reversible tokenization** — `tokenize()` / `detokenize()` for round-trip fidelity
+- 🗄️ **Token vaults** — `{{EMAIL_1}}` tokens kept in any `AnonymaVault` (in memory, Redis, KV) and put back by `restore(text, vault)`
 - 🤖 **LLM pipeline helpers** — `sanitizeForLLM()` / `restoreFromLLM()` for safe prompt injection with reversible tokens
 - 📋 **Compliance presets** — built-in `gdpr`, `lgpd`, `pipeda`, `hipaa`, `ccpa`, `pci-dss`, `sox` and `ferpa` presets
 - 🌍 **International identifiers** — national IDs, tax IDs, passports, licence plates and company registrations of many countries, detected without configuration
@@ -40,6 +41,8 @@
 - 💬 **LLM guard** — chat messages and JSON sanitized with reversible tokens, restored in complete and streamed model output (`"anonyma/ai"`)
 - 🔌 **MCP server and HTTP middleware** — a dependency-free Model Context Protocol server, and payload scrubbing for Express, Hono and Fetch handlers (`"anonyma/mcp"`, `"anonyma/middleware"`)
 - 📦 **Dual ESM + CJS** — works everywhere Node.js ≥ 18 runs
+- 🌐 **Edge-ready** — tested on Bun, Deno and Cloudflare Workers; Web Crypto only, no Node.js modules
+- 🧱 **Companion packages** — [`@anonyma/vercel-ai`](packages/vercel-ai#readme) for the Vercel AI SDK, [`@anonyma/mcp`](packages/mcp#readme) to put any MCP server behind a privacy proxy
 - 🔒 **Strict TypeScript** — no `any`, full declaration files
 
 ---
@@ -380,8 +383,58 @@ const { text: restored } = detokenize(text, mapping);
 // "alice@example.com called 555-867-5309"
 ```
 
-Identical values share a token. `TokenizeOptions` also declares `format: "custom"` with
-`tokenTemplate`, `deterministic: false` and `locales`, which `tokenize()` does not apply.
+Identical values share a token. `format: "brace"` produces `{{EMAIL_1}}`. `TokenizeOptions`
+also declares `format: "custom"` with `tokenTemplate`, `deterministic: false` and `locales`,
+which `tokenize()` does not apply.
+
+### Token vaults
+
+Pass a `vault` and the tokens are stored in it instead of living only in the returned mapping.
+`restore(text, vault)` then puts the original values back into any text — a model's answer, a
+later request, another process that reaches the same store.
+
+```ts
+import { InMemoryVault, restore, tokenize } from "anonyma";
+
+const vault = new InMemoryVault(); // one per request or conversation
+
+tokenize("Mail john@example.com, cc jane@example.com", { vault }).text;
+// "Mail {{EMAIL_1}}, cc {{EMAIL_2}}"
+
+// A later turn continues the numbering; a known value keeps its token.
+tokenize("Reply to jane@example.com and ada@example.com", { vault }).text;
+// "Reply to {{EMAIL_2}} and {{EMAIL_3}}"
+
+restore("Sent to {{EMAIL_2}} and {{EMAIL_1}}.", vault).text;
+// "Sent to jane@example.com and john@example.com."
+```
+
+`restore()` scans the text once and matches whole tokens, so `{{PERSON_1}}` is never found
+inside `{{PERSON_10}}`, and a restored value is never scanned again. Unknown tokens stay in
+place and are listed in `unresolved`. With a vault, `format` defaults to `"brace"`; avoid it
+when prompts go through a template engine that treats `{{…}}` as a placeholder.
+
+Any object with `store(key, value)` and `retrieve(key)` is a vault. Both may return promises —
+use `tokenizeAsync()`, and `await restore(…)`:
+
+```ts
+import type { AnonymaVault } from "anonyma";
+
+// A Cloudflare KV namespace, with one key prefix per conversation.
+const kvVault = (kv: KVNamespace, conversation: string): AnonymaVault => ({
+  store: (key, value) => kv.put(`${conversation}:${key}`, value, { expirationTtl: 3600 }),
+  retrieve: async (key) => (await kv.get(`${conversation}:${key}`)) ?? undefined,
+});
+
+const vault = kvVault(env.TOKENS, conversationId);
+const { text } = await tokenizeAsync(prompt, { vault });
+const { text: answer } = await restore(await callLLM(text), vault);
+```
+
+A vault holds original values in clear: keep one per conversation or user. Restoring a user's
+text against a vault shared with other users would hand them data that is not theirs if they
+type somebody else's token. `createVaultTokenizer()` in `"anonyma/vault"` plugs a vault into the
+span engine and the streaming restorers.
 
 ---
 
@@ -870,11 +923,23 @@ Full API reference: [docs/api.md](docs/api.md)
 
 ---
 
+## Companion Packages
+
+| Package                                           | What it does                                                                                                                                                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`@anonyma/vercel-ai`](packages/vercel-ai#readme) | Middleware and drop-in `generateText` / `streamText` for the Vercel AI SDK: prompts are tokenized, and text, reasoning and tool calls come back with the original values, also when streamed.    |
+| [`@anonyma/mcp`](packages/mcp#readme)             | A privacy guard for MCP connections, and `anonyma-mcp-proxy`, which puts any stdio MCP server behind it: tool results reach the model as tokens, tool arguments reach the server as real values. |
+
+---
+
 ## Requirements
 
-- **Node.js** ≥ 18 (for `hash`, `encrypt`, and streaming features — Web Crypto + `TransformStream`)
+- **Node.js** ≥ 18, **Bun**, **Deno**, **Cloudflare Workers** and browsers. The package uses
+  only the Web platform — Web Crypto, `TransformStream`, `TextEncoder` — and no Node.js module
+  (on Node.js 18, which has no global `crypto`, it loads `node:crypto` lazily). CI runs the
+  same feature checks on every one of these runtimes; Workers run them without `nodejs_compat`.
 - TypeScript ≥ 5.0 (optional)
-- Zod ≥ 3.23 (optional peer-dependency for `"anonyma/schemas"`)
+- Zod ≥ 3.25.4 or 4 (optional peer-dependency for `"anonyma/schemas"`, which uses the `zod/v3` entry point both provide, so its types are the same with either)
 
 ---
 

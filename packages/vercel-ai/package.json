@@ -1,0 +1,67 @@
+{
+  "name": "@anonyma/vercel-ai",
+  "version": "0.1.0",
+  "description": "Personal-data redaction for the Vercel AI SDK: prompts are tokenized before they leave the process, and generateText/streamText responses — text, reasoning and tool calls, complete or streamed — get the original values back.",
+  "license": "MIT",
+  "author": "Izac Cavalheiro <izac@izaccavalheiro.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/izaccavalheiro/anonyma.git",
+    "directory": "packages/vercel-ai"
+  },
+  "homepage": "https://github.com/izaccavalheiro/anonyma/tree/main/packages/vercel-ai#readme",
+  "bugs": {
+    "url": "https://github.com/izaccavalheiro/anonyma/issues"
+  },
+  "keywords": [
+    "anonyma",
+    "vercel-ai",
+    "ai-sdk",
+    "middleware",
+    "llm",
+    "pii",
+    "redaction",
+    "tokenization",
+    "privacy"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check:package": "publint --strict && attw --pack . --profile node16"
+  },
+  "peerDependencies": {
+    "ai": "^7.0.0",
+    "anonyma": "^1.2.0"
+  },
+  "devDependencies": {
+    "ai": "^7.0.178",
+    "anonyma": "file:../.."
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -133,6 +133,12 @@ assert.equal(
   await sealed.detokenize(await sealed.tokenize("bob@example.com", { category: "email" })),
   "bob@example.com",
 );
+// An AnonymaVault: {{CATEGORY_N}} tokens restored from any text.
+const root = await import("anonyma");
+const anonymaVault = new root.InMemoryVault();
+assert.equal(root.tokenize("Mail alice@example.com", { vault: anonymaVault }).text, "Mail {{EMAIL_1}}");
+assert.equal(root.restore("Sent to {{EMAIL_1}}.", anonymaVault).text, "Sent to alice@example.com.");
+assert.equal(vaultModule.InMemoryVault, root.InMemoryVault, "one InMemoryVault class across entry points");
 
 // 5. Audit: a chain that verifies and holds no personal data.
 const { createAuditLogger, memorySink, summarizeSpans, verifyAuditChain } = await import("anonyma/audit");
@@ -225,8 +231,13 @@ try {
   run(process.execPath, ["check.cjs"]);
 
   // The optional peer dependency, for the one entry point that uses it.
-  run(npm, [...install, "zod@^3.23.0"]);
-  run(process.execPath, ["check.mjs", "--with-peer"]);
+  // The lowest version of each major the peer range accepts: 3.25.4 is the first
+  // zod 3 whose zod/v3 entry point loads and type-checks (3.25.0 cannot be loaded).
+  for (const zod of ["zod@3.25.4", "zod@4.0.0"]) {
+    console.log(`With ${zod}:`);
+    run(npm, [...install, zod]);
+    run(process.execPath, ["check.mjs", "--with-peer"]);
+  }
 } catch (error) {
   failed = true;
   console.error(`\nSmoke test failed: ${error instanceof Error ? error.message : String(error)}`);

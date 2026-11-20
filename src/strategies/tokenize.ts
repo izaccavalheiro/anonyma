@@ -47,7 +47,8 @@ export function createTokenStore(): TokenStore {
  * @param category - The PII category (e.g. `"email"`).
  * @param value    - The original PII string.
  * @param prefix   - Category prefix used in the token label (e.g. `"EMAIL"`).
- * @param format   - Token format: `"bracket"` (`[EMAIL_0001]`) or `"angle"` (`<EMAIL_1>`).
+ * @param format   - Token format: `"bracket"` (`[EMAIL_0001]`), `"angle"` (`<EMAIL_1>`) or
+ *   `"brace"` (`{{EMAIL_1}}`).
  * @returns The deterministic token string.
  */
 export function assignToken(
@@ -65,12 +66,25 @@ export function assignToken(
   store.counters.set(prefix, count);
 
   const id = format === "bracket" ? String(count).padStart(4, "0") : String(count);
-  const token = format === "bracket" ? `[${prefix}_${id}]` : `<${prefix}_${id}>`;
+  const token =
+    format === "bracket"
+      ? `[${prefix}_${id}]`
+      : format === "brace"
+        ? `{{${prefix}_${id}}}`
+        : `<${prefix}_${id}>`;
 
   store.index.set(indexKey, token);
   store.tokens.set(token, value);
   return token;
 }
+
+/**
+ * Matches a token of every format `assignToken()` produces: `[PREFIX_NNNN]`,
+ * `<PREFIX_N>` and `{{PREFIX_N}}`. A prefix may contain digits (`IPV4`).
+ * Every part is bounded, so text that only looks like a token is cheap to reject.
+ */
+export const LEGACY_TOKEN_PATTERN =
+  /\[[A-Z][A-Z0-9_]{0,60}_\d{1,12}\]|<[A-Z][A-Z0-9_]{0,60}_\d{1,12}>|\{\{[A-Z][A-Z0-9_]{0,60}_\d{1,12}\}\}/g;
 
 /**
  * Replace a token with its original value. Returns `undefined` when the token
@@ -97,10 +111,7 @@ export function detokenizeText(
 ): { text: string; unresolved: string[] } {
   const unresolved: string[] = [];
 
-  // Match both bracket `[PREFIX_NNNN]` and angle `<PREFIX_N>` format tokens.
-  const re = /(\[[A-Z_]+_\d+\]|<[A-Z_]+_\d+>)/g;
-
-  const result = text.replace(re, (token) => {
+  const result = text.replace(LEGACY_TOKEN_PATTERN, (token) => {
     const original = store.tokens.get(token);
     if (original !== undefined) return original;
     unresolved.push(token);

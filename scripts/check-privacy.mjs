@@ -125,7 +125,7 @@ function withoutComments(source) {
       for (const match of withoutComments(readFileSync(file, "utf8")).matchAll(specifier)) {
         const target = match[1];
         if (target.startsWith(".")) continue;
-        if (target === "zod" && /^schemas\.(?:js|cjs)$/.test(name)) continue;
+        if (/^zod(?:\/v3)?$/.test(target) && /^schemas\.(?:js|cjs)$/.test(name)) continue;
         problems.push(`dist/${name} imports "${target}"`);
       }
     }
