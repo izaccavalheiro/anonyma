@@ -231,8 +231,13 @@ try {
   run(process.execPath, ["check.cjs"]);
 
   // The optional peer dependency, for the one entry point that uses it.
-  run(npm, [...install, "zod@^3.23.0"]);
-  run(process.execPath, ["check.mjs", "--with-peer"]);
+  // The lowest version of each major the peer range accepts: 3.25.4 is the first
+  // zod 3 whose zod/v3 entry point loads and type-checks (3.25.0 cannot be loaded).
+  for (const zod of ["zod@3.25.4", "zod@4.0.0"]) {
+    console.log(`With ${zod}:`);
+    run(npm, [...install, zod]);
+    run(process.execPath, ["check.mjs", "--with-peer"]);
+  }
 } catch (error) {
   failed = true;
   console.error(`\nSmoke test failed: ${error instanceof Error ? error.message : String(error)}`);

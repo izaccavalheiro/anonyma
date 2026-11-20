@@ -939,7 +939,7 @@ Full API reference: [docs/api.md](docs/api.md)
   (on Node.js 18, which has no global `crypto`, it loads `node:crypto` lazily). CI runs the
   same feature checks on every one of these runtimes; Workers run them without `nodejs_compat`.
 - TypeScript ≥ 5.0 (optional)
-- Zod ≥ 3.23 (optional peer-dependency for `"anonyma/schemas"`)
+- Zod ≥ 3.25.4 or 4 (optional peer-dependency for `"anonyma/schemas"`, which uses the `zod/v3` entry point both provide, so its types are the same with either)
 
 ---
 

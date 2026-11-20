@@ -215,7 +215,7 @@ Scope examples: `detectors`, `strategies`, `presets`, `stream`, `batch`, `llm`, 
 - Do not publish from a local machine: a release is published by the `Release` workflow from a version tag.
 - Do not put real personal data, credentials or production logs in tests, fixtures, benchmarks, issues or commits. Use synthetic values (`example.com` addresses, documentation IP ranges, test card numbers); `npm run check:privacy` enforces part of this.
 - Do not reference a GitHub Action by a tag or a branch: pin it to a commit SHA, with the version in a comment.
-- Do not import `zod` in any file outside `src/schemas.ts` — it is an optional peer dependency.
+- Do not import `zod` in any file outside `src/schemas.ts` — it is an optional peer dependency. `src/schemas.ts` imports `zod/v3`, which zod ≥ 3.25.4 and zod 4 both provide, so the published declarations are the same with either major; keep it that way.
 
 ---
 

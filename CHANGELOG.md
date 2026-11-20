@@ -15,6 +15,10 @@ now include `"brace"`, so an exhaustive `switch` over a snapshot's format needs 
 The new packages, `@anonyma/vercel-ai` 0.1.0 and `@anonyma/mcp` 0.1.0, are versioned on their
 own and require `anonyma` ^1.2.0.
 
+`anonyma/schemas` now accepts zod 4 as well as zod 3. Its zod 3 floor rises from 3.23 to 3.25.4, the
+first release whose `zod/v3` entry point loads and type-checks; on an older zod 3, `npm update zod`
+stays within zod 3.
+
 ### Added
 
 - **Token vaults.** `AnonymaVault` — any object with `store(key, value)` and `retrieve(key)`,
@@ -41,6 +45,13 @@ own and require `anonyma` ^1.2.0.
   for MCP SDK clients. Tested against the official MCP SDK.
 - The repository is an npm workspace; `packages/*` are type-checked, tested, built and validated
   in a new `packages` CI job.
+
+### Changed
+
+- **The optional `zod` peer dependency** is `^3.25.4 || ^4.0.0` (was `^3.23.0`).
+  `"anonyma/schemas"` imports `zod/v3`, which both majors provide, so its declarations are the
+  same whichever zod is installed. They were built against zod 3 and named types that zod 4 does
+  not have. Every zod 3 release is subject to a high-severity advisory fixed in zod 4.6.6.
 
 ### Fixed
 

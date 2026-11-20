@@ -26,7 +26,7 @@
  * Import it only when you need runtime validation or AI schema generation.
  */
 
-import { z } from "zod";
+import { z } from "zod/v3";
 
 // ---------------------------------------------------------------------------
 // Category & strategy schemas
