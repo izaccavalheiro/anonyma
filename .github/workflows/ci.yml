@@ -8,6 +8,7 @@
 #   package       Is what would be published a valid dual ESM/CJS package, within its size budget?
 #   smoke         Does the packed tarball work for a consumer, down to Node.js 18?
 #   runtimes      Does the built package work on Bun, Deno and Cloudflare Workers?
+#   packages      Do @anonyma/vercel-ai and @anonyma/mcp type-check, pass and pack?
 #   performance   Is the span engine still linear in the size of its input?
 #   privacy       Do the privacy invariants and the compliance suites hold (GDPR, LGPD)?
 #   supply-chain  Are the dependencies free of known vulnerabilities and correctly signed?
@@ -286,6 +287,42 @@ jobs:
         if: matrix.runtime == 'workerd'
         run: node scripts/runtime/workerd.mjs
 
+  packages:
+    name: Packages
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The packages import anonyma through its export map, from this build.
+      - name: Build anonyma
+        run: npm run build
+
+      - name: Type-check
+        run: npm run typecheck:packages
+
+      # Against the real Vercel AI SDK and MCP SDK, not stand-ins.
+      - name: Test
+        run: npm run test:packages
+
+      - name: Build the packages
+        run: npm run build:packages
+
+      - name: Validate the packages
+        run: npm run check:packages
+
   performance:
     name: Performance
     runs-on: ubuntu-24.04
@@ -432,6 +469,7 @@ jobs:
       - package
       - smoke
       - runtimes
+      - packages
       - performance
       - privacy
       - supply-chain

@@ -1,0 +1,69 @@
+{
+  "name": "@anonyma/mcp",
+  "version": "0.1.0",
+  "description": "Privacy for Model Context Protocol connections: personal data in tool results, resources and prompts becomes tokens before it enters a model's context, and tokens in tool arguments become the original values before they reach the server. Includes a stdio proxy that puts any MCP server behind the guard.",
+  "license": "MIT",
+  "author": "Izac Cavalheiro <izac@izaccavalheiro.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/izaccavalheiro/anonyma.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://github.com/izaccavalheiro/anonyma/tree/main/packages/mcp#readme",
+  "bugs": {
+    "url": "https://github.com/izaccavalheiro/anonyma/issues"
+  },
+  "keywords": [
+    "anonyma",
+    "mcp",
+    "model-context-protocol",
+    "proxy",
+    "llm",
+    "pii",
+    "redaction",
+    "tokenization",
+    "privacy"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "anonyma-mcp-proxy": "./dist/bin.js"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check:package": "publint --strict && attw --pack . --profile node16"
+  },
+  "peerDependencies": {
+    "anonyma": "^1.2.0"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "anonyma": "file:../.."
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

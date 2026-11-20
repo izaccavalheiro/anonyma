@@ -4,7 +4,15 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["dist/**", "coverage/**", "node_modules/**", "tests/**", "vitest.config.ts"],
+    ignores: [
+      "**/dist/**",
+      "**/coverage/**",
+      "**/node_modules/**",
+      "tests/**",
+      "packages/*/tests/**",
+      "vitest.config.ts",
+      "packages/*/vitest.config.ts",
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
@@ -37,6 +45,7 @@ export default tseslint.config(
       "tests/**/*.ts",
       "vitest.config.ts",
       "tsup.config.ts",
+      "packages/*/tsup.config.ts",
       "eslint.config.js",
       "commitlint.config.js",
     ],
@@ -48,7 +57,7 @@ export default tseslint.config(
   },
   {
     // Node.js scripts of the repository: plain JavaScript, run directly, free to print.
-    files: ["scripts/**/*.mjs", "bench/**/*.mjs"],
+    files: ["scripts/**/*.mjs", "bench/**/*.mjs", "packages/*.mjs"],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: {
       globals: {

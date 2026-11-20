@@ -212,6 +212,9 @@
     "CHANGELOG.md"
   ],
   "sideEffects": false,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "tsup",
     "build:watch": "tsup --watch",
@@ -220,13 +223,19 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write \"*.{md,json,js,cjs,mjs,ts,yml,yaml}\" \".github/**/*.{yml,yaml,md}\" \"{src,tests,bench,scripts}/**/*.{ts,js,mjs,cjs,json,md}\"",
-    "format:check": "prettier --check \"*.{md,json,js,cjs,mjs,ts,yml,yaml}\" \".github/**/*.{yml,yaml,md}\" \"{src,tests,bench,scripts}/**/*.{ts,js,mjs,cjs,json,md}\"",
+    "format": "prettier --write \"*.{md,json,js,cjs,mjs,ts,yml,yaml}\" \".github/**/*.{yml,yaml,md}\" \"{src,tests,bench,scripts,packages}/**/*.{ts,js,mjs,cjs,json,md}\"",
+    "format:check": "prettier --check \"*.{md,json,js,cjs,mjs,ts,yml,yaml}\" \".github/**/*.{yml,yaml,md}\" \"{src,tests,bench,scripts,packages}/**/*.{ts,js,mjs,cjs,json,md}\"",
     "typecheck": "tsc --noEmit",
+    "typecheck:packages": "npm run typecheck --workspaces",
+    "test:packages": "npm run test --workspaces",
+    "build:packages": "npm run build --workspaces",
+    "check:packages": "npm run check:package --workspaces",
     "check:package": "publint --strict && attw --pack . --profile node16",
     "check:size": "node scripts/check-size.mjs",
     "check:privacy": "node scripts/check-privacy.mjs",
     "smoke": "node scripts/smoke.mjs",
+    "check:runtime": "node scripts/runtime/run.mjs",
+    "check:workerd": "node scripts/runtime/workerd.mjs",
     "validate": "npm run typecheck && npm run lint && npm run format:check && npm run test:coverage && npm run build && npm run check:package && npm run check:size && npm run check:privacy -- --require-dist && npm run smoke",
     "prepublishOnly": "npm run typecheck && npm run lint && npm run test && npm run build",
     "release": "npm run prepublishOnly && npm publish",
