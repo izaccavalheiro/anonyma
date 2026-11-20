@@ -176,7 +176,7 @@ export function createVaultTokenizer(options: VaultTokenizerOptions): VaultToken
     answer: Promise<string | undefined>,
   ): Promise<string> {
     let existing = await answer;
-    for (let number = first; number < first + MAX_PROBES; ) {
+    for (let number = first; number < first + MAX_PROBES;) {
       const token = render(placement.prefix, number);
       if (typeof existing !== "string") {
         await vault.store(token, placement.value);

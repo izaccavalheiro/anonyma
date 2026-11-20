@@ -119,18 +119,7 @@ export interface CustomPattern {
  * formatted PII (e.g. email, IPv4, credit card).
  */
 export type Locale =
-  | "global"
-  | "us"
-  | "uk"
-  | "eu"
-  | "ca"
-  | "au"
-  | "br"
-  | "in"
-  | "cn"
-  | "jp"
-  | "kr"
-  | "za";
+  "global" | "us" | "uk" | "eu" | "ca" | "au" | "br" | "in" | "cn" | "jp" | "kr" | "za";
 
 // ---------------------------------------------------------------------------
 // Compliance presets
@@ -140,14 +129,7 @@ export type Locale =
  * Built-in compliance preset identifiers.
  */
 export type CompliancePreset =
-  | "gdpr"
-  | "lgpd"
-  | "pipeda"
-  | "hipaa"
-  | "ccpa"
-  | "pci-dss"
-  | "sox"
-  | "ferpa";
+  "gdpr" | "lgpd" | "pipeda" | "hipaa" | "ccpa" | "pci-dss" | "sox" | "ferpa";
 
 // ---------------------------------------------------------------------------
 // Tokenization types
