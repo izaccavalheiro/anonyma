@@ -18,7 +18,9 @@
  *
  * With --dry-run nothing is published, and a peer range that no published
  * anonyma satisfies yet is reported instead of failing: a rehearsal runs
- * before the release that publishes it.
+ * before the release that publishes it. Without it, the peer check is retried
+ * for a few minutes, because the registry answers queries for a version some
+ * time after it was published.
  */
 
 import { execFileSync } from "node:child_process";
@@ -61,6 +63,34 @@ function published(spec) {
   }
 }
 
+/** Seconds to wait before each retry of the peer check: about three minutes in all. */
+const PEER_RETRIES = [10, 20, 30, 60, 60];
+
+/** Whether a published anonyma satisfies `range`, retrying while the registry catches up. */
+async function peerPublished(range) {
+  for (const delay of dryRun ? [] : PEER_RETRIES) {
+    if (published(`anonyma@${range}`).length > 0) return true;
+    console.log(`anonyma@${range} is not on the registry yet; checking again in ${delay} s`);
+    await new Promise((done) => setTimeout(done, delay * 1000));
+  }
+  return published(`anonyma@${range}`).length > 0;
+}
+
+/** The message of a failed command, with what to check when npm refused a publish. */
+function describe(error) {
+  const message = error instanceof Error ? error.message : String(error);
+  const stderr = String(error?.stderr ?? "");
+  if (/E404/.test(stderr) && /\bPUT\b/.test(stderr)) {
+    return (
+      "npm refused the publish (404). Check that the @anonyma scope exists on npm and that " +
+      "this package has a trusted publisher for the Release workflow (release.yml, " +
+      "environment npm); a package that was never published may need its first version " +
+      "published by hand."
+    );
+  }
+  return `${message}${stderr === "" ? "" : `\n${stderr}`}`;
+}
+
 const packages = readdirSync(join(root, "packages"), { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
   .map((entry) => join(root, "packages", entry.name))
@@ -81,7 +111,7 @@ for (const { dir, pkg } of packages) {
     }
 
     const peer = pkg.peerDependencies?.anonyma;
-    if (peer !== undefined && published(`anonyma@${peer}`).length === 0) {
+    if (peer !== undefined && !(await peerPublished(peer))) {
       if (!dryRun) throw new Error(`no published anonyma satisfies its peer range ${peer}`);
       rows.push([spec, `would publish once anonyma ${peer} is released`]);
       continue;
@@ -103,7 +133,7 @@ for (const { dir, pkg } of packages) {
     rows.push([spec, dryRun ? `would publish (${tag})` : `published (${tag})`]);
   } catch (error) {
     failed = true;
-    rows.push([spec, `FAILED: ${error instanceof Error ? error.message : String(error)}`]);
+    rows.push([spec, `FAILED: ${describe(error)}`]);
   }
 }
 
