@@ -400,3 +400,357 @@ export function aadhaarFormat(value: string): boolean {
   // Must not start with 0 or 1
   return !stripped.startsWith("0") && !stripped.startsWith("1");
 }
+
+// ---------------------------------------------------------------------------
+// Weighted-sum checksums (mod 10, mod 11, ISO 7064)
+// ---------------------------------------------------------------------------
+
+/** The value of each character of `text`: digits are 0-9, letters `A`-`Z` are 17-42. @internal */
+function charValues(text: string): number[] {
+  return Array.from(text, (char) => char.charCodeAt(0) - 48);
+}
+
+/** Σ value × weight over the shorter of the two lists. @internal */
+function weightedSum(values: readonly number[], weights: readonly number[]): number {
+  let sum = 0;
+  weights.forEach((weight, index) => {
+    /* v8 ignore next -- every caller passes at least as many values as weights */
+    sum += (values[index] ?? 0) * weight;
+  });
+  return sum;
+}
+
+/** `true` when every character of `text` is the same, which issuers never assign. @internal */
+function isRepeated(text: string): boolean {
+  return /^(.)\1*$/.test(text);
+}
+
+/**
+ * Validate a US ABA routing transit number: nine digits whose weighted sum
+ * with the weights 3, 7, 1 is a multiple of 10.
+ *
+ * @param value - Routing number, with or without spaces or hyphens.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * abaRoutingChecksum("011000015"); // true
+ * abaRoutingChecksum("011000016"); // false
+ * ```
+ */
+export function abaRoutingChecksum(value: string): boolean {
+  const stripped = value.replace(/[\s-]/g, "");
+  if (!/^\d{9}$/.test(stripped) || isRepeated(stripped)) return false;
+  return weightedSum(charValues(stripped), [3, 7, 1, 3, 7, 1, 3, 7, 1]) % 10 === 0;
+}
+
+/** CNPJ check digit over `values` with `weights`. @internal */
+function cnpjDigit(values: readonly number[], weights: readonly number[]): number {
+  const remainder = weightedSum(values, weights) % 11;
+  return remainder < 2 ? 0 : 11 - remainder;
+}
+
+/**
+ * Validate a Brazilian CNPJ (Cadastro Nacional da Pessoa Jurídica), in the
+ * numeric form and in the alphanumeric form issued from July 2026: twelve
+ * digits or upper-case letters followed by two mod-11 check digits, each
+ * character counting as its character code minus 48.
+ *
+ * @param value - CNPJ with or without formatting (e.g. `"11.222.333/0001-81"`).
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * cnpjChecksum("11.222.333/0001-81"); // true
+ * cnpjChecksum("12.ABC.345/01DE-35"); // true (alphanumeric)
+ * cnpjChecksum("11.222.333/0001-82"); // false
+ * ```
+ */
+export function cnpjChecksum(value: string): boolean {
+  const stripped = value.replace(/[.\-/\s]/g, "").toUpperCase();
+  if (!/^[A-Z0-9]{12}\d{2}$/.test(stripped) || isRepeated(stripped)) return false;
+  const values = charValues(stripped);
+  const first = cnpjDigit(values, [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+  const second = cnpjDigit(
+    [...values.slice(0, 12), first],
+    [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
+  );
+  return values[12] === first && values[13] === second;
+}
+
+/**
+ * Validate a US National Provider Identifier: ten digits that pass the Luhn
+ * check behind the prefix `80840`.
+ *
+ * @param value - NPI, with or without spaces.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * npiChecksum("1234567893"); // true
+ * ```
+ */
+export function npiChecksum(value: string): boolean {
+  const stripped = value.replace(/[\s-]/g, "");
+  return /^[12]\d{9}$/.test(stripped) && luhn(`80840${stripped}`);
+}
+
+/**
+ * Validate a 15-digit IMEI (mobile device identity) with the Luhn check.
+ *
+ * @param value - IMEI, with or without spaces, hyphens or slashes.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * imeiChecksum("49-015420-323751-8"); // true
+ * ```
+ */
+export function imeiChecksum(value: string): boolean {
+  const stripped = value.replace(/[\s\-/]/g, "");
+  return /^\d{15}$/.test(stripped) && !isRepeated(stripped) && luhn(stripped);
+}
+
+/**
+ * Validate a Dutch citizen service number (BSN) with the eleven test
+ * (elfproef): weights 9 to 2 and -1 give a multiple of 11.
+ *
+ * @param value - BSN of 8 or 9 digits, with or without separators.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * bsnChecksum("111222333"); // true
+ * ```
+ */
+export function bsnChecksum(value: string): boolean {
+  const stripped = value.replace(/[\s.-]/g, "").padStart(9, "0");
+  if (!/^\d{9}$/.test(stripped) || isRepeated(stripped)) return false;
+  return weightedSum(charValues(stripped), [9, 8, 7, 6, 5, 4, 3, 2, -1]) % 11 === 0;
+}
+
+/**
+ * Validate a Portuguese tax number (NIF): nine digits, the last a mod-11
+ * check digit over weights 9 to 2.
+ *
+ * @param value - NIF, with or without spaces.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * ptNifChecksum("123456789"); // true
+ * ```
+ */
+export function ptNifChecksum(value: string): boolean {
+  const stripped = value.replace(/[\s.-]/g, "");
+  if (!/^[1-9]\d{8}$/.test(stripped) || isRepeated(stripped)) return false;
+  const values = charValues(stripped);
+  const remainder = weightedSum(values, [9, 8, 7, 6, 5, 4, 3, 2]) % 11;
+  return values[8] === (remainder < 2 ? 0 : 11 - remainder);
+}
+
+/** Control letters of the Spanish DNI and NIE, indexed by the number mod 23. @internal */
+const SPANISH_ID_LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
+
+/**
+ * Validate a Spanish DNI (eight digits and a letter) or NIE (`X`, `Y` or `Z`,
+ * seven digits and a letter): the letter is the number modulo 23.
+ *
+ * @param value - DNI or NIE, with or without a hyphen or space before the letter.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * spanishIdChecksum("12345678Z"); // true
+ * spanishIdChecksum("X1234567L"); // true
+ * ```
+ */
+export function spanishIdChecksum(value: string): boolean {
+  const stripped = value.replace(/[\s-]/g, "").toUpperCase();
+  const match = /^([XYZ]\d{7}|\d{8})([A-Z])$/.exec(stripped);
+  if (match === null) return false;
+  const [, body = "", letter] = match;
+  const number = Number(body.replace(/^[XYZ]/, (prefix) => String("XYZ".indexOf(prefix))));
+  return SPANISH_ID_LETTERS.charAt(number % 23) === letter;
+}
+
+/** Values of characters in odd positions of an Italian fiscal code, for 0-9 then A-Z. @internal */
+const IT_ODD = [
+  1, 0, 5, 7, 9, 13, 15, 17, 19, 21, 1, 0, 5, 7, 9, 13, 15, 17, 19, 21, 2, 4, 18, 20, 11, 3, 6, 8,
+  12, 14, 16, 10, 22, 25, 24, 23,
+];
+
+/**
+ * Validate an Italian fiscal code (codice fiscale) of a natural person: its
+ * sixteenth character is the check letter over the first fifteen.
+ *
+ * @param value - The 16-character fiscal code.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * italianFiscalCodeChecksum("RSSMRA85T10A562S"); // true
+ * ```
+ */
+export function italianFiscalCodeChecksum(value: string): boolean {
+  const stripped = value.replace(/\s/g, "").toUpperCase();
+  if (!/^[A-Z0-9]{15}[A-Z]$/.test(stripped)) return false;
+  let sum = 0;
+  for (let index = 0; index < 15; index++) {
+    const code = stripped.charCodeAt(index);
+    const ordinal = code <= 57 ? code - 48 : code - 55; // 0-9 → 0-9, A-Z → 10-35
+    // Positions are counted from 1, so even indices are the odd positions.
+    const even = code <= 57 ? ordinal : ordinal - 10; // 0-9 → 0-9, A-Z → 0-25
+    /* v8 ignore next -- the pattern admits only 0-9 and A-Z, which the table covers */
+    sum += index % 2 === 0 ? (IT_ODD[ordinal] ?? 0) : even;
+  }
+  return String.fromCharCode(65 + (sum % 26)) === stripped.charAt(15);
+}
+
+/**
+ * Validate a French social security number (NIR): thirteen digits and a
+ * two-digit key equal to 97 minus the number modulo 97. The Corsican
+ * departments `2A` and `2B` count as 19 and 18.
+ *
+ * @param value - NIR of 15 characters, with or without spaces.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * frNirChecksum("2 84 05 75 123 456 72"); // true
+ * ```
+ */
+export function frNirChecksum(value: string): boolean {
+  const stripped = value.replace(/\s/g, "").toUpperCase();
+  const match = /^([12]\d{4})(\d{2}|2A|2B)(\d{6})(\d{2})$/.exec(stripped);
+  if (match === null) return false;
+  const [, head = "", department = "", tail = "", key = ""] = match;
+  const corsica = department === "2A" ? "19" : department === "2B" ? "18" : department;
+  return 97 - (Number(`${head}${corsica}${tail}`) % 97) === Number(key);
+}
+
+/**
+ * Validate a Chinese resident identity card number: seventeen digits and an
+ * ISO 7064 MOD 11-2 check character (`0`-`9` or `X`).
+ *
+ * @param value - The 18-character number.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * chineseResidentIdChecksum("11010519491231002X"); // true
+ * ```
+ */
+export function chineseResidentIdChecksum(value: string): boolean {
+  const stripped = value.replace(/\s/g, "").toUpperCase();
+  if (!/^\d{17}[\dX]$/.test(stripped)) return false;
+  const sum = weightedSum(
+    charValues(stripped),
+    [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2],
+  );
+  return "10X98765432".charAt(sum % 11) === stripped.charAt(17);
+}
+
+/**
+ * Validate a nine-digit Australian tax file number: weights 1, 4, 3, 7, 5, 8,
+ * 6, 9 and 10 give a multiple of 11.
+ *
+ * @param value - TFN, with or without spaces.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * australianTfnChecksum("123 456 782"); // true
+ * ```
+ */
+export function australianTfnChecksum(value: string): boolean {
+  const stripped = value.replace(/[\s-]/g, "");
+  if (!/^\d{9}$/.test(stripped) || isRepeated(stripped)) return false;
+  return weightedSum(charValues(stripped), [1, 4, 3, 7, 5, 8, 6, 9, 10]) % 11 === 0;
+}
+
+/**
+ * Validate a Swedish personal identity number (personnummer or
+ * samordningsnummer): the last ten digits pass the Luhn check.
+ *
+ * @param value - `YYMMDD-NNNN`, `YYMMDD+NNNN` or `YYYYMMDDNNNN`.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * swedishPersonnummerChecksum("811218-9876"); // true
+ * ```
+ */
+export function swedishPersonnummerChecksum(value: string): boolean {
+  const stripped = value.replace(/[\s\-+]/g, "");
+  if (!/^(?:\d{2})?\d{10}$/.test(stripped)) return false;
+  return luhn(stripped.slice(-10));
+}
+
+/**
+ * Validate the CRC of a Brazilian PIX "copia e cola" payload (an EMV QR
+ * code): its last four characters are the CRC-16/CCITT-FALSE of everything
+ * before them, in upper-case hexadecimal.
+ *
+ * @param value - The whole payload, ending in `6304` and the CRC.
+ * @returns `true` if valid.
+ *
+ * @example
+ * ```ts
+ * pixPayloadChecksum(payload); // true when the payload was not altered
+ * ```
+ */
+export function pixPayloadChecksum(value: string): boolean {
+  if (!/6304[0-9A-Fa-f]{4}$/.test(value)) return false;
+  let crc = 0xffff;
+  for (let index = 0; index < value.length - 4; index++) {
+    crc ^= value.charCodeAt(index) << 8;
+    for (let bit = 0; bit < 8; bit++) {
+      crc = crc & 0x8000 ? ((crc << 1) ^ 0x1021) & 0xffff : (crc << 1) & 0xffff;
+    }
+  }
+  return crc.toString(16).toUpperCase().padStart(4, "0") === value.slice(-4).toUpperCase();
+}
+
+// ---------------------------------------------------------------------------
+// Validators by name
+// ---------------------------------------------------------------------------
+
+/**
+ * Every checksum validator, by the name a declarative pattern uses for it
+ * (`PatternSpec.validator` in `"anonyma/engine"`).
+ *
+ * @example
+ * ```ts
+ * import { CHECKSUMS } from "anonyma/validators";
+ *
+ * CHECKSUMS.cnpj("11.222.333/0001-81"); // true
+ * ```
+ */
+export const CHECKSUMS = Object.freeze({
+  luhn,
+  verhoeff,
+  iban: ibanMod97,
+  nhs: nhsMod11,
+  cpf: cpfChecksum,
+  cnpj: cnpjChecksum,
+  "aba-routing": abaRoutingChecksum,
+  npi: npiChecksum,
+  imei: imeiChecksum,
+  dea: deaChecksum,
+  vin: vinChecksum,
+  nino: ninoValid,
+  aadhaar: (value: string): boolean => aadhaarFormat(value) && verhoeff(value),
+  bsn: bsnChecksum,
+  "pt-nif": ptNifChecksum,
+  "es-dni": spanishIdChecksum,
+  "it-fiscal-code": italianFiscalCodeChecksum,
+  "fr-nir": frNirChecksum,
+  "cn-resident-id": chineseResidentIdChecksum,
+  "au-tfn": australianTfnChecksum,
+  "se-personnummer": swedishPersonnummerChecksum,
+  pix: pixPayloadChecksum,
+} satisfies Readonly<Record<string, (value: string) => boolean>>);
+
+/** The name of a validator in {@link CHECKSUMS}. */
+export type ChecksumName = keyof typeof CHECKSUMS;
