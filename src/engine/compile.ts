@@ -4,9 +4,16 @@
  */
 
 import { UnknownCategoryError, ValidationError } from "../errors.js";
-import { getPreset } from "../presets.js";
+import { combinePresets } from "../presets.js";
 import type { PiiCategory } from "../types.js";
-import { BUILTIN_CATEGORIES, LEGACY_AGGRESSIVE_DETECTORS, LEGACY_DETECTORS } from "./builtin.js";
+import { CHECKSUMS } from "../validators.js";
+import {
+  BUILTIN_CATEGORIES,
+  LEGACY_AGGRESSIVE_DETECTORS,
+  LEGACY_DETECTORS,
+  strictNationalIdDetector,
+} from "./builtin.js";
+import { contextProblem, withContext } from "./context.js";
 import { defineRegexDetector } from "./detector.js";
 import { createPipeline } from "./pipeline.js";
 import {
@@ -39,6 +46,7 @@ const PRECISE: Readonly<Partial<Record<PiiCategory, readonly [SpanDetector, ...S
     ipv4: [ipv4Detector],
     ipv6: [ipv6Detector],
     "credit-card": [creditCardDetector, maskedCardDetector],
+    "national-id": [strictNationalIdDetector],
   };
 
 const DEFAULT_STRATEGY: StrategySpec = { strategy: "redact" };
@@ -123,7 +131,7 @@ export function compilePipeline(
   if (typeof input !== "object" || input === null) {
     throw new ValidationError("spec", "must be an object");
   }
-  const preset = spec.preset === undefined ? undefined : getPreset(spec.preset);
+  const preset = spec.preset === undefined ? undefined : combinePresets(spec.preset);
   const detection: unknown = spec.detection;
   if (detection !== undefined && detection !== "precise" && detection !== "legacy") {
     throw new ValidationError("detection", 'must be "precise" or "legacy"');
@@ -157,14 +165,28 @@ export function compilePipeline(
     } catch {
       throw new ValidationError(`patterns[${String(index)}]`, "is not a valid regular expression");
     }
-    detectors.push(
-      defineRegexDetector({
-        id: `pattern/${String(index)}`,
-        category: pattern.category,
-        pattern: compiled,
-        ...(pattern.confidence !== undefined ? { confidence: pattern.confidence } : {}),
-      }),
-    );
+    const { validator, context } = pattern;
+    if (validator !== undefined && !Object.hasOwn(CHECKSUMS, validator)) {
+      throw new ValidationError(
+        `patterns[${String(index)}].validator`,
+        `must be one of ${Object.keys(CHECKSUMS).join(", ")}`,
+      );
+    }
+    const problem = context === undefined ? undefined : contextProblem(context);
+    if (problem !== undefined) {
+      throw new ValidationError(
+        `patterns[${String(index)}].context${problem.member === "" ? "" : `.${problem.member}`}`,
+        problem.message,
+      );
+    }
+    const detector = defineRegexDetector({
+      id: `pattern/${String(index)}`,
+      category: pattern.category,
+      pattern: compiled,
+      ...(pattern.confidence !== undefined ? { confidence: pattern.confidence } : {}),
+      ...(validator !== undefined ? { validate: CHECKSUMS[validator] } : {}),
+    });
+    detectors.push(context === undefined ? detector : withContext(detector, context));
   }
 
   const strategies = new Map<string, StrategySpec>();

@@ -7,8 +7,11 @@
 
 import { PolicyError } from "../errors.js";
 import { BUILTIN_CATEGORIES } from "../engine/builtin.js";
-import type { PatternSpec, PipelineSpec, StrategySpec } from "../engine/types.js";
+import { contextProblem } from "../engine/context.js";
+import type { ContextOptions, PatternSpec, PipelineSpec, StrategySpec } from "../engine/types.js";
 import type { PiiCategory } from "../types.js";
+import { CHECKSUMS } from "../validators.js";
+import type { ChecksumName } from "../validators.js";
 import { REGULATIONS, isRegulationId } from "./regulations.js";
 import { checkRequirement, describeStrategy } from "./traits.js";
 import type { TokenizationInfo } from "./traits.js";
@@ -317,6 +320,28 @@ export function checkPolicy(input: unknown, options: PolicyOptions = {}): Policy
           );
           continue;
         }
+        const validator = entry["validator"];
+        if (
+          validator !== undefined &&
+          !(typeof validator === "string" && Object.hasOwn(CHECKSUMS, validator))
+        ) {
+          error(
+            `${path}/validator`,
+            "invalid-type",
+            `validator must be one of ${Object.keys(CHECKSUMS).join(", ")}.`,
+          );
+          continue;
+        }
+        const context = entry["context"];
+        const problem = context === undefined ? undefined : contextProblem(context);
+        if (problem !== undefined) {
+          error(
+            `${path}/context${problem.member === "" ? "" : `/${problem.member}`}`,
+            "invalid-type",
+            `context${problem.member === "" ? "" : `.${problem.member}`} ${problem.message}.`,
+          );
+          continue;
+        }
         try {
           new RegExp(entry["source"], flags ?? "");
         } catch {
@@ -333,6 +358,10 @@ export function checkPolicy(input: unknown, options: PolicyOptions = {}): Policy
             category: entry["category"],
             ...(flags !== undefined ? { flags } : {}),
             ...(confidence !== undefined ? { confidence } : {}),
+            ...(validator !== undefined ? { validator: validator as ChecksumName } : {}),
+            ...(context !== undefined
+              ? { context: Object.freeze({ ...(context as ContextOptions) }) }
+              : {}),
           }),
         );
       }

@@ -249,6 +249,36 @@ describe("compliance/policy", () => {
       });
     });
 
+    it("keeps the validator and context of a pattern", () => {
+      const policy = parsePolicy({
+        version: 1,
+        id: "routing",
+        categories: { include: [], exclude: [...BUILTIN_CATEGORIES] },
+        patterns: [
+          {
+            source: String.raw`\b\d{9}\b`,
+            category: "routing",
+            confidence: 0.5,
+            validator: "aba-routing",
+            context: { keywords: ["routing"], boost: 0.4 },
+          },
+        ],
+        minConfidence: 0.8,
+      });
+      expect(policy.document.patterns?.[0]).toEqual({
+        source: String.raw`\b\d{9}\b`,
+        category: "routing",
+        confidence: 0.5,
+        validator: "aba-routing",
+        context: { keywords: ["routing"], boost: 0.4 },
+      });
+      const pipeline = compilePipeline(policyToSpec(policy));
+      const text = "routing 011000015, routing 011000016 and the ref 011000015";
+      expect(pipeline.transform(text).text).toBe(
+        "routing [REDACTED], routing 011000016 and the ref 011000015",
+      );
+    });
+
     it("detects everything and redacts when nothing is specified", () => {
       const policy = parsePolicy({ version: 1, id: "default" });
       expect(policy.categories).toEqual([...BUILTIN_CATEGORIES]);
@@ -387,6 +417,9 @@ describe("compliance/policy", () => {
           { source: "x", category: "c", flags: 1 },
           { source: "x", category: "c", confidence: 2 },
           "nope",
+          { source: "x", category: "c", validator: "crc" },
+          { source: "x", category: "c", context: { keywords: [] } },
+          { source: "x", category: "c", context: "id" },
         ],
         minConfidence: 2,
         allow: ["ok", 5],
@@ -415,6 +448,9 @@ describe("compliance/policy", () => {
         "/patterns/2/flags invalid-type",
         "/patterns/3/confidence invalid-type",
         "/patterns/4 invalid-pattern",
+        "/patterns/5/validator invalid-type",
+        "/patterns/6/context/keywords invalid-type",
+        "/patterns/7/context invalid-type",
         "/minConfidence invalid-type",
         "/allow invalid-type",
         "/aggressive invalid-type",

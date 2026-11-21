@@ -9,7 +9,8 @@
  * left-to-right pass.
  */
 
-import type { CompliancePreset, EncryptOptions, PiiCategory, StrategyOptions } from "../types.js";
+import type { EncryptOptions, PiiCategory, PresetSelection, StrategyOptions } from "../types.js";
+import type { ChecksumName } from "../validators.js";
 import type { TokenizationProvider } from "../vault/types.js";
 
 // ---------------------------------------------------------------------------
@@ -73,6 +74,23 @@ export interface SpanDetector {
    * configured on the stream.
    */
   readonly maxMatchLength?: number;
+}
+
+/**
+ * Context proximity for a detector: see `withContext()`.
+ */
+export interface ContextOptions {
+  /**
+   * Words or phrases that say what a value is, such as `"CPF"`, `"SSN"` or
+   * `"password"`. They match whole words, ignoring case.
+   */
+  readonly keywords: readonly string[];
+  /** How many words before a hit are searched for a keyword. Defaults to `3`. */
+  readonly window?: number;
+  /** Confidence added to a hit with a keyword before it, up to 1. Defaults to `0.15`. */
+  readonly boost?: number;
+  /** When `true`, hits without a keyword before them are dropped. Defaults to `false`. */
+  readonly required?: boolean;
 }
 
 /**
@@ -311,6 +329,14 @@ export interface PatternSpec {
   readonly category: string;
   /** Confidence score in [0, 1]. Defaults to `0.85`. */
   readonly confidence?: number;
+  /**
+   * Check digits a match must pass, by the name of a validator in
+   * `CHECKSUMS` (`"anonyma/validators"`), such as `"luhn"` or `"cnpj"`.
+   * A match that fails is discarded.
+   */
+  readonly validator?: ChecksumName;
+  /** Keywords that raise, or are required for, a match. See {@link ContextOptions}. */
+  readonly context?: ContextOptions;
 }
 
 /**
@@ -320,10 +346,11 @@ export interface PatternSpec {
  */
 export interface PipelineSpec {
   /**
-   * A built-in compliance preset to start from. Its categories and strategies
-   * apply unless `categories`, `defaultStrategy` or `rules` override them.
+   * A built-in compliance preset to start from, or a list of presets combined
+   * with `combinePresets()`. Its categories and strategies apply unless
+   * `categories`, `defaultStrategy` or `rules` override them.
    */
-  readonly preset?: CompliancePreset;
+  readonly preset?: PresetSelection;
   /**
    * Built-in categories to detect. Defaults to the categories of `preset`, or
    * to all built-in categories when no preset is given.
@@ -335,8 +362,8 @@ export interface PipelineSpec {
    * Which built-in detectors to use.
    *
    * - `"precise"` (default): the validating detectors for email, SSN, IBAN,
-   *   IPv4, IPv6 and payment cards, and the 1.x detectors for the other
-   *   categories.
+   *   IPv4, IPv6, payment cards and national IDs (check digits), and the 1.x
+   *   detectors for the other categories.
    * - `"legacy"`: the 1.x detectors for every category.
    */
   readonly detection?: "precise" | "legacy";
