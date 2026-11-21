@@ -39,7 +39,8 @@ Streaming works too: a token split across chunks is held back until it is comple
 ```ts
 import { createLlmGuard } from "anonyma/ai";
 
-const exchange = createLlmGuard({ session: { format: "brace" } }).begin();
+const guard = createLlmGuard({ session: { format: "brace" } }); // once, at start-up
+const exchange = guard.begin(); // per conversation
 const { messages } = exchange.sanitizeMessages([
   { role: "user", content: "Email ana@example.com" },
 ]);
@@ -49,14 +50,29 @@ exchange.restoreText(answer).text; // the original address is back
 
 ## Across requests
 
-A conversation that spans requests needs the mapping to live somewhere shared. Any store with
-`store()` and `retrieve()` is an `AnonymaVault`:
+A conversation that spans requests needs the mapping to outlive the request. Either keep the
+guard's snapshot on your side and resume from it:
 
 ```ts
+const exchange = guard.begin(loadSnapshot(conversationId)); // undefined on the first turn
+// … sanitize, call the model, restore …
+saveSnapshot(conversationId, exchange.snapshot()); // holds the original values: keep it private
+```
+
+or put the tokens in a store. Any object with `store()` and `retrieve()` is an `AnonymaVault`:
+
+```ts
+import { compilePipeline } from "anonyma/engine";
 import { createVaultTokenizer, restore } from "anonyma/vault";
 
 const vault = redisVault(conversationId); // your implementation: store(key, value), retrieve(key)
-const tokens = createVaultTokenizer({ vault });
+const pipeline = compilePipeline(
+  { defaultStrategy: { strategy: "tokenize" } },
+  { tokenization: createVaultTokenizer({ vault }) },
+);
+
+const { text: prompt } = await pipeline.transformAsync(userMessage); // "… {{EMAIL_1}} …"
+const { text } = await restore(await callYourModel(prompt), vault);
 ```
 
 Keep restoration scoped to the conversation that issued the tokens: a token from one conversation

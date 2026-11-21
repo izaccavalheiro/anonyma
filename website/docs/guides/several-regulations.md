@@ -65,5 +65,5 @@ const receipt = await receipts.issue(result);
 ```
 
 A receipt that was edited, signed with another key, or issued for another output fails
-verification. For a continuous record, the [audit chain](../guide/modules.md) links every operation
+verification. For a continuous record, the [audit chain](../guide/audit.md) links every operation
 to the one before it.

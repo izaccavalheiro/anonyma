@@ -3,7 +3,6 @@
  * Write the pages of the site that come from the repository itself, so that
  * the site never says something the repository does not:
  *
- * - docs/guide/      the sections of README.md, one topic per page;
  * - docs/packages/   the READMEs of packages/*;
  * - docs/reference/  docs/api.md, ARCHITECTURE.md, bench/README.md, and tables
  *                    generated from the built library (categories, presets,
@@ -11,8 +10,13 @@
  * - docs/project/    CHANGELOG.md, SECURITY.md, CONTRIBUTING.md;
  * - src/data/        the benchmark results.
  *
- * Links between these files become links between pages; links to anything
- * else in the repository point to GitHub. The library must have been built
+ * The rest of docs/ — the introduction, the library guide (docs/guide/), the
+ * recipes and the FAQ — is written in website/ and is the main documentation
+ * of the library; README.md is a short overview that links to it.
+ *
+ * Links between these files become links between pages, links to a page under
+ * website/docs/ become links to that page, and links to anything else in the
+ * repository point to GitHub. The library must have been built
  * (`npm run build` at the root): the reference tables are read from dist/.
  */
 
@@ -29,32 +33,6 @@ const REPOSITORY = "https://github.com/izaccavalheiro/anonyma";
 // What goes where
 // ---------------------------------------------------------------------------
 
-/** README sections, grouped into guide pages. Every section must be placed or skipped. */
-const GUIDE = [
-  ["installation", "Installation", ["Installation", "Requirements", "Subpath Imports"]],
-  ["quick-start", "Quick start", ["Quick Start"]],
-  ["detection", "Detecting personal data", ["Detected PII Categories", "Custom Detectors"]],
-  ["validators", "Checksum validators", ["Validators"]],
-  [
-    "strategies",
-    "Anonymization strategies",
-    ["Strategies", "Encryption Strategy", "Synthesis Strategy"],
-  ],
-  ["presets", "Compliance presets", ["Compliance Presets"]],
-  ["tokenization", "Reversible tokenization", ["Reversible Tokenization"]],
-  ["llm", "LLMs and AI tools", ["LLM Pipeline Helpers", "AI Integration"]],
-  ["batch-and-streaming", "Batches and streams", ["Batch Processing", "Streaming"]],
-  ["plugins", "Plugins", ["Plugins"]],
-  [
-    "modules",
-    "Engine, vault, audit and AI modules",
-    ["Span Engine, Tokenization, Audit and AI Modules"],
-  ],
-  ["errors", "Errors", ["Errors"]],
-];
-/** README sections the site covers elsewhere: the home page, the reference, the project pages. */
-const SKIPPED = ["Features", "API Documentation", "Companion Packages", "Contributing", "License"];
-
 /** Whole files: repository path → [page, title, sidebar position]. */
 const FILES = {
   "docs/api.md": ["reference/api.md", "API reference", 1],
@@ -68,27 +46,23 @@ const FILES = {
   "CONTRIBUTING.md": ["project/contributing.md", "Contributing", 3],
 };
 
-/** Repository paths that are pages of the site; filled as pages are planned. */
+/** Repository paths that are pages of the site. */
 const pageOf = new Map([["README.md", "intro.md"]]);
 for (const [path, [page]] of Object.entries(FILES)) {
   pageOf.set(path, page);
   if (path.startsWith("packages/")) pageOf.set(dirname(path), page);
 }
-for (const [slug] of GUIDE) pageOf.set(`#guide/${slug}`, `guide/${slug}.md`);
+/** The page that a repository path is, if it is one: generated, or written under website/docs/. */
+function pageFor(repoPath) {
+  const mapped = pageOf.get(repoPath);
+  if (mapped !== undefined) return mapped;
+  const written = /^website\/docs\/(.+\.mdx?)$/.exec(repoPath);
+  return written !== null && existsSync(join(root, repoPath)) ? written[1] : undefined;
+}
 
 // ---------------------------------------------------------------------------
 // Markdown helpers
 // ---------------------------------------------------------------------------
-
-/** The id Docusaurus gives a heading (github-slugger, without the de-duplication suffix). */
-function slug(heading) {
-  return heading
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
-    .replace(/`/g, "")
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s_-]/gu, "")
-    .replace(/\s/g, "-");
-}
 
 /** Lines of `text` outside fenced code blocks, with a flag for each. */
 function* linesOf(text) {
@@ -101,47 +75,6 @@ function* linesOf(text) {
     }
     yield { line, code: fence };
   }
-}
-
-function headings(text) {
-  const out = [];
-  for (const { line, code } of linesOf(text)) {
-    const match = !code && /^#{1,6}\s+(.*)$/.exec(line);
-    if (match) out.push(slug(match[1]));
-  }
-  return out;
-}
-
-/** Split a Markdown file into its `## ` sections: [title, body without the heading][]. */
-function sections(text) {
-  const out = [];
-  let current;
-  for (const { line, code } of linesOf(text)) {
-    const match = !code && /^## (.*)$/.exec(line);
-    if (match) {
-      current = { title: match[1].trim(), lines: [] };
-      out.push(current);
-    } else if (current !== undefined) {
-      current.lines.push(line);
-    }
-  }
-  return out.map(({ title, lines }) => [
-    title,
-    lines
-      .join("\n")
-      .replace(/\n---\s*$/, "")
-      .trim(),
-  ]);
-}
-
-/** Raise every heading of `text` by `levels` (`### ` becomes `## ` for 1). */
-function promote(text, levels) {
-  if (levels === 0) return text;
-  const out = [];
-  for (const { line, code } of linesOf(text)) {
-    out.push(!code && /^#{3,6}\s/.test(line) ? line.slice(levels) : line);
-  }
-  return out.join("\n");
 }
 
 function frontMatter(fields) {
@@ -157,9 +90,6 @@ function frontMatter(fields) {
 // ---------------------------------------------------------------------------
 // Links
 // ---------------------------------------------------------------------------
-
-/** Anchor → page, for links to an anchor of README.md that now lives on a guide page. */
-const anchors = new Map();
 
 /** Rewrite the links of `text`, which came from `source` and becomes the page `page`. */
 function rewriteLinks(text, source, page) {
@@ -178,19 +108,12 @@ function rewriteLinks(text, source, page) {
           return bang === "!" ? `[${label}](${target})` : whole;
         }
         const [path, hash] = target.split("#");
-        if (path === "") {
-          const owner = anchors.get(hash);
-          if (owner === undefined || owner === page) return whole;
-          return `[${label}](${posix.relative(pageDir, owner)}#${hash})`;
-        }
+        if (path === "") return whole;
         const repoPath = posix.normalize(posix.join(sourceDir, path)).replace(/\/$/, "");
-        const mapped = pageOf.get(repoPath);
+        const mapped = pageFor(repoPath);
         if (mapped !== undefined) {
           const anchor = hash === undefined || hash === "readme" ? "" : `#${hash}`;
-          // An anchor of README.md may now be on a guide page.
-          const owner =
-            repoPath === "README.md" && hash !== undefined ? anchors.get(hash) : undefined;
-          return `[${label}](${posix.relative(pageDir, owner ?? mapped)}${anchor})`;
+          return `[${label}](${posix.relative(pageDir, mapped)}${anchor})`;
         }
         const onDisk = join(root, repoPath);
         if (!existsSync(onDisk)) throw new Error(`${source}: broken link to ${target}`);
@@ -224,50 +147,10 @@ function category(dir, label, position, description) {
   );
 }
 
-for (const dir of ["guide", "packages", "reference", "project"]) {
+for (const dir of ["packages", "reference", "project"]) {
   rmSync(join(docs, dir), { recursive: true, force: true });
 }
 rmSync(join(site, "src", "data"), { recursive: true, force: true });
-
-// --- README, one topic per page ----------------------------------------------
-const readme = readFileSync(join(root, "README.md"), "utf8");
-const readmeSections = new Map(sections(readme));
-const placed = new Set([...SKIPPED, ...GUIDE.flatMap(([, , names]) => names)]);
-for (const name of readmeSections.keys()) {
-  if (!placed.has(name)) {
-    throw new Error(
-      `README.md section "${name}" has no page: add it to GUIDE or SKIPPED in scripts/sync.mjs`,
-    );
-  }
-}
-const guidePages = GUIDE.map(([file, title, names], index) => {
-  const parts = names.map((name) => {
-    const body = readmeSections.get(name);
-    if (body === undefined) throw new Error(`README.md has no section "${name}"`);
-    return [name, body];
-  });
-  const body =
-    parts.length === 1
-      ? promote(parts[0][1], 1)
-      : parts.map(([name, part]) => `## ${name}\n\n${part}`).join("\n\n");
-  const page = `guide/${file}.md`;
-  for (const id of headings(body)) if (!anchors.has(id)) anchors.set(id, page);
-  for (const [name] of parts) anchors.set(slug(name), page);
-  return { page, title, position: index + 1, body };
-});
-for (const { page, title, position, body } of guidePages) {
-  write(
-    page,
-    frontMatter({
-      title,
-      sidebar_position: position,
-      custom_edit_url: `${REPOSITORY}/edit/main/README.md`,
-    }) +
-      rewriteLinks(body, "README.md", page) +
-      "\n",
-  );
-}
-category("guide", "Library guide", 3, "How to use anonyma, topic by topic.");
 
 // --- Whole files --------------------------------------------------------------
 for (const [source, [page, title, position]] of Object.entries(FILES)) {
