@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { createMcpServer } from "../src/mcp/index.js";
 import { ANONYMA_MANIFEST } from "../src/schemas.js";
+import { VERSION } from "../src/version.js";
 
 const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as {
   version: string;
@@ -22,6 +23,7 @@ describe("version", () => {
     });
     expect(initialized).toMatchObject({ result: { serverInfo: { version: pkg.version } } });
     expect(ANONYMA_MANIFEST.version).toBe(pkg.version);
+    expect(VERSION).toBe(pkg.version);
   });
 
   it("has a changelog section", () => {

@@ -179,6 +179,21 @@ const CHECKS = [
       assert(!JSON.stringify(scrubbed).includes("alice"), "HTTP scrubber left PII");
     },
   ],
+  [
+    "receipts, checksums and combined presets",
+    async () => {
+      const pipeline = engine.compilePipeline({ preset: ["lgpd", "hipaa"] });
+      const result = pipeline.transform("CPF 529.982.247-25, CNPJ 11.222.333/0001-81");
+      assert(!result.text.includes("529.982") && !result.text.includes("11.222"), "LGPD + HIPAA");
+      const receipts = audit.createReceiptIssuer({ key: "runtime-check-key-0123456789abcdef" });
+      const receipt = await receipts.issue(result, { input: "x" });
+      equal(receipt.total, 2, "receipt total");
+      const verified = await receipts.verify(receipt, { output: result.text, input: "x" });
+      assert(verified.valid, "receipt did not verify");
+      const altered = await receipts.verify({ ...receipt, total: 3 });
+      assert(!altered.valid, "altered receipt verified");
+    },
+  ],
 ];
 
 /**
