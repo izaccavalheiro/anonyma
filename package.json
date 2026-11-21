@@ -258,7 +258,7 @@
     "prettier": "^3.10.1",
     "publint": "^0.3.25",
     "tsup": "^9.0.0",
-    "typescript": "^5.4.0",
+    "typescript": "~6.0.3",
     "typescript-eslint": "^8.0.0",
     "vitest": "^5.1.1",
     "zod": "^4.6.7"
