@@ -160,7 +160,17 @@ function createBuffer(pipeline: Pipeline, options: ChunkOptions): Buffer {
       reset();
       return pieces;
     }
-    const keepFrom = Math.max(0, cut - window);
+    let keepFrom = Math.max(0, cut - window);
+    // Keep whole a detection that the left context would cut: read from its
+    // middle, the end of one card number and the start of the next can pass
+    // for a card of their own, which the whole text never yields.
+    for (const span of spans) {
+      if (span.start >= keepFrom) break;
+      if (span.end > keepFrom) {
+        keepFrom = span.start;
+        break;
+      }
+    }
     consumed += keepFrom;
     context = text.slice(keepFrom, cut);
     pending = text.slice(cut);
