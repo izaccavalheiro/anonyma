@@ -20,6 +20,7 @@ import {
   textDeltaLens,
   toLanguageModelMiddleware,
 } from "../../src/ai/index.js";
+import type { SanitizedMessages } from "../../src/ai/index.js";
 import {
   createKeyRing,
   createKeyedTokenizer,
@@ -1047,6 +1048,62 @@ describe("ai/guard", () => {
         { type: "text-delta", id: "0", delta: " and " },
         { type: "text-delta", id: "0", delta: "[EMA" },
         { type: "finish" },
+      ]);
+    });
+
+    it("does not report empty provider members as unscanned", async () => {
+      const reports: SanitizedMessages<unknown>[] = [];
+      const guarded = toLanguageModelMiddleware(createLlmGuard(), {
+        onSanitized: (report) => reports.push(report),
+      });
+      // The shape the Vercel AI SDK sends: `providerOptions` is present and undefined.
+      await guarded.transformParams({
+        params: {
+          prompt: [
+            {
+              role: "user",
+              content: [{ type: "text", text: "alice@example.com", providerOptions: null }],
+              providerOptions: undefined,
+            },
+            { role: "user", content: "x", providerOptions: { vendor: { cache: true } } },
+          ],
+        },
+      });
+      expect(reports[0]).toMatchObject({ replaced: 1, unscanned: ["/1/providerOptions"] });
+    });
+
+    it("restores reasoning deltas apart from text deltas with the same id", async () => {
+      const params = await middleware.transformParams({ params: { prompt } });
+      const parts = [
+        { type: "reasoning-delta", id: "0", delta: "User wants [EMA" },
+        { type: "text-delta", id: "0", delta: "Mailing [EMAIL_0001]" },
+        { type: "reasoning-delta", id: "0", delta: "IL_0001]" },
+        { type: "reasoning-end", id: "0" },
+      ];
+      const { stream } = await middleware.wrapStream({
+        params,
+        doStream: () =>
+          Promise.resolve({
+            stream: new ReadableStream<unknown>({
+              start(controller): void {
+                for (const part of parts) controller.enqueue(part);
+                controller.close();
+              },
+            }),
+          }),
+      });
+      const seen: unknown[] = [];
+      const reader = stream.getReader();
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        seen.push(value);
+      }
+      expect(seen).toEqual([
+        { type: "reasoning-delta", id: "0", delta: "User wants " },
+        { type: "text-delta", id: "0", delta: "Mailing alice@example.com" },
+        { type: "reasoning-delta", id: "0", delta: "alice@example.com" },
+        { type: "reasoning-end", id: "0" },
       ]);
     });
   });

@@ -3,6 +3,8 @@
  * @description Core TypeScript types and interfaces for the anonyma library.
  */
 
+import type { AnonymaVault } from "./vault/anonyma-vault.js";
+
 // ---------------------------------------------------------------------------
 // PII entity types
 // ---------------------------------------------------------------------------
@@ -195,10 +197,11 @@ export interface DetokenizeResult {
  * Token format style.
  * - `"bracket"`: `[CATEGORY_NNNN]` (default)
  * - `"angle"`: `<CATEGORY_N>`
+ * - `"brace"`: `{{CATEGORY_N}}`
  * - `"custom"`: declared for a `tokenTemplate` function, which `tokenize()`
  *   does not apply; it produces the angle format.
  */
-export type TokenFormat = "angle" | "bracket" | "custom";
+export type TokenFormat = "angle" | "bracket" | "brace" | "custom";
 
 /**
  * Options accepted by `tokenize()`.
@@ -209,9 +212,19 @@ export interface TokenizeOptions {
    */
   readonly categories?: readonly PiiCategory[];
   /**
-   * Token format style. Defaults to `"bracket"`.
+   * Token format style. Defaults to `"bracket"`, or to `"brace"` when a
+   * `vault` is given.
    */
   readonly format?: TokenFormat;
+  /**
+   * Store the tokens in this vault. Tokens are numbered after those the vault
+   * already holds, and a value the vault already holds keeps its token, so one
+   * vault can serve every turn of a conversation; `restore(text, vault)` puts
+   * the values back. With a vault, values are compared exactly (not ignoring
+   * case) and tokens are numbered in document order. An asynchronous vault
+   * requires `tokenizeAsync()`.
+   */
+  readonly vault?: AnonymaVault;
   /**
    * Custom token template function, for `format: "custom"`.
    *

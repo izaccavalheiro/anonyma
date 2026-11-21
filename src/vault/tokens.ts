@@ -40,6 +40,87 @@ const BUILTIN_PREFIXES: Readonly<Record<string, string>> = {
 /** Source of the pattern every token prefix satisfies. */
 export const PREFIX_SOURCE = "[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*";
 
+/**
+ * Shape of a numbered token.
+ *
+ * - `"bracket"`: `[EMAIL_0001]`
+ * - `"angle"`: `<EMAIL_1>`
+ * - `"brace"`: `{{EMAIL_1}}`
+ */
+export type TokenShape = "bracket" | "angle" | "brace";
+
+/**
+ * How one {@link TokenShape} is written and matched.
+ * @internal
+ */
+export interface ShapeGrammar {
+  /** Text before the token body. */
+  readonly open: string;
+  /** Text after the token body. */
+  readonly close: string;
+  /** Regular-expression source of `open`. */
+  readonly openSource: string;
+  /** Regular-expression source of `close`. */
+  readonly closeSource: string;
+  /** Zero padding of the number (`0` for none). */
+  readonly pad: number;
+  /**
+   * Regular-expression source, anchored at the end of a string, of any proper
+   * prefix of a token of this shape, up to and including all but the last
+   * character of `close`.
+   */
+  readonly partialSource: string;
+}
+
+/**
+ * The grammar of every token shape.
+ * @internal
+ */
+export const SHAPES: Readonly<Record<TokenShape, ShapeGrammar>> = Object.freeze({
+  bracket: {
+    open: "[",
+    close: "]",
+    openSource: "\\[",
+    closeSource: "\\]",
+    pad: 4,
+    partialSource: "\\[[A-Za-z0-9_]{0,60}$",
+  },
+  angle: {
+    open: "<",
+    close: ">",
+    openSource: "<",
+    closeSource: ">",
+    pad: 0,
+    partialSource: "<[A-Za-z0-9_]{0,60}$",
+  },
+  brace: {
+    open: "{{",
+    close: "}}",
+    openSource: "\\{\\{",
+    closeSource: "\\}\\}",
+    pad: 0,
+    // A lone `{` may be the first half of the opening delimiter.
+    partialSource: "(?:\\{\\{[A-Za-z0-9_]{0,60}\\}?|\\{)$",
+  },
+});
+
+/**
+ * Whether `shape` names a {@link TokenShape}.
+ * @internal
+ */
+export function isTokenShape(shape: unknown): shape is TokenShape {
+  return shape === "bracket" || shape === "angle" || shape === "brace";
+}
+
+/**
+ * Regular-expression source of the body of any numbered token: a prefix, an
+ * optional tag and a number. Every part is bounded, so text that only looks
+ * like the start of a token costs a fixed amount to reject.
+ * @internal
+ */
+export const ANY_TOKEN_BODY_SOURCE =
+  "[A-Z][A-Za-z0-9]{0,39}(?:_[A-Za-z0-9]{1,40}){0,13}?_\\d{1,12}";
+
 /** Source of the pattern every key version identifier satisfies. */
 export const KEY_ID_SOURCE = "[A-Za-z0-9]{1,16}";
 

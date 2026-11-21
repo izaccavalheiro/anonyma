@@ -655,14 +655,26 @@ export function toLanguageModelMiddleware(
           reader.releaseLock();
         }
       }
+      // Reasoning is model text too, and restored like the answer. The lens
+      // reads a reasoning delta as a text delta; blocks are kept apart by type.
+      const asText = (part: unknown): Record<string, unknown> | undefined => {
+        if (!isPlainObject(part)) return undefined;
+        return part["type"] === "reasoning-delta" ? { ...part, type: "text-delta" } : part;
+      };
       const lens = {
-        get: (part: unknown): string | undefined =>
-          isPlainObject(part) ? textDeltaLens.get(part) : undefined,
+        get: (part: unknown): string | undefined => {
+          const text = asText(part);
+          return text === undefined ? undefined : textDeltaLens.get(text);
+        },
         set: (part: unknown, text: string): unknown =>
           textDeltaLens.set(part as Record<string, unknown>, text),
-        block: (part: unknown): string | undefined =>
-          // Only asked about a part that get() found text in, which is a plain object.
-          isPlainObject(part) ? textDeltaLens.block?.(part) : /* v8 ignore next */ undefined,
+        block: (part: unknown): string | undefined => {
+          const text = asText(part);
+          const id = text === undefined ? undefined : textDeltaLens.block?.(text);
+          return id === undefined
+            ? undefined
+            : `${String((part as { type?: unknown }).type)}:${id}`;
+        },
       };
       // Held text is delivered before the next part without text, so nothing
       // arrives after the part that ends its block.

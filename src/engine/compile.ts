@@ -170,7 +170,7 @@ export function compilePipeline(
   const strategies = new Map<string, StrategySpec>();
   for (const rule of preset?.rules ?? []) {
     // Preset rules never use the strategies that need a dependency.
-    strategies.set(rule.category, rule.strategy as StrategySpec);
+    strategies.set(rule.category, rule.strategy);
   }
   for (const [category, strategy] of Object.entries(spec.rules ?? {})) {
     const rule: unknown = strategy;
@@ -188,10 +188,7 @@ export function compilePipeline(
     });
   }
 
-  const defaultStrategy =
-    spec.defaultStrategy ??
-    (preset?.defaultStrategy as StrategySpec | undefined) ??
-    DEFAULT_STRATEGY;
+  const defaultStrategy = spec.defaultStrategy ?? preset?.defaultStrategy ?? DEFAULT_STRATEGY;
 
   // A redaction label must survive a second pass unchanged. The 1.x bank-account
   // detector reads any eight-letter upper-case word, "REDACTED" included, as a

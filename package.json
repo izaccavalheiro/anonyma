@@ -1,6 +1,6 @@
 {
   "name": "anonyma",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": "Izac Cavalheiro <izac@izaccavalheiro.com>",
   "description": "TypeScript-first PII detection & anonymization — 27 built-in detectors (email, SSN, IBAN, and more), 8 strategies (mask, redact, hash, AES-256 encrypt, tokenize, pseudonymize, generalize, synthesize), 8 compliance presets (GDPR, LGPD, PIPEDA, HIPAA, CCPA, PCI-DSS, SOX, FERPA), a span engine with chunk-safe streaming, reversible and keyed tokenization with key rotation, a zero-PII audit log, regulation profiles, LLM/AI helpers, an MCP server, HTTP middleware, batch processing, checksum validators, and optional Zod schemas.",
   "license": "MIT",
@@ -212,6 +212,9 @@
     "CHANGELOG.md"
   ],
   "sideEffects": false,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "tsup",
     "build:watch": "tsup --watch",
@@ -220,13 +223,19 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write \"*.{md,json,js,cjs,mjs,ts,yml,yaml}\" \".github/**/*.{yml,yaml,md}\" \"{src,tests,bench,scripts}/**/*.{ts,js,mjs,cjs,json,md}\"",
-    "format:check": "prettier --check \"*.{md,json,js,cjs,mjs,ts,yml,yaml}\" \".github/**/*.{yml,yaml,md}\" \"{src,tests,bench,scripts}/**/*.{ts,js,mjs,cjs,json,md}\"",
+    "format": "prettier --write \"*.{md,json,js,cjs,mjs,ts,yml,yaml}\" \".github/**/*.{yml,yaml,md}\" \"{src,tests,bench,scripts,packages}/**/*.{ts,js,mjs,cjs,json,md}\"",
+    "format:check": "prettier --check \"*.{md,json,js,cjs,mjs,ts,yml,yaml}\" \".github/**/*.{yml,yaml,md}\" \"{src,tests,bench,scripts,packages}/**/*.{ts,js,mjs,cjs,json,md}\"",
     "typecheck": "tsc --noEmit",
+    "typecheck:packages": "npm run typecheck --workspaces",
+    "test:packages": "npm run test --workspaces",
+    "build:packages": "npm run build --workspaces",
+    "check:packages": "npm run check:package --workspaces",
     "check:package": "publint --strict && attw --pack . --profile node16",
     "check:size": "node scripts/check-size.mjs",
     "check:privacy": "node scripts/check-privacy.mjs",
     "smoke": "node scripts/smoke.mjs",
+    "check:runtime": "node scripts/runtime/run.mjs",
+    "check:workerd": "node scripts/runtime/workerd.mjs",
     "validate": "npm run typecheck && npm run lint && npm run format:check && npm run test:coverage && npm run build && npm run check:package && npm run check:size && npm run check:privacy -- --require-dist && npm run smoke",
     "prepublishOnly": "npm run typecheck && npm run lint && npm run test && npm run build",
     "release": "npm run prepublishOnly && npm publish",
@@ -239,7 +248,7 @@
     "@commitlint/config-conventional": "^21.2.3",
     "@eslint/js": "^9.0.0",
     "@types/node": "^20.0.0",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.12",
     "eslint": "^9.0.0",
     "express": "^5.2.1",
     "fast-check": "^4.10.2",
@@ -251,11 +260,11 @@
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
     "typescript-eslint": "^8.0.0",
-    "vitest": "^4.1.11",
-    "zod": "^3.23.0"
+    "vitest": "^4.1.12",
+    "zod": "^4.6.7"
   },
   "peerDependencies": {
-    "zod": "^3.23.0"
+    "zod": "^3.25.4 || ^4.0.0"
   },
   "peerDependenciesMeta": {
     "zod": {

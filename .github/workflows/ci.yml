@@ -7,6 +7,8 @@
 #   coverage      Is the code still covered above the thresholds?
 #   package       Is what would be published a valid dual ESM/CJS package, within its size budget?
 #   smoke         Does the packed tarball work for a consumer, down to Node.js 18?
+#   runtimes      Does the built package work on Bun, Deno and Cloudflare Workers?
+#   packages      Do @anonyma/vercel-ai and @anonyma/mcp type-check, pass and pack?
 #   performance   Is the span engine still linear in the size of its input?
 #   privacy       Do the privacy invariants and the compliance suites hold (GDPR, LGPD)?
 #   supply-chain  Are the dependencies free of known vulnerabilities and correctly signed?
@@ -224,6 +226,103 @@ jobs:
       - name: Install and use the package
         run: node scripts/smoke.mjs anonyma-*.tgz
 
+  runtimes:
+    name: Runtime (${{ matrix.runtime }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime: [bun, deno, workerd]
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      # The same checks on every runtime (scripts/runtime/checks.mjs): they
+      # import dist/ directly and use nothing but the Web platform.
+      - name: Set up Bun
+        if: matrix.runtime == 'bun'
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Run the checks on Bun
+        if: matrix.runtime == 'bun'
+        run: bun scripts/runtime/run.mjs
+
+      - name: Set up Deno
+        if: matrix.runtime == 'deno'
+        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+        with:
+          deno-version: v2.x
+
+      # No permission flags: the package needs no file, network or env access.
+      - name: Run the checks on Deno
+        if: matrix.runtime == 'deno'
+        run: deno run --no-config scripts/runtime/run.mjs
+
+      # Miniflare runs workerd, the runtime of Cloudflare Workers, locally. It
+      # is not a development dependency: it brings a large native binary.
+      - name: Install Miniflare
+        if: matrix.runtime == 'workerd'
+        run: npm install --no-save --no-audit --no-fund miniflare@4
+
+      # The worker is bundled with esbuild as `wrangler deploy` does, and runs
+      # without the nodejs_compat flag.
+      - name: Run the checks on Cloudflare Workers
+        if: matrix.runtime == 'workerd'
+        run: node scripts/runtime/workerd.mjs
+
+  packages:
+    name: Packages
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The packages import anonyma through its export map, from this build.
+      - name: Build anonyma
+        run: npm run build
+
+      - name: Type-check
+        run: npm run typecheck:packages
+
+      # Against the real Vercel AI SDK and MCP SDK, not stand-ins.
+      - name: Test
+        run: npm run test:packages
+
+      - name: Build the packages
+        run: npm run build:packages
+
+      - name: Validate the packages
+        run: npm run check:packages
+
   performance:
     name: Performance
     runs-on: ubuntu-24.04
@@ -369,6 +468,8 @@ jobs:
       - coverage
       - package
       - smoke
+      - runtimes
+      - packages
       - performance
       - privacy
       - supply-chain

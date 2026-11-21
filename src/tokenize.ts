@@ -21,10 +21,26 @@
  */
 
 import { detect } from "./anonymize.js";
-import { createTokenStore, assignToken, detokenizeText } from "./strategies/tokenize.js";
+import {
+  createTokenStore,
+  assignToken,
+  detokenizeText,
+  LEGACY_TOKEN_PATTERN,
+} from "./strategies/tokenize.js";
 import { ValidationError } from "./errors.js";
 import { compileAllowlist } from "./internal/allowlist.js";
-import type { TokenizeResult, DetokenizeResult, TokenizeOptions, TokenMatch } from "./types.js";
+import { isThenable } from "./vault/anonyma-vault.js";
+import type { AnonymaVault } from "./vault/anonyma-vault.js";
+import { createVaultTokenizer } from "./vault/vault-tokenizer.js";
+import type { VaultTokenizer } from "./vault/vault-tokenizer.js";
+import type {
+  TokenizeResult,
+  DetokenizeResult,
+  TokenizeOptions,
+  TokenMatch,
+  TokenFormat,
+  PiiMatch,
+} from "./types.js";
 
 // Category → token prefix mapping (mirrors TOKEN_PREFIX_MAP in anonymize.ts).
 const TOKEN_PREFIX_MAP: Record<string, string> = {
@@ -79,32 +95,36 @@ const TOKEN_PREFIX_MAP: Record<string, string> = {
  * );
  * // text:    "Email [EMAIL_0001], phone [PHONE_0001]"
  * // mapping: Map { "[EMAIL_0001]" => "alice@example.com", "[PHONE_0001]" => "555-867-5309" }
+ *
+ * // Keep the tokens in a vault, and restore them later from any text:
+ * const vault = new InMemoryVault();
+ * tokenize("Mail john@example.com", { vault }).text; // "Mail {{EMAIL_1}}"
+ * restore("Sent to {{EMAIL_1}}.", vault).text;       // "Sent to john@example.com."
  * ```
+ *
+ * @throws {@link ValidationError} When `vault` answers asynchronously; use {@link tokenizeAsync}.
  */
 export function tokenize(text: string, options: TokenizeOptions = {}): TokenizeResult {
-  if (typeof text !== "string") throw new ValidationError("text", "must be a string");
-
-  const {
-    categories,
-    format = "bracket",
-    customDetectors,
-    aggressive = false,
-    confidenceThreshold = 0,
-    allowlist = [],
-    allowlistCaseSensitive = false,
-  } = options;
-
-  const isAllowlisted = compileAllowlist(allowlist, [], allowlistCaseSensitive);
-
-  // Detect PII.
-  const allMatches = detect(text, categories, customDetectors, aggressive).filter(
-    (m) => m.confidence >= confidenceThreshold && !isAllowlisted(m.value),
-  );
+  const matches = detectForTokenize(text, options);
+  if (options.vault !== undefined) {
+    const tokenizer = vaultTokenizerFor(options.vault, options.format);
+    const tokens = matches.map((match) => {
+      const token = tokenizer.tokenize(match.value, { category: match.category });
+      if (isThenable(token)) {
+        // The vault is asynchronous; tokenizeAsync() is the entry point for it.
+        void token.catch(() => undefined);
+        throw new ValidationError("vault", "answers asynchronously: use tokenizeAsync()");
+      }
+      return token;
+    });
+    return replaceInOrder(text, matches, tokens);
+  }
 
   const store = createTokenStore();
   let result = text;
-  const reversed = [...allMatches].reverse();
+  const reversed = [...matches].reverse();
   const tokenMatches: TokenMatch[] = [];
+  const format = options.format ?? "bracket";
 
   for (const match of reversed) {
     const prefix = TOKEN_PREFIX_MAP[match.category] ?? match.category.toUpperCase();
@@ -128,13 +148,75 @@ export function tokenize(text: string, options: TokenizeOptions = {}): TokenizeR
 
 /**
  * Async variant of {@link tokenize} — identical behaviour but returns a Promise.
- * Useful for consistency in async pipelines.
+ * It is the entry point for an asynchronous `vault` (Redis, a KV store, …).
+ *
+ * @example
+ * ```ts
+ * const { text } = await tokenizeAsync("Mail john@example.com", { vault: redisVault });
+ * // "Mail {{EMAIL_1}}"
+ * ```
  */
-export function tokenizeAsync(
+export async function tokenizeAsync(
   text: string,
   options: TokenizeOptions = {},
 ): Promise<TokenizeResult> {
-  return Promise.resolve(tokenize(text, options));
+  if (options.vault === undefined) return tokenize(text, options);
+  const matches = detectForTokenize(text, options);
+  const tokenizer = vaultTokenizerFor(options.vault, options.format);
+  const tokens: string[] = [];
+  for (const match of matches) {
+    tokens.push(await tokenizer.tokenize(match.value, { category: match.category }));
+  }
+  return replaceInOrder(text, matches, tokens);
+}
+
+/** The detections `tokenize()` replaces, in document order. */
+function detectForTokenize(text: string, options: TokenizeOptions): PiiMatch[] {
+  if (typeof text !== "string") throw new ValidationError("text", "must be a string");
+  const {
+    categories,
+    customDetectors,
+    aggressive = false,
+    confidenceThreshold = 0,
+    allowlist = [],
+    allowlistCaseSensitive = false,
+  } = options;
+  const isAllowlisted = compileAllowlist(allowlist, [], allowlistCaseSensitive);
+  return detect(text, categories, customDetectors, aggressive).filter(
+    (m) => m.confidence >= confidenceThreshold && !isAllowlisted(m.value),
+  );
+}
+
+/** The vault tokenizer for one `tokenize()` call. */
+function vaultTokenizerFor(vault: AnonymaVault, format: TokenFormat = "brace"): VaultTokenizer {
+  return createVaultTokenizer({ vault, format: format === "custom" ? "angle" : format });
+}
+
+/** Replace each match with its token, in document order. */
+function replaceInOrder(
+  text: string,
+  matches: readonly PiiMatch[],
+  tokens: readonly string[],
+): TokenizeResult {
+  const parts: string[] = [];
+  const mapping = new Map<string, string>();
+  const tokenMatches: TokenMatch[] = [];
+  let cursor = 0;
+  for (const [i, match] of matches.entries()) {
+    const token = tokens[i] ?? match.value;
+    parts.push(text.slice(cursor, match.start), token);
+    cursor = match.end;
+    if (!mapping.has(token)) mapping.set(token, match.value);
+    tokenMatches.push({
+      token,
+      original: match.value,
+      category: match.category,
+      start: match.start,
+      end: match.end,
+    });
+  }
+  parts.push(text.slice(cursor));
+  return { text: parts.join(""), mapping, tokens: tokenMatches };
 }
 
 // ---------------------------------------------------------------------------
@@ -170,8 +252,7 @@ export function detokenize(text: string, mapping: ReadonlyMap<string, string>): 
   const result = detokenizeText(text, store);
   // Count how many token occurrences appeared in the text and were resolved.
   // We scan the text for all token-like patterns and subtract the unresolved ones.
-  const TOKEN_RE = /(\[[A-Z_]+_\d+\]|<[A-Z_]+_\d+>)/g;
-  const totalInText = (text.match(TOKEN_RE) ?? []).length;
+  const totalInText = (text.match(LEGACY_TOKEN_PATTERN) ?? []).length;
   const replacedCount = totalInText - result.unresolved.length;
   return {
     text: result.text,
