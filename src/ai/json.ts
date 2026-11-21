@@ -657,3 +657,96 @@ export async function sanitizeJsonAsync<T>(
   await runAsync(plan.leaves, options.pipeline, recorder);
   return finish(plan, recorder);
 }
+
+/**
+ * Result of sanitizing a JSON text.
+ */
+export interface JsonTextSanitizeResult extends Omit<JsonSanitizeResult<unknown>, "value"> {
+  /** The sanitized JSON text; the input itself when nothing was replaced. */
+  readonly text: string;
+}
+
+/** Parse `text` without losing numbers, or throw a {@link ValidationError}. */
+function parseText(text: string): ReturnType<typeof parseJsonLossless> {
+  try {
+    return parseJsonLossless(text);
+  } catch {
+    throw new ValidationError("text", "must be a JSON text");
+  }
+}
+
+/** The options for a parsed text: its marker of numbers kept as strings. */
+function textOptions(
+  options: JsonSanitizeOptions,
+  marker: string | undefined,
+): JsonSanitizeOptions {
+  return marker === undefined ? options : { ...options, rawNumberMarker: marker };
+}
+
+function toText(
+  input: string,
+  result: JsonSanitizeResult<unknown>,
+  marker: string | undefined,
+): JsonTextSanitizeResult {
+  const { value, ...rest } = result;
+  return {
+    ...rest,
+    // Nothing replaced: the text comes back exactly as it was, spacing included.
+    text: result.replaced === 0 ? input : stringifyJsonLossless(value, marker),
+  };
+}
+
+/**
+ * Sanitize a JSON text, as {@link sanitizeJson} sanitizes a value. Numbers
+ * that a JavaScript number cannot hold — integers beyond 2^53, numbers with
+ * more than 17 significant digits — keep every digit, which `JSON.parse`
+ * followed by `JSON.stringify` would not.
+ *
+ * @param text - A JSON text.
+ * @param options - The pipeline and optional key rules.
+ * @returns The sanitized text, and a PII-free account of what was replaced.
+ * @throws {@link ValidationError} When `text` is not JSON, or as {@link sanitizeJson} does.
+ *
+ * @example
+ * ```ts
+ * import { compilePipeline } from "anonyma/engine";
+ * import { sanitizeJsonText } from "anonyma/ai";
+ *
+ * sanitizeJsonText('{"id":12345678901234567890,"email":"alice@example.com"}', {
+ *   pipeline: compilePipeline(),
+ * }).text;
+ * // '{"id":12345678901234567890,"email":"[REDACTED]"}'
+ * ```
+ */
+export function sanitizeJsonText(
+  text: string,
+  options: JsonSanitizeOptions,
+): JsonTextSanitizeResult {
+  const parsed = parseText(text);
+  return toText(
+    text,
+    sanitizeJson(parsed.value, textOptions(options, parsed.marker)),
+    parsed.marker,
+  );
+}
+
+/**
+ * Asynchronous counterpart of {@link sanitizeJsonText} for pipelines with
+ * asynchronous replacers.
+ *
+ * @param text - A JSON text.
+ * @param options - The pipeline and optional key rules.
+ * @returns The sanitized text, and a PII-free account of what was replaced.
+ * @throws {@link ValidationError} When `text` is not JSON, or as {@link sanitizeJsonAsync} does.
+ */
+export async function sanitizeJsonTextAsync(
+  text: string,
+  options: JsonSanitizeOptions,
+): Promise<JsonTextSanitizeResult> {
+  const parsed = parseText(text);
+  return toText(
+    text,
+    await sanitizeJsonAsync(parsed.value, textOptions(options, parsed.marker)),
+    parsed.marker,
+  );
+}

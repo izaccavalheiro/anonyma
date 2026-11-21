@@ -99,6 +99,43 @@ describe("audit/receipt", () => {
       expect(custom.stats).toEqual({ "[GUARDED]": 1, y: 1 });
     });
 
+    it("takes counts and an output digest in place of spans and text", async () => {
+      const receipts = createReceiptIssuer({ key: SECRET });
+      const digest = await sha256Hex("a large file");
+      const receipt = await receipts.issue({
+        outputDigest: digest,
+        counts: { phone: 3, email: 2, ssn: 0 },
+      });
+      expect(receipt).toMatchObject({
+        stats: { email: 2, phone: 3, ssn: 0 },
+        total: 5,
+        output: digest,
+      });
+      expect((await receipts.verify(receipt, { output: "a large file" })).valid).toBe(true);
+      const guarded = await receipts.issue({
+        outputDigest: digest,
+        counts: { "ana@example.com": 1, email: 1 },
+      });
+      expect(guarded.stats).toEqual({ "[GUARDED]": 1, email: 1 });
+    });
+
+    it("rejects counts that are not counts and a digest that is not one", async () => {
+      const receipts = createReceiptIssuer({ key: SECRET });
+      const digest = await sha256Hex("x");
+      await expect(receipts.issue({ outputDigest: digest, counts: { email: -1 } })).rejects.toThrow(
+        /subject\.counts\.email/,
+      );
+      await expect(
+        receipts.issue({ outputDigest: digest, counts: { email: 1.5 } }),
+      ).rejects.toThrow(ValidationError);
+      await expect(receipts.issue({ outputDigest: "ABC", counts: {} })).rejects.toThrow(
+        /outputDigest/,
+      );
+      await expect(
+        receipts.issue({ outputDigest: digest.toUpperCase(), counts: {} }),
+      ).rejects.toThrow(ValidationError);
+    });
+
     it("rejects a subject without text or without what was replaced", async () => {
       const receipts = createReceiptIssuer({ key: SECRET });
       await expect(receipts.issue(null as unknown as { text: string })).rejects.toThrow(
@@ -108,6 +145,9 @@ describe("audit/receipt", () => {
         /subject\.text/,
       );
       await expect(receipts.issue({ text: "x" })).rejects.toThrow(/includeMatches/);
+      await expect(
+        receipts.issue({ text: "x", counts: "1" as unknown as Record<string, number> }),
+      ).rejects.toThrow(/counts/);
     });
   });
 

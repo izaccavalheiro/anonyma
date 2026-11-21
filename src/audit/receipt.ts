@@ -70,12 +70,19 @@ export interface AnonymaReceipt {
  * `matches`.
  */
 export interface ReceiptSubject {
-  /** The anonymized text. */
-  readonly text: string;
+  /** The anonymized text. Give it or `outputDigest`. */
+  readonly text?: string;
+  /**
+   * SHA-256 (lower-case hex) of the anonymized text, in place of `text`, for
+   * an output too large to hold in memory, such as a file written as a stream.
+   */
+  readonly outputDigest?: string;
   /** The replaced spans; only their categories are read. */
   readonly spans?: readonly { readonly category: string }[];
   /** The replaced matches; only their categories are read. */
   readonly matches?: readonly { readonly category: string }[];
+  /** The number of replaced values per category, in place of `spans` or `matches`. */
+  readonly counts?: Readonly<Record<string, number>>;
 }
 
 /**
@@ -138,7 +145,8 @@ export interface ReceiptIssuer {
   /**
    * Issue a receipt for an anonymized text.
    *
-   * @throws {@link ValidationError} When `subject` has no text, or neither `spans` nor `matches`.
+   * @throws {@link ValidationError} When `subject` has neither `text` nor `outputDigest`, or
+   *   none of `spans`, `matches` and `counts`, or when `counts` holds something other than counts.
    */
   readonly issue: (subject: ReceiptSubject, options?: IssueOptions) => Promise<AnonymaReceipt>;
   /** Check a receipt's signature and, when given, the texts it names. */
@@ -241,22 +249,41 @@ export function createReceiptIssuer(options: ReceiptIssuerOptions): ReceiptIssue
 
   return {
     async issue(subject, issueOptions = {}): Promise<AnonymaReceipt> {
-      if (!isRecord(subject) || typeof subject.text !== "string") {
-        throw new ValidationError("subject.text", "must be the anonymized text");
+      const { text, outputDigest } = isRecord(subject) ? subject : ({} as ReceiptSubject);
+      if (
+        typeof text !== "string" &&
+        !(typeof outputDigest === "string" && HEX64.test(outputDigest))
+      ) {
+        throw new ValidationError(
+          "subject.text",
+          "must be the anonymized text, or outputDigest its SHA-256 in lower-case hex",
+        );
       }
-      const replaced = subject.spans ?? subject.matches;
-      if (!Array.isArray(replaced)) {
+      const listed = subject.spans ?? subject.matches;
+      const tallies: [string, number][] = [];
+      if (Array.isArray(listed)) {
+        for (const item of listed)
+          tallies.push([String((item as { category?: unknown }).category), 1]);
+      } else if (isRecord(subject.counts)) {
+        for (const [label, count] of Object.entries(subject.counts)) {
+          if (!(Number.isInteger(count) && count >= 0)) {
+            throw new ValidationError(`subject.counts.${label}`, "must be a non-negative integer");
+          }
+          tallies.push([label, count]);
+        }
+      } else {
         throw new ValidationError(
           "subject",
-          "must list what was replaced in `spans` or `matches` (pass includeMatches: true to anonymize())",
+          "must list what was replaced in `spans`, `matches` or `counts` (pass includeMatches: true to anonymize())",
         );
       }
       const counts = new Map<string, number>();
-      for (const item of replaced) {
+      let total = 0;
+      for (const [label, count] of tallies) {
         // A custom category label could be a value: the audit guard blanks it.
-        const label = String((item as { category?: unknown }).category);
         const category = guard === undefined ? guardLabel(label) : guardLabel(label, guard);
-        counts.set(category, (counts.get(category) ?? 0) + 1);
+        counts.set(category, (counts.get(category) ?? 0) + count);
+        total += count;
       }
       const stats: Record<string, number> = {};
       for (const [category, count] of [...counts].sort(([a], [b]) => (a < b ? -1 : 1))) {
@@ -271,8 +298,8 @@ export function createReceiptIssuer(options: ReceiptIssuerOptions): ReceiptIssue
         ...(presets !== undefined ? { presets } : {}),
         ...(policy !== undefined ? { policy: { ...policy } } : {}),
         stats,
-        total: replaced.length,
-        output: await sha256Hex(subject.text),
+        total,
+        output: typeof text === "string" ? await sha256Hex(text) : (outputDigest as string),
         ...(issueOptions.input !== undefined
           ? { input: await inputDigest(issueOptions.input) }
           : {}),
