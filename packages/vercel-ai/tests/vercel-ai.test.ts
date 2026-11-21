@@ -34,7 +34,7 @@ function sent(model: MockLanguageModelV4): string {
   return JSON.stringify([...model.doGenerateCalls, ...model.doStreamCalls].map((c) => c.prompt));
 }
 
-describe("@anonyma/vercel-ai", () => {
+describe("anonyma-vercel-ai", () => {
   afterEach(() => {
     delete (globalThis as { AI_SDK_DEFAULT_PROVIDER?: unknown }).AI_SDK_DEFAULT_PROVIDER;
   });

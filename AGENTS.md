@@ -63,8 +63,8 @@ zero-dependency rule; `src/` must never import from them.
 packages/
 ├── tsconfig.base.json    # Shared strict settings; maps `anonyma/*` to the root dist/*.d.ts
 ├── vitest.shared.mjs     # Shared alias: `anonyma/*` resolves to the root dist/*.js
-├── vercel-ai/            # "@anonyma/vercel-ai" — AI SDK 7 middleware, withAnonyma(), generateText/streamText
-└── mcp/                  # "@anonyma/mcp" — MCP connection guard, anonyma-mcp-proxy, guardMcpClient()
+├── vercel-ai/            # "anonyma-vercel-ai" — AI SDK 7 middleware, withAnonyma(), generateText/streamText
+└── mcp/                  # "anonyma-mcp" — MCP connection guard, anonyma-mcp-proxy, guardMcpClient()
 ```
 
 The packages are type-checked and tested against the root build: run

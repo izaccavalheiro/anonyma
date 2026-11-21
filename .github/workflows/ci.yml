@@ -8,7 +8,7 @@
 #   package       Is what would be published a valid dual ESM/CJS package, within its size budget?
 #   smoke         Does the packed tarball work for a consumer, down to Node.js 18?
 #   runtimes      Does the built package work on Bun, Deno and Cloudflare Workers?
-#   packages      Do @anonyma/vercel-ai and @anonyma/mcp type-check, pass and pack?
+#   packages      Do anonyma-vercel-ai and anonyma-mcp type-check, pass and pack?
 #   performance   Is the span engine still linear in the size of its input?
 #   privacy       Do the privacy invariants and the compliance suites hold (GDPR, LGPD)?
 #   supply-chain  Are the dependencies free of known vulnerabilities and correctly signed?

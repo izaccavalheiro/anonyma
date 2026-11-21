@@ -1,5 +1,5 @@
 /**
- * @module @anonyma/vercel-ai
+ * @module anonyma-vercel-ai
  * @description Personal-data redaction for the Vercel AI SDK. Prompts are
  * sanitized before they leave the process — personal data becomes tokens
  * such as `[EMAIL_0001]` — and the tokens are replaced by the original values
@@ -10,7 +10,7 @@
  * @example
  * ```ts
  * import { openai } from "@ai-sdk/openai";
- * import { createAnonymaAI } from "@anonyma/vercel-ai";
+ * import { createAnonymaAI } from "anonyma-vercel-ai";
  *
  * const anonyma = createAnonymaAI({ skipRoles: ["system"] });
  * const { text } = await anonyma.generateText({
@@ -72,7 +72,7 @@ export interface AnonymaAIOptions extends LlmGuardOptions {
  * @example
  * ```ts
  * import { wrapLanguageModel } from "ai";
- * import { anonymaMiddleware } from "@anonyma/vercel-ai";
+ * import { anonymaMiddleware } from "anonyma-vercel-ai";
  *
  * const model = wrapLanguageModel({ model: baseModel, middleware: anonymaMiddleware() });
  * ```
@@ -126,7 +126,7 @@ function resolveModel(model: LanguageModel): LanguageModelObject {
  * @example
  * ```ts
  * import { streamText } from "ai";
- * import { withAnonyma } from "@anonyma/vercel-ai";
+ * import { withAnonyma } from "anonyma-vercel-ai";
  *
  * const result = streamText({ model: withAnonyma("openai/gpt-5"), prompt });
  * for await (const text of result.textStream) process.stdout.write(text);
@@ -162,7 +162,7 @@ export interface AnonymaAI {
  *
  * @example
  * ```ts
- * import { createAnonymaAI } from "@anonyma/vercel-ai";
+ * import { createAnonymaAI } from "anonyma-vercel-ai";
  *
  * const { generateText, streamText } = createAnonymaAI({ skipRoles: ["system"] });
  * const { text } = await generateText({ model, prompt: "Email john@example.com" });

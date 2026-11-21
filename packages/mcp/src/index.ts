@@ -1,5 +1,5 @@
 /**
- * @module @anonyma/mcp
+ * @module anonyma-mcp
  * @description Privacy for Model Context Protocol connections. Personal data
  * in what an MCP server returns — tool results, resources, prompts, sampling
  * requests — is replaced by tokens before it enters a model's context window;
@@ -16,7 +16,7 @@
  *
  * @example
  * ```ts
- * import { createMcpGuard } from "@anonyma/mcp";
+ * import { createMcpGuard } from "anonyma-mcp";
  *
  * const guard = createMcpGuard({ session: { format: "brace" } });
  * const toHost = guard.fromServer({

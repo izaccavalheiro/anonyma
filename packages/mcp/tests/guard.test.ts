@@ -14,7 +14,7 @@ const request = <P extends object>(id: number | string, method: string, params: 
 /** A JSON-RPC result from the server. */
 const response = (id: number | string, result: object) => ({ jsonrpc: "2.0", id, result });
 
-describe("@anonyma/mcp", () => {
+describe("anonyma-mcp", () => {
   describe("createMcpGuard", () => {
     it("tokenizes tool results and restores tokens in tool arguments", () => {
       const guard = createMcpGuard();

@@ -1,5 +1,5 @@
 /**
- * @module @anonyma/mcp/cli
+ * @module anonyma-mcp/cli
  * @description `anonyma-mcp-proxy`: puts any stdio MCP server behind a
  * privacy guard. Configure it in an MCP host in place of the server:
  *
@@ -8,7 +8,7 @@
  *   "mcpServers": {
  *     "crm": {
  *       "command": "npx",
- *       "args": ["-y", "@anonyma/mcp", "--", "npx", "-y", "@example/crm-mcp-server"]
+ *       "args": ["-y", "anonyma-mcp", "--", "npx", "-y", "@example/crm-mcp-server"]
  *     }
  *   }
  * }
