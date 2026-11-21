@@ -54,6 +54,13 @@ const PIX_CONTEXT_RE = /\b(?:chave\s+(?:pix|aleat[óo]ria)|pix(?:\s+key)?)\s*:?\
 const PIX_RANDOM_KEY_PATTERN = /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi;
 
 /**
+ * The globally unique identifier of PIX inside a payload, with its EMV field
+ * ID and length: `00`, `14`, `br.gov.bcb.pix`.
+ * @internal
+ */
+const PIX_GUI = "0014br.gov.bcb.pix";
+
+/**
  * Longest PIX payload looked for, in characters. The EMV format caps a
  * payload well below it.
  * @internal
@@ -62,7 +69,7 @@ const PIX_PAYLOAD_MAX = 512;
 
 /**
  * Report every PIX "copia e cola" payload in `text`: it starts with the EMV
- * header `000201`, names the PIX domain `br.gov.bcb.pix` and ends with a CRC
+ * header `000201`, holds the PIX identifier `br.gov.bcb.pix` and ends with a CRC
  * field (`6304` and four hexadecimal digits) that matches its content.
  * @internal
  */
@@ -81,7 +88,8 @@ function scanPixPayloads(
       const candidate = text.slice(start, crc + 8);
       // A payload holds printable ASCII only, so a longer candidate cannot be one either.
       if (!/^[\x20-\x7E]*$/.test(candidate)) break;
-      if (/br\.gov\.bcb\.pix/i.test(candidate) && pixPayloadChecksum(candidate)) {
+      // The PIX GUI is the first sub-field of the merchant account: ID 00, length 14.
+      if (candidate.toLowerCase().includes(PIX_GUI) && pixPayloadChecksum(candidate)) {
         end = crc + 8;
         break;
       }

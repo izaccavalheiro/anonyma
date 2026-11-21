@@ -9,7 +9,7 @@
   "./vault": 19,
   "./audit": 45,
   "./compliance": 33,
-  "./ai": 51,
+  "./ai": 52,
   "./mcp": 67,
   "./middleware": 45.5,
   "./middleware/express": 46,

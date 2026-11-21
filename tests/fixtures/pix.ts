@@ -17,10 +17,10 @@ export function crc16(text: string): string {
 }
 
 /** A PIX "copia e cola" payload for a synthetic key, with a correct CRC. */
-export function pixPayload(key = "fulano@example.com"): string {
+export function pixPayload(key = "fulano@example.com", gui = "br.gov.bcb.pix"): string {
   const field = (id: string, value: string): string =>
     `${id}${String(value.length).padStart(2, "0")}${value}`;
-  const account = field("00", "br.gov.bcb.pix") + field("01", key);
+  const account = field("00", gui) + field("01", key);
   const body =
     field("00", "01") +
     field("26", account) +

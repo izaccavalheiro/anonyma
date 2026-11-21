@@ -192,6 +192,11 @@ describe("detectBankAccount: PIX", () => {
     expect(found.find((m) => m.value === payload)?.confidence).toBe(0.97);
   });
 
+  it("accepts the PIX identifier in capitals", () => {
+    const payload = pixPayload("fulano@example.com", "BR.GOV.BCB.PIX");
+    expect(values(detectBankAccount(payload))).toContain(payload);
+  });
+
   it("finds two payloads in a row", () => {
     const first = pixPayload("fulano@example.com");
     const second = pixPayload("beltrano@example.com");
