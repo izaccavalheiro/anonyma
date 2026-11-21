@@ -5,6 +5,9 @@
  * Detection combines:
  * - Common address context keywords ("address:", "lives at", "ship to", etc.)
  * - US street patterns: number + direction + street name + type
+ * - European and Brazilian street patterns: `Musterstraße 12`, `Kerkstraat 5`,
+ *   `12 rue de la Paix`, `Calle Mayor 5`, `Via Roma 10`, `Av. Paulista, 1578`,
+ *   with an optional postcode and town after them (`10115 Berlin`, `01310-100 São Paulo`)
  * - UK postcode patterns
  * - PO Box patterns
  *
@@ -20,6 +23,65 @@ import type { PiiMatch } from "../types.js";
  */
 const US_STREET_PATTERN =
   /\b\d{1,5}\s+(?:(?:N|S|E|W|NE|NW|SE|SW|North|South|East|West|Northeast|Northwest|Southeast|Southwest)\.?\s+)?(?:[A-Z][a-z]+\s+){1,4}(?:St(?:reet)?|Ave(?:nue)?|Blvd|Boulevard|Dr(?:ive)?|Rd|Road|Ln|Lane|Ct|Court|Pl|Place|Cir|Circle|Way|Pkwy|Parkway|Hwy|Highway|Trl|Trail|Terr(?:ace)?|Terr)\.?(?:\s+(?:Apt|Apartment|Suite|Ste|Unit|#)\s*\w+)?\b/gi;
+
+/**
+ * Postcode and town that may follow a European or Brazilian street address:
+ * `10115 Berlin`, `75002 Paris`, `1012 AB Amsterdam`, `1000-001 Lisboa`,
+ * `01310-100 São Paulo`.
+ * @internal
+ */
+const EU_TOWN = String.raw`(?:,?\s+(?:[A-Z]{1,2}-)?\d{4,5}(?:-\d{3}|\s[A-Z]{2})?\s+\p{Lu}[\p{L}'-]+(?:\s\p{Lu}[\p{L}'-]+)?)?`;
+
+/** Street types that German, Dutch and the Scandinavian languages append to the name. @internal */
+const STREET_SUFFIX = String.raw`(?:stra(?:ß|ss)e|str\.|weg|gasse|platz|allee|damm|ufer|straat|laan|gracht|plein|kade|singel|gatan|vägen|veien|gade)`;
+
+/** The same street types written as a word of their own: `Berliner Straße`. @internal */
+const STREET_WORD = String.raw`(?:Stra(?:ß|ss)e|Str\.|Weg|Gasse|Platz|Allee|Damm|Ufer|Straat|Laan)`;
+
+/**
+ * Street names that end in their street type, then the house number:
+ * `Musterstraße 12`, `Berliner Str. 5a`, `Kerkstraat 12`, `Storgatan 3`.
+ * @internal
+ */
+const SUFFIX_STREET_PATTERN = new RegExp(
+  String.raw`(?<![\p{L}\d])(?:\p{Lu}\p{Ll}*${STREET_SUFFIX}|\p{Lu}\p{Ll}+[\s-]${STREET_WORD})\s+\d{1,4}\s?[a-z]?(?![\p{L}\d])` +
+    EU_TOWN,
+  "gu",
+);
+
+/**
+ * Street types written before the name, as French, Spanish, Catalan, Italian
+ * and Portuguese write them.
+ * @internal
+ */
+const STREET_TYPE = String.raw`(?:[Rr]ue|[Aa]venue|[Bb]oulevard|[Bb]d|[Cc]hemin|[Ii]mpasse|[Aa]llée|[Qq]uai|Calle|C\/|Avenida|Avda\.|Av\.|Paseo|Plaza|Carrer|Via|Viale|Piazza|Corso|Largo|Rua|Travessa|Praça|Alameda|Estrada|Rodovia)`;
+
+/** Articles and prepositions inside a street name: `rue de la Paix`, `Rua das Flores`. @internal */
+const NAME_LINK = String.raw`(?:(?:de|del|de la|des|du|d'|la|le|l'|las|los|el|da|das|do|dos|di|della|delle|dei)\s?)`;
+
+/** A capitalised street name of up to four words. @internal */
+const STREET_NAME = String.raw`${NAME_LINK}{0,3}\p{Lu}[\p{L}'-]*(?:\s${NAME_LINK}{0,3}\p{Lu}[\p{L}'-]*){0,3}`;
+
+/**
+ * House number first, then the street: `12 rue de la Paix`, `5 bis avenue Foch`.
+ * @internal
+ */
+const NUMBER_FIRST_STREET_PATTERN = new RegExp(
+  String.raw`(?<![\p{L}\d])\d{1,4}(?:\s?(?:bis|ter))?,?\s+${STREET_TYPE}\s+${STREET_NAME}` +
+    EU_TOWN,
+  "gu",
+);
+
+/**
+ * Street first, then the house number: `Calle Mayor 5`, `Via Roma 10`,
+ * `Av. Paulista, 1578`, `Rua das Flores, nº 123`.
+ * @internal
+ */
+const TYPE_FIRST_STREET_PATTERN = new RegExp(
+  String.raw`(?<![\p{L}\d])${STREET_TYPE}\s+${STREET_NAME},?\s+(?:n[º°o.]\s?)?\d{1,5}[A-Za-z]?(?![\p{L}\d])` +
+    EU_TOWN,
+  "gu",
+);
 
 /**
  * UK postcode: e.g. SW1A 2AA, EC1A 1BB, W1A 0AX
@@ -62,6 +124,29 @@ export function detectAddress(text: string): PiiMatch[] {
   let m: RegExpExecArray | null;
   while ((m = usPattern.exec(text)) !== null) {
     push(m[0], m.index, m.index + m[0].length, 0.8);
+  }
+
+  // European and Brazilian streets. One that lies inside a street found
+  // before it is not reported, and it replaces the shorter matches it contains.
+  for (const pattern of [
+    SUFFIX_STREET_PATTERN,
+    NUMBER_FIRST_STREET_PATTERN,
+    TYPE_FIRST_STREET_PATTERN,
+  ]) {
+    pattern.lastIndex = 0;
+    while ((m = pattern.exec(text)) !== null) {
+      const start = m.index;
+      const end = start + m[0].length;
+      if (matches.some((found) => found.start <= start && end <= found.end)) continue;
+      for (let index = matches.length - 1; index >= 0; index--) {
+        const found = matches[index];
+        /* v8 ignore next -- the index is within the array */
+        if (found !== undefined && start <= found.start && found.end <= end) {
+          matches.splice(index, 1);
+        }
+      }
+      push(m[0], start, end, 0.8);
+    }
   }
 
   // UK postcodes

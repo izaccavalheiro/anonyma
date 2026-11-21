@@ -9,9 +9,25 @@
  * - EU VAT numbers: country prefix + digits/letters
  * - Australia TFN: XXX XXX XXX (shared with national-id, context disambiguates)
  * - Australia ABN: 11 digits XX XXX XXX XXX
+ * - Brazil CNPJ: XX.XXX.XXX/XXXX-XX, numeric or alphanumeric (from July 2026),
+ *   with valid check digits
  */
 
 import type { PiiMatch } from "../types.js";
+import { cnpjChecksum } from "../validators.js";
+
+/**
+ * Brazil CNPJ as written: XX.XXX.XXX/XXXX-XX. The first twelve characters may
+ * be letters since July 2026.
+ * @internal
+ */
+const BR_CNPJ_PATTERN = /\b[A-Z0-9]{2}\.[A-Z0-9]{3}\.[A-Z0-9]{3}\/[A-Z0-9]{4}-\d{2}\b/gi;
+
+/**
+ * Brazil CNPJ without punctuation: 14 characters. Requires context.
+ * @internal
+ */
+const BR_CNPJ_BARE_PATTERN = /\b[A-Z0-9]{12}\d{2}\b/gi;
 
 /**
  * US EIN: XX-XXXXXXX (Employer Identification Number)
@@ -50,7 +66,7 @@ const AU_ABN_PATTERN = /\b\d{2}[\s]?\d{3}[\s]?\d{3}[\s]?\d{3}\b/g;
  * @internal
  */
 const TAX_CONTEXT_RE =
-  /\b(?:tax(?:\s+(?:id(?:entification)?|number|no\.?|#|reference))?|T\.?I\.?N\.?|EIN|ITIN|UTR|VAT(?:\s+(?:number|no\.?|reg(?:istration)?|#))?|ABN|TFN)\s*:?\s*/gi;
+  /\b(?:tax(?:\s+(?:id(?:entification)?|number|no\.?|#|reference))?|T\.?I\.?N\.?|EIN|ITIN|UTR|VAT(?:\s+(?:number|no\.?|reg(?:istration)?|#))?|ABN|TFN|CNPJ)\s*:?\s*/gi;
 
 /**
  * Detect tax identification numbers in `text`.
@@ -106,6 +122,20 @@ export function detectTaxId(text: string): PiiMatch[] {
   const abnRe = new RegExp(AU_ABN_PATTERN.source, "g");
   while ((m = abnRe.exec(text)) !== null) {
     if (hasContext(m.index)) push(m[0], m.index, m.index + m[0].length, 0.82);
+  }
+
+  // Brazil CNPJ — distinctive punctuation, and the check digits must hold
+  const cnpjRe = new RegExp(BR_CNPJ_PATTERN.source, "gi");
+  while ((m = cnpjRe.exec(text)) !== null) {
+    if (cnpjChecksum(m[0])) push(m[0], m.index, m.index + m[0].length, 0.95);
+  }
+
+  // Brazil CNPJ without punctuation — requires context and the check digits
+  const cnpjBareRe = new RegExp(BR_CNPJ_BARE_PATTERN.source, "gi");
+  while ((m = cnpjBareRe.exec(text)) !== null) {
+    if (hasContext(m.index) && cnpjChecksum(m[0])) {
+      push(m[0], m.index, m.index + m[0].length, 0.9);
+    }
   }
 
   // UK UTR — requires context (plain 10 digits too generic)
