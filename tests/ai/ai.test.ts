@@ -1072,6 +1072,37 @@ describe("ai/guard", () => {
       expect(reports[0]).toMatchObject({ replaced: 1, unscanned: ["/1/providerOptions"] });
     });
 
+    it("restores text deltas without an id as one block", async () => {
+      const params = await middleware.transformParams({ params: { prompt } });
+      const parts = [
+        { type: "text-delta", delta: "To [EMA" },
+        { type: "text-delta", delta: "IL_0001]" },
+      ];
+      const { stream } = await middleware.wrapStream({
+        params,
+        doStream: () =>
+          Promise.resolve({
+            stream: new ReadableStream<unknown>({
+              start(controller): void {
+                for (const part of parts) controller.enqueue(part);
+                controller.close();
+              },
+            }),
+          }),
+      });
+      const seen: unknown[] = [];
+      const reader = stream.getReader();
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        seen.push(value);
+      }
+      expect(seen).toEqual([
+        { type: "text-delta", delta: "To " },
+        { type: "text-delta", delta: "alice@example.com" },
+      ]);
+    });
+
     it("restores reasoning deltas apart from text deltas with the same id", async () => {
       const params = await middleware.transformParams({ params: { prompt } });
       const parts = [

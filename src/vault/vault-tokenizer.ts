@@ -166,8 +166,8 @@ export function createVaultTokenizer(options: VaultTokenizerOptions): VaultToken
     return false;
   }
 
-  function tooMany(): never {
-    throw new TokenVaultError(`no free token number after ${String(MAX_PROBES)} attempts`);
+  function tooMany(): TokenVaultError {
+    return new TokenVaultError(`no free token number after ${String(MAX_PROBES)} attempts`);
   }
 
   async function allocateAsync(
@@ -186,7 +186,7 @@ export function createVaultTokenizer(options: VaultTokenizerOptions): VaultToken
       number++;
       existing = await vault.retrieve(render(placement.prefix, number));
     }
-    return tooMany();
+    throw tooMany();
   }
 
   function allocate(placement: Placement): MaybePromise<string> {
@@ -203,7 +203,7 @@ export function createVaultTokenizer(options: VaultTokenizerOptions): VaultToken
       }
       if (isSame(placement, token, existing)) return commit(placement, token, number);
     }
-    return tooMany();
+    throw tooMany();
   }
 
   function tokenize(value: string, context: TokenContext): MaybePromise<string> {
@@ -223,8 +223,10 @@ export function createVaultTokenizer(options: VaultTokenizerOptions): VaultToken
         () => undefined,
       );
       pending = settled;
+      // Registered before any queued call can chain onto `settled`, so it runs
+      // first: no other allocation can have replaced `pending` by then.
       void settled.then(() => {
-        if (pending === settled) pending = undefined;
+        pending = undefined;
       });
     }
     return token;
