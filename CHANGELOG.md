@@ -70,6 +70,15 @@ and `PatternSpec` has `validator` and `context` members.
   `Av. Paulista, 1578`, with the postcode and town that follow them.
 - A US routing number whose check digits hold is reported with confidence 0.9 instead of 0.85.
 
+### Fixed
+
+- **Chunked streams no longer drop line breaks between card numbers.** When the left context
+  that `createChunkTransformer()`, `createAsyncChunkTransformer()` and `createPipelineStream()`
+  keep between scans began inside a replaced card number, the end of that card and the start of
+  the next line could pass the Luhn check as a card of their own, and the line break between them
+  was replaced with it. The context now starts at the beginning of such a detection, and chunked
+  output equals whole-text output again.
+
 ### Notes
 
 - **The companion packages are named `anonyma-vercel-ai` and `anonyma-mcp`.** 1.2.0 introduced
