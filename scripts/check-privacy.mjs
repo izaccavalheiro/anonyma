@@ -138,7 +138,7 @@ function withoutComments(source) {
 // ---------------------------------------------------------------------------
 {
   const problems = [];
-  let note = "";
+  let note;
   if (!existsSync(join(root, "dist"))) {
     note = "skipped: no build";
     if (requireDist) problems.push("dist/ does not exist: run `npm run build` first");
