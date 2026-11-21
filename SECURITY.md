@@ -8,9 +8,9 @@ are welcome and are treated as a priority.
 
 | Version | Supported           |
 | ------- | ------------------- |
-| 1.2.x   | yes                 |
-| 1.1.x   | security fixes only |
-| < 1.1   | no                  |
+| 1.3.x   | yes                 |
+| 1.2.x   | security fixes only |
+| < 1.2   | no                  |
 
 `anonyma-vercel-ai` and `anonyma-mcp` are supported in their latest 0.x
 minor version.

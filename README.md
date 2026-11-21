@@ -17,8 +17,8 @@
 - 🔁 **Reversible tokenization** — `tokenize()` / `detokenize()` for round-trip fidelity
 - 🗄️ **Token vaults** — `{{EMAIL_1}}` tokens kept in any `AnonymaVault` (in memory, Redis, KV) and put back by `restore(text, vault)`
 - 🤖 **LLM pipeline helpers** — `sanitizeForLLM()` / `restoreFromLLM()` for safe prompt injection with reversible tokens
-- 📋 **Compliance presets** — built-in `gdpr`, `lgpd`, `pipeda`, `hipaa`, `ccpa`, `pci-dss`, `sox` and `ferpa` presets
-- 🌍 **International identifiers** — national IDs, tax IDs, passports, licence plates and company registrations of many countries, detected without configuration
+- 📋 **Compliance presets** — built-in `gdpr`, `lgpd`, `pipeda`, `hipaa`, `ccpa`, `pci-dss`, `sox` and `ferpa` presets, combined in one line: `preset: ["lgpd", "hipaa"]`
+- 🌍 **International identifiers** — national IDs, tax IDs, passports, licence plates and company registrations of many countries, detected without configuration, including Brazil's CPF, CNPJ (alphanumeric too), RG and PIX keys, and the phone and street formats of Brazil and Europe
 - ⚡ **Batch processing** — `anonymizeBatch()`, `anonymizeBatchAsync()`, `tokenizeBatch()`, `detectBatch()`
 - 🌊 **Streaming support** — WHATWG `TransformStream` wrappers (`createAnonymizeStream()`, `createTokenizeStream()`)
 - 🎯 **Field-level record anonymization** — dot-notation paths for nested objects
@@ -30,13 +30,14 @@
 - 🔢 **Confidence threshold** — filter out low-confidence matches
 - 🔒 **Encryption** — reversible AES-GCM `encrypt()` / `decrypt()` strategy (Web Crypto API)
 - 🎭 **Synthesis** — format-preserving synthetic data replacement (deterministic, seeded)
-- ✔️ **Checksum validators** — `luhn`, `verhoeff`, `nhsMod11`, `cpfChecksum`, `vinChecksum`, `deaChecksum`, `ibanMod97`, `ninoValid`, `aadhaarFormat` via `"anonyma/validators"`
+- ✔️ **Checksum validators** — Luhn, Verhoeff, mod-11 and mod-97 families: cards, IBAN, CPF, CNPJ, NHS, NPI, IMEI, ABA routing, BSN, NIF, DNI/NIE, codice fiscale, NIR and more, via `"anonyma/validators"`, and by name in declarative patterns
+- 🎯 **Hybrid detection** — regular expressions confirmed by check digits, and confidence raised by keywords near a match (`withContext()`), so look-alikes are left alone
 - ⚡ **Zero runtime dependencies** — Zod is an optional peer dependency
 - 🌲 **Tree-shakeable** — import only what you use
 - 🤖 **AI-ready** — OpenAI/MCP tool definitions and Zod schemas included
 - 🧵 **Span engine** — compiled pipelines that leave no detected character in the output, validating detectors for email, SSN, IBAN, IP addresses and payment cards, and streams that catch values split across chunks (`"anonyma/engine"`)
 - 🔑 **Keyed tokenization** — session, keyed and sealed tokenizers, a versioned key ring with rotation, and erasure by deleting a record or shredding a key (`"anonyma/vault"`)
-- 🧾 **Audit trail without personal data** — hash-chained records of what was replaced, and chain verification (`"anonyma/audit"`)
+- 🧾 **Audit trail without personal data** — hash-chained records of what was replaced, chain verification, and signed receipts proving a text was anonymized before it left the server (`"anonyma/audit"`)
 - ⚖️ **Regulation profiles** — GDPR, LGPD, PIPEDA, CCPA/CPRA, HIPAA and PCI DSS mapped to their provisions, with policy documents checked against them (`"anonyma/compliance"`)
 - 💬 **LLM guard** — chat messages and JSON sanitized with reversible tokens, restored in complete and streamed model output (`"anonyma/ai"`)
 - 🔌 **MCP server and HTTP middleware** — a dependency-free Model Context Protocol server, and payload scrubbing for Express, Hono and Fetch handlers (`"anonyma/mcp"`, `"anonyma/middleware"`)
@@ -262,27 +263,27 @@ warning. Use `tokenize()` or `sanitizeForLLM()` for reversible tokens, and a pip
 
 ### Personal Information
 
-| Category          | Examples                                | Validator / Notes                  |
-| ----------------- | --------------------------------------- | ---------------------------------- |
-| `email`           | `alice@example.com`                     | RFC 5321 regex                     |
-| `phone`           | `+1 (555) 867-5309`, `415.555.2671`     | Multi-format regex                 |
-| `ssn`             | `123-45-6789`                           | Regex + exclusions                 |
-| `name`            | `Dear Alice Smith`, `Patient: John Doe` | Heuristic (greeting/title context) |
-| `date-of-birth`   | `1990-04-15`, `April 15, 1990`          | Multi-format regex                 |
-| `address`         | `123 Main St, Springfield, IL 62701`    | Pattern + keyword heuristic        |
-| `passport`        | `A12345678`, `P1234567`                 | Country-specific patterns          |
-| `drivers-license` | `D123-4567-8901`, `F123-456-78-910-1`   | Multi-state/country patterns       |
-| `national-id`     | Aadhaar, NHS number, NINO, CPF, etc.    | Country-specific patterns          |
+| Category          | Examples                                                                                    | Validator / Notes                                                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `email`           | `alice@example.com`                                                                         | RFC 5321 regex                                                                                                                |
+| `phone`           | `+1 (555) 867-5309`, `(11) 91234-5678`, `06 12 34 56 78`                                    | North American, international, and national formats of Brazil, France, the UK, Spain, Italy and the German-speaking countries |
+| `ssn`             | `123-45-6789`                                                                               | Regex + exclusions                                                                                                            |
+| `name`            | `Dear Alice Smith`, `Patient: John Doe`                                                     | Heuristic (greeting/title context)                                                                                            |
+| `date-of-birth`   | `1990-04-15`, `April 15, 1990`                                                              | Multi-format regex                                                                                                            |
+| `address`         | `123 Main St, Springfield, IL 62701`, `Musterstraße 12, 10115 Berlin`, `Av. Paulista, 1578` | Pattern + keyword heuristic (US, UK, European and Brazilian streets)                                                          |
+| `passport`        | `A12345678`, `P1234567`                                                                     | Country-specific patterns                                                                                                     |
+| `drivers-license` | `D123-4567-8901`, `F123-456-78-910-1`                                                       | Multi-state/country patterns                                                                                                  |
+| `national-id`     | Aadhaar, NINO, CPF, RG, DNI, codice fiscale, NIR, BSN, etc.                                 | Country-specific patterns; check digits verified by the validating engine                                                     |
 
 ### Financial
 
-| Category         | Examples                            | Validator / Notes      |
-| ---------------- | ----------------------------------- | ---------------------- |
-| `credit-card`    | `4111 1111 1111 1111`               | Luhn algorithm         |
-| `iban`           | `GB82 WEST 1234 5698 7654 32`       | MOD-97 (ISO 13616)     |
-| `bank-account`   | Routing + account number pairs      | Pattern regex          |
-| `cryptocurrency` | BTC, ETH, XRP wallet addresses      | Format regex per chain |
-| `tax-id`         | EIN `12-3456789`, VAT `GB123456789` | Multi-country patterns |
+| Category         | Examples                                                       | Validator / Notes                              |
+| ---------------- | -------------------------------------------------------------- | ---------------------------------------------- |
+| `credit-card`    | `4111 1111 1111 1111`                                          | Luhn algorithm                                 |
+| `iban`           | `GB82 WEST 1234 5698 7654 32`                                  | MOD-97 (ISO 13616)                             |
+| `bank-account`   | Routing and account numbers, SWIFT/BIC, PIX keys and payloads  | Context keywords; ABA check digits; PIX CRC-16 |
+| `cryptocurrency` | BTC, ETH, XRP wallet addresses                                 | Format regex per chain                         |
+| `tax-id`         | EIN `12-3456789`, VAT `GB123456789`, CNPJ `11.222.333/0001-81` | Multi-country patterns; CNPJ check digits      |
 
 ### Healthcare
 
@@ -348,6 +349,21 @@ anonymize(text, { preset: "hipaa" });
 // Inspect a preset's configuration
 const hipaa = getPreset("hipaa");
 console.log(hipaa.categories); // ["name", "address", "date-of-birth", "phone", ...]
+```
+
+Data can fall under several regulations at once: health records of Brazilian patients, say. A
+list of presets applies all of them — every category of every preset is detected, and each
+category gets the most protective of the presets' strategies (one that cannot be reversed, links
+nothing and reveals less wins; the preset listed first wins a tie):
+
+```ts
+import { anonymize, combinePresets, createAnonymizer } from "anonyma";
+
+anonymize(text, { preset: ["lgpd", "hipaa"] });
+const anonymizer = createAnonymizer({ preset: ["lgpd", "hipaa"] });
+
+// What the combination does:
+combinePresets(["pci-dss", "hipaa"]).rules; // [] — HIPAA's redaction beats PCI DSS's mask
 ```
 
 To add a category to a preset, compile a pipeline from `"anonyma/engine"` with the preset's
@@ -584,11 +600,26 @@ import {
   ibanMod97, // MOD-97 — IBAN (ISO 13616)
   ninoValid, // NINO format — UK National Insurance
   aadhaarFormat, // Aadhaar format — Indian national ID
+  cnpjChecksum, // CNPJ — Brazilian company tax IDs, numeric or alphanumeric
+  abaRoutingChecksum, // 3-7-1 — US routing numbers
+  npiChecksum, // Luhn behind 80840 — US National Provider Identifiers
+  imeiChecksum, // Luhn — mobile device identities
+  bsnChecksum, // eleven test — Dutch BSN
+  ptNifChecksum, // mod-11 — Portuguese NIF
+  spanishIdChecksum, // mod-23 letter — Spanish DNI and NIE
+  italianFiscalCodeChecksum, // check letter — Italian codice fiscale
+  frNirChecksum, // 97 − n mod 97 — French NIR
+  chineseResidentIdChecksum, // ISO 7064 MOD 11-2 — Chinese resident ID
+  australianTfnChecksum, // weighted mod-11 — Australian TFN
+  swedishPersonnummerChecksum, // Luhn — Swedish personnummer
+  pixPayloadChecksum, // CRC-16 — PIX "copia e cola" payloads
+  CHECKSUMS, // every validator by name: "luhn", "cnpj", "aba-routing", …
 } from "anonyma/validators";
 
 luhn("4111111111111111"); // true
 ibanMod97("GB82WEST12345698765432"); // true
 nhsMod11("943-476-5919"); // true
+cnpjChecksum("12.ABC.345/01DE-35"); // true
 ```
 
 ---
@@ -774,9 +805,9 @@ semantic versioning like the rest of the package.
 
 A pipeline is compiled once and reused. Detectors report offsets, overlapping detections are
 resolved so that no detected character is left in the output, and the output is assembled in one
-pass. Email addresses, US SSNs, IBANs, IP addresses and card numbers are found by validating
-detectors (checksums, issuer ranges, allocation rules) that reject look-alikes such as version
-strings; the other categories use the 1.0 detectors.
+pass. Email addresses, US SSNs, IBANs, IP addresses, card numbers and national IDs are found by
+validating detectors (checksums, issuer ranges, allocation rules) that reject look-alikes such as
+version strings or a CPF with wrong check digits; the other categories use the 1.0 detectors.
 
 ```ts
 import { compilePipeline, createPipelineStream } from "anonyma/engine";
@@ -792,6 +823,30 @@ const scrubbed = source.pipeThrough(createPipelineStream(pipeline));
 
 `compilePipeline()` takes plain data — a preset, categories, strategies, patterns — so a pipeline
 can live in a configuration file; keys and seeds are passed next to it, never inside it.
+
+A pattern can require check digits and use the words around a match. Here a six-digit number is
+an employee ID only after "badge" or "employee", and a nine-digit one is a routing number only when
+its check digits hold:
+
+```ts
+const pipeline = compilePipeline({
+  minConfidence: 0.8,
+  patterns: [
+    {
+      source: String.raw`\b\d{6}\b`,
+      category: "employee-id",
+      confidence: 0.5,
+      context: { keywords: ["badge", "employee"], boost: 0.4 }, // within 3 words before
+    },
+    { source: String.raw`\b\d{9}\b`, category: "routing", validator: "aba-routing" },
+  ],
+});
+pipeline.transform("Badge 123456; your order number is 654321; routing 011000015").text;
+// "Badge [REDACTED]; your order number is 654321; routing [REDACTED]"
+```
+
+`withContext(detector, options)` does the same for any span detector; `required: true` drops the
+matches that have no keyword before them.
 `createPipeline()` builds one from detectors and replacers imported one by one, so that bundlers
 keep only those.
 
@@ -859,6 +914,24 @@ await audit.record({
   fields: summarizeSpans(spans, { rule: "redact" }),
 });
 (await verifyAuditChain(sink.records())).ok; // true
+```
+
+A receipt goes with the data instead: a signed statement that a text was anonymized, under which
+presets and policy, with how many values of each category replaced. It holds counts and digests,
+never a value, and its HMAC-SHA-256 signature fails if anything in it is changed or it was not
+issued with your key:
+
+```ts
+import { createReceiptIssuer } from "anonyma/audit";
+
+const receipts = createReceiptIssuer({ key: receiptKey, presets: "lgpd" });
+const result = compilePipeline({ preset: "lgpd" }).transform(text);
+const receipt = await receipts.issue(result, { input: text });
+// { v: 1, id, timestamp: "2026-11-21T10:00:00.000Z", library: "anonyma@1.3.0",
+//   presets: ["lgpd"], stats: { email: 2, "national-id": 1 }, total: 3,
+//   output: <SHA-256 of result.text>, input: <HMAC of text>, alg: "HMAC-SHA-256", signature }
+
+(await receipts.verify(receipt, { output: result.text })).valid; // true
 ```
 
 ### Regulation profiles and policies (`"anonyma/compliance"`)

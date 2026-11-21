@@ -9,12 +9,77 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.3.0] — unreleased
+
+Minor release: checksum validation and context proximity for detection, Brazilian and European
+formats, combined compliance presets and signed anonymization receipts. Everything is additive,
+with two changes to what is detected: more phone numbers and street addresses are found (see
+Changed), and the validating pipelines of `"anonyma/engine"` leave national IDs whose check
+digits fail. Some types are wider: `preset` accepts a list of presets wherever it is accepted,
+and `PatternSpec` has `validator` and `context` members.
+
+### Added
+
+- **Checksum validators** in `"anonyma/validators"`: `abaRoutingChecksum`, `cnpjChecksum`
+  (numeric and the alphanumeric CNPJ issued from July 2026), `npiChecksum`, `imeiChecksum`,
+  `bsnChecksum` (Dutch eleven test), `ptNifChecksum`, `spanishIdChecksum` (DNI and NIE),
+  `italianFiscalCodeChecksum`, `frNirChecksum` (with Corsica's 2A and 2B),
+  `chineseResidentIdChecksum` (ISO 7064 MOD 11-2), `australianTfnChecksum`,
+  `swedishPersonnummerChecksum` and `pixPayloadChecksum` (CRC-16 of a PIX payload). `CHECKSUMS`
+  names every validator, old and new, for declarative patterns.
+- **Validating national-ID detection.** `detectNationalIdStrict()` (`"anonyma/detectors"`) and
+  `strictNationalIdDetector` (`"anonyma/engine"`) discard national IDs whose check digits fail:
+  Canadian SIN, South African ID, UK NINO, Aadhaar, Chinese resident ID, CPF, Swedish
+  personnummer, Spanish DNI/NIE, Italian fiscal code, French NIR, Australian TFN, Portuguese NIF
+  and Dutch BSN. A number that fails one country's check can still be another's. The validating
+  pipelines (`detection: "precise"`, the default of `compilePipeline()` and of the AI, MCP and
+  middleware modules built on it) use it.
+- **Context proximity.** `withContext(detector, { keywords, window, boost, required })`
+  (`"anonyma/engine"`) raises the confidence of a hit that has one of the keywords within
+  `window` words before it (three by default), or, with `required`, drops the hits that have
+  none. A declarative pattern takes the same options as `context`, and the check digits it must
+  pass as `validator` (a name from `CHECKSUMS`), in `compilePipeline()` and in policy documents.
+- **Brazilian identifiers.** CNPJ (`tax-id`), punctuated or after a label, numeric or
+  alphanumeric, with valid check digits; RG (`national-id`) after an RG label; PIX payloads
+  (`bank-account`), verified by their CRC, and PIX random keys after a PIX label.
+- **Combined presets.** `combinePresets(["lgpd", "hipaa"])`, and a list of presets wherever one
+  preset is accepted: `anonymize()`, `anonymizeAsync()`, `createAnonymizer()` and
+  `compilePipeline()`. The combination detects every category of every preset; each category
+  gets the most protective of the presets' strategies (judged by whether it can be reversed,
+  whether its outputs can be linked and how much of the value it leaves in clear), the preset
+  listed first winning a tie.
+- **Receipts.** `createReceiptIssuer({ key })` (`"anonyma/audit"`) issues an `AnonymaReceipt`
+  for an anonymized text: the time, the library version, the presets and policy, the number of
+  replaced values per category, a SHA-256 digest of the output and, on request, a keyed digest
+  of the input, signed with HMAC-SHA-256. `verify()` detects a receipt that was altered, signed
+  with another key, or issued for another output or input. A receipt never contains a value.
+- `VERSION`, the version of the package, exported from `"anonyma"`.
+
 ### Changed
+
+- **More phone numbers are detected.** Brazilian numbers (`(11) 91234-5678`,
+  `11 91234-5678`), and the national formats of France, the United Kingdom, Spain, Italy and the
+  German-speaking countries, each in the grouping the country writes it in. An international
+  number may have up to two separators between its digits, so `+55 (11) 91234-5678` and
+  `+55 11 91234-5678` are found whole: 1.2.0 found no match in the first and replaced only
+  `+55 11 91234` in the second, leaving `-5678` in the output.
+- **More street addresses are detected**: European and Brazilian streets such as
+  `Musterstraße 12`, `Kerkstraat 12`, `12 rue de la Paix`, `Calle Mayor 5`, `Via Roma 10` and
+  `Av. Paulista, 1578`, with the postcode and town that follow them.
+- A US routing number whose check digits hold is reported with confidence 0.9 instead of 0.85.
+
+### Notes
 
 - **The companion packages are named `anonyma-vercel-ai` and `anonyma-mcp`.** 1.2.0 introduced
   them as `@anonyma/vercel-ai` and `@anonyma/mcp`, but the `@anonyma` scope is not available on
   npm, and they were never published under those names. Their folders (`packages/vercel-ai`,
   `packages/mcp`), APIs and the `anonyma-mcp-proxy` command are unchanged.
+- The plan for this release proposed separate preset packages (`preset-lgpd`, `preset-gdpr`,
+  `preset-hipaa`). The presets and every detector they need are already part of `anonyma`, which
+  has no dependencies, so separate packages would add nothing but versions to keep in step; a
+  list of presets gives the same composition.
 
 ---
 
@@ -718,7 +783,8 @@ All types are zero-cost, type-only exports (stripped by `tsc`; no runtime overhe
 - **Prettier** code formatting.
 - **MIT License**.
 
-[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/izaccavalheiro/anonyma/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.2.0
 [1.1.1]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.1
 [1.1.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.0

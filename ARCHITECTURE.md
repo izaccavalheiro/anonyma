@@ -394,7 +394,8 @@ copied substrings. Contracts are in `engine/types.ts`.
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `detector.ts`  | `defineDetector()`, `defineRegexDetector()` (with prefilter substrings, validation and a maximum match length) and `fromLegacyDetector()` for 1.x `(text) => PiiMatch[]` functions                          |
 | `precise.ts`   | Validating detectors for email, US SSN, IBAN, IPv4, IPv6 and payment cards: issuer ranges and Luhn, the ISO 13616 length table and mod-97, SSA allocation rules, the RFC 4291 grammar, look-alike rejection |
-| `builtin.ts`   | The 27 1.x detectors as span detectors (`LEGACY_DETECTORS`, `LEGACY_AGGRESSIVE_DETECTORS`, `BUILTIN_CATEGORIES`), each a separate export                                                                    |
+| `builtin.ts`   | The 27 1.x detectors as span detectors (`LEGACY_DETECTORS`, `LEGACY_AGGRESSIVE_DETECTORS`, `BUILTIN_CATEGORIES`), each a separate export, and `strictNationalIdDetector`, which verifies check digits       |
+| `context.ts`   | `withContext()`: context proximity — keywords within a window of words before a hit raise its confidence, or are required                                                                                   |
 | `resolve.ts`   | `resolveSpans()`: the `cover` and `legacy` overlap policies                                                                                                                                                 |
 | `pipeline.ts`  | `createPipeline()`: `scan`, `test`, `replace`, `transform`, `transformAsync`                                                                                                                                |
 | `replacers.ts` | One factory per strategy (`maskWith()`, `hashWith()`, `encryptWith()`, …), `constant()`, and `strategyReplacer()` for a `StrategySpec`                                                                      |
@@ -402,7 +403,11 @@ copied substrings. Contracts are in `engine/types.ts`.
 | `stream.ts`    | `createChunkTransformer()`, `createAsyncChunkTransformer()` and `createPipelineStream()`                                                                                                                    |
 
 `compilePipeline()` uses the validating detectors by default (`detection: "precise"`) and the 1.x
-detectors for the other categories; `detection: "legacy"` uses the 1.x detectors throughout.
+detectors for the other categories; `detection: "legacy"` uses the 1.x detectors throughout. A
+`PatternSpec` names its check digits (`validator`, a key of `CHECKSUMS` in `validators.ts`) and
+its context (`context`), so declarative patterns are hybrid too. `preset` takes a list, combined
+by `combinePresets()` in `presets.ts`: each category gets the most protective strategy, ranked
+with `describeStrategy()` of `compliance/traits.ts`.
 
 ### 4.16 `vault/` — Tokenization and Key Management
 
@@ -433,6 +438,7 @@ rules, counts — and has no member for values.
 | `fields.ts`    | `summarizeSpans()` and `jsonPointer()`, which turn engine results into field entries                                                                 |
 | `sinks.ts`     | `memorySink()`, `lineSink()` and `parseAuditLog()`                                                                                                   |
 | `verify.ts`    | `verifyAuditChain()`                                                                                                                                 |
+| `receipt.ts`   | `createReceiptIssuer()`: receipts of counts and digests, signed with HMAC-SHA-256 (domain-separated from the chain), and their verification          |
 
 Every caller-supplied string in a record (actor, source, policy reference, path segment, …) also
 passes a guard — a pipeline — and is blanked if it looks like personal data.
@@ -796,10 +802,12 @@ tests/
 ├── validators.test.ts     # All checksum validator functions
 ├── errors-v3.test.ts      # Error classes of the subpath modules, through the public entry points
 ├── version.test.ts        # package.json, the code and the changelog agree on the version
+├── checksums.test.ts      # The checksum validators added in 1.3.0 and CHECKSUMS
+├── regional-detectors.test.ts # Brazilian and European formats, validating national IDs
 ├── engine/                # Pipelines, detectors, overlap, replacers, chunked streams,
 │                          # precision floors and property-based tests (fast-check)
 ├── vault/                 # Key ring, session and keyed tokenizers
-├── audit/                 # Logger, sinks and chain verification
+├── audit/                 # Logger, sinks, chain verification and receipts
 ├── compliance/            # Profiles, citations, policies, erasure, presets against profiles
 ├── ai/                    # JSON sanitizer, LLM guard, stream restoration
 ├── mcp/                   # MCP server and declarations
