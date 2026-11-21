@@ -1,0 +1,71 @@
+{
+  "name": "anonyma-cli",
+  "version": "0.1.0",
+  "description": "Scrub and scan files for personal data from the command line: text, JSON Lines and CSV, streamed so that files of any size run in constant memory, with compliance presets, policies and signed receipts. Nothing leaves the machine.",
+  "license": "MIT",
+  "author": "Izac Cavalheiro <izac@izaccavalheiro.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/izaccavalheiro/anonyma.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/izaccavalheiro/anonyma/tree/main/packages/cli#readme",
+  "bugs": {
+    "url": "https://github.com/izaccavalheiro/anonyma/issues"
+  },
+  "keywords": [
+    "anonyma",
+    "cli",
+    "pii",
+    "redaction",
+    "anonymization",
+    "csv",
+    "jsonl",
+    "logs",
+    "gdpr",
+    "lgpd",
+    "hipaa",
+    "privacy"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "anonyma": "./dist/bin.js"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check:package": "publint --strict && attw --pack . --profile node16"
+  },
+  "peerDependencies": {
+    "anonyma": "^1.3.0"
+  },
+  "devDependencies": {
+    "anonyma": "file:../.."
+  },
+  "engines": {
+    "node": ">=18.3"
+  }
+}

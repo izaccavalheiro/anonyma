@@ -55,7 +55,15 @@ and `PatternSpec` has `validator` and `context` members.
   replaced values per category, a SHA-256 digest of the output and, on request, a keyed digest
   of the input, signed with HMAC-SHA-256. `verify()` detects a receipt that was altered, signed
   with another key, or issued for another output or input. A receipt never contains a value.
+- `sanitizeJsonText()` and `sanitizeJsonTextAsync()` (`"anonyma/ai"`): a JSON text sanitized
+  without losing numbers that a JavaScript number cannot hold, such as 20-digit IDs, which
+  `JSON.parse` would round. A text in which nothing was replaced comes back unchanged.
+- Receipts for outputs too large to hold in memory: `issue()` takes `outputDigest` (the SHA-256
+  of the output) in place of `text`, and `counts` in place of `spans` or `matches`.
 - `VERSION`, the version of the package, exported from `"anonyma"`.
+- **`anonyma-cli` 0.1.0**, a new companion package: the `anonyma` command scrubs and scans text,
+  JSON Lines and CSV files as streams, in constant memory, with presets, policies, column
+  selection, gzip and signed receipts.
 
 ### Changed
 

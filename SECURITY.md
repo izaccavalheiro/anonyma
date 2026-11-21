@@ -12,7 +12,7 @@ are welcome and are treated as a priority.
 | 1.2.x   | security fixes only |
 | < 1.2   | no                  |
 
-`anonyma-vercel-ai` and `anonyma-mcp` are supported in their latest 0.x
+`anonyma-vercel-ai`, `anonyma-mcp` and `anonyma-cli` are supported in their latest 0.x
 minor version.
 
 ## Reporting a vulnerability
