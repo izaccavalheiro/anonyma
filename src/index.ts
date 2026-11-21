@@ -78,7 +78,8 @@ export { sanitizeForLLM, restoreFromLLM } from "./llm.js";
 export { anonymizeBatch, anonymizeBatchAsync, tokenizeBatch, detectBatch } from "./batch.js";
 
 // Compliance presets
-export { getPreset, PRESET_REGISTRY } from "./presets.js";
+export { combinePresets, getPreset, PRESET_REGISTRY } from "./presets.js";
+export { VERSION } from "./version.js";
 
 // Individual strategies (tree-shakeable)
 export { mask } from "./strategies/mask.js";
@@ -125,6 +126,7 @@ export type {
   SynthesizeOptions,
   BatchResult,
   CompliancePreset,
+  PresetSelection,
   Locale,
   StrategyOptions,
   AnonymizationRule,
@@ -143,4 +145,4 @@ export type {
   PluginStrategyOptions,
 } from "./types.js";
 
-export type { PresetConfig } from "./presets.js";
+export type { CombinedPreset, PresetConfig } from "./presets.js";

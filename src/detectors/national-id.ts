@@ -11,7 +11,7 @@
  * - South Korea: RRN (XXXXXX-XXXXXXX)
  * - Germany: Personalausweis (9 alphanumeric)
  * - France: NIR/INSEE (15 digits with spaces)
- * - Brazil: CPF (XXX.XXX.XXX-XX)
+ * - Brazil: CPF (XXX.XXX.XXX-XX) and RG (XX.XXX.XXX-X, with an "RG" label)
  * - Argentina: DNI (7-8 digits)
  * - South Africa: ID (13 digits)
  * - Nigeria: NIN (11 digits)
@@ -24,9 +24,26 @@
  * - Italy: Codice Fiscale (16 alphanumeric)
  * - Portugal: NIF (9 digits)
  * - US: SSN (handled separately by ssn.ts — not duplicated here)
+ *
+ * {@link detectNationalIdStrict} also verifies the check digits of the formats
+ * that have them and discards the numbers that fail.
  */
 
 import type { PiiMatch } from "../types.js";
+import {
+  australianTfnChecksum,
+  bsnChecksum,
+  chineseResidentIdChecksum,
+  cpfChecksum,
+  frNirChecksum,
+  italianFiscalCodeChecksum,
+  luhn,
+  ninoValid,
+  ptNifChecksum,
+  spanishIdChecksum,
+  swedishPersonnummerChecksum,
+  verhoeff,
+} from "../validators.js";
 
 // ---------------------------------------------------------------------------
 // Individual country patterns
@@ -152,6 +169,21 @@ const PT_NIF_PATTERN = /\b[1-9]\d{8}\b/g;
  */
 const NL_BSN_PATTERN = /\b\d{9}\b/g;
 
+/**
+ * Brazil RG (Registro Geral): 7 to 9 characters, the last a digit or `X`,
+ * usually written XX.XXX.XXX-X. The format differs from state to state and
+ * has no common check digit, so it is reported only after an RG label.
+ * @internal
+ */
+const BR_RG_PATTERN = /\b\d{1,2}\.?\d{3}\.?\d{3}-?[\dXx]\b/g;
+
+/**
+ * Labels of a Brazilian RG.
+ * @internal
+ */
+const BR_RG_CONTEXT_RE =
+  /\b(?:RG|R\.G\.|registro\s+geral|(?:carteira|c[ée]dula)\s+de\s+identidade|identidade)\s*(?:n[º°o.]?\s*)?:?\s*/gi;
+
 // ---------------------------------------------------------------------------
 // Context keywords for ambiguous patterns
 // ---------------------------------------------------------------------------
@@ -172,50 +204,83 @@ interface NationalIdEntry {
   readonly confidence: number;
   /** When true, only report with context keyword present nearby. */
   readonly requiresContext: boolean;
+  /** The labels this entry's context consists of. Defaults to the generic national-ID labels. */
+  readonly context?: RegExp;
+  /** Check digits that {@link detectNationalIdStrict} verifies. */
+  readonly validate?: (value: string) => boolean;
 }
 
 const NATIONAL_ID_ENTRIES: readonly NationalIdEntry[] = [
-  { pattern: CA_SIN_PATTERN, confidence: 0.85, requiresContext: false },
+  { pattern: CA_SIN_PATTERN, confidence: 0.85, requiresContext: false, validate: luhn },
   { pattern: MX_CURP_PATTERN, confidence: 0.9, requiresContext: false },
   { pattern: MX_RFC_PATTERN, confidence: 0.78, requiresContext: true },
-  { pattern: UK_NINO_PATTERN, confidence: 0.9, requiresContext: false },
-  { pattern: IN_AADHAAR_PATTERN, confidence: 0.82, requiresContext: false },
-  { pattern: CN_RESIDENT_ID_PATTERN, confidence: 0.8, requiresContext: true },
+  { pattern: UK_NINO_PATTERN, confidence: 0.9, requiresContext: false, validate: ninoValid },
+  { pattern: IN_AADHAAR_PATTERN, confidence: 0.82, requiresContext: false, validate: verhoeff },
+  {
+    pattern: CN_RESIDENT_ID_PATTERN,
+    confidence: 0.8,
+    requiresContext: true,
+    validate: chineseResidentIdChecksum,
+  },
   { pattern: KR_RRN_PATTERN, confidence: 0.87, requiresContext: false },
-  { pattern: BR_CPF_PATTERN, confidence: 0.92, requiresContext: false },
-  { pattern: SE_PERSONNUMMER_PATTERN, confidence: 0.87, requiresContext: false },
-  { pattern: ES_DNIE_PATTERN, confidence: 0.82, requiresContext: false },
-  { pattern: IT_CF_PATTERN, confidence: 0.88, requiresContext: false },
-  { pattern: FR_NIR_PATTERN, confidence: 0.84, requiresContext: false },
+  { pattern: BR_CPF_PATTERN, confidence: 0.92, requiresContext: false, validate: cpfChecksum },
+  {
+    pattern: SE_PERSONNUMMER_PATTERN,
+    confidence: 0.87,
+    requiresContext: false,
+    validate: swedishPersonnummerChecksum,
+  },
+  {
+    pattern: ES_DNIE_PATTERN,
+    confidence: 0.82,
+    requiresContext: false,
+    validate: spanishIdChecksum,
+  },
+  {
+    pattern: IT_CF_PATTERN,
+    confidence: 0.88,
+    requiresContext: false,
+    validate: italianFiscalCodeChecksum,
+  },
+  { pattern: FR_NIR_PATTERN, confidence: 0.84, requiresContext: false, validate: frNirChecksum },
   // More ambiguous — require context
   { pattern: AR_DNI_PATTERN, confidence: 0.75, requiresContext: true },
-  { pattern: ZA_ID_PATTERN, confidence: 0.72, requiresContext: true },
+  { pattern: ZA_ID_PATTERN, confidence: 0.72, requiresContext: true, validate: luhn },
   { pattern: NG_NIN_PATTERN, confidence: 0.7, requiresContext: true },
-  { pattern: AU_TFN_PATTERN, confidence: 0.75, requiresContext: true },
+  {
+    pattern: AU_TFN_PATTERN,
+    confidence: 0.75,
+    requiresContext: true,
+    validate: australianTfnChecksum,
+  },
   { pattern: DE_PERSONALAUSWEIS_PATTERN, confidence: 0.75, requiresContext: true },
-  { pattern: PT_NIF_PATTERN, confidence: 0.7, requiresContext: true },
-  { pattern: NL_BSN_PATTERN, confidence: 0.7, requiresContext: true },
+  { pattern: PT_NIF_PATTERN, confidence: 0.7, requiresContext: true, validate: ptNifChecksum },
+  { pattern: NL_BSN_PATTERN, confidence: 0.7, requiresContext: true, validate: bsnChecksum },
+  { pattern: BR_RG_PATTERN, confidence: 0.85, requiresContext: true, context: BR_RG_CONTEXT_RE },
 ];
 
-/**
- * Detect national identification numbers in `text`.
- *
- * @param text - The input string to scan.
- * @returns An array of {@link PiiMatch} objects with `category: "national-id"`.
- */
-export function detectNationalId(text: string): PiiMatch[] {
+/** End offsets of every label `context` finds in `text`. @internal */
+function labelEnds(text: string, context: RegExp): number[] {
+  const ends: number[] = [];
+  const re = new RegExp(context.source, "gi");
+  let found: RegExpExecArray | null;
+  while ((found = re.exec(text)) !== null) ends.push(found.index + found[0].length);
+  return ends;
+}
+
+/** The shared scan behind {@link detectNationalId} and {@link detectNationalIdStrict}. @internal */
+function scanNationalId(text: string, strict: boolean): PiiMatch[] {
   const matches: PiiMatch[] = [];
   const seen = new Set<string>();
-
-  // Find context keyword end positions
-  const contextPositions: number[] = [];
-  const ctxRe = new RegExp(NATIONAL_ID_CONTEXT_RE.source, "gi");
-  let cm: RegExpExecArray | null;
-  while ((cm = ctxRe.exec(text)) !== null) {
-    contextPositions.push(cm.index + cm[0].length);
-  }
+  const labels = new Map<RegExp, number[]>();
 
   for (const entry of NATIONAL_ID_ENTRIES) {
+    const context = entry.context ?? NATIONAL_ID_CONTEXT_RE;
+    let ends = labels.get(context);
+    if (ends === undefined) {
+      ends = labelEnds(text, context);
+      labels.set(context, ends);
+    }
     const re = new RegExp(entry.pattern.source, "g");
     let m: RegExpExecArray | null;
 
@@ -224,11 +289,11 @@ export function detectNationalId(text: string): PiiMatch[] {
       const key = `${String(match.index)}-${String(match.index + match[0].length)}`;
       if (seen.has(key)) continue;
 
-      const hasContext = contextPositions.some(
-        (pos) => pos <= match.index && match.index - pos <= 40,
-      );
+      const hasContext = ends.some((pos) => pos <= match.index && match.index - pos <= 40);
 
       if (entry.requiresContext && !hasContext) continue;
+      // A number whose check digits fail may still be another country's number.
+      if (strict && entry.validate !== undefined && !entry.validate(match[0])) continue;
 
       const confidence = hasContext ? Math.min(entry.confidence + 0.05, 0.97) : entry.confidence;
 
@@ -244,4 +309,39 @@ export function detectNationalId(text: string): PiiMatch[] {
   }
 
   return matches;
+}
+
+/**
+ * Detect national identification numbers in `text`.
+ *
+ * @param text - The input string to scan.
+ * @returns An array of {@link PiiMatch} objects with `category: "national-id"`.
+ */
+export function detectNationalId(text: string): PiiMatch[] {
+  return scanNationalId(text, false);
+}
+
+/**
+ * Detect national identification numbers in `text`, discarding those whose
+ * check digits fail: Canadian SIN and South African ID (Luhn), UK NINO
+ * (prefixes), Aadhaar (Verhoeff), Chinese resident ID (ISO 7064), CPF, Swedish
+ * personnummer, Spanish DNI/NIE, Italian fiscal code, French NIR, Australian
+ * TFN, Portuguese NIF and Dutch BSN. Formats without check digits are
+ * reported as {@link detectNationalId} reports them.
+ *
+ * The validating span detector of `"anonyma/engine"` uses it.
+ *
+ * @param text - The input string to scan.
+ * @returns An array of {@link PiiMatch} objects with `category: "national-id"`.
+ *
+ * @example
+ * ```ts
+ * import { detectNationalIdStrict } from "anonyma/detectors";
+ *
+ * detectNationalIdStrict("CPF 529.982.247-25, not 529.982.247-26").map((m) => m.value);
+ * // ["529.982.247-25"]
+ * ```
+ */
+export function detectNationalIdStrict(text: string): PiiMatch[] {
+  return scanNationalId(text, true);
 }

@@ -26,6 +26,16 @@ export type { AuditLoggerOptions } from "./logger.js";
 export { lineSink, memorySink, parseAuditLog } from "./sinks.js";
 export type { MemoryAuditSink } from "./sinks.js";
 export { verifyAuditChain } from "./verify.js";
+export { createReceiptIssuer } from "./receipt.js";
+export type {
+  AnonymaReceipt,
+  IssueOptions,
+  ReceiptIssuer,
+  ReceiptIssuerOptions,
+  ReceiptSubject,
+  ReceiptVerification,
+  VerifyReceiptOptions,
+} from "./receipt.js";
 export type { VerifyOptions } from "./verify.js";
 export type {
   AuditChecksums,

@@ -37,6 +37,7 @@ export {
   synthesizeWith,
 } from "./replacers.js";
 export { builtinDetectors, compilePipeline } from "./compile.js";
+export { withContext } from "./context.js";
 export {
   createAsyncChunkTransformer,
   createChunkTransformer,
@@ -85,6 +86,7 @@ export {
   phoneDetector,
   prescriptionDetector,
   socialMediaDetector,
+  strictNationalIdDetector,
   taxIdDetector,
   trackingNumberDetector,
   urlDetector,
@@ -99,6 +101,7 @@ export type {
   ChunkOptions,
   ChunkTransformer,
   CompileDependencies,
+  ContextOptions,
   DetectedSpan,
   EmitSpan,
   OverlapPolicy,

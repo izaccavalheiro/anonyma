@@ -2,8 +2,9 @@
  * Tests for v2 compliance presets, allowlist, confidenceThreshold, and anonymizeAsync
  */
 import { describe, it, expect } from "vitest";
-import { anonymize, anonymizeAsync } from "../src/anonymize.js";
-import { getPreset, PRESET_REGISTRY } from "../src/presets.js";
+import { anonymize, anonymizeAsync, createAnonymizer } from "../src/anonymize.js";
+import { PresetNotFoundError, ValidationError } from "../src/errors.js";
+import { combinePresets, getPreset, PRESET_REGISTRY } from "../src/presets.js";
 
 // ---------------------------------------------------------------------------
 // getPreset() / PRESET_REGISTRY
@@ -239,5 +240,100 @@ describe("anonymizeAsync()", () => {
   it("handles empty input", async () => {
     const { text } = await anonymizeAsync("");
     expect(text).toBe("");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// combinePresets() and preset lists
+// ---------------------------------------------------------------------------
+describe("combinePresets()", () => {
+  it("returns a single preset unchanged", () => {
+    const hipaa = getPreset("hipaa");
+    expect(combinePresets("hipaa")).toEqual({
+      names: ["hipaa"],
+      description: hipaa.description,
+      categories: hipaa.categories,
+      defaultStrategy: hipaa.defaultStrategy,
+      rules: [],
+    });
+    expect(combinePresets(["pci-dss", "pci-dss"]).rules).toEqual(getPreset("pci-dss").rules);
+  });
+
+  it("detects every category of every preset, in order of first appearance", () => {
+    const combined = combinePresets(["pci-dss", "ferpa"]);
+    expect(combined.names).toEqual(["pci-dss", "ferpa"]);
+    expect(combined.categories).toEqual([
+      ...getPreset("pci-dss").categories,
+      ...getPreset("ferpa").categories.filter((c) => !getPreset("pci-dss").categories.includes(c)),
+    ]);
+    expect(combined.description.split("\n")).toHaveLength(2);
+  });
+
+  it("uses the most protective default strategy, the first preset winning a tie", () => {
+    // Pseudonymization without a seed reveals nothing and links nothing, as redaction.
+    expect(combinePresets(["gdpr", "hipaa"]).defaultStrategy).toEqual({ strategy: "pseudonymize" });
+    expect(combinePresets(["hipaa", "gdpr"]).defaultStrategy).toEqual({ strategy: "redact" });
+  });
+
+  it("gives each category the most protective strategy of the presets that cover it", () => {
+    // PCI DSS masks card numbers to their last four digits; HIPAA redacts them.
+    const combined = combinePresets(["pci-dss", "hipaa"]);
+    const card = combined.rules.find((rule) => rule.category === "credit-card");
+    expect(card).toBeUndefined();
+    expect(combined.defaultStrategy).toEqual({ strategy: "redact" });
+  });
+
+  it("keeps a preset's strategy for a category no other preset covers", () => {
+    // GDPR pseudonymizes IP addresses; PCI DSS does not cover them.
+    const combined = combinePresets(["pci-dss", "gdpr"]);
+    expect(combined.defaultStrategy).toEqual({ strategy: "redact" });
+    expect(combined.rules.find((rule) => rule.category === "ipv4")?.strategy).toEqual({
+      strategy: "pseudonymize",
+    });
+  });
+
+  it("prefers a strategy that reveals nothing to a mask that shows digits", () => {
+    // PCI DSS masks card numbers to their last four digits; GDPR pseudonymizes them.
+    const combined = combinePresets(["pci-dss", "gdpr"]);
+    expect(combined.rules.find((rule) => rule.category === "credit-card")?.strategy).toEqual({
+      strategy: "pseudonymize",
+    });
+    // SOX redacts the bank accounts that PCI DSS masks: redaction, the default, wins.
+    const withSox = combinePresets(["pci-dss", "sox"]);
+    expect(withSox.rules.find((rule) => rule.category === "bank-account")).toBeUndefined();
+  });
+
+  it("lets the first preset win between equally protective strategies", () => {
+    const combined = combinePresets(["lgpd", "ferpa"]);
+    expect(combined.defaultStrategy).toBe(getPreset("lgpd").defaultStrategy);
+  });
+
+  it("rejects an empty list and unknown names", () => {
+    expect(() => combinePresets([])).toThrow(ValidationError);
+    expect(() => combinePresets(["gdpr", "nope" as "gdpr"])).toThrow(PresetNotFoundError);
+  });
+});
+
+describe("preset lists", () => {
+  const text = "Card 4111 1111 1111 1111, student DOB 01/15/2005";
+
+  it("anonymize() applies every preset of a list", () => {
+    const single = anonymize(text, { preset: "pci-dss" }).text;
+    const both = anonymize(text, { preset: ["pci-dss", "hipaa"] }).text;
+    expect(single).toContain("1111");
+    expect(both).not.toContain("1111");
+    expect(both).not.toContain("01/15/2005");
+  });
+
+  it("anonymizeAsync() applies every preset of a list", async () => {
+    const both = (await anonymizeAsync(text, { preset: ["pci-dss", "hipaa"] })).text;
+    expect(both).not.toContain("1111");
+  });
+
+  it("createAnonymizer() applies every preset of a list", () => {
+    const anonymizer = createAnonymizer({ preset: ["lgpd", "hipaa"] });
+    const result = anonymizer.anonymize("CPF 529.982.247-25, MRN: 12345678").text;
+    expect(result).not.toContain("529.982.247-25");
+    expect(result).not.toContain("12345678");
   });
 });

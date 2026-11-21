@@ -258,6 +258,29 @@ describe("engine/stream", () => {
     });
   });
 
+  describe("left context", () => {
+    it("reads a column of card numbers as the whole text does, in chunks of any size", () => {
+      // Found by the property test: a context that began inside a replaced card
+      // let its last groups and the next line's first groups pass for a card.
+      const text = [
+        ...Array.from({ length: 5 }, () => "5555 5555 5555 4444"),
+        ...Array.from({ length: 3 }, () => "4111 1111 1111 1111"),
+      ].join("\n");
+      const pipeline = compilePipeline({ categories: ["credit-card"] });
+      const whole = pipeline.transform(text).text;
+      expect(whole).toBe(Array.from({ length: 8 }, () => "[REDACTED]").join("\n"));
+      for (const size of [1, 2, 3, 5, 7, 11, 19, 20, 40]) {
+        for (const batch of [0, 16]) {
+          const transformer = createChunkTransformer(pipeline, { batch });
+          let out = "";
+          for (const chunk of chunksOf(text, size)) out += transformer.push(chunk);
+          out += transformer.flush();
+          expect(out, `chunks of ${String(size)}, batch ${String(batch)}`).toBe(whole);
+        }
+      }
+    });
+  });
+
   describe("createAsyncChunkTransformer", () => {
     it("awaits asynchronous replacers and matches the whole-text result", async () => {
       const pipeline = compilePipeline({ defaultStrategy: { strategy: "hash" } });

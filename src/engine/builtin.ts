@@ -24,7 +24,7 @@ import { detectIpv4, detectIpv6 } from "../detectors/ip-address.js";
 import { detectLicensePlate } from "../detectors/license-plate.js";
 import { detectMedicalRecord } from "../detectors/medical-record.js";
 import { detectName, detectNameAggressive } from "../detectors/name.js";
-import { detectNationalId } from "../detectors/national-id.js";
+import { detectNationalId, detectNationalIdStrict } from "../detectors/national-id.js";
 import { detectPassport } from "../detectors/passport.js";
 import { detectPhone, detectPhoneAggressive } from "../detectors/phone.js";
 import { detectPrescription } from "../detectors/prescription.js";
@@ -123,6 +123,14 @@ export const driversLicenseDetector: SpanDetector = fromLegacyDetector(
 );
 /** National identification numbers. */
 export const nationalIdDetector: SpanDetector = fromLegacyDetector("national-id", detectNationalId);
+/**
+ * National identification numbers whose check digits hold, for the formats
+ * that have them (see `detectNationalIdStrict()`). Validating pipelines use it.
+ */
+export const strictNationalIdDetector: SpanDetector = fromLegacyDetector(
+  "national-id",
+  detectNationalIdStrict,
+);
 /** Bank account and routing numbers. */
 export const bankAccountDetector: SpanDetector = fromLegacyDetector(
   "bank-account",

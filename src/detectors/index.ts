@@ -35,7 +35,7 @@ export { detectName, detectNameAggressive } from "./name.js";
 export { detectAddress } from "./address.js";
 export { detectPassport } from "./passport.js";
 export { detectDriversLicense } from "./drivers-license.js";
-export { detectNationalId } from "./national-id.js";
+export { detectNationalId, detectNationalIdStrict } from "./national-id.js";
 
 // --- Financial ---
 export { detectBankAccount } from "./bank-account.js";

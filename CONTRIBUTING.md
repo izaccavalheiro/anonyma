@@ -251,9 +251,9 @@ The companion packages in `packages/` are versioned independently of
 
 Releases are published by GitHub Actions, never from a local machine.
 
-1. Set the version in `package.json` (and `package-lock.json`), and give
-   `CHANGELOG.md` a section `## [<version>]`. A test fails when the version
-   the code reports differs from `package.json`.
+1. Set the version in `package.json` (and `package-lock.json`) and in
+   `src/version.ts`, and give `CHANGELOG.md` a section `## [<version>]`. A test
+   fails when the version the code reports differs from `package.json`.
 2. Merge into `main`, then push a tag `v<version>` on the merged commit. A
    pre-release may be tagged on its release branch instead; the workflow
    refuses a stable version whose commit is not on `main`.

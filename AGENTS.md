@@ -24,7 +24,8 @@ src/
 ├── presets.ts            # GDPR / LGPD / PIPEDA / HIPAA / CCPA / PCI-DSS / SOX / FERPA preset definitions
 ├── stream.ts             # WHATWG TransformStream wrappers (Node ≥ 18 / browsers)
 ├── crypto.ts             # Low-level Web Crypto helpers
-├── validators.ts         # Checksum validators (Luhn, Verhoeff, NHS, CPF, IBAN, etc.)
+├── validators.ts         # Checksum validators (Luhn, Verhoeff, NHS, CPF, CNPJ, IBAN, etc.) and CHECKSUMS, the validators by name
+├── version.ts            # VERSION; a release changes it with package.json
 ├── schemas.ts            # Optional Zod schemas + OpenAI/MCP tool definitions
 ├── detectors/            # One file per PII category; each exports detect*() + detect*Aggressive()
 │   └── index.ts          # Assembles DETECTOR_REGISTRY and AGGRESSIVE_DETECTOR_REGISTRY
@@ -243,6 +244,7 @@ Scope examples: `detectors`, `strategies`, `presets`, `stream`, `batch`, `llm`, 
 - `src/` runs on Bun, Deno and Cloudflare Workers: use only the Web platform (no `Buffer`, `process` or `node:` imports). `scripts/runtime/checks.mjs` checks the build on each runtime; extend it when you add a feature that touches crypto or streams.
 - An `AnonymaVault` holds original values in clear. Keep restoration scoped to the vault of the conversation that issued the tokens.
 - Audit records (`src/audit/`) describe what was done, never the data; keep personal data out of every field you add to them.
+- Receipts (`src/audit/receipt.ts`) hold category counts and digests only, and their signature is an HMAC-SHA-256 domain-separated from the audit chain's. Keep values out of every member you add, and never sign with a plain hash: without a key, anyone could forge a receipt.
 
 ---
 
@@ -260,6 +262,9 @@ Scope examples: `detectors`, `strategies`, `presets`, `stream`, `batch`, `llm`, 
 | Streaming                  | `src/stream.ts`                                                                        |
 | Zod schemas + AI tool defs | `src/schemas.ts`                                                                       |
 | Validators                 | `src/validators.ts`                                                                    |
+| Context proximity          | `src/engine/context.ts`                                                                |
+| Combined presets           | `src/presets.ts` (`combinePresets()`)                                                  |
+| Anonymization receipts     | `src/audit/receipt.ts`                                                                 |
 | Span engine contracts      | `src/engine/types.ts`                                                                  |
 | Tokenization and key rings | `src/vault/types.ts`                                                                   |
 | Audit log contracts        | `src/audit/types.ts`                                                                   |

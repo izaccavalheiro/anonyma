@@ -1,17 +1,17 @@
 {
-  ".": 35,
+  ".": 37,
   "./schemas": 5,
-  "./detectors": 14,
-  "./validators": 2.5,
+  "./detectors": 16.5,
+  "./validators": 3.5,
   "./crypto": 4.5,
-  "./stream": 30,
-  "./engine": 39,
+  "./stream": 32.5,
+  "./engine": 41,
   "./vault": 19,
-  "./audit": 42,
-  "./compliance": 31,
-  "./ai": 51,
+  "./audit": 45,
+  "./compliance": 33,
+  "./ai": 52,
   "./mcp": 67,
-  "./middleware": 44,
-  "./middleware/express": 45,
-  "./middleware/hono": 45
+  "./middleware": 45.5,
+  "./middleware/express": 46,
+  "./middleware/hono": 46
 }

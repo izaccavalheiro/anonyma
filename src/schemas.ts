@@ -27,6 +27,7 @@
  */
 
 import { z } from "zod/v3";
+import { VERSION } from "./version.js";
 
 // ---------------------------------------------------------------------------
 // Category & strategy schemas
@@ -445,7 +446,7 @@ export const ANONYMIZE_OBJECT_TOOL_DEFINITION: OpenAiFunctionDefinition = {
  */
 export const ANONYMA_MANIFEST = {
   name: "anonyma",
-  version: "1.2.0",
+  version: VERSION,
   description:
     "TypeScript-first PII detection & anonymization — 27 built-in detectors (email, SSN, IBAN, passport, credit card, and more), 8 strategies (mask, redact, hash, AES-256 encrypt, tokenize, pseudonymize, generalize, synthesize), 8 compliance presets (GDPR, LGPD, PIPEDA, HIPAA, CCPA, PCI-DSS, SOX, FERPA), reversible tokenization, LLM/AI pipeline helpers, WHATWG streaming, batch processing, checksum validators, and optional Zod/MCP schemas. Zero runtime dependencies.",
   capabilities: {
@@ -513,7 +514,7 @@ export const ANONYMA_MANIFEST = {
         customPatterns: "Ad-hoc regex patterns merged into the detection pipeline.",
         customDetectors: "Override built-in detectors on a per-category basis.",
         preset:
-          "Apply a compliance preset (gdpr | lgpd | pipeda | hipaa | ccpa | pci-dss | sox | ferpa).",
+          "Apply a compliance preset (gdpr | lgpd | pipeda | hipaa | ccpa | pci-dss | sox | ferpa), or a list of them.",
         allowlist: "String values that should never be anonymized even when detected as PII.",
         confidenceThreshold: "Minimum confidence score (0-1) for a match to be anonymized.",
       },

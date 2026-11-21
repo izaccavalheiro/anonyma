@@ -79,6 +79,18 @@ function builtinGuard(): (value: string) => boolean {
   return defaultGuard;
 }
 
+/**
+ * `value`, or the blank that replaces it when `guard` takes it for personal
+ * data. Receipts use it on category labels.
+ * @internal
+ */
+export function guardLabel(
+  value: string,
+  guard: (value: string) => boolean = builtinGuard(),
+): string {
+  return guard(value) ? BLANK : value;
+}
+
 function deepFreeze<T>(value: T): T {
   if (typeof value === "object" && value !== null && !Object.isFrozen(value)) {
     Object.freeze(value);

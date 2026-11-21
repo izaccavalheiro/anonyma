@@ -131,6 +131,13 @@ export type Locale =
 export type CompliancePreset =
   "gdpr" | "lgpd" | "pipeda" | "hipaa" | "ccpa" | "pci-dss" | "sox" | "ferpa";
 
+/**
+ * One compliance preset, or several applied together (see `combinePresets()`).
+ *
+ * @example `"lgpd"`, `["lgpd", "hipaa"]`
+ */
+export type PresetSelection = CompliancePreset | readonly CompliancePreset[];
+
 // ---------------------------------------------------------------------------
 // Tokenization types
 // ---------------------------------------------------------------------------
@@ -638,9 +645,10 @@ export interface AnonymizeOptions<
   /**
    * Apply a built-in compliance preset, which pre-configures `enabledCategories`
    * and `defaultStrategy`. Explicit `rules` and `defaultStrategy` options take
-   * precedence over preset values.
+   * precedence over preset values. A list of presets applies all of them, each
+   * category getting the most protective of their strategies.
    */
-  readonly preset?: CompliancePreset;
+  readonly preset?: PresetSelection;
   /**
    * Locales to activate for locale-specific detectors.
    * Defaults to `["global"]` which includes universally-formatted PII.
@@ -813,9 +821,10 @@ export interface AnonymizerConfig {
    */
   readonly plugins?: readonly AnonymaPlugin[];
   /**
-   * Apply a built-in compliance preset as the base for this anonymizer.
+   * Apply a built-in compliance preset, or a list of presets combined with
+   * `combinePresets()`, as the base for this anonymizer.
    */
-  readonly preset?: CompliancePreset;
+  readonly preset?: PresetSelection;
   /**
    * Locales to activate for locale-specific detectors.
    *
