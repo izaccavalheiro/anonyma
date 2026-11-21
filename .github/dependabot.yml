@@ -36,6 +36,22 @@ updates:
         dependency-type: development
         update-types: [minor, patch]
 
+  # The site: Docusaurus and React, apart from the library's own tooling.
+  - package-ecosystem: npm
+    directory: /website
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: build(site)
+    groups:
+      site:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
   - package-ecosystem: github-actions
     directory: /
     schedule:

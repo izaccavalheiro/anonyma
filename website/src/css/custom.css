@@ -1,0 +1,46 @@
+:root {
+  --ifm-color-primary: #2f6f4e;
+  --ifm-color-primary-dark: #2a6446;
+  --ifm-color-primary-darker: #285e42;
+  --ifm-color-primary-darkest: #214d37;
+  --ifm-color-primary-light: #347a56;
+  --ifm-color-primary-lighter: #36805a;
+  --ifm-color-primary-lightest: #3d9166;
+  --ifm-code-font-size: 92%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.08);
+  --anonyma-mark: #fff1b8;
+  --anonyma-mark-fg: #5a4300;
+  /* Chart bars: one hue, validated for lightness, chroma and contrast on each surface. */
+  --anonyma-bar: #1f8a55;
+}
+
+[data-theme="dark"] {
+  --ifm-color-primary: #6fcf97;
+  --ifm-color-primary-dark: #55c684;
+  --ifm-color-primary-darker: #48c17a;
+  --ifm-color-primary-darkest: #36a464;
+  --ifm-color-primary-light: #89d8aa;
+  --ifm-color-primary-lighter: #96dcb4;
+  --ifm-color-primary-lightest: #bce9cf;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --anonyma-mark: #4a3b00;
+  --anonyma-mark-fg: #ffe28a;
+  --anonyma-bar: #34a36b;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+/* Visible to screen readers only. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,9 +1,9 @@
 /**
- * The logic of the web playground (playground/src/process.ts), which runs in
- * the browser on the library's source.
+ * The logic of the site's playground (website/src/components/Playground),
+ * run against the library's source.
  */
 import { describe, expect, it } from "vitest";
-import { SAMPLE, processText } from "../playground/src/process.js";
+import { SAMPLE, processText } from "../website/src/components/Playground/process.js";
 
 describe("playground", () => {
   it("replaces the sample's personal data with the presets' strategies", () => {

@@ -1,0 +1,12 @@
+# Build output
+/build
+/.docusaurus
+/.cache-loader
+node_modules/
+
+# Written by scripts/sync.mjs from the repository's own files: edit those instead.
+/docs/guide/
+/docs/packages/
+/docs/reference/
+/docs/project/
+/src/data/

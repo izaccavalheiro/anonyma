@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **A documentation site**, <https://izaccavalheiro.github.io/anonyma/>: getting started, recipes,
+  the library guide, the API reference, generated tables of categories, presets, regulations and
+  checksums, the benchmarks, a blog, and the playground, all in one place. Its Content Security
+  Policy forbids every connection, so the playground cannot send what is typed into it. It replaces
+  the stand-alone playground page.
+
+### Fixed
+
+- Bundlers no longer warn about the dynamic import that reaches Web Crypto on Node.js 18: it now
+  carries `webpackIgnore` as well as `@vite-ignore`.
+
 ---
 
 ## [1.3.0] — 2026-11-21

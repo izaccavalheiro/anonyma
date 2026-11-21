@@ -6,5 +6,11 @@ tests/fixtures/
 packages/*/dist/
 packages/*/coverage/
 
-# The built playground.
-playground/dist/
+# The site's build, and the pages its sync script writes from the repository.
+website/build/
+website/.docusaurus/
+website/docs/guide/
+website/docs/packages/
+website/docs/reference/
+website/docs/project/
+website/src/data/

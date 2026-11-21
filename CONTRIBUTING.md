@@ -154,6 +154,35 @@ that needs it.
 - All exported functions, classes, and interfaces must have TSDoc annotations.
 - Usage examples in TSDoc are required for public API symbols.
 
+### The site
+
+The site at <https://izaccavalheiro.github.io/anonyma/> (`website/`, Docusaurus) is published from
+`main` by the **Site** workflow. Most of it is generated from the repository by
+`website/scripts/sync.mjs`, so the place to change a page is usually not `website/`:
+
+| On the site                                   | Comes from                                          |
+| --------------------------------------------- | --------------------------------------------------- |
+| Library guide (`/docs/guide/…`)               | the sections of `README.md`                         |
+| Companion packages                            | `packages/*/README.md`                              |
+| API reference, architecture, benchmark method | `docs/api.md`, `ARCHITECTURE.md`, `bench/README.md` |
+| Categories, presets, regulations, checksums   | the built library (`dist/`)                         |
+| Changelog, security, contributing             | the files of the same name                          |
+| Benchmarks page                               | `bench/results/*.json`                              |
+
+A new `## ` section in `README.md` must be given a page (or skipped) in `scripts/sync.mjs`, or the
+site does not build. The introduction, the recipes, the FAQ, the home page, the playground and the
+blog are written in `website/`.
+
+```bash
+npm ci --prefix website   # once
+npm run site              # build the library, then serve the site with live reload
+npm run build:site        # what CI runs: type check and production build
+```
+
+The build fails on a broken link or anchor. The site's Content Security Policy
+(`website/docusaurus.config.ts`) forbids every connection, which is what lets the playground promise
+that nothing typed into it leaves the page; `npm run check:privacy` fails if it is loosened.
+
 ---
 
 ## Adding a New PII Detector
