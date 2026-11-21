@@ -1,4 +1,4 @@
-# @anonyma/mcp
+# anonyma-mcp
 
 Privacy for [Model Context Protocol](https://modelcontextprotocol.io) connections. What an MCP
 server sends towards the model — tool results, resources, prompts, sampling requests, log
@@ -28,7 +28,7 @@ server's command after `--`.
   "mcpServers": {
     "crm": {
       "command": "npx",
-      "args": ["-y", "@anonyma/mcp", "--", "npx", "-y", "@example/crm-mcp-server"]
+      "args": ["-y", "anonyma-mcp", "--", "npx", "-y", "@example/crm-mcp-server"]
     }
   }
 }
@@ -53,7 +53,7 @@ gets a JSON-RPC error, and a line that is not JSON is dropped.
 
 ```ts
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { guardMcpClient } from "@anonyma/mcp";
+import { guardMcpClient } from "anonyma-mcp";
 
 const client = guardMcpClient(new Client({ name: "my-agent", version: "1.0.0" }));
 await client.connect(transport);
@@ -73,7 +73,7 @@ await client.callTool({ name: "send_mail", arguments: { to: "[EMAIL_0001]" } });
 `createMcpGuard()` works on JSON-RPC messages, whatever carries them:
 
 ```ts
-import { createMcpGuard } from "@anonyma/mcp";
+import { createMcpGuard } from "anonyma-mcp";
 
 const guard = createMcpGuard({ session: { format: "brace" } });
 serverTransport.onmessage = (message) => hostTransport.send(guard.fromServer(message));

@@ -82,10 +82,9 @@ function describe(error) {
   const stderr = String(error?.stderr ?? "");
   if (/E404/.test(stderr) && /\bPUT\b/.test(stderr)) {
     return (
-      "npm refused the publish (404). Check that the @anonyma scope exists on npm and that " +
-      "this package has a trusted publisher for the Release workflow (release.yml, " +
-      "environment npm); a package that was never published may need its first version " +
-      "published by hand."
+      "npm refused the publish (404). Check that this package has a trusted publisher for " +
+      "the Release workflow (release.yml, environment npm); a package that was never " +
+      "published needs its first version published by hand."
     );
   }
   return `${message}${stderr === "" ? "" : `\n${stderr}`}`;

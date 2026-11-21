@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- **The companion packages are named `anonyma-vercel-ai` and `anonyma-mcp`.** 1.2.0 introduced
+  them as `@anonyma/vercel-ai` and `@anonyma/mcp`, but the `@anonyma` scope is not available on
+  npm, and they were never published under those names. Their folders (`packages/vercel-ai`,
+  `packages/mcp`), APIs and the `anonyma-mcp-proxy` command are unchanged.
+
+---
+
 ## [1.2.0] — 2026-11-21
 
 Minor release: plugins for `createAnonymizer()`, token vaults, edge runtimes, and companion

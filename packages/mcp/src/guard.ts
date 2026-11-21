@@ -1,5 +1,5 @@
 /**
- * @module @anonyma/mcp/guard
+ * @module anonyma-mcp/guard
  * @description A privacy guard for the messages of one Model Context Protocol
  * connection, independent of the transport.
  *
@@ -123,7 +123,7 @@ function idKey(id: MessageId): string {
  *
  * @example
  * ```ts
- * import { createMcpGuard } from "@anonyma/mcp";
+ * import { createMcpGuard } from "anonyma-mcp";
  *
  * const guard = createMcpGuard();
  * upstream.onmessage = (message) => client.send(guard.fromServer(message));

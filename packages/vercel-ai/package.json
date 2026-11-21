@@ -1,5 +1,5 @@
 {
-  "name": "@anonyma/vercel-ai",
+  "name": "anonyma-vercel-ai",
   "version": "0.1.0",
   "description": "Personal-data redaction for the Vercel AI SDK: prompts are tokenized before they leave the process, and generateText/streamText responses — text, reasoning and tool calls, complete or streamed — get the original values back.",
   "license": "MIT",

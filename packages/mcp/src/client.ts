@@ -1,5 +1,5 @@
 /**
- * @module @anonyma/mcp/client
+ * @module anonyma-mcp/client
  * @description Guards an MCP client object — such as `Client` of
  * `@modelcontextprotocol/sdk` — that an application drives itself, for
  * example to hand tools to its own agent loop.
@@ -46,7 +46,7 @@ const WRAPPED: Readonly<Record<string, { readonly method: string; readonly field
  * @example
  * ```ts
  * import { Client } from "@modelcontextprotocol/sdk/client/index.js";
- * import { guardMcpClient } from "@anonyma/mcp";
+ * import { guardMcpClient } from "anonyma-mcp";
  *
  * const client = guardMcpClient(new Client({ name: "app", version: "1.0.0" }));
  * await client.connect(transport);

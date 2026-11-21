@@ -1,4 +1,4 @@
-# @anonyma/vercel-ai
+# anonyma-vercel-ai
 
 Personal-data redaction for the [Vercel AI SDK](https://ai-sdk.dev). Prompts are tokenized before
 they leave your process — `john@example.com` becomes `[EMAIL_0001]` — and what the model returns
@@ -9,14 +9,14 @@ Built on the LLM guard of [`anonyma`](https://github.com/izaccavalheiro/anonyma)
 against the real `generateText()` and `streamText()` of AI SDK 7.
 
 ```sh
-npm install @anonyma/vercel-ai anonyma ai
+npm install anonyma-vercel-ai anonyma ai
 ```
 
 ## Drop-in `generateText` and `streamText`
 
 ```ts
 import { openai } from "@ai-sdk/openai";
-import { createAnonymaAI } from "@anonyma/vercel-ai";
+import { createAnonymaAI } from "anonyma-vercel-ai";
 
 const { generateText, streamText } = createAnonymaAI({ skipRoles: ["system"] });
 
@@ -37,7 +37,7 @@ Both take the same options and return the same results as the AI SDK functions t
 
 ```ts
 import { generateText } from "ai";
-import { withAnonyma } from "@anonyma/vercel-ai";
+import { withAnonyma } from "anonyma-vercel-ai";
 
 const model = withAnonyma("openai/gpt-5"); // a model object, or a model id string
 const { text } = await generateText({ model, prompt });
@@ -47,7 +47,7 @@ const { text } = await generateText({ model, prompt });
 
 ```ts
 import { wrapLanguageModel } from "ai";
-import { anonymaMiddleware } from "@anonyma/vercel-ai";
+import { anonymaMiddleware } from "anonyma-vercel-ai";
 
 const model = wrapLanguageModel({
   model: baseModel,

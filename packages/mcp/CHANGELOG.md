@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `@anonyma/mcp` are documented in this file. The package follows
+All notable changes to `anonyma-mcp` are documented in this file. The package follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) independently of `anonyma`; while it is
 at 0.x, a minor version may change its API or the command line of `anonyma-mcp-proxy`.
 

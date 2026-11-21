@@ -1,5 +1,5 @@
 /**
- * @module @anonyma/mcp/proxy
+ * @module anonyma-mcp/proxy
  * @description A stdio MCP proxy: the MCP host launches the proxy instead of
  * the server, the proxy launches the server, and every message between the
  * two goes through an {@link McpGuard}.
@@ -73,7 +73,7 @@ function idOf(message: unknown): string | number | undefined {
  *
  * @example
  * ```ts
- * import { runStdioProxy } from "@anonyma/mcp";
+ * import { runStdioProxy } from "anonyma-mcp";
  *
  * const proxy = runStdioProxy({ command: "npx", args: ["-y", "@example/crm-mcp-server"] });
  * process.exitCode = await proxy.exited;

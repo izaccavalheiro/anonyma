@@ -270,13 +270,13 @@ anonyma satisfies its peer range. To release a package, raise its version and
 add its changelog section; it goes out with the next release tag. A package's
 version can also be released alone by tagging an anonyma patch release.
 
-Trusted publishing is configured per package on npm. A new package needs the
-`@anonyma` scope on npm and a trusted publisher for the `Release` workflow
-(`release.yml`, environment `npm`) before its first release. npm's command line
-only configures a package that already exists, so the first version of a new
-package may have to be published once by hand, from a clean checkout of the
-tagged commit (`npm run build && npm run build:packages`, then `npm publish
---access public` in its directory), and the trusted publisher added after it.
+Trusted publishing is configured per package on npm. A new package needs a
+trusted publisher for the `Release` workflow (`release.yml`, environment `npm`)
+before its first release. npm only configures packages that already exist, so
+the first version of a new package is published once by hand, from a clean
+checkout of the tagged commit (`npm run build && npm run build:packages`, then
+`npm publish --access public` in its directory), and the trusted publisher is
+added after it.
 
 npm trusts the `Release` workflow as a publisher (trusted publishing through
 OpenID Connect), so there is no npm token to store or rotate. Running the

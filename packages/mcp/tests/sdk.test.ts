@@ -16,7 +16,7 @@ function textOf(result: unknown): string | undefined {
   return content?.[0]?.text;
 }
 
-describe("@anonyma/mcp with the MCP SDK", () => {
+describe("anonyma-mcp with the MCP SDK", () => {
   describe("guardMcpClient", () => {
     it("gives the caller tokens and the server real values", async () => {
       const [clientSide, serverSide] = InMemoryTransport.createLinkedPair();
