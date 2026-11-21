@@ -8,7 +8,8 @@
 #   package       Is what would be published a valid dual ESM/CJS package, within its size budget?
 #   smoke         Does the packed tarball work for a consumer, down to Node.js 18?
 #   runtimes      Does the built package work on Bun, Deno and Cloudflare Workers?
-#   packages      Do anonyma-vercel-ai and anonyma-mcp type-check, pass and pack?
+#   packages      Do the companion packages (packages/*) type-check, pass and pack,
+#                 and does the web playground build?
 #   performance   Is the span engine still linear in the size of its input?
 #   privacy       Do the privacy invariants and the compliance suites hold (GDPR, LGPD)?
 #   supply-chain  Are the dependencies free of known vulnerabilities and correctly signed?
@@ -325,6 +326,10 @@ jobs:
 
       - name: Validate the packages
         run: npm run check:packages
+
+      # The web playground bundles the library from src/ for the browser.
+      - name: Build the playground
+        run: npm run build:playground
 
   performance:
     name: Performance

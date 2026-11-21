@@ -57,7 +57,7 @@ export default tseslint.config(
   },
   {
     // Node.js scripts of the repository: plain JavaScript, run directly, free to print.
-    files: ["scripts/**/*.mjs", "bench/**/*.mjs", "packages/*.mjs"],
+    files: ["scripts/**/*.mjs", "bench/**/*.mjs", "packages/*.mjs", "playground/*.mjs"],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: {
       globals: {

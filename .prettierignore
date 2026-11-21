@@ -5,3 +5,6 @@ tests/fixtures/
 # Build output and reports of the packages.
 packages/*/dist/
 packages/*/coverage/
+
+# The built playground.
+playground/dist/

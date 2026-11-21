@@ -16,6 +16,9 @@
  * 5. The repository holds synthetic data only: every e-mail address in a
  *    tracked file is under a domain reserved for documentation (RFC 2606,
  *    RFC 6761) or one listed in scripts/synthetic-domains.json.
+ * 6. The web playground cannot send what is typed into it: its Content
+ *    Security Policy blocks every connection and loads scripts from its own
+ *    origin only.
  *
  * Usage: node scripts/check-privacy.mjs [--require-dist]
  */
@@ -184,6 +187,43 @@ function withoutComments(source) {
     [...unknown].map(([domain, path]) => `"${domain}" in ${path}`),
     `${String(tracked.length)} tracked files scanned`,
   );
+}
+
+// ---------------------------------------------------------------------------
+// 6. The playground cannot send data
+// ---------------------------------------------------------------------------
+{
+  const page = join(root, "playground", "index.html");
+  const problems = [];
+  if (existsSync(page)) {
+    const html = readFileSync(page, "utf8");
+    const policy = /http-equiv="Content-Security-Policy"\s+content="([^"]*)"/.exec(html)?.[1];
+    if (policy === undefined) {
+      problems.push("playground/index.html has no Content-Security-Policy");
+    } else {
+      const directives = new Map(
+        policy
+          .split(";")
+          .map((part) => part.trim().split(/\s+/))
+          .filter(([name]) => name)
+          .map(([name, ...values]) => [name, values.join(" ")]),
+      );
+      for (const [name, value] of [
+        ["default-src", "'none'"],
+        ["connect-src", "'none'"],
+        ["form-action", "'none'"],
+        ["script-src", "'self'"],
+      ]) {
+        if (directives.get(name) !== value) problems.push(`${name} must be ${value}`);
+      }
+    }
+    for (const match of html.matchAll(
+      /<(?:script|link|img|iframe)\b[^>]*\b(?:src|href)="([^"]+)"/g,
+    )) {
+      if (!match[1].startsWith("./")) problems.push(`it loads ${match[1]}, not a file of its own`);
+    }
+  }
+  check("The playground cannot send what is typed into it (Content Security Policy)", problems);
 }
 
 // ---------------------------------------------------------------------------
