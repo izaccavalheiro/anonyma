@@ -24,16 +24,18 @@ anonymize("Mail ana@example.com, CPF 529.982.247-25", { preset: ["lgpd", "gdpr"]
 // "Mail [REDACTED], CPF [REDACTED]"
 ```
 
-## What it is made of
+## What you can do with it
 
-| You want to…                                        | Use                                                                                      |
-| --------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Clean a string or an object in one call             | `anonymize()`, `anonymizeObject()` — [Quick start](guide/quick-start.md)                 |
-| Follow a regulation                                 | presets, alone or combined — [Compliance presets](guide/presets.md)                      |
-| Send prompts to an LLM and get the real values back | tokens and vaults — [Protect LLM prompts](guides/protect-llm-prompts.md)                 |
-| Clean logs, exports and data files                  | the `anonyma` command — [Scrub files](guides/scrub-files.md)                             |
-| Build a pipeline once and reuse it, stream it       | `anonyma/engine` — [Modules](guide/modules.md)                                           |
-| Prove what was done                                 | audit chains and receipts — [Several regulations at once](guides/several-regulations.md) |
+| You want to…                                         | Use                                                                         |
+| ---------------------------------------------------- | --------------------------------------------------------------------------- |
+| Clean a string or an object in one call              | `anonymize()`, `anonymizeObject()` — [Quick start](guide/quick-start.md)    |
+| Follow a regulation, or several                      | presets, alone or combined — [Compliance presets](guide/presets.md)         |
+| Send prompts to an LLM and get the real values back  | tokens and vaults — [Protect LLM prompts](guides/protect-llm-prompts.md)    |
+| Clean logs, exports and data files; check them in CI | the `anonyma` command — [Scrub files](guides/scrub-files.md)                |
+| Keep personal data out of API responses              | Express, Hono and Fetch middleware — [HTTP middleware](guide/middleware.md) |
+| Build a pipeline once, reuse it, stream it           | `anonyma/engine` — [Span engine](guide/engine.md)                           |
+| Keep data joinable, rotate keys, honour erasure      | keyed tokens — [Keys and token vaults](guide/vault.md)                      |
+| Prove what was done                                  | audit chains and receipts — [Audit trail and receipts](guide/audit.md)      |
 
 ## Principles
 
@@ -50,5 +52,6 @@ anonymize("Mail ana@example.com, CPF 529.982.247-25", { preset: ["lgpd", "gdpr"]
 
 - New to it: [Installation](guide/installation.md), then [Quick start](guide/quick-start.md).
 - Have a task: the [recipes](guides/scrub-files.md).
+- Learning a feature: the [library guide](guide/installation.md), topic by topic.
 - Looking something up: the [API reference](reference/api.md), the [categories](reference/categories.md)
   and the [presets](reference/presets.md).

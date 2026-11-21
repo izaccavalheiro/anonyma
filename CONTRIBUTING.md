@@ -18,7 +18,8 @@ Code of Conduct. Harassment or discrimination of any kind will not be tolerated.
 - **Feature requests** — Open an issue describing the use case and expected behaviour.
 - **Pull requests** — For bug fixes and small improvements. For large features, open
   an issue first to align on design.
-- **Documentation** — Improvements to README, API docs, or inline TSDoc are always welcome.
+- **Documentation** — Improvements to the documentation site (`website/docs/`), the API docs, or
+  inline TSDoc are always welcome.
 
 ---
 
@@ -156,22 +157,24 @@ that needs it.
 
 ### The site
 
-The site at <https://izaccavalheiro.github.io/anonyma/> (`website/`, Docusaurus) is published from
-`main` by the **Site** workflow. Most of it is generated from the repository by
-`website/scripts/sync.mjs`, so the place to change a page is usually not `website/`:
+The site at <https://izaccavalheiro.github.io/anonyma/> (`website/`, Docusaurus) is the main
+documentation of the library, published from `main` by the **Site** workflow. `README.md` is a short
+overview for GitHub and npm that links to it: document a feature on the site, and mention it in the
+README only if it changes what a newcomer should know.
 
 | On the site                                   | Comes from                                          |
 | --------------------------------------------- | --------------------------------------------------- |
-| Library guide (`/docs/guide/…`)               | the sections of `README.md`                         |
+| Introduction, library guide, recipes, FAQ     | `website/docs/` (written there)                     |
+| Home page, playground, blog                   | `website/src/`, `website/blog/`                     |
 | Companion packages                            | `packages/*/README.md`                              |
 | API reference, architecture, benchmark method | `docs/api.md`, `ARCHITECTURE.md`, `bench/README.md` |
 | Categories, presets, regulations, checksums   | the built library (`dist/`)                         |
 | Changelog, security, contributing             | the files of the same name                          |
 | Benchmarks page                               | `bench/results/*.json`                              |
 
-A new `## ` section in `README.md` must be given a page (or skipped) in `scripts/sync.mjs`, or the
-site does not build. The introduction, the recipes, the FAQ, the home page, the playground and the
-blog are written in `website/`.
+`website/scripts/sync.mjs` generates the pages that come from other files; they are git-ignored, so
+edit their sources. Every example on a guide page shows real output: run it against the build
+before you commit it.
 
 ```bash
 npm ci --prefix website   # once

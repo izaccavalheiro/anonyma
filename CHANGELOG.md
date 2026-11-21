@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.3.1] — 2026-11-21
+
+Patch release: documentation, and a bundler warning fixed. The library's behaviour is unchanged.
+
 ### Added
 
 - **A documentation site**, <https://izaccavalheiro.github.io/anonyma/>: getting started, recipes,
@@ -17,10 +23,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Policy forbids every connection, so the playground cannot send what is typed into it. It replaces
   the stand-alone playground page.
 
+### Changed
+
+- **The site is the main documentation**, and the README a short overview that links to it. The
+  library guide is written on the site, one page per topic, with pages of their own for the span
+  engine, keys and token vaults, the audit trail, regulations and policies, objects and records,
+  and HTTP middleware. The npm package's `homepage` is the site.
+
 ### Fixed
 
 - Bundlers no longer warn about the dynamic import that reaches Web Crypto on Node.js 18: it now
   carries `webpackIgnore` as well as `@vite-ignore`.
+- Documentation: the batch example passed `concurrency` as an option, which
+  `anonymizeBatchAsync()` ignores — it is the third argument. The coverage badge said 90%; the gate
+  is 100%. The API reference held a stale second copy of itself.
+- Documentation: a non-empty `rules` list in the options of `anonymize()` is also the list of
+  categories replaced, and takes the place of a preset's rules. The guide and the API reference
+  now say so, and show how to change one category of a preset with `compilePipeline()`
+  ([#47](https://github.com/izaccavalheiro/anonyma/issues/47)).
 
 ---
 
@@ -813,7 +833,8 @@ All types are zero-cost, type-only exports (stripped by `tsc`; no runtime overhe
 - **Prettier** code formatting.
 - **MIT License**.
 
-[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/izaccavalheiro/anonyma/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.2.0
 [1.1.1]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.1.1

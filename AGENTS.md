@@ -70,11 +70,14 @@ packages/
 ```
 
 The site (`website/`, Docusaurus, its own `package.json` and lockfile) is published to GitHub
-Pages from `main`. `website/scripts/sync.mjs` generates most of its pages from `README.md`,
-`docs/api.md`, the package READMEs, `CHANGELOG.md`, `bench/results/` and the built library: edit
-those, not the generated pages (they are git-ignored). Give a new `## ` section of `README.md` a
-page in `sync.mjs`. Keep the site's Content Security Policy at `connect-src 'none'`, loading nothing
-from another origin; `check:privacy` enforces it.
+Pages from `main`, and is the main documentation of the library. The introduction, the library guide
+(`website/docs/guide/`), the recipes and the FAQ are written in `website/docs/`: document a new
+feature there, with examples whose output you have checked against the build. `README.md` is a short
+overview that links to the site; do not grow it into a manual. `website/scripts/sync.mjs` generates
+the other pages from `docs/api.md`, the package READMEs, `CHANGELOG.md`, `bench/results/` and the
+built library: edit those, not the generated pages (they are git-ignored). Keep the site's Content
+Security Policy at `connect-src 'none'`, loading nothing from another origin; `check:privacy`
+enforces it.
 
 The packages are type-checked and tested against the root build: run
 `npm run build` before `npm run typecheck:packages` or `npm run test:packages`.
