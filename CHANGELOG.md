@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.2.0] — 2026-11-20
+## [1.2.0] — 2026-11-21
 
 Minor release: plugins for `createAnonymizer()`, token vaults, edge runtimes, and companion
 packages for the Vercel AI SDK and MCP. Everything is additive or a fix. Some types are wider:
