@@ -4,7 +4,7 @@ All notable changes to `anonyma-cli` are documented in this file. The package fo
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) independently of `anonyma`; while it is
 at 0.x, a minor version may change its API or its command line.
 
-## [0.1.0] — unreleased
+## [0.1.0] — 2026-11-21
 
 First release. Requires `anonyma` ^1.3.0.
 

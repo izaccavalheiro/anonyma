@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.3.0] — unreleased
+## [1.3.0] — 2026-11-21
 
 Minor release: checksum validation and context proximity for detection, Brazilian and European
 formats, combined compliance presets and signed anonymization receipts. Everything is additive,
