@@ -59,7 +59,7 @@ function published(spec) {
   } catch (error) {
     const stderr = String(error.stderr ?? "");
     if (/E404|ETARGET|No match found/i.test(stderr)) return [];
-    throw new Error(`npm view ${spec} failed:\n${stderr}`);
+    throw new Error(`npm view ${spec} failed:\n${stderr}`, { cause: error });
   }
 }
 

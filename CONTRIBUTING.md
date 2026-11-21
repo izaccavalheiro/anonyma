@@ -136,7 +136,7 @@ Every push and pull request runs the `CI` workflow. Each job answers one questio
 | Job            | Question                                                                                     |
 | -------------- | -------------------------------------------------------------------------------------------- |
 | `static`       | Does the code type-check, lint and follow the format? Are the commit messages conventional?  |
-| `test`         | Do the tests pass on Node.js 20, 22, 24 and 26, and on Linux, macOS and Windows?             |
+| `test`         | Do the tests pass on Node.js 22, 24 and 26, and on Linux, macOS and Windows?                 |
 | `coverage`     | Is the code covered above the thresholds in `vitest.config.ts`?                              |
 | `package`      | Is the build a valid dual ESM/CJS package (publint, are-the-types-wrong), within its budget? |
 | `smoke`        | Does the packed tarball work for a consumer on Node.js 18, 20, 22, 24 and 26?                |

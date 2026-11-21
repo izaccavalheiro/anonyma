@@ -86,7 +86,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04]
-        node: [20, 22, 24, 26]
+        # The lines the development tooling runs on (vitest 5 needs Node.js
+        # 22.12 or later). The package itself is checked down to Node.js 18 by
+        # the smoke job, which installs the packed tarball.
+        node: [22, 24, 26]
         include:
           - os: macos-latest
             node: 24

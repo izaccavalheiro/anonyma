@@ -18,6 +18,17 @@ updates:
     commit-message:
       prefix: build(deps)
       prefix-development: build(deps-dev)
+    ignore:
+      # The Node.js types follow the oldest line the development tooling
+      # supports (CONTRIBUTING.md), not the newest: the types of a newer line
+      # accept APIs that the supported runtimes do not have.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # TypeScript 7 (the native compiler) drops the compiler API that
+      # typescript-eslint and the declaration build of tsup use, and
+      # typescript-eslint 8 supports TypeScript < 6.1. Lift this when they do.
+      - dependency-name: "typescript"
+        versions: [">=7.0.0"]
     groups:
       # One pull request for the routine updates of the tooling; a new major
       # version comes on its own.
