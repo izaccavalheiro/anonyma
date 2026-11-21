@@ -22,7 +22,7 @@
    - 4.10 [stream.ts — WHATWG Streaming](#410-streamts--whatwg-streaming)
    - 4.11 [validators.ts — Checksum Validators](#411-validatorsts--checksum-validators)
    - 4.12 [crypto.ts — Web Crypto Helpers](#412-cryptots--web-crypto-helpers)
-   - 4.13 [schemas.ts — Zod Schemas & AI Definitions](#413-schematsts--zod-schemas--ai-definitions)
+   - 4.13 [schemas.ts — Zod Schemas & AI Definitions](#413-schemasts--zod-schemas--ai-definitions)
    - 4.14 [index.ts — Public API Barrel](#414-indexts--public-api-barrel)
    - 4.15 [engine/ — Span Engine](#415-engine--span-engine)
    - 4.16 [vault/ — Tokenization and Key Management](#416-vault--tokenization-and-key-management)

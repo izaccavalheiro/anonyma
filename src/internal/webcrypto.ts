@@ -16,7 +16,9 @@ let nodeFallback: Promise<Crypto | undefined> | undefined;
 async function importNodeWebCrypto(): Promise<Crypto | undefined> {
   try {
     const specifier = "node:crypto";
-    const mod = (await import(/* @vite-ignore */ specifier)) as { webcrypto?: Crypto };
+    const mod = (await import(/* webpackIgnore: true */ /* @vite-ignore */ specifier)) as {
+      webcrypto?: Crypto;
+    };
     return mod.webcrypto;
   } catch {
     // A runtime that has neither a global crypto nor node:crypto.
