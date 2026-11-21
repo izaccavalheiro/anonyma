@@ -29,6 +29,13 @@ function typescriptEsmResolver(): Plugin {
 
 export default defineConfig({
   plugins: [typescriptEsmResolver()],
+  resolve: {
+    // The site (website/) imports the package by name; its tests run against the source.
+    alias: [
+      { find: /^anonyma$/, replacement: resolve(__dirname, "src/index.ts") },
+      { find: /^anonyma\/(.+)$/, replacement: resolve(__dirname, "src/$1/index.ts") },
+    ],
+  },
   test: {
     globals: true,
     environment: "node",

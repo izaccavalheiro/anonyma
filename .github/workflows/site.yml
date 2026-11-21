@@ -1,14 +1,15 @@
-# Publishes the web playground (playground/) to GitHub Pages.
+# Publishes the site (website/) to GitHub Pages: getting started, the
+# documentation, the playground, the benchmarks and the blog.
 #
-# It runs only when started by hand (Actions → Playground → Run workflow), so
-# that putting the page online stays a decision. GitHub Pages must have
-# "GitHub Actions" as its source (Settings → Pages), where a custom domain
-# such as play.anonyma.dev is set too. The page has no server side: it is
-# static files, and its Content Security Policy blocks every connection.
+# It runs when main changes and when started by hand. The site is static
+# files; its Content Security Policy blocks every connection, so the
+# playground cannot send what is typed into it (npm run check:privacy).
 
-name: Playground
+name: Site
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions: {}
@@ -21,7 +22,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     permissions:
       contents: read
     steps:
@@ -35,17 +36,22 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            website/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm ci --prefix website
 
-      - name: Build the playground
-        run: npm run build:playground
+      - name: Build the site
+        run: npm run build:site
 
-      - name: Upload the page
+      - name: Upload the site
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          path: playground/dist
+          path: website/build
 
   deploy:
     name: Deploy

@@ -43,6 +43,7 @@
 - 🔌 **MCP server and HTTP middleware** — a dependency-free Model Context Protocol server, and payload scrubbing for Express, Hono and Fetch handlers (`"anonyma/mcp"`, `"anonyma/middleware"`)
 - 📦 **Dual ESM + CJS** — works everywhere Node.js ≥ 18 runs
 - 🌐 **Edge-ready** — tested on Bun, Deno and Cloudflare Workers; Web Crypto only, no Node.js modules
+- 📚 **Documentation site** — getting started, guides, recipes, the API reference, a playground that runs in your browser, and benchmarks: <https://izaccavalheiro.github.io/anonyma/>
 - 🧱 **Companion packages** — [`anonyma-vercel-ai`](packages/vercel-ai#readme) for the Vercel AI SDK, [`anonyma-mcp`](packages/mcp#readme) to put any MCP server behind a privacy proxy, [`anonyma-cli`](packages/cli#readme) to scrub and scan files of any size from the command line
 - 🔒 **Strict TypeScript** — no `any`, full declaration files
 
@@ -1045,7 +1046,10 @@ try {
 
 ## API Documentation
 
-Full API reference: [docs/api.md](docs/api.md)
+Full API reference: [docs/api.md](docs/api.md), also on the
+[documentation site](https://izaccavalheiro.github.io/anonyma/docs/reference/api) with the guides,
+recipes, a [playground](https://izaccavalheiro.github.io/anonyma/playground) and
+[benchmarks](https://izaccavalheiro.github.io/anonyma/benchmarks).
 
 ---
 

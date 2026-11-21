@@ -2,14 +2,15 @@
  * @module playground/process
  * @description What the playground does with a text: one function from the
  * text and the settings on the page to the output, the findings and the
- * counts. It runs in the browser; nothing here reaches the network.
+ * counts. It runs in the browser; nothing here reaches the network. The root
+ * test suite runs it against the library's source (tests/playground.test.ts).
  */
 
-import { combinePresets } from "../../src/index.js";
-import type { CompliancePreset } from "../../src/index.js";
-import { compilePipeline } from "../../src/engine/index.js";
-import type { PipelineSpec, StrategySpec } from "../../src/engine/index.js";
-import { InMemoryVault, createVaultTokenizer, restore } from "../../src/vault/index.js";
+import { combinePresets } from "anonyma";
+import type { CompliancePreset } from "anonyma";
+import { compilePipeline } from "anonyma/engine";
+import type { PipelineSpec, StrategySpec } from "anonyma/engine";
+import { InMemoryVault, createVaultTokenizer, restore } from "anonyma/vault";
 
 /** How detected values are replaced. `"preset"` keeps the strategies of the selected presets. */
 export type Mode = "preset" | "redact" | "mask" | "pseudonymize" | "synthesize" | "tokenize";

@@ -12,6 +12,8 @@ export default tseslint.config(
       "packages/*/tests/**",
       "vitest.config.ts",
       "packages/*/vitest.config.ts",
+      // The site has its own TypeScript configuration and is type-checked by `tsc` there.
+      "website/**",
     ],
   },
   eslint.configs.recommended,
@@ -57,7 +59,7 @@ export default tseslint.config(
   },
   {
     // Node.js scripts of the repository: plain JavaScript, run directly, free to print.
-    files: ["scripts/**/*.mjs", "bench/**/*.mjs", "packages/*.mjs", "playground/*.mjs"],
+    files: ["scripts/**/*.mjs", "bench/**/*.mjs", "packages/*.mjs"],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: {
       globals: {

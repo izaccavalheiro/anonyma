@@ -8,8 +8,8 @@
 #   package       Is what would be published a valid dual ESM/CJS package, within its size budget?
 #   smoke         Does the packed tarball work for a consumer, down to Node.js 18?
 #   runtimes      Does the built package work on Bun, Deno and Cloudflare Workers?
-#   packages      Do the companion packages (packages/*) type-check, pass and pack,
-#                 and does the web playground build?
+#   packages      Do the companion packages (packages/*) type-check, pass and pack?
+#   site          Does the site (website/) type-check and build, with no broken link?
 #   performance   Is the span engine still linear in the size of its input?
 #   privacy       Do the privacy invariants and the compliance suites hold (GDPR, LGPD)?
 #   supply-chain  Are the dependencies free of known vulnerabilities and correctly signed?
@@ -327,9 +327,34 @@ jobs:
       - name: Validate the packages
         run: npm run check:packages
 
-      # The web playground bundles the library from src/ for the browser.
-      - name: Build the playground
-        run: npm run build:playground
+  site:
+    name: Site
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            website/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm ci --prefix website
+
+      # The site imports anonyma from this build, and generates pages from it.
+      # Docusaurus fails the build on a broken link or anchor.
+      - name: Type-check and build the site
+        run: npm run build:site
 
   performance:
     name: Performance
@@ -478,6 +503,7 @@ jobs:
       - smoke
       - runtimes
       - packages
+      - site
       - performance
       - privacy
       - supply-chain

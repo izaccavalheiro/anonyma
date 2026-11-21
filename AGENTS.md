@@ -69,6 +69,13 @@ packages/
 └── cli/                  # "anonyma-cli" — the `anonyma` command: scrub and scan text, JSON Lines and CSV as streams
 ```
 
+The site (`website/`, Docusaurus, its own `package.json` and lockfile) is published to GitHub
+Pages from `main`. `website/scripts/sync.mjs` generates most of its pages from `README.md`,
+`docs/api.md`, the package READMEs, `CHANGELOG.md`, `bench/results/` and the built library: edit
+those, not the generated pages (they are git-ignored). Give a new `## ` section of `README.md` a
+page in `sync.mjs`. Keep the site's Content Security Policy at `connect-src 'none'`, loading nothing
+from another origin; `check:privacy` enforces it.
+
 The packages are type-checked and tested against the root build: run
 `npm run build` before `npm run typecheck:packages` or `npm run test:packages`.
 

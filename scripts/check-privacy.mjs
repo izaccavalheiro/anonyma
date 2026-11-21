@@ -16,9 +16,9 @@
  * 5. The repository holds synthetic data only: every e-mail address in a
  *    tracked file is under a domain reserved for documentation (RFC 2606,
  *    RFC 6761) or one listed in scripts/synthetic-domains.json.
- * 6. The web playground cannot send what is typed into it: its Content
- *    Security Policy blocks every connection and loads scripts from its own
- *    origin only.
+ * 6. The site (website/), its playground included, cannot send what is typed
+ *    into it: its Content Security Policy blocks every connection and loads
+ *    nothing from another origin.
  *
  * Usage: node scripts/check-privacy.mjs [--require-dist]
  */
@@ -190,40 +190,47 @@ function withoutComments(source) {
 }
 
 // ---------------------------------------------------------------------------
-// 6. The playground cannot send data
+// 6. The site, playground included, cannot send data
 // ---------------------------------------------------------------------------
 {
-  const page = join(root, "playground", "index.html");
+  const config = join(root, "website", "docusaurus.config.ts");
   const problems = [];
-  if (existsSync(page)) {
-    const html = readFileSync(page, "utf8");
-    const policy = /http-equiv="Content-Security-Policy"\s+content="([^"]*)"/.exec(html)?.[1];
-    if (policy === undefined) {
-      problems.push("playground/index.html has no Content-Security-Policy");
+  if (existsSync(config)) {
+    const source = readFileSync(config, "utf8");
+    const block = /const CONTENT_SECURITY_POLICY = \[([\s\S]*?)\]\.join/.exec(source)?.[1];
+    if (block === undefined) {
+      problems.push("website/docusaurus.config.ts has no CONTENT_SECURITY_POLICY");
     } else {
       const directives = new Map(
-        policy
-          .split(";")
-          .map((part) => part.trim().split(/\s+/))
-          .filter(([name]) => name)
-          .map(([name, ...values]) => [name, values.join(" ")]),
+        [...block.matchAll(/"([^"]+)"/g)].map(([, directive]) => {
+          const [name, ...values] = directive.trim().split(/\s+/);
+          return [name, values];
+        }),
       );
       for (const [name, value] of [
-        ["default-src", "'none'"],
+        ["default-src", "'self'"],
         ["connect-src", "'none'"],
         ["form-action", "'none'"],
-        ["script-src", "'self'"],
       ]) {
-        if (directives.get(name) !== value) problems.push(`${name} must be ${value}`);
+        if ((directives.get(name) ?? []).join(" ") !== value) {
+          problems.push(`${name} must be ${value}`);
+        }
+      }
+      // Nothing may load from another origin: only keywords and data: URIs.
+      for (const [name, values] of directives) {
+        for (const value of values) {
+          if (!/^'[a-z-]+'$/.test(value) && value !== "data:") {
+            problems.push(`${name} allows ${value}`);
+          }
+        }
+      }
+      // The constant must also be put on the page.
+      if (!source.includes("content: CONTENT_SECURITY_POLICY")) {
+        problems.push("CONTENT_SECURITY_POLICY is not put in headTags");
       }
     }
-    for (const match of html.matchAll(
-      /<(?:script|link|img|iframe)\b[^>]*\b(?:src|href)="([^"]+)"/g,
-    )) {
-      if (!match[1].startsWith("./")) problems.push(`it loads ${match[1]}, not a file of its own`);
-    }
   }
-  check("The playground cannot send what is typed into it (Content Security Policy)", problems);
+  check("The site cannot send what is typed into it (Content Security Policy)", problems);
 }
 
 // ---------------------------------------------------------------------------
