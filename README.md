@@ -43,7 +43,7 @@
 - 🔌 **MCP server and HTTP middleware** — a dependency-free Model Context Protocol server, and payload scrubbing for Express, Hono and Fetch handlers (`"anonyma/mcp"`, `"anonyma/middleware"`)
 - 📦 **Dual ESM + CJS** — works everywhere Node.js ≥ 18 runs
 - 🌐 **Edge-ready** — tested on Bun, Deno and Cloudflare Workers; Web Crypto only, no Node.js modules
-- 🧱 **Companion packages** — [`anonyma-vercel-ai`](packages/vercel-ai#readme) for the Vercel AI SDK, [`anonyma-mcp`](packages/mcp#readme) to put any MCP server behind a privacy proxy
+- 🧱 **Companion packages** — [`anonyma-vercel-ai`](packages/vercel-ai#readme) for the Vercel AI SDK, [`anonyma-mcp`](packages/mcp#readme) to put any MCP server behind a privacy proxy, [`anonyma-cli`](packages/cli#readme) to scrub and scan files of any size from the command line
 - 🔒 **Strict TypeScript** — no `any`, full declaration files
 
 ---
@@ -1055,6 +1055,7 @@ Full API reference: [docs/api.md](docs/api.md)
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [`anonyma-vercel-ai`](packages/vercel-ai#readme) | Middleware and drop-in `generateText` / `streamText` for the Vercel AI SDK: prompts are tokenized, and text, reasoning and tool calls come back with the original values, also when streamed.    |
 | [`anonyma-mcp`](packages/mcp#readme)             | A privacy guard for MCP connections, and `anonyma-mcp-proxy`, which puts any stdio MCP server behind it: tool results reach the model as tokens, tool arguments reach the server as real values. |
+| [`anonyma-cli`](packages/cli#readme)             | The `anonyma` command: `scrub` and `scan` logs, JSON Lines and CSV as streams in constant memory, with presets, policies, column selection, gzip and signed receipts.                            |
 
 ---
 

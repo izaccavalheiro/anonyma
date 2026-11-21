@@ -15,8 +15,18 @@
  * ```
  */
 
-export { sanitizeJson, sanitizeJsonAsync } from "./json.js";
-export type { JsonSanitizeOptions, JsonSanitizeResult, KeyRule } from "./json.js";
+export {
+  sanitizeJson,
+  sanitizeJsonAsync,
+  sanitizeJsonText,
+  sanitizeJsonTextAsync,
+} from "./json.js";
+export type {
+  JsonSanitizeOptions,
+  JsonSanitizeResult,
+  JsonTextSanitizeResult,
+  KeyRule,
+} from "./json.js";
 export {
   contentLens,
   createRestoreStream,
