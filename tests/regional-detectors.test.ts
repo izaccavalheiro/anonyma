@@ -13,6 +13,7 @@ import {
   detectPhone,
   detectTaxId,
 } from "../src/detectors/index.js";
+import { compilePipeline } from "../src/engine/index.js";
 import { pixPayload } from "./fixtures/pix.js";
 
 const values = (matches: readonly { value: string }[]): string[] => matches.map((m) => m.value);
@@ -81,6 +82,14 @@ describe("detectAddress", () => {
     ["Rua Augusta 100, 1000-001 Lisboa", "Rua Augusta 100, 1000-001 Lisboa"],
   ])("finds %s", (address, text) => {
     expect(values(detectAddress(text))).toEqual([address]);
+  });
+
+  it("replaces a labelled European street whole", () => {
+    const text = "Shipping address: Musterstraße 12, 10115 Berlin. Thanks";
+    expect(values(detectAddress(text))).toEqual(["Musterstraße 12, 10115 Berlin"]);
+    expect(compilePipeline({ categories: ["address"] }).transform(text).text).toBe(
+      "Shipping address: [REDACTED]. Thanks",
+    );
   });
 
   it("ignores street types in ordinary sentences", () => {

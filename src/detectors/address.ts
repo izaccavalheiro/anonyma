@@ -128,6 +128,7 @@ export function detectAddress(text: string): PiiMatch[] {
 
   // European and Brazilian streets. One that lies inside a street found
   // before it is not reported, and it replaces the shorter matches it contains.
+  const streets: PiiMatch[] = [];
   for (const pattern of [
     SUFFIX_STREET_PATTERN,
     NUMBER_FIRST_STREET_PATTERN,
@@ -146,6 +147,7 @@ export function detectAddress(text: string): PiiMatch[] {
         }
       }
       push(m[0], start, end, 0.8);
+      streets.push({ category: "address", value: m[0], start, end, confidence: 0.8 });
     }
   }
 
@@ -168,9 +170,13 @@ export function detectAddress(text: string): PiiMatch[] {
     /* v8 ignore next */
     const captured = (m[1] ?? m[0]).trim();
     const start = text.indexOf(captured, m.index);
+    const end = start + captured.length;
+    // Part of a European street found whole: reporting it too would split the
+    // street in two, since this match has the higher confidence.
+    if (streets.some((street) => street.start <= start && end <= street.end)) continue;
     /* v8 ignore else -- the captured text lies inside the match, so indexOf always finds it */
     if (start !== -1) {
-      push(captured, start, start + captured.length, 0.82);
+      push(captured, start, end, 0.82);
     }
   }
 
