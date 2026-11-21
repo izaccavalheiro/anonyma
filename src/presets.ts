@@ -22,8 +22,15 @@
  * ```
  */
 
-import { PresetNotFoundError } from "./errors.js";
-import type { CompliancePreset, PiiCategory, StrategyOptions, AnonymizationRule } from "./types.js";
+import { describeStrategy } from "./compliance/traits.js";
+import { PresetNotFoundError, ValidationError } from "./errors.js";
+import type {
+  AnonymizationRule,
+  CompliancePreset,
+  PiiCategory,
+  PresetSelection,
+  StrategyOptions,
+} from "./types.js";
 
 // ---------------------------------------------------------------------------
 // Preset definition type
@@ -346,4 +353,134 @@ export function getPreset(name: CompliancePreset): PresetConfig {
     throw new PresetNotFoundError(name);
   }
   return preset;
+}
+
+// ---------------------------------------------------------------------------
+// Combining presets
+// ---------------------------------------------------------------------------
+
+/**
+ * Several presets applied together, as {@link combinePresets} returns them.
+ */
+export interface CombinedPreset {
+  /** The presets combined, in the order given, without repetitions. */
+  readonly names: readonly CompliancePreset[];
+  /** The descriptions of the presets, one per line. */
+  readonly description: string;
+  /** Every category of every preset, in the order they first appear. */
+  readonly categories: readonly PiiCategory[];
+  /** The most protective of the presets' default strategies. */
+  readonly defaultStrategy: StrategyOptions;
+  /** A strategy for each category whose most protective strategy is not the default one. */
+  readonly rules: readonly AnonymizationRule[];
+}
+
+/**
+ * How much a strategy lets through, lower being more protective: whether the
+ * value can be recovered, whether outputs can be linked to each other, and how
+ * much of the value is left in clear.
+ */
+function exposure(strategy: StrategyOptions): number {
+  const traits = describeStrategy(strategy);
+  const { revealed } = traits;
+  // The built-in presets use no strategy that is reversible, linkable or
+  // reveals the whole value; the ranking covers them for presets to come.
+  /* v8 ignore start */
+  const shown = revealed === "all" ? 3 : revealed.leading + revealed.trailing > 0 ? 1 : 0;
+  return (traits.reversible ? 8 : 0) + (traits.linkable ? 4 : 0) + shown;
+  /* v8 ignore stop */
+}
+
+/** `true` when two strategies have the same options. Preset strategies are flat objects. */
+function sameStrategy(a: StrategyOptions, b: StrategyOptions): boolean {
+  const keys = Object.keys(a);
+  return (
+    keys.length === Object.keys(b).length &&
+    keys.every((key) => (a as Record<string, unknown>)[key] === (b as Record<string, unknown>)[key])
+  );
+}
+
+/** The most protective of `strategies`; the first one wins a tie. */
+function strongest(strategies: readonly StrategyOptions[]): StrategyOptions {
+  return strategies.reduce((best, strategy) =>
+    exposure(strategy) < exposure(best) ? strategy : best,
+  );
+}
+
+/**
+ * Combine compliance presets, for data that falls under several regulations
+ * at once, such as health records of Brazilian patients (`["lgpd", "hipaa"]`).
+ *
+ * The combination detects every category of every preset. Each category gets
+ * the most protective strategy among the presets that cover it, judged by
+ * whether the strategy can be reversed, whether its outputs can be linked and
+ * how much of the value it leaves in clear; when two are equally protective,
+ * the preset listed first wins. A single name returns that preset unchanged.
+ *
+ * Wherever a preset can be named (`anonymize()`, `createAnonymizer()`,
+ * `compilePipeline()`), a list of presets can be named too, and is combined
+ * with this function.
+ *
+ * @param selection - One preset name, or a non-empty list of them.
+ * @returns The combined preset.
+ * @throws {@link PresetNotFoundError} When a name is not a built-in preset.
+ * @throws {@link ValidationError} When the list is empty.
+ *
+ * @example
+ * ```ts
+ * import { combinePresets, createAnonymizer } from "anonyma";
+ *
+ * combinePresets(["lgpd", "hipaa"]).categories.includes("medical-record"); // true
+ *
+ * const anonymizer = createAnonymizer({ preset: ["lgpd", "hipaa"] });
+ * ```
+ */
+export function combinePresets(selection: PresetSelection): CombinedPreset {
+  const names: CompliancePreset[] = [];
+  for (const name of typeof selection === "string" ? [selection] : selection) {
+    if (!names.includes(name)) names.push(name);
+  }
+  const presets = names.map(getPreset);
+  const [first, ...others] = presets;
+  if (first === undefined) {
+    throw new ValidationError("preset", "must name at least one preset");
+  }
+  if (others.length === 0) {
+    return {
+      names,
+      description: first.description,
+      categories: first.categories,
+      defaultStrategy: first.defaultStrategy,
+      rules: first.rules ?? [],
+    };
+  }
+
+  const categories: PiiCategory[] = [];
+  for (const preset of presets) {
+    for (const category of preset.categories) {
+      if (!categories.includes(category)) categories.push(category);
+    }
+  }
+  const defaultStrategy = strongest(presets.map((preset) => preset.defaultStrategy));
+  const rules: AnonymizationRule[] = [];
+  for (const category of categories) {
+    const strategy = strongest(
+      presets
+        .filter((preset) => preset.categories.includes(category))
+        .map(
+          (preset) =>
+            preset.rules?.find((rule) => rule.category === category)?.strategy ??
+            preset.defaultStrategy,
+        ),
+    );
+    if (!sameStrategy(strategy, defaultStrategy)) rules.push({ category, strategy });
+  }
+
+  return {
+    names,
+    description: presets.map((preset) => preset.description).join("\n"),
+    categories,
+    defaultStrategy,
+    rules,
+  };
 }

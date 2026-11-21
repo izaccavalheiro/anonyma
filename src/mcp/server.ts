@@ -23,6 +23,8 @@ import { checkPolicy } from "../compliance/policy.js";
 import { BUILTIN_CATEGORIES } from "../engine/builtin.js";
 import { compilePipeline } from "../engine/compile.js";
 import type { PipelineSpec, StrategySpec } from "../engine/types.js";
+import type { CompliancePreset } from "../types.js";
+import { VERSION } from "../version.js";
 import { toHex } from "../internal/encoding.js";
 import { webCrypto } from "../internal/webcrypto.js";
 import { PRESET_REGISTRY } from "../presets.js";
@@ -134,6 +136,11 @@ const STRATEGY_NOTES: Readonly<Record<string, string>> = {
   synthesize: "Replaces the value with a made-up value of the same kind.",
 };
 
+/** The preset a tool call named; the tool schema accepts one name. */
+function presetName(spec: PipelineSpec): CompliancePreset | undefined {
+  return spec.preset as CompliancePreset | undefined;
+}
+
 /**
  * Create an MCP server.
  *
@@ -153,7 +160,7 @@ const STRATEGY_NOTES: Readonly<Record<string, string>> = {
  */
 export function createMcpServer(options: McpServerOptions = {}): McpServer {
   const { allowDetokenize = false, audit, maxSessions = 256, maxJsonLength = 1_000_000 } = options;
-  const serverInfo = options.serverInfo ?? { name: "anonyma", version: "1.2.0" };
+  const serverInfo = options.serverInfo ?? { name: "anonyma", version: VERSION };
   const tools = MCP_TOOLS.filter((tool) => allowDetokenize || tool.name !== "anonyma_detokenize");
   const sessions = new Map<string, SessionTokenizer>();
 
@@ -162,7 +169,8 @@ export function createMcpServer(options: McpServerOptions = {}): McpServer {
    * category, so it replaces the per-category rules of a preset.
    */
   function specOf(args: Args, forced?: StrategySpec): PipelineSpec {
-    const preset = args["preset"] as NonNullable<PipelineSpec["preset"]> | undefined;
+    // The tool schema accepts one preset name.
+    const preset = args["preset"] as CompliancePreset | undefined;
     const strategy = forced ?? (args["strategy"] as StrategySpec | undefined);
     const categories =
       (args["categories"] as PipelineSpec["categories"]) ??
@@ -237,7 +245,7 @@ export function createMcpServer(options: McpServerOptions = {}): McpServer {
         }
         const spec = specOf(args);
         const pipeline = compilePipeline(spec);
-        const rule = (spec.defaultStrategy ?? { strategy: spec.preset ?? "redact" }).strategy;
+        const rule = (spec.defaultStrategy ?? { strategy: presetName(spec) ?? "redact" }).strategy;
         if (hasText) {
           const result = pipeline.transform(args["text"] as string);
           const fields = summarizeSpans(result.spans, { rule });

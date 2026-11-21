@@ -9,13 +9,8 @@ import { mask } from "./strategies/mask.js";
 import { redact } from "./strategies/redact.js";
 import { pseudonymize } from "./strategies/pseudonymize.js";
 import { generalize } from "./strategies/generalize.js";
-import {
-  UnsupportedStrategyError,
-  UnknownCategoryError,
-  ValidationError,
-  PresetNotFoundError,
-} from "./errors.js";
-import { getPreset } from "./presets.js";
+import { UnsupportedStrategyError, UnknownCategoryError, ValidationError } from "./errors.js";
+import { combinePresets } from "./presets.js";
 import { compileAllowlist } from "./internal/allowlist.js";
 import type {
   AnonymaPlugin,
@@ -563,21 +558,14 @@ function anonymizeWith(
   }
 
   // Resolve preset if provided.
-  let resolvedPreset: ReturnType<typeof getPreset> | undefined;
-  if (options.preset) {
-    try {
-      resolvedPreset = getPreset(options.preset);
-    } catch {
-      throw new PresetNotFoundError(options.preset);
-    }
-  }
+  const resolvedPreset = options.preset ? combinePresets(options.preset) : undefined;
 
   const {
     rules = resolvedPreset
       ? resolvedPreset.categories.map((category) => ({
           category,
           strategy:
-            resolvedPreset.rules?.find((r) => r.category === category)?.strategy ??
+            resolvedPreset.rules.find((r) => r.category === category)?.strategy ??
             resolvedPreset.defaultStrategy,
         }))
       : [],
@@ -748,21 +736,14 @@ async function anonymizeAsyncWith(
   const { hash: hashFn } = await import("./strategies/hash.js");
 
   // Resolve identical logic as sync path.
-  let resolvedPreset: ReturnType<typeof getPreset> | undefined;
-  if (options.preset) {
-    try {
-      resolvedPreset = getPreset(options.preset);
-    } catch {
-      throw new PresetNotFoundError(options.preset);
-    }
-  }
+  const resolvedPreset = options.preset ? combinePresets(options.preset) : undefined;
 
   const {
     rules = resolvedPreset
       ? resolvedPreset.categories.map((category) => ({
           category,
           strategy:
-            resolvedPreset.rules?.find((r) => r.category === category)?.strategy ??
+            resolvedPreset.rules.find((r) => r.category === category)?.strategy ??
             resolvedPreset.defaultStrategy,
         }))
       : [],
@@ -1177,14 +1158,7 @@ function resolvePlugins(plugins: readonly AnonymaPlugin[]): PluginRegistry {
  */
 export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
   // Resolve preset first so its defaults can be overridden by explicit config.
-  let presetConfig: ReturnType<typeof getPreset> | undefined;
-  if (config.preset) {
-    try {
-      presetConfig = getPreset(config.preset);
-    } catch {
-      throw new PresetNotFoundError(config.preset);
-    }
-  }
+  const presetConfig = config.preset ? combinePresets(config.preset) : undefined;
 
   const {
     categories = presetConfig ? presetConfig.categories : [...ALL_CATEGORIES],
@@ -1228,7 +1202,7 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
           ? presetConfig.categories.map((category) => ({
               category,
               strategy:
-                presetConfig.rules?.find((r) => r.category === category)?.strategy ??
+                presetConfig.rules.find((r) => r.category === category)?.strategy ??
                 defaultStrategy,
             }))
           : categories.map((category) => ({
