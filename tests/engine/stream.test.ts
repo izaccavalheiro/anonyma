@@ -312,3 +312,46 @@ describe("engine/stream", () => {
     });
   });
 });
+
+describe("engine/stream", () => {
+  describe("createChunkTransformer", () => {
+    it("swallows the rejection of an asynchronous replacement it refuses", async () => {
+      const transformer = createChunkTransformer(
+        createPipeline({
+          detectors: [emailDetector],
+          replace: { fallback: () => Promise.reject(new Error("vault offline")) },
+        }),
+      );
+      expect(() => {
+        transformer.push("Mail alice@example.com");
+        transformer.flush();
+      }).toThrow(AsyncStrategyError);
+      // The rejection has been handled by now; an unhandled one would fail the run.
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+  });
+
+  describe("createPipelineStream", () => {
+    it("emits text before the stream ends once more than the hold-back window has arrived", async () => {
+      const pipeline = compilePipeline({ categories: ["email"] });
+      const text = `${"lorem ipsum ".repeat(2000)}mail alice@example.com`;
+      const stream = createPipelineStream(pipeline);
+      const writer = stream.writable.getWriter();
+      const reader = stream.readable.getReader();
+      const seen: string[] = [];
+      const reading = (async () => {
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) return;
+          seen.push(value);
+        }
+      })();
+      for (const chunk of chunksOf(text, 1000)) await writer.write(chunk);
+      await writer.close();
+      await reading;
+      // The end of the stream delivers one chunk at most; the others came earlier.
+      expect(seen.length).toBeGreaterThan(1);
+      expect(seen.join("")).toBe(pipeline.transform(text).text);
+    });
+  });
+});

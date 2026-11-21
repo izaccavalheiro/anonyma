@@ -1,5 +1,5 @@
 import type { AddressInfo } from "node:net";
-import { gzipSync } from "node:zlib";
+import { deflateSync, gzipSync } from "node:zlib";
 import express from "express";
 import { Hono } from "hono";
 import { streamSSE } from "hono/streaming";
@@ -603,6 +603,9 @@ describe("middleware/express (payload forms)", () => {
   app.get("/twice", (_req, res) => {
     res.json({ note: "plain" });
   });
+  app.get("/boolean", (_req, res) => {
+    res.send(true);
+  });
   app.use((error: Error, _req: unknown, res: express.Response, _next: unknown) => {
     res.status(500).send(`could not serialise the record of alice@example.com: ${error.message}`);
   });
@@ -642,6 +645,12 @@ describe("middleware/express (payload forms)", () => {
     expect(text).not.toContain("alice");
     // The wrappers stay in place for the next response of the process.
     expect(await (await fetch(`${base}/twice`)).json()).toEqual({ note: "plain" });
+  });
+
+  it("leaves a boolean to Express, which sends it as JSON through res.json()", async () => {
+    const response = await fetch(`${base}/boolean`);
+    expect(response.headers.get("content-type")).toMatch(/^application\/json/);
+    expect(await response.json()).toBe(true);
   });
 
   it("scrubs a buffer whose content type says it is JSON or text, and withholds one it cannot read", async () => {
@@ -743,5 +752,51 @@ describe("middleware/hono (headers and streams)", () => {
     expect(secondEventWritten).toBe(false);
     releaseSecondEvent();
     expect((await reader.read()).value).toBe("data: second\n\n");
+  });
+});
+
+describe("middleware/core", () => {
+  describe("createScrubber", () => {
+    it("inflates a deflate response, and reads one that only claims the encoding as it is", async () => {
+      const scrubber = createScrubber();
+      const json = '{"email":"alice@example.com"}';
+      const inflated = await scrubber.response(
+        new Response(deflateSync(json), {
+          headers: { "content-type": "application/json", "content-encoding": "deflate" },
+        }),
+        "t",
+      );
+      expect(inflated.headers.get("content-encoding")).toBe(null);
+      expect(await inflated.text()).toBe('{"email":"[REDACTED]"}');
+      // One byte that starts like a zlib header but is not one.
+      const plain = await scrubber.response(
+        new Response("x", {
+          headers: { "content-type": "text/plain", "content-encoding": "deflate" },
+        }),
+        "t",
+      );
+      expect(await plain.text()).toBe("x");
+    });
+  });
+});
+
+describe("middleware/express", () => {
+  it("takes the route pattern alone as the source when the request has no base URL", async () => {
+    const records = memorySink();
+    const log = createAuditLogger({ sinks: [records] });
+    const middleware = anonymaExpress({ request: true, response: false, audit: log });
+    const req = {
+      method: "POST",
+      route: { path: "/users/:id" },
+      body: { email: "alice@example.com" } as unknown,
+    };
+    let forwarded = false;
+    middleware(req, {} as Parameters<typeof middleware>[1], () => {
+      forwarded = true;
+    });
+    expect(forwarded).toBe(true);
+    expect(req.body).toEqual({ email: "[REDACTED]" });
+    await log.flush();
+    expect(records.records().map((record) => record.source)).toEqual(["POST /users/:id"]);
   });
 });

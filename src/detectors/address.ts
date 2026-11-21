@@ -83,6 +83,7 @@ export function detectAddress(text: string): PiiMatch[] {
     /* v8 ignore next */
     const captured = (m[1] ?? m[0]).trim();
     const start = text.indexOf(captured, m.index);
+    /* v8 ignore else -- the captured text lies inside the match, so indexOf always finds it */
     if (start !== -1) {
       push(captured, start, start + captured.length, 0.82);
     }

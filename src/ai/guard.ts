@@ -358,6 +358,7 @@ export function createLlmGuard(options: LlmGuardOptions = {}): LlmGuard {
         const judge: Exempt = (name, object) =>
           skipMember(name, object === holder ? siblings : object);
         const [entry] = Object.entries(json(holder, parent, judge) as Record<string, unknown>);
+        /* v8 ignore next -- the copy of the holder keeps its one member, renamed or not */
         return entry ?? [key, undefined];
       };
 
@@ -668,8 +669,8 @@ export function toLanguageModelMiddleware(
         set: (part: unknown, text: string): unknown =>
           textDeltaLens.set(part as Record<string, unknown>, text),
         block: (part: unknown): string | undefined => {
-          const text = asText(part);
-          const id = text === undefined ? undefined : textDeltaLens.block?.(text);
+          // Only asked about a part that get() found text in, which is a plain object.
+          const id = textDeltaLens.block?.(part as Record<string, unknown>);
           return id === undefined
             ? undefined
             : `${String((part as { type?: unknown }).type)}:${id}`;

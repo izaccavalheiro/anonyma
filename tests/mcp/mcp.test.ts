@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { createAuditLogger, memorySink, verifyAuditChain } from "../../src/audit/index.js";
+import type { AuditLogger } from "../../src/audit/index.js";
 import {
   MCP_PROTOCOL_VERSIONS,
   MCP_RESOURCES,
@@ -537,6 +538,25 @@ describe("mcp/server", () => {
         "é [REDACTED]",
       );
       expect(parsed[2]).toMatchObject({ error: { code: -32700 } });
+    });
+  });
+});
+
+describe("mcp/server", () => {
+  describe("tools", () => {
+    it("answers an unexpected failure with a generic internal error that reveals nothing", async () => {
+      const failing = createAuditLogger({ sinks: [memorySink()] });
+      const audit: AuditLogger = {
+        ...failing,
+        record: () => Promise.reject(new Error("cannot write the record of alice@example.com")),
+      };
+      const server = createMcpServer({ audit });
+      const response = await rpc(server, "tools/call", {
+        name: "anonyma_detect",
+        arguments: { text: "mail alice@example.com" },
+      });
+      expect(response).toMatchObject({ error: { code: -32603, message: "Internal error." } });
+      expect(JSON.stringify(response)).not.toContain("alice");
     });
   });
 });

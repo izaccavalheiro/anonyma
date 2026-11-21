@@ -125,6 +125,7 @@ export function checkPolicy(input: unknown, options: PolicyOptions = {}): Policy
       path,
       code,
       message,
+      /* v8 ignore next -- no warning cites a provision yet */
       ...(reference !== undefined ? { reference } : {}),
     });
   };

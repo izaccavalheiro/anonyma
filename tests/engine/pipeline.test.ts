@@ -490,3 +490,17 @@ describe("engine/resolve", () => {
     });
   });
 });
+
+describe("engine/pipeline", () => {
+  describe("overlap resolution", () => {
+    it("legacy: of two hits that start together, the more confident one wins", () => {
+      const candidates = [
+        { start: 0, end: 4, confidence: 0.5, detector: 0, allowed: false },
+        { start: 0, end: 8, confidence: 0.9, detector: 1, allowed: false },
+      ];
+      expect(resolveSpans("abcdefgh", candidates, "legacy")).toEqual([
+        { start: 0, end: 8, confidence: 0.9, detector: 1, residual: false },
+      ]);
+    });
+  });
+});

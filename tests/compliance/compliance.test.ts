@@ -622,3 +622,15 @@ describe("compliance/erasure", () => {
     }
   });
 });
+
+describe("compliance/policy", () => {
+  describe("parsePolicy", () => {
+    it("keeps an exclusion without inclusions in the document and detects everything else", () => {
+      const policy = parsePolicy({ version: 1, id: "p", categories: { exclude: ["email"] } });
+      expect(policy.document.categories).toEqual({ exclude: ["email"] });
+      expect(policy.categories).toEqual(
+        BUILTIN_CATEGORIES.filter((category) => category !== "email"),
+      );
+    });
+  });
+});

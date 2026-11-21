@@ -39,11 +39,13 @@ export default defineConfig({
       include: ["src/**/*.ts"],
       // Barrels and type-only modules contain no logic of their own.
       exclude: ["src/index.ts", "src/schemas.ts", "src/types.ts", "src/**/types.ts"],
+      // Every line, branch and function is covered. Code that no input can reach carries a
+      // `v8 ignore` hint that says why (see AGENTS.md).
       thresholds: {
-        lines: 90,
-        functions: 90,
-        branches: 85,
-        statements: 90,
+        lines: 100,
+        functions: 100,
+        branches: 100,
+        statements: 100,
       },
     },
   },

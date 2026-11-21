@@ -228,6 +228,7 @@ describe("engine/precise", () => {
         ["routing table 10.0.0.1", "10.0.0.1"],
         ["dhcp release 192.168.1.50", "192.168.1.50"],
         ["build 172.16.254.3 failed ping", "172.16.254.3"],
+        ["build 169.254.10.20 failed ping", "169.254.10.20"],
         ["host 192.168.1.10-server", "192.168.1.10"],
       ];
       for (const [text, address] of cases) {
@@ -465,5 +466,57 @@ describe("engine/precise", () => {
     expect(pipeline.transform("SSN: 123456789 card ****-****-****-1234").text).toBe(
       "SSN: [REDACTED] card [REDACTED]",
     );
+  });
+});
+
+describe("engine/precise", () => {
+  describe("creditCardDetector", () => {
+    const groups = ["4111", "1111", "1111", "1111"];
+    const NBSP = String.fromCharCode(0xa0);
+
+    it("accepts two spaces of either kind, or a Windows line break, between the groups", () => {
+      for (const separator of [`${NBSP}${NBSP}`, ` ${NBSP}`, `${NBSP} `, "\r\n"]) {
+        const text = groups.join(separator);
+        expect(found(creditCardDetector, text), JSON.stringify(separator)).toEqual([text]);
+      }
+    });
+
+    it("rejects any other pair of characters between the groups", () => {
+      for (const separator of [" -", "\r "]) {
+        expect(
+          found(creditCardDetector, groups.join(separator)),
+          JSON.stringify(separator),
+        ).toEqual([]);
+      }
+    });
+
+    it("reports a 19-digit number once, not again as the 16-digit number it starts with", () => {
+      expect(found(creditCardDetector, "4111 1111 1111 1111 003")).toEqual([
+        "4111 1111 1111 1111 003",
+      ]);
+    });
+
+    it("does not report the digits of two adjacent numbers read out of phase", () => {
+      // "1111 1111 1111 4111" passes the Luhn check, but it joins the end of one card to the next.
+      expect(found(creditCardDetector, "4111 1111 1111 1111 4111 1111 1111 1111")).toEqual([
+        "4111 1111 1111 1111",
+        "4111 1111 1111 1111",
+      ]);
+    });
+
+    it("reports a number that overlaps an accepted one when it reaches digits nothing else covers", () => {
+      expect(found(creditCardDetector, "4111 1111 1111 1111 1000 1000")).toEqual([
+        "4111 1111 1111 1111",
+        "1111 1111 1111 1000",
+      ]);
+    });
+  });
+
+  describe("ibanDetector", () => {
+    it("accepts a Windows line break between the groups", () => {
+      expect(found(ibanDetector, "GB82 WEST 1234 5698\r\n7654 32")).toEqual([
+        "GB82 WEST 1234 5698\r\n7654 32",
+      ]);
+    });
   });
 });
