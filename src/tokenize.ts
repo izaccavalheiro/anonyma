@@ -108,16 +108,16 @@ export function tokenize(text: string, options: TokenizeOptions = {}): TokenizeR
   const matches = detectForTokenize(text, options);
   if (options.vault !== undefined) {
     const tokenizer = vaultTokenizerFor(options.vault, options.format);
-    const tokens = matches.map((match) => {
+    const placed = matches.map((match) => {
       const token = tokenizer.tokenize(match.value, { category: match.category });
       if (isThenable(token)) {
         // The vault is asynchronous; tokenizeAsync() is the entry point for it.
         void token.catch(() => undefined);
         throw new ValidationError("vault", "answers asynchronously: use tokenizeAsync()");
       }
-      return token;
+      return { match, token };
     });
-    return replaceInOrder(text, matches, tokens);
+    return replaceInOrder(text, placed);
   }
 
   const store = createTokenStore();
@@ -163,11 +163,14 @@ export async function tokenizeAsync(
   if (options.vault === undefined) return tokenize(text, options);
   const matches = detectForTokenize(text, options);
   const tokenizer = vaultTokenizerFor(options.vault, options.format);
-  const tokens: string[] = [];
+  const placed: Placed[] = [];
   for (const match of matches) {
-    tokens.push(await tokenizer.tokenize(match.value, { category: match.category }));
+    placed.push({
+      match,
+      token: await tokenizer.tokenize(match.value, { category: match.category }),
+    });
   }
-  return replaceInOrder(text, matches, tokens);
+  return replaceInOrder(text, placed);
 }
 
 /** The detections `tokenize()` replaces, in document order. */
@@ -192,18 +195,19 @@ function vaultTokenizerFor(vault: AnonymaVault, format: TokenFormat = "brace"): 
   return createVaultTokenizer({ vault, format: format === "custom" ? "angle" : format });
 }
 
+/** A detection and the token that replaces it. */
+interface Placed {
+  readonly match: PiiMatch;
+  readonly token: string;
+}
+
 /** Replace each match with its token, in document order. */
-function replaceInOrder(
-  text: string,
-  matches: readonly PiiMatch[],
-  tokens: readonly string[],
-): TokenizeResult {
+function replaceInOrder(text: string, placed: readonly Placed[]): TokenizeResult {
   const parts: string[] = [];
   const mapping = new Map<string, string>();
   const tokenMatches: TokenMatch[] = [];
   let cursor = 0;
-  for (const [i, match] of matches.entries()) {
-    const token = tokens[i] ?? match.value;
+  for (const { match, token } of placed) {
     parts.push(text.slice(cursor, match.start), token);
     cursor = match.end;
     if (!mapping.has(token)) mapping.set(token, match.value);

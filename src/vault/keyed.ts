@@ -327,7 +327,8 @@ export function createKeyedTokenizer(options: KeyedTokenizerOptions): KeyedToken
       method: "vault-delete" as const,
       erased,
       keyIds: Object.freeze([...keyIds].sort()),
-      ...(activeTag !== undefined ? { subjectTag: activeTag } : {}),
+      // The active version cannot be destroyed, so it always has a tag.
+      ...(activeTag !== undefined ? { subjectTag: activeTag } : /* v8 ignore next */ {}),
       completedAt: now(),
     });
   }

@@ -257,7 +257,7 @@
     "lint-staged": "^17.6.0",
     "prettier": "^3.10.1",
     "publint": "^0.3.25",
-    "tsup": "^8.0.0",
+    "tsup": "^9.0.0",
     "typescript": "^5.4.0",
     "typescript-eslint": "^8.0.0",
     "vitest": "^4.1.12",

@@ -7,12 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.2.0] — 2026-11-20
+## [1.2.0] — 2026-11-21
 
-Minor release: token vaults, edge runtimes, and companion packages for the Vercel AI SDK and MCP.
-Everything is additive or a fix. One type is wider: `SessionSnapshot.format` (and `TokenFormat`)
-now include `"brace"`, so an exhaustive `switch` over a snapshot's format needs a case for it.
-The new packages, `@anonyma/vercel-ai` 0.1.0 and `@anonyma/mcp` 0.1.0, are versioned on their
+Minor release: plugins for `createAnonymizer()`, token vaults, edge runtimes, and companion
+packages for the Vercel AI SDK and MCP. Everything is additive or a fix. Some types are wider:
+the `Anonymizer` methods accept plugin strategy options (see Changed), and
+`SessionSnapshot.format` (and `TokenFormat`) now include `"brace"`, so an exhaustive `switch`
+over a snapshot's format needs a case for it. The new packages, `@anonyma/vercel-ai` 0.1.0 and `@anonyma/mcp` 0.1.0, are versioned on their
 own and require `anonyma` ^1.2.0.
 
 `anonyma/schemas` now accepts zod 4 as well as zod 3. Its zod 3 floor rises from 3.23 to 3.25.4, the
@@ -21,6 +22,20 @@ stays within zod 3.
 
 ### Added
 
+- **Plugins.** `createAnonymizer()` applies the `plugins` of its configuration, which 1.1.0
+  listed under "Known limitations" ([#6](https://github.com/izaccavalheiro/anonyma/issues/6)).
+  The methods of the anonymizer use their detectors, strategies and validators: a plugin
+  detector replaces the built-in detector of its category (`customDetectors` take precedence
+  over it), rules, default strategies and field rules name a plugin strategy as
+  `{ strategy, options }`, and a match is kept only when every plugin validator of its category
+  accepts it. `createAnonymizer()` throws a `ValidationError` when two plugins have the same
+  name, register a detector for the same category or a strategy under the same name, or when a
+  strategy has the name of a built-in one, and an `UnknownCategoryError` for a detector or
+  validator keyed by a name that is not a category. The standalone functions do not apply
+  plugins.
+- **Types** `PluginStrategyOptions` and `StrategyFunction`, exported from `"anonyma"`.
+  `AnonymizationRule`, `AnonymizeOptions`, `FieldRule` and `FieldRuleMap` take an optional type
+  parameter for the strategy options they hold, `StrategyOptions` by default.
 - **Token vaults.** `AnonymaVault` — any object with `store(key, value)` and `retrieve(key)`,
   synchronous or asynchronous — `InMemoryVault`, and `restore(text, vault)`, exported from
   `"anonyma"` and `"anonyma/vault"`. `restore()` scans once and matches whole tokens, so
@@ -48,6 +63,13 @@ stays within zod 3.
 
 ### Changed
 
+- The methods of `Anonymizer` and `AnonymizerConfig.defaultStrategy` accept
+  `PluginStrategyOptions` wherever they accepted `StrategyOptions`; the options of a built-in
+  strategy are type-checked as before. An object that implements `Anonymizer` with parameter
+  types of its own, such as a test double, may have to widen them.
+- `createAnonymizer()` throws `UnsupportedStrategyError` when `defaultStrategy` names a
+  strategy that neither anonyma nor one of the plugins provides, instead of when it first
+  applies it.
 - **The optional `zod` peer dependency** is `^3.25.4 || ^4.0.0` (was `^3.23.0`).
   `"anonyma/schemas"` imports `zod/v3`, which both majors provide, so its declarations are the
   same whichever zod is installed. They were built against zod 3 and named types that zod 4 does
@@ -86,6 +108,33 @@ to match a part of a value instead. The span engine (`"anonyma/engine"`) is unch
 - **`allowlistPatterns`** with the `g` or `y` flag skipped only every other matching value,
   because `RegExp.test()` kept its `lastIndex` between values, and left the caller's pattern
   with a changed `lastIndex`. These flags are now ignored.
+
+### Added
+
+- **Plugins.** `createAnonymizer()` applies the `plugins` of its configuration, which 1.1.0
+  listed under "Known limitations" ([#6](https://github.com/izaccavalheiro/anonyma/issues/6)).
+  The methods of the anonymizer use their detectors, strategies and validators: a plugin
+  detector replaces the built-in detector of its category (`customDetectors` take precedence
+  over it), rules, default strategies and field rules name a plugin strategy as
+  `{ strategy, options }`, and a match is kept only when every plugin validator of its category
+  accepts it. `createAnonymizer()` throws a `ValidationError` when two plugins have the same
+  name, register a detector for the same category or a strategy under the same name, or when a
+  strategy has the name of a built-in one, and an `UnknownCategoryError` for a detector or
+  validator keyed by a name that is not a category. The standalone functions do not apply
+  plugins.
+- **Types** `PluginStrategyOptions` and `StrategyFunction`, exported from `"anonyma"`.
+  `AnonymizationRule`, `AnonymizeOptions`, `FieldRule` and `FieldRuleMap` take an optional type
+  parameter for the strategy options they hold, `StrategyOptions` by default.
+
+### Changed
+
+- The methods of `Anonymizer` and `AnonymizerConfig.defaultStrategy` accept
+  `PluginStrategyOptions` wherever they accepted `StrategyOptions`; the options of a built-in
+  strategy are type-checked as before. An object that implements `Anonymizer` with parameter
+  types of its own, such as a test double, may have to widen them.
+- `createAnonymizer()` throws `UnsupportedStrategyError` when `defaultStrategy` names a
+  strategy that neither anonyma nor one of the plugins provides, instead of when it first
+  applies it.
 
 ---
 

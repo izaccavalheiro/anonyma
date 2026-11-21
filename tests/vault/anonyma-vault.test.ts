@@ -242,6 +242,13 @@ describe("vault/vault-tokenizer", () => {
       expect(vault.size).toBe(3);
     });
 
+    it("reuses the token a synchronous vault already holds for the value", () => {
+      const vault = new InMemoryVault([["{{EMAIL_1}}", "a@example.com"]]);
+      const tokenizer = createVaultTokenizer({ vault });
+      expect(tokenizer.tokenize("a@example.com", { category: "email" })).toBe("{{EMAIL_1}}");
+      expect(vault.size).toBe(1);
+    });
+
     it("skips a number the vault holds for another value", () => {
       const vault = new InMemoryVault([["{{EMAIL_2}}", "taken@example.com"]]);
       const tokenizer = createVaultTokenizer({ vault });
@@ -372,6 +379,17 @@ describe("vault/vault-tokenizer", () => {
       );
     });
 
+    it("gives up on an asynchronous vault that never has a free number", async () => {
+      const vault: AnonymaVault = {
+        store: async () => undefined,
+        retrieve: async () => "someone else",
+      };
+      const tokenizer = createVaultTokenizer({ vault });
+      await expect(tokenizer.tokenize("a@example.com", { category: "email" })).rejects.toThrow(
+        TokenVaultError,
+      );
+    });
+
     it("gives up on a vault that never has a free number", () => {
       const vault = { store: () => undefined, retrieve: () => "someone else" };
       const tokenizer = createVaultTokenizer({ vault });
@@ -430,6 +448,14 @@ describe("tokenize with a vault", () => {
     const vault = new RootInMemoryVault();
     expect(tokenize("a@example.com", { vault, format: "bracket" }).text).toBe("[EMAIL_0001]");
     expect(tokenize("b@example.com", { vault, format: "custom" }).text).toBe("<EMAIL_1>");
+  });
+
+  it("needs tokenizeAsync for a vault that fails asynchronously, without an unhandled rejection", () => {
+    const vault: AnonymaVault = {
+      store: () => Promise.reject(new Error("unavailable")),
+      retrieve: () => Promise.reject(new Error("unavailable")),
+    };
+    expect(() => tokenize("a@example.com", { vault })).toThrow(/tokenizeAsync/);
   });
 
   it("needs tokenizeAsync for an asynchronous vault", async () => {

@@ -97,9 +97,10 @@ function extractNameMatches(text: string, pattern: RegExp, confidence: number): 
     // m[1]=greeting, m[2]=title, m[3]=context-keywords (unreachable: see above).
     // When m[1] is null, m[2] is evaluated (branch 4); since context arm is dead, m[2] ??→m[3]
     // is also a dead path (branch 4 false = branch 5 = branch 6 are all structurally dead).
-    /* v8 ignore next 6 */
+    /* v8 ignore start -- every capture group needs two letters, so rawCapture is never empty */
     const rawCapture = (m[1] ?? m[2] ?? m[3] ?? "").trim();
     if (!rawCapture) continue;
+    /* v8 ignore stop */
 
     const captureStart = text.indexOf(rawCapture, m.index);
     // rawCapture is always a substring from the same text; indexOf cannot return -1 here.

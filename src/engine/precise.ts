@@ -85,8 +85,10 @@ function scanEmail(text: string, emit: EmitSpan): void {
   while ((match = EMAIL_PATTERN.exec(text)) !== null) {
     const start = match.index;
     const end = start + match[0].length;
+    /* v8 ignore start -- EMAIL_PATTERN always captures the domain and the top-level domain */
     const domain = match[1] ?? "";
     const tld = (match[2] ?? "").toLowerCase();
+    /* v8 ignore stop */
 
     if (NOT_A_TLD.has(tld)) continue;
     // "name@1.0.0-beta": a package version, not a domain.
@@ -182,12 +184,19 @@ function scanSsn(text: string, emit: EmitSpan): void {
   SSN_SEPARATED_PATTERN.lastIndex = 0;
   let match: RegExpExecArray | null;
   while ((match = SSN_SEPARATED_PATTERN.exec(text)) !== null) {
-    if (isAssignableSsn(match[1] ?? "", match[2] ?? "", match[3] ?? "")) {
+    if (
+      isAssignableSsn(
+        /* v8 ignore next -- the three groups always participate in a match */ match[1] ?? "",
+        /* v8 ignore next */ match[2] ?? "",
+        /* v8 ignore next */ match[3] ?? "",
+      )
+    ) {
       emit(match.index, match.index + match[0].length, 0.95);
     }
   }
   SSN_LABELLED_PATTERN.lastIndex = 0;
   while ((match = SSN_LABELLED_PATTERN.exec(text)) !== null) {
+    /* v8 ignore next -- the group always participates in a match */
     const digits = match[1] ?? "";
     const bounds = match.indices?.[1];
     if (
@@ -240,7 +249,13 @@ export const bareSsnDetector: SpanDetector = defineDetector({
     SSN_BARE_PATTERN.lastIndex = 0;
     let match: RegExpExecArray | null;
     while ((match = SSN_BARE_PATTERN.exec(text)) !== null) {
-      if (isAssignableSsn(match[1] ?? "", match[2] ?? "", match[3] ?? "")) {
+      if (
+        isAssignableSsn(
+          /* v8 ignore next -- the three groups always participate in a match */ match[1] ?? "",
+          /* v8 ignore next */ match[2] ?? "",
+          /* v8 ignore next */ match[3] ?? "",
+        )
+      ) {
         emit(match.index, match.index + 9, 0.5);
       }
     }
@@ -421,6 +436,7 @@ function scanIban(text: string, emit: EmitSpan): void {
     const start = match.index;
     const country = match[0].slice(0, 2).toUpperCase();
     if (!Object.hasOwn(IBAN_LENGTHS, country)) continue;
+    /* v8 ignore next -- the line above makes sure the country has a length */
     const end = endOfIban(text, start, IBAN_LENGTHS[country] ?? 0);
     if (end < 0) continue;
 
@@ -755,11 +771,13 @@ function scanCard(text: string, emit: EmitSpan): void {
   /** Per first run: the furthest end of a candidate that starts there. */
   const reach = new Map<number, number>();
   const add = (run: number, end: number, confidence: number): void => {
+    /* v8 ignore next -- run is always an index of starts */
     candidates.push({ run, start: starts[run] ?? 0, end, confidence });
     reach.set(run, Math.max(reach.get(run) ?? 0, end));
   };
 
   for (const [run, start] of starts.entries()) {
+    /* v8 ignore next -- starts and ends have the same length */
     const length = (ends[run] ?? start) - start;
 
     if (length >= 13 && length <= 19) {
@@ -782,6 +800,7 @@ function scanCard(text: string, emit: EmitSpan): void {
           break;
         }
         if (offset > 0) {
+          /* v8 ignore next -- the previous iteration checked the previous run */
           const between = separatorKind(text, ends[run + offset - 1] ?? from, from);
           if (between === SEPARATOR_NONE) {
             fits = false;
@@ -794,6 +813,7 @@ function scanCard(text: string, emit: EmitSpan): void {
       }
       if (!fits || !luhn(digits)) continue;
 
+      /* v8 ignore next -- the grouping fits, so all its runs exist */
       const end = ends[run + grouping.length - 1] ?? start;
       if (isIssuedRange(digits, true)) {
         add(run, end, uniform ? 0.97 : 0.85);
@@ -817,6 +837,7 @@ function scanCard(text: string, emit: EmitSpan): void {
     if (candidate.end <= covered) continue;
     if (candidate.start < covered) {
       let next = candidate.run;
+      /* v8 ignore next -- the candidate ends after `covered`, so a run of it starts there */
       while ((starts[next] ?? Infinity) < covered) next++;
       if ((reach.get(next) ?? 0) >= candidate.end) continue;
     }

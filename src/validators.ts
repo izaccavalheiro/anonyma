@@ -105,10 +105,11 @@ export function verhoeff(digits: string): boolean {
     /* v8 ignore next -- reversed array is same length as stripped so reversed[i] is always defined */
     const digit = parseInt(reversed[i] ?? "0", 10);
     const pRow = VERHOEFF_P[i % 8];
-    /* v8 ignore next 3 -- lookup tables always cover valid indices (0-7 for P, 0-9 for D) */
+    /* v8 ignore start -- lookup tables always cover valid indices (0-7 for P, 0-9 for D) */
     const pVal = pRow ? (pRow[digit] ?? digit) : digit;
     const dRow = VERHOEFF_D[c];
     c = dRow ? (dRow[pVal] ?? 0) : 0;
+    /* v8 ignore stop */
   }
 
   return c === 0;
