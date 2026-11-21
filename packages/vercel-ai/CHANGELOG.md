@@ -4,7 +4,7 @@ All notable changes to `@anonyma/vercel-ai` are documented in this file. The pac
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) independently of `anonyma`; while it is
 at 0.x, a minor version may change its API.
 
-## [0.1.0] — 2026-11-20
+## [0.1.0] — 2026-11-21
 
 First release. Requires `ai` ^7 and `anonyma` ^1.2.0.
 

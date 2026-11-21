@@ -4,7 +4,7 @@ All notable changes to `@anonyma/mcp` are documented in this file. The package f
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) independently of `anonyma`; while it is
 at 0.x, a minor version may change its API or the command line of `anonyma-mcp-proxy`.
 
-## [0.1.0] — 2026-11-20
+## [0.1.0] — 2026-11-21
 
 First release. Requires `anonyma` ^1.2.0.
 
