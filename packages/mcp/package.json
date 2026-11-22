@@ -1,6 +1,6 @@
 {
   "name": "anonyma-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Privacy for Model Context Protocol connections: personal data in tool results, resources and prompts becomes tokens before it enters a model's context, and tokens in tool arguments become the original values before they reach the server. Includes a stdio proxy that puts any MCP server behind the guard.",
   "license": "MIT",
   "author": "Izac Cavalheiro <izac@izaccavalheiro.com>",

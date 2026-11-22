@@ -140,6 +140,7 @@ describe("anonyma-mcp with the MCP SDK", () => {
       });
       expect(await proxy.exited).toBe(1);
       expect(logs[0]).toMatch(/could not start the server/);
+      expect(() => proxy.close()).not.toThrow();
     });
 
     it("stops the server on close", async () => {
