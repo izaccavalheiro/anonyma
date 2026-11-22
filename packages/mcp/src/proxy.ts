@@ -12,6 +12,7 @@
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
 import type { Readable, Writable } from "node:stream";
+import { launchOf } from "./command.js";
 import { createMcpGuard } from "./guard.js";
 import type { McpGuard, McpGuardOptions } from "./guard.js";
 
@@ -92,11 +93,28 @@ export function runStdioProxy(options: StdioProxyOptions): StdioProxy {
   } = options;
   const guard = createMcpGuard(guardOptions);
 
+  // On Windows, a missing command would start cmd.exe anyway: look it up first.
+  const launch = launchOf(command, {
+    platform: process.platform,
+    env: env ?? process.env,
+    cwd: cwd ?? process.cwd(),
+  });
+  if (launch === undefined) {
+    log(`could not start the server: ${command} was not found`);
+    return Object.freeze({
+      guard,
+      exited: Promise.resolve(1),
+      close: (): void => {
+        // No server was started, so there is none to stop.
+      },
+    });
+  }
+
   const server = spawn(command, [...args], {
     stdio: ["pipe", "pipe", "inherit"],
     ...(env !== undefined ? { env } : {}),
     ...(cwd !== undefined ? { cwd } : {}),
-    shell: process.platform === "win32",
+    shell: launch.shell,
   });
 
   const send = (stream: Writable, message: unknown): void => {

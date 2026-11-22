@@ -4,6 +4,16 @@ All notable changes to `anonyma-mcp` are documented in this file. The package fo
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) independently of `anonyma`; while it is
 at 0.x, a minor version may change its API or the command line of `anonyma-mcp-proxy`.
 
+## [Unreleased]
+
+### Fixed
+
+- `anonyma-mcp-proxy` and `runStdioProxy()` on Windows: a server command that does not exist is
+  reported ("could not start the server") instead of exiting silently, because the command is
+  now looked up on `PATH` with `PATHEXT`, as `cmd.exe` does, before it is started. A server found
+  as an `.exe` or `.com` file starts without a shell; batch files such as `npx.cmd` still start
+  through `cmd.exe`.
+
 ## [0.1.0] — 2026-11-21
 
 First release. Requires `anonyma` ^1.2.0.
