@@ -11,6 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.2] — 2026-11-22
+
+Patch release that publishes **`anonyma-mcp` 0.1.1**. The library's behaviour is unchanged.
+
+### Fixed
+
+- **`anonyma-mcp` 0.1.1**: on Windows, `anonyma-mcp-proxy` and `runStdioProxy()` report a server
+  command that does not exist ("could not start the server") instead of exiting with status 1
+  silently. The command is looked up on `PATH` with `PATHEXT`, as `cmd.exe` does, before it is
+  started; a server found as an `.exe` or `.com` file now starts without a shell, and batch files
+  such as `npx.cmd` still start through `cmd.exe`
+  ([#51](https://github.com/izaccavalheiro/anonyma/pull/51)).
+
+---
+
 ## [1.3.1] — 2026-11-21
 
 Patch release: documentation, and a bundler warning fixed. The library's behaviour is unchanged.
@@ -833,7 +848,8 @@ All types are zero-cost, type-only exports (stripped by `tsc`; no runtime overhe
 - **Prettier** code formatting.
 - **MIT License**.
 
-[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.1...HEAD
+[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.2...HEAD
+[1.3.2]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/izaccavalheiro/anonyma/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/izaccavalheiro/anonyma/releases/tag/v1.2.0
