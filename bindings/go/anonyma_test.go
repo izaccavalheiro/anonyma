@@ -4,6 +4,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -18,6 +19,27 @@ func TestDetectReportsByteOffsets(t *testing.T) {
 	}
 	if len(matches) != 1 || text[matches[0].Start:matches[0].End] != "jose@example.com" {
 		t.Fatalf("unexpected matches %+v", matches)
+	}
+}
+
+func TestScanReportsSpansWithByteOffsets(t *testing.T) {
+	text := "José: jose@example.com"
+	spans, err := Scan(text, ScanOptions{Categories: []string{"email"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(spans) != 1 || text[spans[0].Start:spans[0].End] != "jose@example.com" ||
+		spans[0].Detector == "" || spans[0].Residual {
+		t.Fatalf("unexpected spans %+v", spans)
+	}
+	if _, err := Scan(text, ScanOptions{Detection: "nope"}); err == nil {
+		t.Fatal("expected an error for an unknown detection")
+	}
+}
+
+func TestVersionIsSemantic(t *testing.T) {
+	if !regexp.MustCompile(`^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$`).MatchString(Version) {
+		t.Fatalf("Version %q", Version)
 	}
 }
 

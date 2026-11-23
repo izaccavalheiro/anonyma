@@ -82,7 +82,7 @@ bindings/
 ├── python/               # PyPI "anonyma" — PyO3 + maturin, Pythonic API, LLM integrations, pytest suite
 ├── node/                 # napi-rs scaffold (not published)
 ├── wasm/                 # wasm-bindgen scaffold (not published)
-└── go/                   # cgo over the C ABI, io.Reader, net/http middleware
+└── go/                   # cgo over the C ABI, io.Reader, net/http middleware; released to anonyma-go
 ```
 
 The site (`website/`, Docusaurus, its own `package.json` and lockfile) is published to GitHub

@@ -1,0 +1,21 @@
+# Changelog
+
+All notable changes to the Go package of anonyma (`github.com/izaccavalheiro/anonyma-go`)
+are documented in this file. The format is based on
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the package follows
+[Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+First release (0.1.0-alpha.1): cgo bindings of the Rust core of anonyma, with its static library
+prebuilt for linux/amd64, linux/arm64, darwin/amd64, darwin/arm64 and windows/amd64,
+so `go get` needs no Rust toolchain.
+
+### Added
+
+- `Detect`, `Anonymize` and `Call`, the JSON API of the core, with byte offsets.
+- `Scan`, the span engine: precise detectors and overlaps resolved by covering.
+- `Vault`: `Shield` and `Restore` for LLM prompts, with the tokens kept in the process.
+- `Validate` and the checksum validators of the core.
+- An `io.Reader` that anonymizes text, and `net/http` middleware that scrubs request bodies.
+- All 27 detection categories, every preset and every strategy of the conformance suite.
