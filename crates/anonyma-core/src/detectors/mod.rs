@@ -136,7 +136,6 @@ impl Detector for BuiltinDetector {
             Category::CaseNumber => case_number::detect(text),
             Category::Url => url::detect(text),
             Category::DateOfBirth => date_of_birth::detect(text),
-            _ => Vec::new(),
         }
     }
 }
