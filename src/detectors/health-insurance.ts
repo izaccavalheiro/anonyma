@@ -93,7 +93,8 @@ export function detectHealthInsurance(text: string): PiiMatch[] {
 
   // EU EHIC — with context
   const ehicRe = new RegExp(EU_EHIC_PATTERN.source, "g");
-  while ((m = ehicRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = ehicRe.exec(text)) !== null) {
     if (hasContextAt(m.index)) {
       push(m[0], m.index, m.index + m[0].length, 0.78);
     }
@@ -101,7 +102,8 @@ export function detectHealthInsurance(text: string): PiiMatch[] {
 
   // Generic member ID — requires context
   const genericRe = new RegExp(GENERIC_MEMBER_ID.source, "g");
-  while ((m = genericRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = genericRe.exec(text)) !== null) {
     if (hasContextAt(m.index)) {
       push(m[0], m.index, m.index + m[0].length, 0.75);
     }

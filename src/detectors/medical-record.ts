@@ -86,7 +86,8 @@ export function detectMedicalRecord(text: string): PiiMatch[] {
 
   // Generic MRN — requires context
   const mrnRe = new RegExp(MRN_PATTERN.source, "g");
-  while ((m = mrnRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = mrnRe.exec(text)) !== null) {
     if (hasContextAt(m.index)) {
       push(m[0], m.index, m.index + m[0].length, 0.85);
     }

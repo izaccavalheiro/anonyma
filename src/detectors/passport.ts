@@ -57,6 +57,8 @@ export function detectPassport(text: string): PiiMatch[] {
   const seen = new Set<string>();
 
   for (const { pattern, confidence } of PASSPORT_PATTERNS) {
+    // A format below 0.7 is reported only after a label: without one, nothing.
+    if (confidence < 0.7 && contextPositions.length === 0) continue;
     const re = new RegExp(pattern.source, "g");
     let m: RegExpExecArray | null;
 

@@ -70,7 +70,8 @@ export function detectDriversLicense(text: string): PiiMatch[] {
 
   // Generic pattern — only report when preceded by context keyword
   const genericRe = new RegExp(GENERIC_DL_PATTERN.source, "g");
-  while ((m = genericRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = genericRe.exec(text)) !== null) {
     const match = m;
     const hasContext = contextPositions.some(
       (pos) => pos <= match.index && match.index - pos <= 20,

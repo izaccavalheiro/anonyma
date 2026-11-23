@@ -71,7 +71,8 @@ export function detectCaseNumber(text: string): PiiMatch[] {
 
   // General pattern — requires context
   const generalRe = new RegExp(GENERAL_CASE_PATTERN.source, "gi");
-  while ((m = generalRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = generalRe.exec(text)) !== null) {
     if (hasContextAt(m.index)) push(m[0], m.index, m.index + m[0].length, 0.78);
   }
 

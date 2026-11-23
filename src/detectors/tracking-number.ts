@@ -115,12 +115,14 @@ export function detectTrackingNumber(text: string): PiiMatch[] {
 
   // Generic numeric tracking — requires context
   const uspsLongRe = new RegExp(USPS_LONG_PATTERN.source, "g");
-  while ((m = uspsLongRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = uspsLongRe.exec(text)) !== null) {
     if (hasContextAt(m.index)) push(m[0], m.index, m.index + m[0].length, 0.8);
   }
 
   const fedexRe = new RegExp(FEDEX_PATTERN.source, "g");
-  while ((m = fedexRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = fedexRe.exec(text)) !== null) {
     if (hasContextAt(m.index)) push(m[0], m.index, m.index + m[0].length, 0.78);
   }
 
