@@ -240,9 +240,19 @@ pub(crate) fn after_labels(
 
 /// Whether a value at `index` starts at most `limit` UTF-16 units after the
 /// end of a label.
+///
+/// `labels` are in ascending order, as [`label_ends`] returns them. Only the
+/// labels at most `3 × limit` bytes before `index` can be within `limit` UTF-16
+/// units (a unit takes at most three bytes), so a binary search finds them:
+/// the cost no longer grows with the number of labels times the number of
+/// candidate values.
 pub(crate) fn has_context(text: &str, labels: &[usize], index: usize, limit: usize) -> bool {
-    labels
+    debug_assert!(labels.windows(2).all(|pair| pair[0] <= pair[1]));
+    let up_to = labels.partition_point(|&position| position <= index);
+    labels[..up_to]
         .iter()
+        .rev()
+        .take_while(|&&position| index - position <= limit * 3)
         .any(|&position| crate::jsregex::within(text, position, index, limit))
 }
 
@@ -281,6 +291,25 @@ mod tests {
             end,
             confidence,
         }
+    }
+
+    #[test]
+    fn has_context_finds_what_a_linear_search_finds() {
+        let text = "id: 12 \u{1F600}\u{1F600} id:\u{00E9}\u{00E9}\u{00E9} 345 id: id: 6789 end";
+        let labels: Vec<usize> = text.match_indices("id:").map(|(i, _)| i + 3).collect();
+        for index in (0..=text.len()).filter(|&i| text.is_char_boundary(i)) {
+            for limit in [0, 1, 2, 3, 5, 8, 40] {
+                let linear = labels
+                    .iter()
+                    .any(|&position| crate::jsregex::within(text, position, index, limit));
+                assert_eq!(
+                    has_context(text, &labels, index, limit),
+                    linear,
+                    "index {index}, limit {limit}"
+                );
+            }
+        }
+        assert!(!has_context(text, &[], 5, 40));
     }
 
     #[test]
