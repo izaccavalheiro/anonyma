@@ -363,8 +363,12 @@ for (const size of QUICK ? [10_000, 100_000, 1_000_000] : [1_000, 10_000, 100_00
   const text = makeLabelledText(size);
   const matches = lib.detect(text).length;
   await cell("labelled/detect", label(size), size, 0, "labelled", matches, () => lib.detect(text));
-  const precise = engine.compilePipeline({});
-  await cell("labelled/scan", label(size), size, 0, "labelled", matches, () => precise.scan(text));
+  if (engine !== null) {
+    const precise = engine.compilePipeline({});
+    await cell("labelled/scan", label(size), size, 0, "labelled", matches, () =>
+      precise.scan(text),
+    );
+  }
 }
 
 // Structured payloads and batches (sparse density only); three sizes, so
@@ -382,19 +386,24 @@ for (const size of QUICK ? [1_000, 10_000, 100_000] : [1_000, 10_000, 100_000, 1
   await cell("anonymize/each", label(size), size, 1 / 200, "sparse", lines.length, () =>
     lines.map((line) => lib.anonymize(line)),
   );
-  await cell("detectBatch", label(size), size, 1 / 200, "sparse", lines.length, () =>
-    lib.detectBatch(lines),
-  );
+  if (typeof lib.detectBatch === "function") {
+    await cell("detectBatch", label(size), size, 1 / 200, "sparse", lines.length, () =>
+      lib.detectBatch(lines),
+    );
+  }
   await cell("detect/each", label(size), size, 1 / 200, "sparse", lines.length, () =>
     lines.map((line) => lib.detect(line)),
   );
-  const scanner = engine.compilePipeline({});
-  await cell("engine/scanBatch", label(size), size, 1 / 200, "sparse", lines.length, () =>
-    scanner.scanBatch(lines),
-  );
-  await cell("engine/scan/each", label(size), size, 1 / 200, "sparse", lines.length, () =>
-    lines.map((line) => scanner.scan(line)),
-  );
+  // Builds before 1.5.0 have no scanBatch (and before 1.1.0 no engine).
+  const scanner = engine?.compilePipeline({});
+  if (typeof scanner?.scanBatch === "function") {
+    await cell("engine/scanBatch", label(size), size, 1 / 200, "sparse", lines.length, () =>
+      scanner.scanBatch(lines),
+    );
+    await cell("engine/scan/each", label(size), size, 1 / 200, "sparse", lines.length, () =>
+      lines.map((line) => scanner.scan(line)),
+    );
+  }
 }
 
 // Key derivation cost of the encrypt strategy.
