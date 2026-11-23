@@ -17,11 +17,12 @@ Pass `"offsets": "utf-16"` to `detect` to get JavaScript string indices.
 
 ## Status
 
-A scaffold: it builds in CI (`cargo build -p anonyma-node`) and is not
-published. The TypeScript package `anonyma` keeps its own engine. The plan
-(docs/rfcs/0001-polyglot-core.md, Tier 1B): once the Rust core detects every
-category and passes the whole conformance suite, `anonyma` gains an opt-in
-native engine behind its unchanged public API, with the TypeScript engine as
-the fallback on runtimes without native modules.
+Not published, and not planned to be. The core benchmark (`bench/core.mjs`,
+step 4 of docs/rfcs/0001-polyglot-core.md) measured this addon against the
+TypeScript engine: at most 1.8 times faster on detection with every category
+and on anonymization, slower on the span engine and on a few categories, with
+a slower first call. That does not pay for a prebuilt binary per platform, so
+the npm package `anonyma` keeps its TypeScript engine. CI still builds the
+addon, and the benchmark runs it, so the question can be reopened.
 
 Build locally with `npm install && npm run build` in this directory.

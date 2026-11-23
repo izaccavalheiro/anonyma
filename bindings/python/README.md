@@ -28,6 +28,16 @@ engine.restore(answer, shielded.vault)             # values back in the answer
 - **The same results as the TypeScript package.** Both run the same conformance
   suite.
 
+## Install
+
+```sh
+pip install --pre anonyma                 # a pre-release: pip needs --pre
+pip install --pre 'anonyma[langchain]'    # with the LangChain integration
+```
+
+Wheels for Linux (x86_64, aarch64), macOS (x86_64, arm64) and Windows (x64),
+for every Python from 3.10; no Rust toolchain needed.
+
 ## Status: alpha
 
 The Rust core detects all 27 categories of the TypeScript package, with every
@@ -39,11 +49,11 @@ conformance suite. The API may still change before 1.0.
 
 ## Integrations
 
-| Module                          | For                                                                  |
-| ------------------------------- | -------------------------------------------------------------------- |
-| `anonyma.integrations.chat`     | message lists in OpenAI and Anthropic formats: `shield_messages()`   |
-| `anonyma.integrations.openai`   | `shielded_chat_completions(client, engine)` wraps `chat.completions.create` |
-| `anonyma.integrations.langchain`| `shield_and_restore(engine)`: two runnables for an LCEL chain (`pip install 'anonyma[langchain]'`) |
+| Module                           | For                                                                                                      |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `anonyma.integrations.chat`      | message lists in OpenAI and Anthropic formats: `shield_messages()`                                       |
+| `anonyma.integrations.openai`    | `shielded_chat_completions(client, engine)` wraps `chat.completions.create`                              |
+| `anonyma.integrations.langchain` | `shield_and_restore(engine)`: two runnables for an LCEL chain (`pip install --pre 'anonyma[langchain]'`) |
 
 ## Building from source
 

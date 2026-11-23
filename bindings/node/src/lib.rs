@@ -2,9 +2,9 @@
 //! vault handle. Offsets: pass `"offsets": "utf-16"` to index JavaScript
 //! strings.
 //!
-//! The TypeScript package `anonyma` does not use this yet. It is the path to
-//! running the reference's public API on the Rust core once the core detects
-//! every category (see docs/rfcs/0001-polyglot-core.md).
+//! The TypeScript package `anonyma` does not use it: the core benchmark
+//! (`bench/core.mjs`) found no case for a native engine in the npm package
+//! (docs/rfcs/0001-polyglot-core.md). The benchmark loads this addon.
 
 use anonyma_core::InMemoryVault;
 use anonyma_ffi::api::{call_json, call_json_with_vault};

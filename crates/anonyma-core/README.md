@@ -33,6 +33,7 @@ lists:
 | Tokens      | classic (`[EMAIL_0001]`) and vault (`{{EMAIL_1}}`) tokens, restoration              |
 | Presets     | all eight definitions and their combination                                         |
 | Receipts    | canonical JSON, SHA-256, HMAC-SHA-256 receipts: issue and verify                    |
+| Span engine | `pipeline::Pipeline::scan`: precise detectors, cover resolution, residual spans     |
 
 Every category is ported. Should a future category reach the TypeScript package
 first, an engine asked for it fails with `Error::UnsupportedCategories` rather
