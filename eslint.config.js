@@ -59,7 +59,7 @@ export default tseslint.config(
   },
   {
     // Node.js scripts of the repository: plain JavaScript, run directly, free to print.
-    files: ["scripts/**/*.mjs", "bench/**/*.mjs", "packages/*.mjs"],
+    files: ["scripts/**/*.mjs", "bench/**/*.mjs", "packages/*.mjs", "packages/*/bench.mjs"],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: {
       globals: {
@@ -70,6 +70,8 @@ export default tseslint.config(
         globalThis: "readonly",
         setTimeout: "readonly",
         clearTimeout: "readonly",
+        Buffer: "readonly",
+        fetch: "readonly",
       },
     },
     rules: {
