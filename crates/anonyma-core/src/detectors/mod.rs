@@ -9,12 +9,14 @@ use std::cmp::Ordering;
 
 use crate::{Category, Support};
 
+mod address;
 mod bank_account;
 mod credit_card;
 mod date_of_birth;
 mod email;
 mod iban;
 mod ip;
+mod name;
 mod national_id;
 mod phone;
 mod ssn;
@@ -75,7 +77,7 @@ impl BuiltinDetector {
     /// detect the category ([`Support::None`]).
     ///
     /// `aggressive` selects the aggressive variant where there is one (`email`,
-    /// `credit-card`, `ssn`, `phone`); `strict` the strict one (`national-id`, which then
+    /// `credit-card`, `ssn`, `phone`, `name`); `strict` the strict one (`national-id`, which then
     /// verifies check digits).
     pub fn new(category: Category, aggressive: bool, strict: bool) -> Option<Self> {
         (category.support() != Support::None).then_some(BuiltinDetector {
@@ -104,6 +106,8 @@ impl Detector for BuiltinDetector {
             Category::TaxId => tax_id::detect(text),
             Category::BankAccount => bank_account::detect(text),
             Category::Phone => phone::detect(text, self.aggressive),
+            Category::Name => name::detect(text, self.aggressive),
+            Category::Address => address::detect(text),
             Category::Url => url::detect(text),
             Category::DateOfBirth => date_of_birth::detect(text),
             _ => Vec::new(),
@@ -212,7 +216,7 @@ mod tests {
 
     #[test]
     fn unsupported_categories_have_no_detector() {
-        assert!(BuiltinDetector::new(Category::Name, false, false).is_none());
+        assert!(BuiltinDetector::new(Category::Passport, false, false).is_none());
         assert!(BuiltinDetector::new(Category::Email, false, false).is_some());
     }
 }

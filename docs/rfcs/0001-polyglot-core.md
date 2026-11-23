@@ -167,9 +167,10 @@ published contract until a listener justifies its first dependency.
 Next steps, in order:
 
 1. Port the remaining detectors, starting with those every preset needs
-   (`name`, `address`, then `national-id` in full), each with its
-   conformance cases first. Each one turns `preset:<name>` capabilities on.
-   `phone`, `url` and `date-of-birth` are ported.
+   (`national-id` in full, `passport`, `drivers-license`, then the health and
+   vehicle categories), each with its conformance cases first. Each one turns
+   `preset:<name>` capabilities on. `phone`, `url`, `date-of-birth`, `name`
+   and `address` are ported; `preset:pci-dss` is the first preset served in full.
 2. Port the precise detectors of the span engine (`anonyma/engine`) and give
    the suite an engine-level `detect` operation.
 3. Publish prebuilt `libanonyma_ffi.a` per platform for Go.

@@ -31,14 +31,14 @@ engine.restore(answer, shielded.vault)             # values back in the answer
 ## Status: alpha
 
 The Rust core does not detect every category of the TypeScript package yet
-(names, addresses, passports and others). A preset or category it cannot
+(passports, licence plates, medical records and others). A preset or category it cannot
 detect in full raises `UnsupportedCategoriesError` and names what is missing,
 instead of silently letting the data through:
 
 ```python
-Anonyma(presets=["lgpd"])                      # UnsupportedCategoriesError: name, address, ...
+Anonyma(presets=["lgpd"])                      # UnsupportedCategoriesError: national-id, passport, ...
 engine = Anonyma(presets=["lgpd"], allow_partial=True)
-engine.undetected                              # ('name', 'address', 'national-id', ...)
+engine.undetected                              # ('national-id', 'passport', ...)
 ```
 
 `anonyma.capabilities()` lists what the core passes in the conformance suite.

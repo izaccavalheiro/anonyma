@@ -79,6 +79,7 @@ pub fn capabilities() -> Vec<String> {
             "detect:credit-card+aggressive",
             "detect:ssn+aggressive",
             "detect:phone+aggressive",
+            "detect:name+aggressive",
             "detect:national-id/br-cpf",
             "detect:national-id+strict",
             "tokenize",
@@ -115,6 +116,8 @@ mod tests {
         assert!(caps.contains(&"validate:cpf".to_string()));
         assert!(caps.contains(&"detect:email".to_string()));
         assert!(!caps.contains(&"detect:national-id".to_string()));
-        assert!(!caps.iter().any(|c| c.starts_with("preset:")));
+        // PCI-DSS covers ported categories only; LGPD needs passports, among others.
+        assert!(caps.contains(&"preset:pci-dss".to_string()));
+        assert!(!caps.contains(&"preset:lgpd".to_string()));
     }
 }

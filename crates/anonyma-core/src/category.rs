@@ -59,8 +59,8 @@ categories! {
     Url => "url", "URL", Full;
     Iban => "iban", "IBAN", Full;
     DateOfBirth => "date-of-birth", "DATE", Full;
-    Name => "name", "PERSON", None;
-    Address => "address", "ADDRESS", None;
+    Name => "name", "PERSON", Full;
+    Address => "address", "ADDRESS", Full;
     Passport => "passport", "PASSPORT", None;
     DriversLicense => "drivers-license", "DRIVERS_LICENSE", None;
     NationalId => "national-id", "NATIONAL_ID", Partial;

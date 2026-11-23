@@ -11,7 +11,10 @@ change its API.
 
 - Detection of `phone` (North American, international, and the national formats of Brazil,
   France, the United Kingdom, Spain, Italy and German-speaking countries; seven-digit numbers in
-  aggressive mode), `url` and `date-of-birth`, ported to the Rust core and conformance-tested.
+  aggressive mode), `url`, `date-of-birth`, `name` (after a greeting, a title or a context keyword)
+  and `address` (US, European and Brazilian streets, UK postcodes, post office boxes, labelled
+  addresses), ported to the Rust core and conformance-tested.
+- The PCI-DSS preset no longer needs `allow_partial=True`: the core detects all its categories.
 
 ## [0.1.0a1] — 2026-11-23
 
