@@ -1,8 +1,8 @@
 [package]
 name = "anonyma-python"
 description = "Python bindings of anonyma-core (PyO3)."
-# The version of the Python package `anonyma` (maturin reads it: 0.1.0a1).
-version = "0.1.0-alpha.1"
+# The version of the Python package `anonyma` (maturin reads it: 0.1.0a2).
+version = "0.1.0-alpha.2"
 publish = false
 edition.workspace = true
 rust-version.workspace = true
