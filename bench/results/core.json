@@ -1,0 +1,502 @@
+{
+  "environment": {
+    "node": "v24.22.3",
+    "platform": "linux/x64",
+    "cpu": "AMD EPYC 7763 64-Core Processor",
+    "cores": 4,
+    "quick": false
+  },
+  "load": {
+    "ts": 20.870574,
+    "native": 0.6304069999999982,
+    "wasm": 6.144541000000004
+  },
+  "firstCall": {
+    "ts": 12.21688799999999,
+    "native": 38.673722,
+    "wasm": 118.072487
+  },
+  "rows": [
+    {
+      "workload": "detect (all categories)",
+      "size": 1000,
+      "density": "none",
+      "ms": {
+        "ts": 0.35416100000003325,
+        "native": 0.2009549999999649,
+        "wasm": 0.348891999999978
+      }
+    },
+    {
+      "workload": "detect (all categories)",
+      "size": 1000,
+      "density": "sparse",
+      "ms": {
+        "ts": 0.38540899999998146,
+        "native": 0.23902699999996457,
+        "wasm": 0.3900190000000521
+      }
+    },
+    {
+      "workload": "detect (all categories)",
+      "size": 1000,
+      "density": "dense",
+      "ms": {
+        "ts": 0.48609799999996994,
+        "native": 0.3398939999999584,
+        "wasm": 0.49321099999997386
+      }
+    },
+    {
+      "workload": "detect (all categories)",
+      "size": 10000,
+      "density": "none",
+      "ms": {
+        "ts": 2.798535000000129,
+        "native": 1.938278000000082,
+        "wasm": 2.9995199999998476
+      }
+    },
+    {
+      "workload": "detect (all categories)",
+      "size": 10000,
+      "density": "sparse",
+      "ms": {
+        "ts": 3.0398159999999734,
+        "native": 2.234491000000162,
+        "wasm": 3.3274320000000444
+      }
+    },
+    {
+      "workload": "detect (all categories)",
+      "size": 10000,
+      "density": "dense",
+      "ms": {
+        "ts": 3.4432379999998375,
+        "native": 3.019444999999905,
+        "wasm": 4.244080999999824
+      }
+    },
+    {
+      "workload": "detect (all categories)",
+      "size": 100000,
+      "density": "none",
+      "ms": {
+        "ts": 24.686884000000646,
+        "native": 19.53933699999925,
+        "wasm": 30.373125000000073
+      }
+    },
+    {
+      "workload": "detect (all categories)",
+      "size": 100000,
+      "density": "sparse",
+      "ms": {
+        "ts": 27.107091000000764,
+        "native": 22.805983000000197,
+        "wasm": 33.35385900000074
+      }
+    },
+    {
+      "workload": "detect (all categories)",
+      "size": 100000,
+      "density": "dense",
+      "ms": {
+        "ts": 31.600365999999667,
+        "native": 33.23416499999985,
+        "wasm": 42.34498899999926
+      }
+    },
+    {
+      "workload": "detect (all categories)",
+      "size": 1000000,
+      "density": "none",
+      "ms": {
+        "ts": 237.04552999999942,
+        "native": 196.95322699999997,
+        "wasm": 302.54374499999903
+      }
+    },
+    {
+      "workload": "detect (all categories)",
+      "size": 1000000,
+      "density": "sparse",
+      "ms": {
+        "ts": 258.7125180000003,
+        "native": 229.78200300000026,
+        "wasm": 332.0084969999989
+      }
+    },
+    {
+      "workload": "detect (all categories)",
+      "size": 1000000,
+      "density": "dense",
+      "ms": {
+        "ts": 374.7446020000025,
+        "native": 351.7249389999997,
+        "wasm": 441.59337900000173
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 1000,
+      "density": "none",
+      "ms": {
+        "ts": 0.01813400000173715,
+        "native": 0.021650999999110354,
+        "wasm": 0.0346750000026077
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 1000,
+      "density": "sparse",
+      "ms": {
+        "ts": 0.020067999997991137,
+        "native": 0.026699999998527346,
+        "wasm": 0.0405060000011872
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 1000,
+      "density": "dense",
+      "ms": {
+        "ts": 0.025807999998505693,
+        "native": 0.06025199999930919,
+        "wasm": 0.07839600000079372
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 10000,
+      "density": "none",
+      "ms": {
+        "ts": 0.15685300000041025,
+        "native": 0.17567799999960698,
+        "wasm": 0.29346799999984796
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 10000,
+      "density": "sparse",
+      "ms": {
+        "ts": 0.1746259999999893,
+        "native": 0.27677699999912875,
+        "wasm": 0.4158869999992021
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 10000,
+      "density": "dense",
+      "ms": {
+        "ts": 0.2237569999997504,
+        "native": 0.547882999999274,
+        "wasm": 0.7117289999987406
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 100000,
+      "density": "none",
+      "ms": {
+        "ts": 1.7878180000006978,
+        "native": 2.062992999999551,
+        "wasm": 3.0652440000012575
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 100000,
+      "density": "sparse",
+      "ms": {
+        "ts": 1.9886340000011842,
+        "native": 2.938577000000805,
+        "wasm": 4.070580999999947
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 100000,
+      "density": "dense",
+      "ms": {
+        "ts": 2.5789759999970556,
+        "native": 5.6180009999989124,
+        "wasm": 7.084119000002829
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 1000000,
+      "density": "none",
+      "ms": {
+        "ts": 17.69314100000338,
+        "native": 21.13331399999879,
+        "wasm": 31.233696000002965
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 1000000,
+      "density": "sparse",
+      "ms": {
+        "ts": 19.91598199999862,
+        "native": 29.220485999998346,
+        "wasm": 39.83567000000039
+      }
+    },
+    {
+      "workload": "detect (5 common)",
+      "size": 1000000,
+      "density": "dense",
+      "ms": {
+        "ts": 25.470248999998148,
+        "native": 66.53054700000212,
+        "wasm": 68.79126799999358
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 1000,
+      "density": "none",
+      "ms": {
+        "ts": 0.31489699999656295,
+        "native": 0.36132400000497,
+        "wasm": 0.5365509999974165
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 1000,
+      "density": "sparse",
+      "ms": {
+        "ts": 0.37817599999834783,
+        "native": 0.42119699999602744,
+        "wasm": 0.6000100000019302
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 1000,
+      "density": "dense",
+      "ms": {
+        "ts": 0.5384950000006938,
+        "native": 0.5682710000037332,
+        "wasm": 0.7969479999956093
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 10000,
+      "density": "none",
+      "ms": {
+        "ts": 2.5582369999974617,
+        "native": 3.3928349999987404,
+        "wasm": 4.987892999997712
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 10000,
+      "density": "sparse",
+      "ms": {
+        "ts": 3.030318000004627,
+        "native": 3.830191000000923,
+        "wasm": 5.4873159999988275
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 10000,
+      "density": "dense",
+      "ms": {
+        "ts": 3.5827599999975064,
+        "native": 4.990408000005118,
+        "wasm": 6.867272999996203
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 100000,
+      "density": "none",
+      "ms": {
+        "ts": 22.60961700000189,
+        "native": 33.57966000000306,
+        "wasm": 49.3588729999974
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 100000,
+      "density": "sparse",
+      "ms": {
+        "ts": 26.039553000002343,
+        "native": 37.43722599999455,
+        "wasm": 53.75800100000197
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 100000,
+      "density": "dense",
+      "ms": {
+        "ts": 31.73907500000496,
+        "native": 50.23530400000163,
+        "wasm": 68.46619600000122
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 1000000,
+      "density": "none",
+      "ms": {
+        "ts": 219.14341299999796,
+        "native": 335.3764929999961,
+        "wasm": 490.4607259999975
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 1000000,
+      "density": "sparse",
+      "ms": {
+        "ts": 254.87020499999926,
+        "native": 381.6894830000019,
+        "wasm": 538.4043670000028
+      }
+    },
+    {
+      "workload": "scan (all categories)",
+      "size": 1000000,
+      "density": "dense",
+      "ms": {
+        "ts": 345.16741800000455,
+        "native": 539.1633650000003,
+        "wasm": 699.100992000007
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 1000,
+      "density": "none",
+      "ms": {
+        "ts": 0.24058899999363348,
+        "native": 0.16124200000194833,
+        "wasm": 0.2477319999889005
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 1000,
+      "density": "sparse",
+      "ms": {
+        "ts": 0.32331300000078045,
+        "native": 0.19266999998944812,
+        "wasm": 0.3084159999998519
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 1000,
+      "density": "dense",
+      "ms": {
+        "ts": 0.46126100000401493,
+        "native": 0.2501370000099996,
+        "wasm": 0.42374199999903794
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 10000,
+      "density": "none",
+      "ms": {
+        "ts": 2.109067999990657,
+        "native": 1.5794690000038827,
+        "wasm": 2.3837709999934305
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 10000,
+      "density": "sparse",
+      "ms": {
+        "ts": 2.537667999989935,
+        "native": 1.8046400000021094,
+        "wasm": 2.720268999997643
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 10000,
+      "density": "dense",
+      "ms": {
+        "ts": 3.5260640000051353,
+        "native": 2.287962999995216,
+        "wasm": 3.6050230000109877
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 100000,
+      "density": "none",
+      "ms": {
+        "ts": 19.103333000006387,
+        "native": 15.960415000008652,
+        "wasm": 23.901103000011062
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 100000,
+      "density": "sparse",
+      "ms": {
+        "ts": 22.173425999993924,
+        "native": 17.94680399999197,
+        "wasm": 26.676696000009542
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 100000,
+      "density": "dense",
+      "ms": {
+        "ts": 31.87621499999659,
+        "native": 23.270254999995814,
+        "wasm": 35.536410000000615
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 1000000,
+      "density": "none",
+      "ms": {
+        "ts": 184.8217430000077,
+        "native": 160.34557499999937,
+        "wasm": 240.60499999999593
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 1000000,
+      "density": "sparse",
+      "ms": {
+        "ts": 216.64916300000914,
+        "native": 180.73183499999868,
+        "wasm": 268.3398750000051
+      }
+    },
+    {
+      "workload": "anonymize (gdpr)",
+      "size": 1000000,
+      "density": "dense",
+      "ms": {
+        "ts": 338.6198710000026,
+        "native": 235.89990799999214,
+        "wasm": 359.7133029999968
+      }
+    }
+  ],
+  "differences": []
+}
