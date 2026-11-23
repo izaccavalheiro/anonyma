@@ -38,11 +38,12 @@ The package is developed in
 [`bindings/go`](https://github.com/izaccavalheiro/anonyma/tree/main/bindings/go) of
 the anonyma repository; `github.com/izaccavalheiro/anonyma-go` receives each
 release with its libraries. In a clone of anonyma, build the library for your
-platform with a Rust toolchain:
+platform with a Rust toolchain and its `llvm-tools` component
+(`rustup component add llvm-tools`):
 
 ```sh
 cd bindings/go
-go generate        # cargo rustc ... --crate-type staticlib, copied to lib/
+go generate        # cargo rustc ... --crate-type staticlib, copied to lib/, bitcode stripped
 go test ./...
 ```
 
@@ -51,8 +52,13 @@ For another platform, set `GOOS` and `GOARCH` and add its Rust target first
 the conformance suite (`conformance_test.go`) through the C ABI, and checks that
 `anonyma.h` is still a copy of `crates/anonyma-ffi/include/anonyma.h`.
 
+`go generate` removes the LLVM bitcode sections that Rust's prebuilt standard
+library leaves in the archive; the linker never reads them, and cgo refuses them
+since Go 1.26.11 and 1.27.4.
+
 CI builds the library on each of the five platforms, runs the tests there, and
-links a program that requires the package from its module files alone. A tag
+links a program that requires the package from its module files alone, with the
+Go version of `go.mod` and with the newest Go release. A tag
 `go-v<version>` releases it, with `Version` in `version.go` and a section in
 `CHANGELOG.md`.
 

@@ -9,6 +9,10 @@ are documented in this file. The format is based on
 
 ### Fixed
 
+- The package links again with Go 1.26.11, 1.27.4 and later releases, which refused the prebuilt
+  library ("disallowed LTO section", golang/go#83126). The library no longer holds the LLVM
+  bitcode sections that Rust's standard library put in it; the linker never used them. Building
+  the library from source (`go generate`) now needs rustup's `llvm-tools` component.
 - With presets, a rule for a category the presets do not cover now adds that category; it was
   ignored. The rules of the other categories still override the presets' strategies
   ([#47](https://github.com/izaccavalheiro/anonyma/issues/47)).
