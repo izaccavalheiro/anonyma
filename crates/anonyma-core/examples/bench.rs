@@ -52,7 +52,10 @@ fn entry(i: usize) -> String {
         .replace("{i2}", &format!("{}", i % 250))
         .replace("{i}", &i.to_string())
         // Assembled here: the literal would look like a live credential to a secret scanner.
-        .replace("{key}", &["sk", "live", "4eC39HqLyjWDarjtT1zdp7dc"].join("_"));
+        .replace(
+            "{key}",
+            &["sk", "live", "4eC39HqLyjWDarjtT1zdp7dc"].join("_"),
+        );
     let mut text = format!(
         "2026-11-23T10:{:02}:{:02}Z INFO Request {i:06} From The Gateway: {value}; \
          the cache was warm and the Queue held {} items",
