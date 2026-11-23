@@ -120,7 +120,8 @@ export function detectTaxId(text: string): PiiMatch[] {
 
   // AU ABN — distinctive format
   const abnRe = new RegExp(AU_ABN_PATTERN.source, "g");
-  while ((m = abnRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = abnRe.exec(text)) !== null) {
     if (hasContext(m.index)) push(m[0], m.index, m.index + m[0].length, 0.82);
   }
 
@@ -132,7 +133,8 @@ export function detectTaxId(text: string): PiiMatch[] {
 
   // Brazil CNPJ without punctuation — requires context and the check digits
   const cnpjBareRe = new RegExp(BR_CNPJ_BARE_PATTERN.source, "gi");
-  while ((m = cnpjBareRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = cnpjBareRe.exec(text)) !== null) {
     if (hasContext(m.index) && cnpjChecksum(m[0])) {
       push(m[0], m.index, m.index + m[0].length, 0.9);
     }
@@ -140,7 +142,8 @@ export function detectTaxId(text: string): PiiMatch[] {
 
   // UK UTR — requires context (plain 10 digits too generic)
   const utrRe = new RegExp(UK_UTR_PATTERN.source, "g");
-  while ((m = utrRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = utrRe.exec(text)) !== null) {
     if (hasContext(m.index)) push(m[0], m.index, m.index + m[0].length, 0.85);
   }
 

@@ -308,6 +308,8 @@ function scanNationalId(text: string, strict: boolean): PiiMatch[] {
       ends = labelEnds(text, context);
       labels.set(context, ends);
     }
+    // Without a label, a format that requires one reports nothing.
+    if (entry.requiresContext && ends.length === 0) continue;
     const re = new RegExp(entry.pattern.source, "g");
     let m: RegExpExecArray | null;
 

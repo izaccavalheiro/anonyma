@@ -180,7 +180,8 @@ export function detectApiKey(text: string): PiiMatch[] {
   // Generic with context
   const genericRe = new RegExp(GENERIC_KEY_PATTERN.source, "g");
   let m: RegExpExecArray | null;
-  while ((m = genericRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = genericRe.exec(text)) !== null) {
     if (hasContextAt(m.index)) {
       push(m[0], m.index, m.index + m[0].length, 0.82);
     }

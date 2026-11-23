@@ -123,6 +123,8 @@ export function detectCryptocurrency(text: string): PiiMatch[] {
   }
 
   for (const entry of CRYPTO_ENTRIES) {
+    // Without a label, a format that requires one reports nothing.
+    if (entry.requiresContext && contextPositions.length === 0) continue;
     // All current CRYPTO_ENTRIES patterns use only the "g" flag; "gi" arm is a future-proofing safety net.
     /* v8 ignore next */
     const re = new RegExp(entry.pattern.source, entry.pattern.flags.includes("i") ? "gi" : "g");

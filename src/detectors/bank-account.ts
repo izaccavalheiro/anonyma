@@ -158,7 +158,8 @@ export function detectBankAccount(text: string): PiiMatch[] {
 
   // US ABA routing — only with context; valid check digits raise the confidence
   const abaRe = new RegExp(US_ABA_ROUTING_PATTERN.source, "g");
-  while ((m = abaRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = abaRe.exec(text)) !== null) {
     if (hasContext(m.index)) {
       push(m[0], m.index, m.index + m[0].length, abaRoutingChecksum(m[0]) ? 0.9 : 0.85);
     }
@@ -183,7 +184,8 @@ export function detectBankAccount(text: string): PiiMatch[] {
 
   // Generic account number — only with context
   const genericRe = new RegExp(GENERIC_ACCOUNT_PATTERN.source, "g");
-  while ((m = genericRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = genericRe.exec(text)) !== null) {
     if (hasContext(m.index)) push(m[0], m.index, m.index + m[0].length, 0.8);
   }
 

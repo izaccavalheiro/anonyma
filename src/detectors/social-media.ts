@@ -107,7 +107,8 @@ export function detectSocialMedia(text: string): PiiMatch[] {
 
   // Discord snowflake IDs — requires context
   const discordRe = new RegExp(DISCORD_ID_PATTERN.source, "g");
-  while ((m = discordRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (discordContextPositions.length > 0 && (m = discordRe.exec(text)) !== null) {
     const match = m;
     const hasContext = discordContextPositions.some(
       (pos) => pos <= match.index && match.index - pos <= 30,

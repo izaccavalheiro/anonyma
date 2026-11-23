@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   resolves its options once per batch. Entries that start with a greeting word ("Dear", "Hi"),
   hold a NUL character or are 8 KB or longer are still scanned one by one, as is every entry when
   a custom detector is given or a built-in one was replaced in `DETECTOR_REGISTRY`.
+- Detectors skip the patterns that count only after a label (generic account, member and record
+  numbers, ten national-id formats, ...) when the text holds no such label: every candidate would
+  be rejected. Results are unchanged; `detect()` on 1 KB of text without labels takes about a third
+  less time.
 
 ---
 

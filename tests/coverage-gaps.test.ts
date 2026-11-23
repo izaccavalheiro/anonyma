@@ -40,6 +40,8 @@ import { detectCaseNumber } from "../src/detectors/case-number.js";
 import { detectCompanyRegistration } from "../src/detectors/company-registration.js";
 import { detectName, detectNameAggressive } from "../src/detectors/name.js";
 import { detectVinAggressive } from "../src/detectors/vin.js";
+import { detectPassport } from "../src/detectors/passport.js";
+import type { PiiMatch } from "../src/types.js";
 import { anonymizeRecord } from "../src/anonymize.js";
 
 // Restore any stubbed globals after each test
@@ -710,6 +712,13 @@ describe("detectCryptocurrency() — branch coverage (lines 126, 130, 132)", () 
     expect(matches.every((m) => m.value !== xrpAddr)).toBe(true);
   });
 
+  it("skips XRP address more than 40 characters after a context keyword", () => {
+    // A label is present, so the format is scanned, but this candidate is too far from it.
+    const xrpAddr = "rBWpYJhuJWBPAkzJ4kYQqHShSkkF3rgeD";
+    const matches = detectCryptocurrency(`xrp: see the note below. ${"x ".repeat(30)}${xrpAddr}`);
+    expect(matches.every((m) => m.value !== xrpAddr)).toBe(true);
+  });
+
   it("detects XRP address WITH context keyword", () => {
     // "xrp:" is a CRYPTO_CONTEXT_RE keyword, provides context
     const xrpAddr = "rBWpYJhuJWBPAkzJ4kYQqHShSkkF3rgeD";
@@ -1218,5 +1227,51 @@ describe("synthesize() — upper-case letters of other scripts", () => {
     expect(synthesize("\u00c9COLE \u00dcnal", "custom-category")).toMatch(
       /^[A-Z]{5} [A-Z][a-z]{3}$/,
     );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Label-gated patterns: a label in the text, but too far from the candidate
+// ---------------------------------------------------------------------------
+
+describe("label-gated patterns with a label too far away", () => {
+  // Each pattern that counts only after a label is scanned when the text has a
+  // label; a candidate more than 40 units after it is rejected, as if there
+  // were no label at all. Example-based, so the gate does not rely on the
+  // property tests to reach these branches.
+  const FAR = "x ".repeat(30);
+  const cases: [string, (text: string) => PiiMatch[], string, string][] = [
+    ["api-key", detectApiKey, "api key = x.", "abcdefghijklmnopqrstuvwxyz0123"],
+    ["bank-account", detectBankAccount, "account number:", "021000021 and 12345678"],
+    ["case-number", detectCaseNumber, "case no.", "2024/12345"],
+    [
+      "company-registration",
+      detectCompanyRegistration,
+      "company number",
+      "12345678 123 456 789 AB12345",
+    ],
+    ["drivers-license", detectDriversLicense, "DL #", "D1234567"],
+    ["health-insurance", detectHealthInsurance, "member id", "AB123456 ABC123456789"],
+    ["license-plate", detectLicensePlate, "plate number", "AB-123-CD ABC123"],
+    ["medical-record", detectMedicalRecord, "MRN:", "MRN123456"],
+    ["prescription", detectPrescription, "Rx #", "1234567"],
+    ["social-media", detectSocialMedia, "discord id", "123456789012345678"],
+    ["national-id", detectNationalId, "national id", "1234567890123 12345678901"],
+    ["passport", detectPassport, "passport number", "123456789"],
+    ["tax-id", detectTaxId, "Tax ID:", "12 345 678 901 11222333000181 1234567890"],
+    [
+      "tracking-number",
+      detectTrackingNumber,
+      "tracking number",
+      "12345678901234567890 123456789012",
+    ],
+  ];
+
+  it.each(cases)("%s: reports the candidate as without a label", (_name, detect, label, value) => {
+    const labelled = `${label} ${FAR}${value}`;
+    const unlabelled = `${" ".repeat(label.length)} ${FAR}${value}`;
+    const from = label.length + 1 + FAR.length;
+    const after = (matches: PiiMatch[]): PiiMatch[] => matches.filter((m) => m.start >= from);
+    expect(after(detect(labelled))).toEqual(after(detect(unlabelled)));
   });
 });

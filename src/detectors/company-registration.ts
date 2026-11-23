@@ -82,19 +82,22 @@ export function detectCompanyRegistration(text: string): PiiMatch[] {
 
   // UK Companies House — with context
   const ukRe = new RegExp(UK_CH_PATTERN.source, "gi");
-  while ((m = ukRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = ukRe.exec(text)) !== null) {
     if (hasContextAt(m.index)) push(m[0], m.index, m.index + m[0].length, 0.85);
   }
 
   // AU ACN — with context
   const acnRe = new RegExp(AU_ACN_PATTERN.source, "g");
-  while ((m = acnRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = acnRe.exec(text)) !== null) {
     if (hasContextAt(m.index)) push(m[0], m.index, m.index + m[0].length, 0.82);
   }
 
   // EU generic — with context
   const euRe = new RegExp(EU_CO_REG_PATTERN.source, "g");
-  while ((m = euRe.exec(text)) !== null) {
+  // Matches count only after a label: without one, the scan is skipped.
+  while (contextPositions.length > 0 && (m = euRe.exec(text)) !== null) {
     if (hasContextAt(m.index)) push(m[0], m.index, m.index + m[0].length, 0.78);
   }
 
