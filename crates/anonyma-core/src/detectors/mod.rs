@@ -11,19 +11,27 @@ use crate::{Category, Support};
 
 mod address;
 mod bank_account;
+mod company_registration;
 mod credit_card;
+mod cryptocurrency;
 mod date_of_birth;
 mod drivers_license;
 mod email;
+mod health_insurance;
 mod iban;
 mod ip;
+mod license_plate;
+mod medical_record;
 mod name;
 mod national_id;
 mod passport;
 mod phone;
+mod prescription;
+mod social_media;
 mod ssn;
 mod tax_id;
 mod url;
+mod vin;
 
 /// A detection of personal data in a text.
 #[derive(Debug, Clone, PartialEq)]
@@ -79,7 +87,7 @@ impl BuiltinDetector {
     /// detect the category ([`Support::None`]).
     ///
     /// `aggressive` selects the aggressive variant where there is one (`email`,
-    /// `credit-card`, `ssn`, `phone`, `name`); `strict` the strict one (`national-id`, which then
+    /// `credit-card`, `ssn`, `phone`, `name`, `vin`); `strict` the strict one (`national-id`, which then
     /// verifies check digits).
     pub fn new(category: Category, aggressive: bool, strict: bool) -> Option<Self> {
         (category.support() != Support::None).then_some(BuiltinDetector {
@@ -112,6 +120,14 @@ impl Detector for BuiltinDetector {
             Category::Address => address::detect(text),
             Category::Passport => passport::detect(text),
             Category::DriversLicense => drivers_license::detect(text),
+            Category::Cryptocurrency => cryptocurrency::detect(text),
+            Category::SocialMedia => social_media::detect(text),
+            Category::MedicalRecord => medical_record::detect(text),
+            Category::HealthInsurance => health_insurance::detect(text),
+            Category::Prescription => prescription::detect(text),
+            Category::Vin => vin::detect(text, self.aggressive),
+            Category::LicensePlate => license_plate::detect(text),
+            Category::CompanyRegistration => company_registration::detect(text),
             Category::Url => url::detect(text),
             Category::DateOfBirth => date_of_birth::detect(text),
             _ => Vec::new(),
@@ -220,7 +236,7 @@ mod tests {
 
     #[test]
     fn unsupported_categories_have_no_detector() {
-        assert!(BuiltinDetector::new(Category::Vin, false, false).is_none());
+        assert!(BuiltinDetector::new(Category::ApiKey, false, false).is_none());
         assert!(BuiltinDetector::new(Category::Email, false, false).is_some());
     }
 }

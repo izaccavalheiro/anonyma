@@ -12,10 +12,14 @@ from anonyma import Anonyma, AnonymaError, UnsupportedCategoriesError, Vault
 
 def test_presets_refuse_categories_the_core_does_not_detect() -> None:
     with pytest.raises(UnsupportedCategoriesError) as raised:
-        Anonyma(presets=["lgpd", "hipaa"])
-    assert "cryptocurrency" in str(raised.value)
-    engine = Anonyma(presets=["lgpd", "hipaa"], allow_partial=True)
-    assert "cryptocurrency" in engine.undetected
+        Anonyma(presets=["ccpa"])
+    assert "api-key" in str(raised.value)
+    assert Anonyma(presets=["ccpa"], allow_partial=True).undetected == ("api-key",)
+
+
+def test_lgpd_and_hipaa_are_served_in_full() -> None:
+    engine = Anonyma(presets=["lgpd", "hipaa"])
+    assert engine.undetected == ()
     assert engine.anonymize("CPF 529.982.247-25, card 4111111111111111.") == (
         "CPF [REDACTED], card [REDACTED]."
     )

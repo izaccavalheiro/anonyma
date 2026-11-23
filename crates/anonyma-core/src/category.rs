@@ -65,18 +65,18 @@ categories! {
     DriversLicense => "drivers-license", "DRIVERS_LICENSE", Full;
     NationalId => "national-id", "NATIONAL_ID", Full;
     BankAccount => "bank-account", "BANK_ACCOUNT", Full;
-    Cryptocurrency => "cryptocurrency", "CRYPTO", None;
+    Cryptocurrency => "cryptocurrency", "CRYPTO", Full;
     TaxId => "tax-id", "TAX_ID", Full;
-    MedicalRecord => "medical-record", "MEDICAL_RECORD", None;
-    HealthInsurance => "health-insurance", "HEALTH_INSURANCE", None;
-    Prescription => "prescription", "PRESCRIPTION", None;
+    MedicalRecord => "medical-record", "MEDICAL_RECORD", Full;
+    HealthInsurance => "health-insurance", "HEALTH_INSURANCE", Full;
+    Prescription => "prescription", "PRESCRIPTION", Full;
     ApiKey => "api-key", "API_KEY", None;
-    SocialMedia => "social-media", "SOCIAL_MEDIA", None;
-    Vin => "vin", "VIN", None;
-    LicensePlate => "license-plate", "LICENSE_PLATE", None;
+    SocialMedia => "social-media", "SOCIAL_MEDIA", Full;
+    Vin => "vin", "VIN", Full;
+    LicensePlate => "license-plate", "LICENSE_PLATE", Full;
     TrackingNumber => "tracking-number", "TRACKING_NUMBER", None;
     CaseNumber => "case-number", "CASE_NUMBER", None;
-    CompanyRegistration => "company-registration", "COMPANY_REG", None;
+    CompanyRegistration => "company-registration", "COMPANY_REG", Full;
 }
 
 /// How far `anonyma-core` detects a category, compared with the TypeScript

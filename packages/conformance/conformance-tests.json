@@ -1313,6 +1313,537 @@
       }
     },
     {
+      "id": "detect.cryptocurrency.ethereum",
+      "description": "an Ethereum address needs no label",
+      "op": "detect",
+      "requires": ["detect:cryptocurrency"],
+      "input": {
+        "text": "Pay 0x30877432d1026706d7e805da846a32c3bb81e3c2 now",
+        "categories": ["cryptocurrency"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "cryptocurrency",
+            "value": "0x30877432d1026706d7e805da846a32c3bb81e3c2",
+            "start": 4,
+            "end": 46,
+            "confidence": 0.97
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.cryptocurrency.bitcoin-labelled",
+      "description": "legacy and Bech32 Bitcoin addresses; a label within 40 characters adds 0.03",
+      "op": "detect",
+      "requires": ["detect:cryptocurrency"],
+      "input": {
+        "text": "BTC 1cKvhgyxQdDn53jFrK6wFx7RJWhvQBQPEj and bc1q3y202ac3w5rwz5e3yd5dleafsg0smehwgl9r8f",
+        "categories": ["cryptocurrency"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "cryptocurrency",
+            "value": "1cKvhgyxQdDn53jFrK6wFx7RJWhvQBQPEj",
+            "start": 4,
+            "end": 38,
+            "confidence": 0.91
+          },
+          {
+            "category": "cryptocurrency",
+            "value": "bc1q3y202ac3w5rwz5e3yd5dleafsg0smehwgl9r8f",
+            "start": 43,
+            "end": 85,
+            "confidence": 0.98
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.cryptocurrency.solana-labelled",
+      "description": "a Solana-like address only after a label",
+      "op": "detect",
+      "requires": ["detect:cryptocurrency"],
+      "input": {
+        "text": "Wallet address: hBskUf5RRfWaHcx1ko8kybqJriN8KUBW1oyoHZqCZ7xh",
+        "categories": ["cryptocurrency"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "cryptocurrency",
+            "value": "hBskUf5RRfWaHcx1ko8kybqJriN8KUBW1oyoHZqCZ7xh",
+            "start": 16,
+            "end": 60,
+            "confidence": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.cryptocurrency.solana-unlabelled",
+      "description": "without a label, 44 base-58 characters are not an address",
+      "op": "detect",
+      "requires": ["detect:cryptocurrency"],
+      "input": {
+        "text": "Hash hBskUf5RRfWaHcx1ko8kybqJriN8KUBW1oyoHZqCZ7xh",
+        "categories": ["cryptocurrency"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.cryptocurrency.ripple",
+      "description": "an XRP address after its label",
+      "op": "detect",
+      "requires": ["detect:cryptocurrency"],
+      "input": {
+        "text": "XRP: rLvhZfDAQqBbra1fMY28QyvtLG4Gyd6",
+        "categories": ["cryptocurrency"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "cryptocurrency",
+            "value": "rLvhZfDAQqBbra1fMY28QyvtLG4Gyd6",
+            "start": 5,
+            "end": 36,
+            "confidence": 0.81
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.social-media.handle",
+      "description": "a handle; the @ of an e-mail address is not one",
+      "op": "detect",
+      "requires": ["detect:social-media"],
+      "input": {
+        "text": "Follow @ana_dev, mail ana@example.com",
+        "categories": ["social-media"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "social-media",
+            "value": "@ana_dev",
+            "start": 7,
+            "end": 15,
+            "confidence": 0.78
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.social-media.reddit-linkedin",
+      "description": "a Reddit user and a LinkedIn profile",
+      "op": "detect",
+      "requires": ["detect:social-media"],
+      "input": {
+        "text": "See u/ana_dev and linkedin.com/in/ana-example",
+        "categories": ["social-media"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "social-media",
+            "value": "u/ana_dev",
+            "start": 4,
+            "end": 13,
+            "confidence": 0.85
+          },
+          {
+            "category": "social-media",
+            "value": "linkedin.com/in/ana-example",
+            "start": 18,
+            "end": 45,
+            "confidence": 0.92
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.social-media.youtube",
+      "description": "a YouTube channel ID",
+      "op": "detect",
+      "requires": ["detect:social-media"],
+      "input": {
+        "text": "Channel UCabcdefghijklmnopqrstuv here",
+        "categories": ["social-media"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "social-media",
+            "value": "UCabcdefghijklmnopqrstuv",
+            "start": 8,
+            "end": 32,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.social-media.discord-labelled",
+      "description": "a Discord ID after its label",
+      "op": "detect",
+      "requires": ["detect:social-media"],
+      "input": {
+        "text": "Discord ID: 123456789012345678",
+        "categories": ["social-media"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "social-media",
+            "value": "123456789012345678",
+            "start": 12,
+            "end": 30,
+            "confidence": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.social-media.discord-unlabelled",
+      "description": "eighteen digits without a label are not a Discord ID",
+      "op": "detect",
+      "requires": ["detect:social-media"],
+      "input": {
+        "text": "Order 123456789012345678",
+        "categories": ["social-media"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.medical-record.mrn",
+      "description": "a medical record number after its label",
+      "op": "detect",
+      "requires": ["detect:medical-record"],
+      "input": {
+        "text": "MRN: A1234567 for the patient",
+        "categories": ["medical-record"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "medical-record",
+            "value": "A1234567",
+            "start": 5,
+            "end": 13,
+            "confidence": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.medical-record.npi-dea",
+      "description": "an NPI verified by Luhn and a DEA number verified by its check digit",
+      "op": "detect",
+      "requires": ["detect:medical-record"],
+      "input": {
+        "text": "Prescriber NPI 1234567893, DEA AB1234563",
+        "categories": ["medical-record"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "medical-record",
+            "value": "1234567893",
+            "start": 15,
+            "end": 25,
+            "confidence": 0.75
+          },
+          {
+            "category": "medical-record",
+            "value": "AB1234563",
+            "start": 31,
+            "end": 40,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.health-insurance.mbi",
+      "description": "a Medicare beneficiary identifier after a label",
+      "op": "detect",
+      "requires": ["detect:health-insurance"],
+      "input": {
+        "text": "Medicare 1A0C01DCD23",
+        "categories": ["health-insurance"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "health-insurance",
+            "value": "1A0C01DCD23",
+            "start": 9,
+            "end": 20,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.health-insurance.member-id",
+      "description": "a value that does not fit the MBI pattern is still a member ID after a label",
+      "op": "detect",
+      "requires": ["detect:health-insurance"],
+      "input": {
+        "text": "Medicare 1EG4TE5MK73",
+        "categories": ["health-insurance"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "health-insurance",
+            "value": "1EG4TE5MK73",
+            "start": 9,
+            "end": 20,
+            "confidence": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.health-insurance.nhs",
+      "description": "an NHS number verified by mod 11",
+      "op": "detect",
+      "requires": ["detect:health-insurance"],
+      "input": {
+        "text": "NHS number: 943 476 5919",
+        "categories": ["health-insurance"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "health-insurance",
+            "value": "943 476 5919",
+            "start": 12,
+            "end": 24,
+            "confidence": 0.92
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.health-insurance.generic",
+      "description": "a member ID after its label",
+      "op": "detect",
+      "requires": ["detect:health-insurance"],
+      "input": {
+        "text": "Member ID: XYZ12345678",
+        "categories": ["health-insurance"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "health-insurance",
+            "value": "XYZ12345678",
+            "start": 11,
+            "end": 22,
+            "confidence": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.prescription.rx-ndc",
+      "description": "a prescription number after its label and an NDC code",
+      "op": "detect",
+      "requires": ["detect:prescription"],
+      "input": {
+        "text": "Rx #: 1234567 and NDC 0777-3105-02",
+        "categories": ["prescription"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "prescription",
+            "value": "1234567",
+            "start": 6,
+            "end": 13,
+            "confidence": 0.82
+          },
+          {
+            "category": "prescription",
+            "value": "0777-3105-02",
+            "start": 22,
+            "end": 34,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.prescription.dea",
+      "description": "a DEA number verified by its check digit",
+      "op": "detect",
+      "requires": ["detect:prescription"],
+      "input": {
+        "text": "DEA AB1234563 on the script",
+        "categories": ["prescription"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "prescription",
+            "value": "AB1234563",
+            "start": 4,
+            "end": 13,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.vin.checksum",
+      "description": "only a VIN whose check character holds",
+      "op": "detect",
+      "requires": ["detect:vin"],
+      "input": {
+        "text": "VIN 1HGBH41JXMN109186 and 1HGBH41JXMN109187",
+        "categories": ["vin"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "vin",
+            "value": "1HGBH41JXMN109186",
+            "start": 4,
+            "end": 21,
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.vin.aggressive",
+      "description": "the aggressive detector reports the other one with a lower confidence",
+      "op": "detect",
+      "requires": ["detect:vin", "detect:vin+aggressive"],
+      "input": {
+        "text": "VIN 1HGBH41JXMN109186 and 1HGBH41JXMN109187",
+        "categories": ["vin"],
+        "aggressive": true
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "vin",
+            "value": "1HGBH41JXMN109186",
+            "start": 4,
+            "end": 21,
+            "confidence": 0.95
+          },
+          {
+            "category": "vin",
+            "value": "1HGBH41JXMN109187",
+            "start": 26,
+            "end": 43,
+            "confidence": 0.7
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.license-plate.uk",
+      "description": "a current UK plate needs no label",
+      "op": "detect",
+      "requires": ["detect:license-plate"],
+      "input": {
+        "text": "Car AB12 CDE parked",
+        "categories": ["license-plate"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "license-plate",
+            "value": "AB12 CDE",
+            "start": 4,
+            "end": 12,
+            "confidence": 0.78
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.license-plate.labelled",
+      "description": "any plate-like value after a label",
+      "op": "detect",
+      "requires": ["detect:license-plate"],
+      "input": {
+        "text": "Plate number: 7ABC123",
+        "categories": ["license-plate"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "license-plate",
+            "value": "7ABC123",
+            "start": 14,
+            "end": 21,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.company-registration.uk",
+      "description": "a Companies House number after a label",
+      "op": "detect",
+      "requires": ["detect:company-registration"],
+      "input": {
+        "text": "Company number: 01234567",
+        "categories": ["company-registration"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "company-registration",
+            "value": "01234567",
+            "start": 16,
+            "end": 24,
+            "confidence": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.company-registration.ein-acn",
+      "description": "an EIN without a label has a lower confidence; an ACN needs its label",
+      "op": "detect",
+      "requires": ["detect:company-registration"],
+      "input": {
+        "text": "Ref 12-3456789 and ACN 123 456 789",
+        "categories": ["company-registration"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "company-registration",
+            "value": "12-3456789",
+            "start": 4,
+            "end": 14,
+            "confidence": 0.72
+          },
+          {
+            "category": "company-registration",
+            "value": "123 456 789",
+            "start": 23,
+            "end": 34,
+            "confidence": 0.82
+          }
+        ]
+      }
+    },
+    {
       "id": "detect.email.basic",
       "description": "an address before a full stop",
       "op": "detect",
@@ -3713,7 +4244,7 @@
       }
     },
     {
-      "id": "digest.sha256.202",
+      "id": "digest.sha256.226",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -3725,7 +4256,7 @@
       }
     },
     {
-      "id": "digest.sha256.203",
+      "id": "digest.sha256.227",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -3737,7 +4268,7 @@
       }
     },
     {
-      "id": "digest.sha256.204",
+      "id": "digest.sha256.228",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],

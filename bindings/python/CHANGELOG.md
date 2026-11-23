@@ -18,8 +18,10 @@ change its API.
   `passport` and `drivers-license`; the validators `nhs`, `npi`, `imei`, `dea`, `vin`, `nino`,
   `aadhaar`, `bsn`, `pt-nif`, `es-dni`, `it-fiscal-code`, `fr-nir`, `cn-resident-id`, `au-tfn` and
   `se-personnummer`.
-- The PCI-DSS and FERPA presets no longer need `allow_partial=True`: the core detects all their
-  categories.
+- Detection of `cryptocurrency`, `social-media`, `medical-record`, `health-insurance`,
+  `prescription`, `vin` (with its aggressive variant), `license-plate` and `company-registration`.
+- Every preset but CCPA (which needs `api-key`) works without `allow_partial=True`: GDPR, LGPD,
+  HIPAA, PIPEDA, PCI-DSS, SOX and FERPA.
 
 ## [0.1.0a1] — 2026-11-23
 

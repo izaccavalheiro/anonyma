@@ -282,19 +282,19 @@ mod tests {
     #[test]
     fn refuses_categories_it_cannot_detect_unless_allowed() {
         let error = AnonymaEngine::builder()
-            .preset(Preset::Lgpd)
+            .preset(Preset::Ccpa)
             .build()
             .unwrap_err();
         let Error::UnsupportedCategories(missing) = error else {
             panic!("unexpected error");
         };
-        assert!(missing.contains(&Category::Cryptocurrency));
+        assert_eq!(missing, vec![Category::ApiKey]);
         let engine = AnonymaEngine::builder()
-            .preset(Preset::Lgpd)
+            .preset(Preset::Ccpa)
             .allow_partial(true)
             .build()
             .unwrap();
-        assert!(engine.undetected().contains(&Category::Cryptocurrency));
+        assert_eq!(engine.undetected(), &[Category::ApiKey]);
     }
 
     #[test]

@@ -27,7 +27,7 @@ lists:
 
 | Area        | Ported                                                                              |
 | ----------- | ----------------------------------------------------------------------------------- |
-| Detectors   | `email`, `phone`, `name`, `address`, `ipv4`, `ipv6`, `url`, `credit-card`, `ssn`, `iban`, `date-of-birth`, `passport`, `drivers-license`, `national-id`, `tax-id`, `bank-account` |
+| Detectors   | 24 of the 27: all but `api-key`, `tracking-number` and `case-number` |
 | Validators  | all 22 of `CHECKSUMS`                                                                |
 | Strategies  | `redact`, `mask`, `pseudonymize`                                                     |
 | Tokens      | classic (`[EMAIL_0001]`) and vault (`{{EMAIL_1}}`) tokens, restoration              |
