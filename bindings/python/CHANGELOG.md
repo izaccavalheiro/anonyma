@@ -5,6 +5,15 @@ All notable changes to `anonyma` for Python are documented in this file. The pac
 `anonyma`, and is released from tags `python-v<version>`. While it is at 0.x, a minor version may
 change its API.
 
+## [Unreleased]
+
+### Added
+
+- Detection of `api-key` (AWS, Stripe, GitHub, Slack, Google, `sk-` keys, JSON Web Tokens, and
+  labelled tokens), `tracking-number` (UPS, Amazon, USPS, DHL, labelled numbers) and
+  `case-number` (US federal case numbers, labelled case numbers). The Rust core detects all 27
+  categories, and every preset, CCPA included, works without `allow_partial=True`.
+
 ## [0.1.0a2] — 2026-11-23
 
 The Rust core detects 24 of the 27 categories, with every validator, and serves every preset but

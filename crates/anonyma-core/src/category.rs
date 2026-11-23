@@ -70,12 +70,12 @@ categories! {
     MedicalRecord => "medical-record", "MEDICAL_RECORD", Full;
     HealthInsurance => "health-insurance", "HEALTH_INSURANCE", Full;
     Prescription => "prescription", "PRESCRIPTION", Full;
-    ApiKey => "api-key", "API_KEY", None;
+    ApiKey => "api-key", "API_KEY", Full;
     SocialMedia => "social-media", "SOCIAL_MEDIA", Full;
     Vin => "vin", "VIN", Full;
     LicensePlate => "license-plate", "LICENSE_PLATE", Full;
-    TrackingNumber => "tracking-number", "TRACKING_NUMBER", None;
-    CaseNumber => "case-number", "CASE_NUMBER", None;
+    TrackingNumber => "tracking-number", "TRACKING_NUMBER", Full;
+    CaseNumber => "case-number", "CASE_NUMBER", Full;
     CompanyRegistration => "company-registration", "COMPANY_REG", Full;
 }
 
@@ -88,7 +88,7 @@ pub enum Support {
     /// Some entries of a composite detector, conformance-tested on inputs
     /// that only those entries match. No category is partial at present.
     Partial,
-    /// Not ported yet.
+    /// Not ported yet. Every category is ported at present.
     None,
 }
 

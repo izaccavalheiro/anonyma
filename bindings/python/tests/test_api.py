@@ -7,14 +7,17 @@ import threading
 import pytest
 
 import anonyma
-from anonyma import Anonyma, AnonymaError, UnsupportedCategoriesError, Vault
+from anonyma import Anonyma, AnonymaError, Vault
 
 
-def test_presets_refuse_categories_the_core_does_not_detect() -> None:
-    with pytest.raises(UnsupportedCategoriesError) as raised:
-        Anonyma(presets=["ccpa"])
-    assert "api-key" in str(raised.value)
-    assert Anonyma(presets=["ccpa"], allow_partial=True).undetected == ("api-key",)
+@pytest.mark.parametrize("preset", ["gdpr", "lgpd", "pipeda", "hipaa", "ccpa", "pci-dss", "sox", "ferpa"])
+def test_every_preset_is_served_in_full(preset: str) -> None:
+    assert Anonyma(presets=[preset]).undetected == ()
+
+
+def test_unknown_presets_are_errors() -> None:
+    with pytest.raises(AnonymaError):
+        Anonyma(presets=["nope"])
 
 
 def test_lgpd_and_hipaa_are_served_in_full() -> None:

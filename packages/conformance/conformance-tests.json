@@ -1844,6 +1844,339 @@
       }
     },
     {
+      "id": "detect.api-key.aws",
+      "description": "an AWS access key ID (the documentation example)",
+      "op": "detect",
+      "requires": ["detect:api-key"],
+      "input": {
+        "text": "Key A\u004bIAIOSFODNN7EXAMPLE leaked",
+        "categories": ["api-key"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "api-key",
+            "value": "A\u004bIAIOSFODNN7EXAMPLE",
+            "start": 4,
+            "end": 24,
+            "confidence": 0.99
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.api-key.github",
+      "description": "a GitHub personal access token",
+      "op": "detect",
+      "requires": ["detect:api-key"],
+      "input": {
+        "text": "Token g\u0068p_A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r8",
+        "categories": ["api-key"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "api-key",
+            "value": "g\u0068p_A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r8",
+            "start": 6,
+            "end": 46,
+            "confidence": 0.99
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.api-key.google",
+      "description": "a Google API key",
+      "op": "detect",
+      "requires": ["detect:api-key"],
+      "input": {
+        "text": "Maps A\u0049zaSyDexampleEXAMPLEexample0123456789_",
+        "categories": ["api-key"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "api-key",
+            "value": "A\u0049zaSyDexampleEXAMPLEexample0123456789_",
+            "start": 5,
+            "end": 44,
+            "confidence": 0.99
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.api-key.jwt",
+      "description": "a JSON Web Token",
+      "op": "detect",
+      "requires": ["detect:api-key"],
+      "input": {
+        "text": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+        "categories": ["api-key"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "api-key",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+            "start": 4,
+            "end": 112,
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.api-key.sk-prefixed",
+      "description": "an sk- prefixed secret key",
+      "op": "detect",
+      "requires": ["detect:api-key"],
+      "input": {
+        "text": "Use s\u006b-aaaaaaaaaaaaaaaaBBBBBBBBBBBBBBBB here",
+        "categories": ["api-key"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "api-key",
+            "value": "s\u006b-aaaaaaaaaaaaaaaaBBBBBBBBBBBBBBBB",
+            "start": 4,
+            "end": 39,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.api-key.labelled",
+      "description": "any long token within 10 characters after a label",
+      "op": "detect",
+      "requires": ["detect:api-key"],
+      "input": {
+        "text": "api_key = abcdefghijklmnopqrstuvwxyz012345",
+        "categories": ["api-key"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "api-key",
+            "value": "abcdefghijklmnopqrstuvwxyz012345",
+            "start": 10,
+            "end": 42,
+            "confidence": 0.82
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.api-key.unlabelled",
+      "description": "a long token without a label is not a key",
+      "op": "detect",
+      "requires": ["detect:api-key"],
+      "input": {
+        "text": "Hash abcdefghijklmnopqrstuvwxyz012345",
+        "categories": ["api-key"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.tracking-number.ups",
+      "description": "a UPS tracking number",
+      "op": "detect",
+      "requires": ["detect:tracking-number"],
+      "input": {
+        "text": "UPS 1Z999AA10123456784 shipped",
+        "categories": ["tracking-number"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "tracking-number",
+            "value": "1Z999AA10123456784",
+            "start": 4,
+            "end": 22,
+            "confidence": 0.96
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.tracking-number.amazon",
+      "description": "an Amazon tracking number",
+      "op": "detect",
+      "requires": ["detect:tracking-number"],
+      "input": {
+        "text": "Amazon TBA000012345000",
+        "categories": ["tracking-number"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "tracking-number",
+            "value": "TBA000012345000",
+            "start": 7,
+            "end": 22,
+            "confidence": 0.97
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.tracking-number.usps",
+      "description": "a USPS tracking number",
+      "op": "detect",
+      "requires": ["detect:tracking-number"],
+      "input": {
+        "text": "USPS 9400111899223197428490",
+        "categories": ["tracking-number"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "tracking-number",
+            "value": "9400111899223197428490",
+            "start": 5,
+            "end": 27,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.tracking-number.dhl",
+      "description": "a DHL waybill with its JD prefix",
+      "op": "detect",
+      "requires": ["detect:tracking-number"],
+      "input": {
+        "text": "DHL JD123456789",
+        "categories": ["tracking-number"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "tracking-number",
+            "value": "JD123456789",
+            "start": 4,
+            "end": 15,
+            "confidence": 0.88
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.tracking-number.labelled",
+      "description": "twelve digits after a label",
+      "op": "detect",
+      "requires": ["detect:tracking-number"],
+      "input": {
+        "text": "Tracking number: 123456789012",
+        "categories": ["tracking-number"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "tracking-number",
+            "value": "123456789012",
+            "start": 17,
+            "end": 29,
+            "confidence": 0.78
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.tracking-number.unlabelled",
+      "description": "twelve digits without a label are not a tracking number",
+      "op": "detect",
+      "requires": ["detect:tracking-number"],
+      "input": {
+        "text": "Order 123456789012",
+        "categories": ["tracking-number"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.case-number.federal-labelled",
+      "description": "a US federal case number after a label",
+      "op": "detect",
+      "requires": ["detect:case-number"],
+      "input": {
+        "text": "Case No. 1:23-cv-01234 filed",
+        "categories": ["case-number"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "case-number",
+            "value": "1:23-cv-01234",
+            "start": 9,
+            "end": 22,
+            "confidence": 0.92
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.case-number.federal",
+      "description": "a US federal case number needs no label",
+      "op": "detect",
+      "requires": ["detect:case-number"],
+      "input": {
+        "text": "Ref 23-cr-5678",
+        "categories": ["case-number"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "case-number",
+            "value": "23-cr-5678",
+            "start": 4,
+            "end": 14,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.case-number.general-labelled",
+      "description": "a general case number after a label",
+      "op": "detect",
+      "requires": ["detect:case-number"],
+      "input": {
+        "text": "Docket 2023-1234",
+        "categories": ["case-number"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "case-number",
+            "value": "2023-1234",
+            "start": 7,
+            "end": 16,
+            "confidence": 0.78
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.case-number.general-unlabelled",
+      "description": "a general case number without a label is not reported",
+      "op": "detect",
+      "requires": ["detect:case-number"],
+      "input": {
+        "text": "Ref 2023-1234",
+        "categories": ["case-number"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
       "id": "detect.email.basic",
       "description": "an address before a full stop",
       "op": "detect",
@@ -4244,7 +4577,7 @@
       }
     },
     {
-      "id": "digest.sha256.226",
+      "id": "digest.sha256.243",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -4256,7 +4589,7 @@
       }
     },
     {
-      "id": "digest.sha256.227",
+      "id": "digest.sha256.244",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -4268,7 +4601,7 @@
       }
     },
     {
-      "id": "digest.sha256.228",
+      "id": "digest.sha256.245",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],

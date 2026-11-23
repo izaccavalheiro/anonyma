@@ -30,21 +30,12 @@ engine.restore(answer, shielded.vault)             # values back in the answer
 
 ## Status: alpha
 
-The Rust core detects 24 of the 27 categories of the TypeScript package, and
-serves every compliance preset but CCPA in full: `Anonyma(presets=["lgpd",
-"hipaa"])` works as is. A category it cannot detect yet (API keys, tracking
-numbers, case numbers) raises `UnsupportedCategoriesError` and names what is
-missing, instead of silently letting the data through:
-
-```python
-Anonyma(presets=["ccpa"])                      # UnsupportedCategoriesError: api-key
-engine = Anonyma(presets=["ccpa"], allow_partial=True)
-engine.undetected                              # ('api-key',)
-```
+The Rust core detects all 27 categories of the TypeScript package, with every
+checksum validator, and serves every compliance preset in full:
+`Anonyma(presets=["lgpd", "hipaa"])` works as is. It passes the whole
+conformance suite. The API may still change before 1.0.
 
 `anonyma.capabilities()` lists what the core passes in the conformance suite.
-If you need every category from Python today, run the sidecar
-(`packages/sidecar`) and call it over HTTP.
 
 ## Integrations
 

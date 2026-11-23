@@ -468,8 +468,8 @@ mod tests {
     }
 
     #[test]
-    fn engines_refuse_what_they_cannot_detect() {
-        let error = call("anonymize", &json!({ "text": "x", "preset": ["ccpa"] })).unwrap_err();
-        assert!(error.contains("does not detect"));
+    fn unknown_presets_are_errors() {
+        let error = call("anonymize", &json!({ "text": "x", "preset": ["nope"] })).unwrap_err();
+        assert!(error.contains("unknown compliance preset"));
     }
 }

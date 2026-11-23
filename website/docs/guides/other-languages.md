@@ -11,7 +11,7 @@ shared conformance suite.
 | Way                               | Languages                     | Detectors        | State          |
 | --------------------------------- | ----------------------------- | ---------------- | -------------- |
 | The sidecar                       | any language that speaks HTTP | all 27           | available      |
-| The Python package                | Python 3.10+                  | 24 of 27         | alpha          |
+| The Python package                | Python 3.10+                  | all 27           | alpha          |
 | Go, Node.js, WebAssembly bindings | Go, JavaScript                | as the Rust core | in development |
 
 ## The sidecar
@@ -56,7 +56,5 @@ shielded.text                                      # 'Mail {{EMAIL_1}} about car
 engine.restore("Sent to {{EMAIL_1}}.", shielded.vault)   # 'Sent to ana@example.com.'
 ```
 
-Every compliance preset but CCPA works as is: `Anonyma(presets=["lgpd", "hipaa"])` detects all
-their categories. The three categories not yet in the Rust core (API keys, tracking numbers, case
-numbers) raise `UnsupportedCategoriesError` with their names, so data is never let through silently;
-pass `allow_partial=True` to accept that, or use the sidecar.
+Every category and every compliance preset works as is: `Anonyma(presets=["lgpd", "hipaa"])`
+detects all their categories, with the same results as the TypeScript package.

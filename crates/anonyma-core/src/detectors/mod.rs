@@ -10,7 +10,9 @@ use std::cmp::Ordering;
 use crate::{Category, Support};
 
 mod address;
+mod api_key;
 mod bank_account;
+mod case_number;
 mod company_registration;
 mod credit_card;
 mod cryptocurrency;
@@ -30,6 +32,7 @@ mod prescription;
 mod social_media;
 mod ssn;
 mod tax_id;
+mod tracking_number;
 mod url;
 mod vin;
 
@@ -128,9 +131,11 @@ impl Detector for BuiltinDetector {
             Category::Vin => vin::detect(text, self.aggressive),
             Category::LicensePlate => license_plate::detect(text),
             Category::CompanyRegistration => company_registration::detect(text),
+            Category::ApiKey => api_key::detect(text),
+            Category::TrackingNumber => tracking_number::detect(text),
+            Category::CaseNumber => case_number::detect(text),
             Category::Url => url::detect(text),
             Category::DateOfBirth => date_of_birth::detect(text),
-            _ => Vec::new(),
         }
     }
 }
@@ -235,8 +240,12 @@ mod tests {
     }
 
     #[test]
-    fn unsupported_categories_have_no_detector() {
-        assert!(BuiltinDetector::new(Category::ApiKey, false, false).is_none());
-        assert!(BuiltinDetector::new(Category::Email, false, false).is_some());
+    fn every_category_has_a_detector() {
+        for &category in Category::ALL {
+            assert!(
+                BuiltinDetector::new(category, false, false).is_some(),
+                "{category}"
+            );
+        }
     }
 }
