@@ -12,6 +12,8 @@ change its API.
 - With presets, a rule for a category the presets do not cover now adds that category; it was
   ignored. The rules of the other categories still override the presets' strategies
   ([#47](https://github.com/izaccavalheiro/anonyma/issues/47)).
+- Card numbers written in groups no longer include the space or hyphen after them when a word
+  follows ([#48](https://github.com/izaccavalheiro/anonyma/issues/48)).
 
 ## [0.1.0a4] — 2026-11-23
 

@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `email` left phone numbers in place), and `rules: []` replaced every category. Without a preset,
   `rules` is still the list of categories replaced
   ([#47](https://github.com/izaccavalheiro/anonyma/issues/47)).
+- The credit-card detector of `detect()` and `anonymize()` no longer includes the space or hyphen
+  after a card number written in groups when a word follows it: `"4111 1111 1111 1111 "` was one
+  match, so `keepTrailing: 4` and the `pci-dss` preset showed three digits and removed the space
+  ([#48](https://github.com/izaccavalheiro/anonyma/issues/48)).
 
 ---
 

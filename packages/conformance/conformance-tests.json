@@ -2442,7 +2442,7 @@
     },
     {
       "id": "detect.credit-card.trailing-space",
-      "description": "reference behaviour: the separator after the last digit is part of the match",
+      "description": "the separator after the last group is not part of the number when a word follows",
       "op": "detect",
       "requires": ["detect:credit-card"],
       "input": {
@@ -2453,9 +2453,9 @@
         "matches": [
           {
             "category": "credit-card",
-            "value": "4111 1111 1111 1111 ",
+            "value": "4111 1111 1111 1111",
             "start": 5,
-            "end": 25,
+            "end": 24,
             "confidence": 0.97
           }
         ]

@@ -7,11 +7,12 @@ import type { PiiMatch } from "../types.js";
 
 /**
  * Matches 13–19 digit sequences that may be separated by spaces or hyphens,
- * matching the typical formatting of credit card numbers.
+ * matching the typical formatting of credit card numbers. The match starts and
+ * ends with a digit: the separator after the last group is not part of it.
  *
  * @internal
  */
-const CARD_PATTERN = /\b(?:\d[ -]?){13,19}\b/g;
+const CARD_PATTERN = /\b\d(?:[ -]?\d){12,18}\b/g;
 
 /**
  * Aggressive addition: matches masked card forms like `****-****-****-1234` or
@@ -72,7 +73,7 @@ export function detectCreditCard(text: string): PiiMatch[] {
   while ((match = pattern.exec(text)) !== null) {
     const raw = match[0];
     const digitsOnly = raw.replace(/[ -]/g, "");
-    // CARD_PATTERN enforces {13,19} digit groups; length will always be in [13, 19].
+    // CARD_PATTERN enforces 13 to 19 digits; length will always be in [13, 19].
     /* v8 ignore next */
     if (digitsOnly.length < 13 || digitsOnly.length > 19) continue;
     if (!luhn(digitsOnly)) continue;
