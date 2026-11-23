@@ -248,16 +248,18 @@ impl AnonymaEngine {
     /// Replace every value found with its category's strategy.
     pub fn anonymize(&self, text: &str) -> Result<Anonymized> {
         let matches = self.detect(text);
-        let mut out = text.to_string();
+        let mut spans = Vec::with_capacity(matches.len());
         for m in matches.iter().rev() {
             let strategy = self
                 .rules
                 .get(&m.category)
                 .unwrap_or(&self.default_strategy);
-            let replacement = strategy.apply(&m.value, m.category)?;
-            out.replace_range(m.start..m.end, &replacement);
+            spans.push((m.start, m.end, strategy.apply(&m.value, m.category)?));
         }
-        Ok(Anonymized { text: out, matches })
+        Ok(Anonymized {
+            text: crate::splice::replace_spans(text, &spans),
+            matches,
+        })
     }
 
     /// Replace every value found with a classic token (`[EMAIL_0001]`) and
