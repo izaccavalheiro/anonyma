@@ -176,10 +176,32 @@ Next steps, in order:
    module files alone. A tag `go-v<version>` commits the package with the five
    libraries to `github.com/izaccavalheiro/anonyma-go` (about 50 MB a release,
    kept out of this repository's history) and tags it there.
-4. Benchmark the Rust core against the TypeScript engine (`bench/`), on Node.js
-   through napi-rs and on Workers through WebAssembly. A native engine for the
-   npm package is offered only where it wins. Its public API stays unchanged,
-   and it falls back to TypeScript where native modules cannot load.
+4. ~~Benchmark the Rust core against the TypeScript engine.~~ Done
+   (`bench/core.mjs`, results in `bench/results/core.json`): the npm package
+   keeps its TypeScript engine, on Node.js and on Workers. Through its JSON
+   API, on 1,000 to 1,000,000 characters of the benchmark corpus, with
+   identical results:
+
+   Speed-up over TypeScript (above 1: the core is faster):
+
+   | operation                | napi-rs addon     | WebAssembly        |
+   | ------------------------ | ----------------- | ------------------ |
+   | detect, every category   | 0.95–1.76×        | 0.75–1.02×         |
+   | detect, five categories  | 0.38–0.89×        | 0.31–0.58×         |
+   | scan (precise engine)    | 0.63–0.95×        | 0.45–0.68×         |
+   | anonymize, `gdpr`        | 1.15–1.84×        | 0.77–1.09×         |
+   | first call (1,000 chars) | 39 ms (TS: 12 ms) | 118 ms (TS: 12 ms) |
+
+   WebAssembly never wins, and its first call is ten times slower, which
+   costs most on Workers. The addon wins by less than two times where it wins
+   at all, loses on the engine of 1.1 and on few categories, and would add a
+   prebuilt binary per platform to a package without dependencies. Neither is
+   offered. The benchmark found three costs proportional to the text length
+   times the number of matches, now gone: the core's offset conversion (#78)
+   and replacement (#80), and the replacement of `anonymize()` and `tokenize()`
+   in TypeScript (#79). It runs again from the Actions tab ("Core
+   benchmark"), and the question can be reopened when the core's numbers
+   change.
 
 ## Releases
 

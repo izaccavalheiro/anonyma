@@ -43,3 +43,7 @@ script changes; the tables are in the job summary.
 ```sh
 node bench/core.mjs --native anonyma_native.node --wasm pkg/anonyma_wasm.js [--quick]
 ```
+
+`results/core.json` is the run that settled step 4 of the RFC: GitHub's
+`ubuntu-24.04` runner, Node.js 24, AMD EPYC 7763 (4 cores). The npm package
+keeps its TypeScript engine; docs/rfcs/0001-polyglot-core.md has the summary.
