@@ -1,8 +1,11 @@
 package anonyma
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/fs"
 	"math"
 	"os"
 	"path/filepath"
@@ -95,6 +98,9 @@ func compareCase(c conformanceCase, actual map[string]any) []string {
 // TestConformance runs the conformance suite through the C ABI.
 func TestConformance(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("..", "..", "packages", "conformance", "conformance-tests.json"))
+	if errors.Is(err, fs.ErrNotExist) {
+		t.Skip("the suite is in the repository, not in the module")
+	}
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -138,3 +144,25 @@ func TestConformance(t *testing.T) {
 		t.Fatalf("only %d cases ran", ran)
 	}
 }
+
+// TestHeaderMatchesCore checks that anonyma.h, which the package compiles
+// against, is a copy of the header of the C ABI.
+func TestHeaderMatchesCore(t *testing.T) {
+	core, err := os.ReadFile(filepath.Join("..", "..", "crates", "anonyma-ffi", "include", "anonyma.h"))
+	if errors.Is(err, fs.ErrNotExist) {
+		t.Skip("the core is in the repository, not in the module")
+	}
+	if err != nil {
+		t.Fatal(err)
+	}
+	copied, err := os.ReadFile("anonyma.h")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(normalize(core), normalize(copied)) {
+		t.Fatal("anonyma.h differs from crates/anonyma-ffi/include/anonyma.h: copy it again")
+	}
+}
+
+// normalize drops carriage returns, which a Windows checkout may add.
+func normalize(text []byte) []byte { return bytes.ReplaceAll(text, []byte("\r\n"), []byte("\n")) }

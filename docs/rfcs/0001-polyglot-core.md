@@ -155,14 +155,14 @@ published contract until a listener justifies its first dependency.
 
 ## Roadmap
 
-| Tier | What                               | State                                                                                       |
-| ---- | ---------------------------------- | ------------------------------------------------------------------------------------------- |
-| 0    | Sidecar (HTTP, MCP; gRPC contract) | implemented; image built in CI, published on `sidecar-v*` tags                              |
-| 1    | Python (`anonyma` on PyPI)         | alpha: wheels built and published on `python-v*` tags                                       |
-| 1B   | WebAssembly, Node.js               | scaffolds that build in CI; not published                                                   |
-| 2    | Go                                 | cgo package with tests and the suite; needs prebuilt static libraries before `go get` works |
-| 3    | JVM, .NET                          | through the sidecar; generated bindings (UniFFI) when there is demand                       |
-| 4    | `anonyma-core` on crates.io        | packaged in CI; published once the API settles                                              |
+| Tier | What                               | State                                                                                                       |
+| ---- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 0    | Sidecar (HTTP, MCP; gRPC contract) | implemented; image built in CI, published on `sidecar-v*` tags                                              |
+| 1    | Python (`anonyma` on PyPI)         | alpha: wheels built and published on `python-v*` tags                                                       |
+| 1B   | WebAssembly, Node.js               | scaffolds that build in CI; not published                                                                   |
+| 2    | Go                                 | cgo package with tests and the suite; `github.com/izaccavalheiro/anonyma-go` with prebuilt static libraries |
+| 3    | JVM, .NET                          | through the sidecar; generated bindings (UniFFI) when there is demand                                       |
+| 4    | `anonyma-core` on crates.io        | packaged in CI; published once the API settles                                                              |
 
 Next steps, in order:
 
@@ -170,7 +170,12 @@ Next steps, in order:
    validator are ported, and every preset is served in full.
 2. ~~Port the precise detectors of the span engine.~~ Done: the `scan`
    operation, the cover resolution and every precise detector.
-3. Publish prebuilt `libanonyma_ffi.a` per platform for Go.
+3. Publish prebuilt `libanonyma_ffi.a` per platform for Go. Done: CI builds
+   the library for linux/amd64, linux/arm64, darwin/amd64, darwin/arm64 and
+   windows/amd64, runs the Go tests on each, and links a program from the
+   module files alone. A tag `go-v<version>` commits the package with the five
+   libraries to `github.com/izaccavalheiro/anonyma-go` (about 50 MB a release,
+   kept out of this repository's history) and tags it there.
 4. Benchmark the Rust core against the TypeScript engine (`bench/`), on Node.js
    through napi-rs and on Workers through WebAssembly. A native engine for the
    npm package is offered only where it wins. Its public API stays unchanged,
@@ -180,7 +185,7 @@ Next steps, in order:
 
 `.github/workflows/polyglot-release.yml` runs the suite in every language on
 every pull request: TypeScript, Rust (Linux, macOS, Windows), Python 3.10 and
-3.13, Go, and the WebAssembly and Node.js builds. It also builds the sidecar
+3.13, Go (on five platforms), and the WebAssembly and Node.js builds. It also builds the sidecar
 image and calls it. Tags release:
 
 - `python-v<version>`: abi3 wheels for manylinux x86_64/aarch64, macOS
@@ -189,9 +194,13 @@ image and calls it. Tags release:
 - `sidecar-v<version>`: a multi-architecture image (`linux/amd64`,
   `linux/arm64`) pushed to `ghcr.io/<owner>/anonyma-sidecar`, with provenance,
   an SBOM and an attestation.
+- `go-v<version>`: the Go package with the five static libraries built in the
+  same run, tested as a module, attested, committed to
+  `github.com/<owner>/anonyma-go` and tagged `v<version>` there with the deploy
+  key of environment `go`. `Version` in `bindings/go/version.go` must match the tag.
 
 Each release needs a section for its version in its own changelog
-(`bindings/python/CHANGELOG.md`, `packages/sidecar/CHANGELOG.md`), and nothing is published
+(`bindings/python/CHANGELOG.md`, `packages/sidecar/CHANGELOG.md`, `bindings/go/CHANGELOG.md`), and nothing is published
 without one. The release then gets a GitHub release with those notes. These GitHub releases never
 take the "Latest" badge, which stays with the npm package. The npm packages keep their own
 workflow and changelog (`release.yml`, tags `v<version>`, `CHANGELOG.md`).
@@ -199,3 +208,7 @@ workflow and changelog (`release.yml`, tags `v<version>`, `CHANGELOG.md`).
 Before the first Python release, the PyPI project `anonyma` needs a trusted
 publisher (this repository, `polyglot-release.yml`, environment `pypi`) and
 the repository an environment `pypi`.
+
+Before the first Go release, the repository `anonyma-go` must exist with one
+commit, with a deploy key that can write, whose private half is the secret
+`ANONYMA_GO_DEPLOY_KEY` of an environment `go` in this repository.

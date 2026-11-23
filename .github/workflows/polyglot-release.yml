@@ -7,7 +7,8 @@
 #                           the conformance suite (through the JSON API) on Linux, macOS, Windows?
 #   python                  Does the Python package build, and pass its tests and the suite?
 #   bindings                Do the WebAssembly and Node.js bindings build?
-#   go                      Does the Go package pass its tests and the suite through the C ABI?
+#   go                      Does the Go package pass its tests and the suite through the C ABI,
+#                           and link from its module alone, on each platform it ships a library for?
 #   sidecar                 Does the sidecar image build, start and answer?
 #
 # Releases, from tags only, after every check above:
@@ -18,9 +19,13 @@
 #   sidecar-v<version>  the sidecar image for linux/amd64 and linux/arm64, pushed to
 #                       ghcr.io/<owner>/anonyma-sidecar with provenance and an SBOM, then a
 #                       GitHub release.
+#   go-v<version>       the Go package (bindings/go) with the static libraries the go job
+#                       built, committed to <owner>/anonyma-go and tagged v<version> there with
+#                       the deploy key of environment `go`, then a GitHub release here.
 #
 # Each needs a section for its version in its changelog (bindings/python/CHANGELOG.md,
-# packages/sidecar/CHANGELOG.md): the release stops before publishing anything without one.
+# packages/sidecar/CHANGELOG.md, bindings/go/CHANGELOG.md): the release stops before
+# publishing anything without one.
 # Their GitHub releases never take the "Latest" badge, which stays with the npm releases.
 #
 # The npm packages are released by release.yml (tags v<version>), unchanged.
@@ -31,7 +36,7 @@ name: Polyglot
 on:
   push:
     branches: [main]
-    tags: ["python-v*", "sidecar-v*"]
+    tags: ["python-v*", "sidecar-v*", "go-v*"]
   pull_request:
     branches: [main, dev, "release/**"]
   workflow_dispatch:
@@ -194,9 +199,22 @@ jobs:
         run: cargo clippy -p anonyma-wasm -p anonyma-node -- -D warnings
 
   go:
-    name: Go
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    name: Go (${{ matrix.platform }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { platform: linux_amd64, os: ubuntu-24.04, target: x86_64-unknown-linux-gnu }
+          - { platform: linux_arm64, os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
+          - { platform: darwin_amd64, os: macos-15-intel, target: x86_64-apple-darwin }
+          - { platform: darwin_arm64, os: macos-latest, target: aarch64-apple-darwin }
+          - { platform: windows_amd64, os: windows-latest, target: x86_64-pc-windows-gnu }
+    defaults:
+      run:
+        shell: bash
+        working-directory: bindings/go
     steps:
       - name: Check out
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -207,9 +225,12 @@ jobs:
         uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
         with:
           toolchain: stable
+          targets: ${{ matrix.target }}
 
       - name: Cache
         uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          key: ${{ matrix.target }}
 
       - name: Set up Go
         uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
@@ -217,19 +238,61 @@ jobs:
           go-version-file: bindings/go/go.mod
           cache: false
 
+      # The library the package links, built as a release would build it.
       - name: Build the static library
-        run: cargo build --release -p anonyma-ffi
+        run: |
+          go generate
+          ls -l lib/${{ matrix.platform }}
 
       - name: Vet
-        working-directory: bindings/go
         run: |
           test -z "$(gofmt -l .)" || { gofmt -d .; exit 1; }
           go vet ./...
+          go vet buildlib.go
 
       # Includes the conformance suite through the C ABI (conformance_test.go).
       - name: Test
-        working-directory: bindings/go
         run: go test -race ./...
+
+      # A program outside the repository that requires the module as a user would,
+      # with only the files of its module zip: does it link with the prebuilt library?
+      - name: Link from the module alone
+        run: |
+          # Outside the checkout, with relative paths, which every platform reads alike.
+          check=../../../go-check
+          mkdir -p "$check/module" "$check/app"
+          git ls-files -z . | tar --null -T - -cf - | tar -xf - -C "$check/module"
+          cp -R lib "$check/module/"
+          cd "$check/app"
+          go mod init example.com/app
+          go mod edit -require=github.com/izaccavalheiro/anonyma-go@v0.0.0
+          go mod edit -replace=github.com/izaccavalheiro/anonyma-go=../module
+          cat > main.go <<'GO'
+          package main
+
+          import (
+          	"fmt"
+
+          	anonyma "github.com/izaccavalheiro/anonyma-go"
+          )
+
+          func main() {
+          	out, err := anonyma.Anonymize("Mail ana@example.com", anonyma.Options{Categories: []string{"email"}})
+          	if err != nil {
+          		panic(err)
+          	}
+          	fmt.Println(out)
+          }
+          GO
+          test "$(go run .)" = "Mail [REDACTED]"
+
+      - name: Upload the static library
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: go-lib-${{ matrix.platform }}
+          path: bindings/go/lib/${{ matrix.platform }}/libanonyma_ffi.a
+          if-no-files-found: error
+          retention-days: 7
 
   sidecar:
     name: Sidecar image
@@ -526,3 +589,141 @@ jobs:
             --title "anonyma-sidecar $version" \
             --notes-file "$RUNNER_TEMP/notes.md" \
             --latest=false
+
+  # -------------------------------------------------------------------------
+  # Go release (tags go-v<version>)
+  # -------------------------------------------------------------------------
+
+  go-publish:
+    name: Publish the Go module
+    if: startsWith(github.ref, 'refs/tags/go-v')
+    needs: polyglot
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: go
+      url: https://pkg.go.dev/github.com/${{ github.repository_owner }}/anonyma-go
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # go-v0.1.0-alpha.1 publishes Version "0.1.0-alpha.1", and nothing else.
+      - name: Check the version against the tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version="${TAG#go-v}"
+          grep -qxF "const Version = \"$version\"" bindings/go/version.go ||
+            { echo "bindings/go/version.go does not say $version"; exit 1; }
+
+      - name: Require release notes
+        env:
+          TAG: ${{ github.ref_name }}
+        run: node scripts/release-notes.mjs "${TAG#go-v}" --changelog bindings/go/CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+
+      # The libraries the go job built and tested on each platform in this run.
+      - name: Download the static libraries
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: go-lib-*
+          path: ${{ runner.temp }}/libs
+
+      - name: Assemble the module
+        run: |
+          module="$RUNNER_TEMP/module"
+          mkdir -p "$module"
+          (cd bindings/go && git ls-files -z . | tar --null -T - -cf -) | tar -xf - -C "$module"
+          cp LICENSE "$module/"
+          for dir in "$RUNNER_TEMP"/libs/go-lib-*; do
+            platform="${dir##*/go-lib-}"
+            mkdir -p "$module/lib/$platform"
+            cp "$dir/libanonyma_ffi.a" "$module/lib/$platform/"
+          done
+          for platform in linux_amd64 linux_arm64 darwin_amd64 darwin_arm64 windows_amd64; do
+            test -s "$module/lib/$platform/libanonyma_ffi.a" || { echo "no library for $platform"; exit 1; }
+          done
+          ls -lR "$module/lib"
+
+      - name: Set up Go
+        uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version-file: bindings/go/go.mod
+          cache: false
+
+      # The module as `go get` will fetch it, outside the repository.
+      - name: Test the module
+        working-directory: ${{ runner.temp }}/module
+        run: |
+          go vet ./...
+          go test ./...
+
+      - name: Attest the libraries
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: ${{ runner.temp }}/module/lib/*/libanonyma_ffi.a
+
+      - name: Check out anonyma-go
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ github.repository_owner }}/anonyma-go
+          ssh-key: ${{ secrets.ANONYMA_GO_DEPLOY_KEY }}
+          path: anonyma-go
+          persist-credentials: true
+
+      # A version of a Go module never changes once a proxy has it: refuse to move a tag.
+      - name: Commit and tag the release
+        working-directory: anonyma-go
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version="${TAG#go-v}"
+          if git ls-remote --exit-code --tags origin "refs/tags/v$version" > /dev/null; then
+            echo "anonyma-go already has v$version"; exit 1
+          fi
+          git rm -rq --ignore-unmatch .
+          cp -R "$RUNNER_TEMP/module/." .
+          git add -A
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "release: v$version" -m "From $GITHUB_REPOSITORY@$GITHUB_SHA ($TAG)."
+          git tag -a "v$version" -m "anonyma-go $version"
+          git push origin HEAD "refs/tags/v$version"
+
+      # Fetch the version once through the public proxy, so the first `go get` finds it.
+      - name: Announce the version to the Go proxy
+        env:
+          TAG: ${{ github.ref_name }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          curl -fsS --retry 5 --retry-delay 15 --retry-all-errors \
+            "https://proxy.golang.org/github.com/$OWNER/anonyma-go/@v/v${TAG#go-v}.info"
+
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          version="${TAG#go-v}"
+          assets="$RUNNER_TEMP/assets"
+          mkdir -p "$assets"
+          for dir in "$RUNNER_TEMP"/module/lib/*/; do
+            platform="$(basename "$dir")"
+            cp "$dir/libanonyma_ffi.a" "$assets/libanonyma_ffi-$platform.a"
+          done
+          printf '\n\n`go get github.com/%s/anonyma-go@v%s`\n' "$OWNER" "$version" >> "$RUNNER_TEMP/notes.md"
+          flags="--latest=false"
+          if [[ "$version" == *-* ]]; then flags="--prerelease --latest=false"; fi
+          # shellcheck disable=SC2086 # the flags are two words on purpose
+          gh release create "$TAG" "$assets"/* \
+            --verify-tag \
+            --title "anonyma for Go $version" \
+            --notes-file "$RUNNER_TEMP/notes.md" \
+            $flags
