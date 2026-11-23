@@ -1227,3 +1227,36 @@ describe("createAnonymizer() — optional config properties in baseOptions", () 
     expect(text).not.toContain("4111111111111111");
   });
 });
+
+// ---------------------------------------------------------------------------
+// Many matches: the text is assembled once, with the same result as before
+// ---------------------------------------------------------------------------
+describe("anonymize() — many matches", () => {
+  const lines = Array.from({ length: 2000 }, (_, i) => `user${String(i)}@example.com said hi`);
+  const text = lines.join("\n");
+  const redacted = lines.map(() => "[REDACTED] said hi").join("\n");
+  const emails = {
+    rules: [{ category: "email" as const, strategy: { strategy: "redact" as const } }],
+  };
+
+  it("replaces every match and keeps the text between them", () => {
+    expect(anonymize(text, emails).text).toBe(redacted);
+  });
+
+  it("does the same asynchronously", async () => {
+    expect((await anonymizeAsync(text, emails)).text).toBe(redacted);
+  });
+
+  it("numbers consistent tokens from the last match to the first", () => {
+    const { text: out } = anonymize("a@example.com, b@example.com", { consistentTokens: true });
+    expect(out).toBe("EMAIL_2, EMAIL_1");
+  });
+
+  it("tokenizes every match through an anonymizer", () => {
+    const { text: out, tokens } = createAnonymizer({ enabledCategories: ["email"] }).tokenize(
+      "a@example.com, b@example.com",
+    );
+    expect(out).toMatch(/^\[EMAIL_\d+\], \[EMAIL_\d+\]$/);
+    expect(tokens.map((t) => t.original)).toEqual(["b@example.com", "a@example.com"]);
+  });
+});

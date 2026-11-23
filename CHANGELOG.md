@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `anonymize()`, `anonymizeAsync()`, `tokenize()` and the `tokenize()` of `createAnonymizer()`
+  took time proportional to the length of the text times the number of matches: each replacement
+  copied the whole text again. On the benchmark corpus, anonymizing 1,000,000 characters with the
+  `gdpr` preset took 1.7 s with sparse personal data and 8 s with dense data, where detection takes
+  0.2 s. They now assemble the result once; the output is unchanged.
+
 ---
 
 ## [1.3.2] — 2026-11-22
