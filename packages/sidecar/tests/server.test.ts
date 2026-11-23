@@ -60,6 +60,18 @@ describe("sidecar", () => {
     expect(matches).toEqual([expect.objectContaining({ value: "ana@example.com", start: 2 })]);
   });
 
+  it("converts the offsets of many matches between astral characters", async () => {
+    // Each unit is 18 code points (19 UTF-16 units): the emoji, a space, the address, a space.
+    // 150 units stay below the 4,096-byte body limit of this server.
+    const text = "\u{1F4E7} ana@example.com ".repeat(150);
+    const response = await post("/v1/detect", { text, categories: ["email"] });
+    const { matches } = (await response.json()) as { matches: { start: number; end: number }[] };
+    expect(matches).toHaveLength(150);
+    matches.forEach((match, i) => {
+      expect(match).toMatchObject({ start: 2 + 18 * i, end: 17 + 18 * i });
+    });
+  });
+
   it("anonymizes with presets and rules", async () => {
     const response = await post("/v1/anonymize", {
       text: "Card 4111 1111 1111 1111, mail ana@example.com",

@@ -14,6 +14,13 @@ endpoints or settings.
   `node:24-alpine` to build and distroless `nodejs24-debian13` to run (was Node.js 22 on
   Debian 12).
 
+### Fixed
+
+- `POST /v1/detect` took time proportional to the length of the text times the number of
+  matches: each offset was converted to code points by counting from the start of the text. A
+  100 KB text with 500 values took 7 times as long as the scan itself. The offsets are now
+  converted in one pass.
+
 ## [0.1.0] — 2026-11-23
 
 First release, built on `anonyma` 1.3.2.
