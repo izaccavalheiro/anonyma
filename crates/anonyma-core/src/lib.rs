@@ -38,6 +38,7 @@ pub mod offsets;
 pub mod pipeline;
 pub mod presets;
 pub mod receipt;
+mod splice;
 pub mod strategy;
 pub mod validators;
 pub mod vault;

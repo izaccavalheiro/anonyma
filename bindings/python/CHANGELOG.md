@@ -7,6 +7,13 @@ change its API.
 
 ## [Unreleased]
 
+### Fixed
+
+- Detection, `scan()`, anonymization and tokenization took time proportional to the length of the
+  text times the number of matches, seconds for a megabyte with thousands of values: offsets were
+  converted to code points by counting from the start of the text for each match, and every
+  replacement moved the rest of the text. Both now take one pass over the text.
+
 ## [0.1.0a3] — 2026-11-23
 
 The Rust core detects all 27 categories and serves every preset in full, CCPA included, with no

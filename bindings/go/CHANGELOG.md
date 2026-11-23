@@ -7,6 +7,12 @@ are documented in this file. The format is based on
 
 ## [Unreleased]
 
+### Fixed
+
+- `Anonymize` took time proportional to the length of the text times the number of matches,
+  seconds for a megabyte with thousands of values: every replacement moved the rest of the text.
+  It now takes one pass over the text.
+
 ## [0.1.0-alpha.1] — 2026-11-23
 
 First release: cgo bindings of the Rust core of anonyma, with its static library
