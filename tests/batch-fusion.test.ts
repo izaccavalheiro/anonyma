@@ -1,13 +1,29 @@
 /**
- * Batch fusion: detectBatch() and anonymizeBatch() scan short entries joined
- * into one text. These tests check that every result equals the per-entry
- * call, at the boundaries between entries where fusion could change one, and
- * that the invariants fusion relies on still hold in the detectors' source.
+ * Batch fusion: detectBatch(), anonymizeBatch() and Pipeline.scanBatch() scan short entries joined
+ * into one text (src/internal/fusion.ts). These tests check that every result equals the per-entry
+ * call, at the boundaries between entries where fusion could change one, and that the invariants
+ * fusion relies on still hold in the detectors' source. A detector added later must keep them:
+ *
+ * - Every assertion at the edge of a match (`\b`, `(?<!\d)`, `(?![ ./-]?\d)`, `(?<![\p{L}\d])`,
+ *   ...) treats `\n` as it treats the start and the end of the text. The one exception is `^`
+ *   without the `m` flag in the greetings of the name detectors: entries that start with a
+ *   greeting word are scanned alone.
+ * - No pattern crosses the separator: it alternates `\n` and `\0` over 43 units, so `\s` stops at
+ *   the `\0` and `[^\n,]`, `.` and URL paths stop at the `\n`; no pattern repeats a class that
+ *   holds both. Prefilters test for characters or runs that cannot span it either.
+ * - Labels count for a value at most 40 UTF-16 units after them. The precise email and IPv4
+ *   detectors look back 96 and 48 units with patterns whose classes exclude `\n` or `\0`. Card
+ *   groups are joined by one or two characters. Overlap resolution works cluster by cluster.
+ * - Only the built-in detectors fuse (a replaced registry entry, a custom detector or a span
+ *   allow rule that is a function, which sees offsets, turns fusion off).
  */
 import { readFileSync, readdirSync } from "node:fs";
 import fc from "fast-check";
 import { afterEach, describe, expect, it } from "vitest";
-import { FUSION_SEPARATOR, anonymize, detect } from "../src/anonymize.js";
+import { anonymize, detect } from "../src/anonymize.js";
+import { compilePipeline, createPipeline, defineRegexDetector } from "../src/engine/index.js";
+import type { Pipeline, PipelineSpec } from "../src/engine/index.js";
+import { FUSION_SEPARATOR } from "../src/internal/fusion.js";
 import { anonymizeBatch, detectBatch } from "../src/batch.js";
 import { DETECTOR_REGISTRY } from "../src/detectors/index.js";
 import type { AnonymizeOptions, PiiCategory, PiiMatch } from "../src/types.js";
@@ -48,6 +64,16 @@ const LABELS = [
   "bitcoin",
   "Dear",
   "Mr.",
+  // What the precise detectors look for before a value.
+  "message-id: <abc",
+  "version",
+  "https://user:",
+  "section",
+  "release",
+  "Table",
+  "nginx/",
+  "ssn",
+  "social security number",
   "patient",
   "regarding",
 ];
@@ -124,6 +150,13 @@ function batched(texts: readonly string[], categories?: readonly PiiCategory[]):
 function expectSame(texts: readonly string[], categories?: readonly PiiCategory[]): void {
   expect(JSON.stringify(batched(texts, categories))).toBe(
     JSON.stringify(oneByOne(texts, categories)),
+  );
+}
+
+/** Pipeline.scanBatch against scan on each entry, as JSON. */
+function expectSameSpans(pipeline: Pipeline, texts: readonly string[]): void {
+  expect(JSON.stringify(pipeline.scanBatch(texts))).toBe(
+    JSON.stringify(texts.map((text) => pipeline.scan(text))),
   );
 }
 
@@ -311,16 +344,95 @@ describe("batch fusion", () => {
     });
   });
 
+  describe("Pipeline.scanBatch()", () => {
+    const specs: [string, PipelineSpec][] = [
+      ["precise", {}],
+      ["legacy", { detection: "legacy" }],
+      ["aggressive", { aggressive: true }],
+      ["a few categories", { categories: ["email", "ipv4", "credit-card", "ssn", "iban"] }],
+      ["allow rules and a threshold", { allow: ["ana@example.com"], minConfidence: 0.8 }],
+    ];
+
+    it.each(specs)(
+      "matches scan() at entry boundaries (%s)",
+      (_name, spec) => {
+        expectSameSpans(compilePipeline(spec), boundaryEntries());
+      },
+      120_000,
+    );
+
+    it("matches scan() for values at the edges of entries and on the corpora", () => {
+      const entries: string[] = [];
+      for (const value of VALUES) {
+        for (const before of EDGES) {
+          for (const after of EDGES) entries.push(`${before}${value}${after}`);
+        }
+      }
+      const pipeline = compilePipeline({});
+      expectSameSpans(pipeline, entries);
+      const directory = new URL("./fixtures/corpus/", import.meta.url);
+      expectSameSpans(
+        pipeline,
+        readdirSync(directory).flatMap((file) =>
+          (
+            JSON.parse(readFileSync(new URL(file, directory), "utf8")) as {
+              items: { text: string }[];
+            }
+          ).items.map((item) => item.text),
+        ),
+      );
+    });
+
+    it("keeps the look-back of the precise detectors inside an entry", () => {
+      const pipeline = compilePipeline({ categories: ["email", "ipv4"] });
+      const texts = ["Message-ID: <abc", "ana@example.com", "version", "203.0.113.7 up"];
+      const spans = pipeline.scanBatch(texts);
+      expect(spans.map((found) => found.length)).toEqual([0, 1, 0, 1]);
+      expectSameSpans(pipeline, texts);
+    });
+
+    it("scans entry by entry with a detector of its own", () => {
+      const pipeline = createPipeline({
+        detectors: [defineRegexDetector({ id: "x", category: "x", pattern: /x+/ })],
+        replace: { fallback: () => "" },
+      });
+      expect(pipeline.scanBatch(["axx", "x"]).map((found) => found[0]?.start)).toEqual([1, 0]);
+    });
+
+    it("scans entry by entry with an allow rule that sees offsets", () => {
+      const starts: number[] = [];
+      const pipeline = compilePipeline({
+        categories: ["email"],
+        allow: [
+          ((_value: string, span: { start: number }) => {
+            starts.push(span.start);
+            return false;
+          }) as unknown as string,
+        ],
+      });
+      pipeline.scanBatch(["a ana@example.com", "b bea@example.com"]);
+      expect(starts).toEqual([2, 2]);
+    });
+
+    it("throws for a text that is not a string, as scan() does", () => {
+      expect(() => compilePipeline({}).scanBatch(["a", 1 as unknown as string])).toThrow();
+    });
+  });
+
   describe("invariants of the detectors", () => {
-    const sources = readdirSync(new URL("../src/detectors/", import.meta.url))
-      .filter((file) => file.endsWith(".ts"))
-      .map((file) => ({
-        file,
-        source: readFileSync(new URL(`../src/detectors/${file}`, import.meta.url), "utf8"),
-      }));
+    const sources = [
+      ...readdirSync(new URL("../src/detectors/", import.meta.url))
+        .filter((file) => file.endsWith(".ts"))
+        .map((file) => `../src/detectors/${file}`),
+      "../src/engine/precise.ts",
+    ].map((path) => ({
+      file: path.split("/").pop() ?? path,
+      source: readFileSync(new URL(path, import.meta.url), "utf8"),
+    }));
 
     it("finds nothing in the separator, with any detector", () => {
       expect(detect(FUSION_SEPARATOR)).toEqual([]);
+      expect(compilePipeline({ aggressive: true }).scan(FUSION_SEPARATOR)).toEqual([]);
       expect(
         anonymize(FUSION_SEPARATOR, { aggressive: true, includeMatches: true }).matches,
       ).toEqual([]);
@@ -332,6 +444,12 @@ describe("batch fusion", () => {
       );
       expect(windows.length).toBeGreaterThanOrEqual(15);
       for (const window of windows) expect(window).toBeLessThan(FUSION_SEPARATOR.length - 1);
+      // The precise detectors test longer look-backs with patterns that stop at the separator;
+      // a new look-back is a new case for the boundary tests above.
+      const lookBacks = sources.flatMap(({ source }) =>
+        [...source.matchAll(/start\s*-\s*(\d+)\)/g)].map((m) => Number(m[1])),
+      );
+      expect(lookBacks.sort((a, b) => a - b)).toEqual([1, 2, 48, 96]);
     });
 
     it("anchors at the start of the text only in the greetings of the name detectors", () => {
@@ -359,6 +477,7 @@ describe("batch fusion", () => {
     fc.assert(
       fc.property(fc.array(entry, { minLength: 2, maxLength: 12 }), (texts) => {
         expect(JSON.stringify(batched(texts))).toBe(JSON.stringify(oneByOne(texts)));
+        expectSameSpans(compilePipeline({}), texts);
       }),
       { numRuns: 200 },
     );

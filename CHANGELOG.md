@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Pipeline.scanBatch(texts)` in `anonyma/engine`: `scan()` on each text of a batch, in order. With
+  built-in detectors only, texts under 8 KB are joined, scanned once and split back, as
+  `detectBatch()` does: the same spans, and 745 lines of 100 KB take 37.5 ms instead of 77.3.
+
 ### Changed
 
 - `detectBatch()` and `anonymizeBatch()` scan short entries together: entries under 8 KB are joined

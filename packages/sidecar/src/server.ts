@@ -233,9 +233,9 @@ export function createSidecar(options: SidecarOptions = {}): Sidecar {
     // request on a short text. The pipeline is compiled once; results come in input order.
     "/v1/detect/batch": (body) => {
       const inputs = texts(body);
-      const pipeline = compilePipeline(specOf(body));
+      const spans = compilePipeline(specOf(body)).scanBatch(inputs);
       return {
-        results: inputs.map((input) => ({ matches: matchesOf(input, pipeline.scan(input)) })),
+        results: inputs.map((input, index) => ({ matches: matchesOf(input, spans[index] ?? []) })),
       };
     },
 

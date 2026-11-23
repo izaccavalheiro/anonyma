@@ -15,6 +15,7 @@ import {
 } from "./builtin.js";
 import { contextProblem, withContext } from "./context.js";
 import { defineRegexDetector } from "./detector.js";
+import { FUSABLE_SPAN_DETECTORS } from "../internal/fusion.js";
 import { createPipeline } from "./pipeline.js";
 import {
   bareSsnDetector,
@@ -48,6 +49,15 @@ const PRECISE: Readonly<Partial<Record<PiiCategory, readonly [SpanDetector, ...S
     "credit-card": [creditCardDetector, maskedCardDetector],
     "national-id": [strictNationalIdDetector],
   };
+
+// Batch fusion is proven for every detector builtinDetectors() returns (src/internal/fusion.ts).
+for (const detector of [
+  ...Object.values(PRECISE).flat(),
+  ...Object.values(LEGACY_DETECTORS),
+  ...Object.values(LEGACY_AGGRESSIVE_DETECTORS),
+]) {
+  FUSABLE_SPAN_DETECTORS.add(detector);
+}
 
 const DEFAULT_STRATEGY: StrategySpec = { strategy: "redact" };
 

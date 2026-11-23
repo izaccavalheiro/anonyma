@@ -232,6 +232,13 @@ export interface Pipeline {
    * replace, in document order.
    */
   readonly scan: (text: string) => DetectedSpan[];
+  /**
+   * {@link Pipeline.scan} on each text of a batch, in order. With built-in
+   * detectors only (and no allow rule that is a function), texts under 8 KB are
+   * joined, scanned once and split back: the same spans, at a fraction of the
+   * cost for short texts. Throws, as `scan` does, for a text that is not a string.
+   */
+  readonly scanBatch: (texts: readonly string[]) => DetectedSpan[][];
   /** `true` when at least one span would be replaced. */
   readonly test: (text: string) => boolean;
   /**
