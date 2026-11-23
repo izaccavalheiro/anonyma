@@ -15,6 +15,7 @@
 
 import type { PiiMatch } from "../types.js";
 import { abaRoutingChecksum, pixPayloadChecksum } from "../validators.js";
+import { labelBefore } from "../internal/labels.js";
 
 /**
  * Context keywords for bank account information.
@@ -127,7 +128,7 @@ export function detectBankAccount(text: string): PiiMatch[] {
   }
 
   function hasContext(index: number): boolean {
-    return contextPositions.some((pos) => pos <= index && index - pos <= 30);
+    return labelBefore(contextPositions, index, 30);
   }
 
   function push(value: string, start: number, end: number, confidence: number): void {
@@ -150,7 +151,7 @@ export function detectBankAccount(text: string): PiiMatch[] {
     const keyRe = new RegExp(PIX_RANDOM_KEY_PATTERN.source, "gi");
     while ((m = keyRe.exec(text)) !== null) {
       const at = m.index;
-      if (pixLabels.some((pos) => pos <= at && at - pos <= 30)) {
+      if (labelBefore(pixLabels, at, 30)) {
         push(m[0], at, at + m[0].length, 0.9);
       }
     }

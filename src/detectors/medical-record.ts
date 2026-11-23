@@ -10,6 +10,7 @@
 
 import type { PiiMatch } from "../types.js";
 import { luhn, deaChecksum } from "../validators.js";
+import { labelBefore } from "../internal/labels.js";
 
 /**
  * Context keywords for medical record numbers.
@@ -55,7 +56,7 @@ export function detectMedicalRecord(text: string): PiiMatch[] {
   }
 
   function hasContextAt(index: number): boolean {
-    return contextPositions.some((pos) => pos <= index && index - pos <= 30);
+    return labelBefore(contextPositions, index, 30);
   }
 
   function push(value: string, start: number, end: number, confidence: number): void {

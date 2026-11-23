@@ -468,7 +468,7 @@ describe("batch fusion", () => {
 
     it("keeps every label window shorter than the separator", () => {
       const windows = sources.flatMap(({ source }) =>
-        [...source.matchAll(/-\s*pos\s*<=\s*(\d+)/g)].map((m) => Number(m[1])),
+        [...source.matchAll(/labelBefore\([^,()]+,\s*[\w.]+,\s*(\d+)\)/g)].map((m) => Number(m[1])),
       );
       expect(windows.length).toBeGreaterThanOrEqual(15);
       for (const window of windows) expect(window).toBeLessThan(FUSION_SEPARATOR.length - 1);

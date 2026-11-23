@@ -12,6 +12,7 @@
  */
 
 import type { PiiMatch } from "../types.js";
+import { labelBefore } from "../internal/labels.js";
 
 /**
  * Context keyword pattern for driver's licenses.
@@ -73,9 +74,7 @@ export function detectDriversLicense(text: string): PiiMatch[] {
   // Matches count only after a label: without one, the scan is skipped.
   while (contextPositions.length > 0 && (m = genericRe.exec(text)) !== null) {
     const match = m;
-    const hasContext = contextPositions.some(
-      (pos) => pos <= match.index && match.index - pos <= 20,
-    );
+    const hasContext = labelBefore(contextPositions, match.index, 20);
     if (hasContext) {
       push(match[0], match.index, match.index + match[0].length, 0.85);
     }

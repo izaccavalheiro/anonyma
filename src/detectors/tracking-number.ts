@@ -11,6 +11,7 @@
  */
 
 import type { PiiMatch } from "../types.js";
+import { labelBefore } from "../internal/labels.js";
 
 /**
  * UPS: 1Z + 16 alphanumeric chars (checksum via mod-7)
@@ -73,7 +74,7 @@ export function detectTrackingNumber(text: string): PiiMatch[] {
   }
 
   function hasContextAt(index: number): boolean {
-    return contextPositions.some((pos) => pos <= index && index - pos <= 30);
+    return labelBefore(contextPositions, index, 30);
   }
 
   function push(value: string, start: number, end: number, confidence: number): void {

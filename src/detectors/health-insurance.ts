@@ -11,6 +11,7 @@
 
 import type { PiiMatch } from "../types.js";
 import { nhsMod11 } from "../validators.js";
+import { labelBefore } from "../internal/labels.js";
 
 /**
  * Context keywords for health insurance.
@@ -65,7 +66,7 @@ export function detectHealthInsurance(text: string): PiiMatch[] {
   }
 
   function hasContextAt(index: number): boolean {
-    return contextPositions.some((pos) => pos <= index && index - pos <= 40);
+    return labelBefore(contextPositions, index, 40);
   }
 
   function push(value: string, start: number, end: number, confidence: number): void {
