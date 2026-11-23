@@ -7,6 +7,12 @@ change its API.
 
 ## [Unreleased]
 
+### Changed
+
+- National-id detection reads a long text 1.7 times faster with the same results: its twenty formats
+  are tried only where one can start (a word boundary and a run of digits or capitals long enough),
+  instead of each scanning the whole text.
+
 ## [0.1.0a5] — 2026-11-23
 
 Batches, on every core, and a fix for long texts with capital letters, which took quadratic time.
