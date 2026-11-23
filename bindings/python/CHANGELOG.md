@@ -7,6 +7,10 @@ change its API.
 
 ## [Unreleased]
 
+## [0.1.0a6] — 2026-11-23
+
+The same results, faster: with every category, 1 MB of log text costs 114 ns per byte instead of 194.
+
 ### Changed
 
 - Detection reads long texts faster with the same results: the patterns of national-id, passport,
