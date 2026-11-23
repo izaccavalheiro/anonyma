@@ -710,6 +710,13 @@ describe("detectCryptocurrency() — branch coverage (lines 126, 130, 132)", () 
     expect(matches.every((m) => m.value !== xrpAddr)).toBe(true);
   });
 
+  it("skips XRP address more than 40 characters after a context keyword", () => {
+    // A label is present, so the format is scanned, but this candidate is too far from it.
+    const xrpAddr = "rBWpYJhuJWBPAkzJ4kYQqHShSkkF3rgeD";
+    const matches = detectCryptocurrency(`xrp: see the note below. ${"x ".repeat(30)}${xrpAddr}`);
+    expect(matches.every((m) => m.value !== xrpAddr)).toBe(true);
+  });
+
   it("detects XRP address WITH context keyword", () => {
     // "xrp:" is a CRYPTO_CONTEXT_RE keyword, provides context
     const xrpAddr = "rBWpYJhuJWBPAkzJ4kYQqHShSkkF3rgeD";
