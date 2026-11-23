@@ -183,7 +183,7 @@ for (const [flag, load] of [
 const [ts, ...cores] = engines;
 
 // The first call compiles each engine's patterns: report it apart from the steady state.
-const firstInput = makeText({ size: 1_000, density: 1 / 200, seed: 7 });
+const firstInput = makeText({ size: 1_000, density: 1 / 200, seed: "first" }).text;
 const firstCall = Object.fromEntries(
   engines.map((engine) => {
     const start = performance.now();
@@ -197,7 +197,7 @@ const differences = [];
 for (const workload of WORKLOADS) {
   for (const size of SIZES) {
     for (const [density, value] of DENSITIES) {
-      const text = makeText({ size, density: value, seed: 42 });
+      const { text } = makeText({ size, density: value, seed: "core" });
       if (size <= COMPARE_UP_TO) {
         const expected = workload.run(ts, text);
         for (const engine of cores) {
