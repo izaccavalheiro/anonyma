@@ -469,7 +469,7 @@ mod tests {
 
     #[test]
     fn engines_refuse_what_they_cannot_detect() {
-        let error = call("anonymize", &json!({ "text": "x", "preset": ["lgpd"] })).unwrap_err();
+        let error = call("anonymize", &json!({ "text": "x", "preset": ["ccpa"] })).unwrap_err();
         assert!(error.contains("does not detect"));
     }
 }

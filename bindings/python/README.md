@@ -30,15 +30,16 @@ engine.restore(answer, shielded.vault)             # values back in the answer
 
 ## Status: alpha
 
-The Rust core does not detect every category of the TypeScript package yet
-(cryptocurrency addresses, licence plates, medical records and others). A preset or category it cannot
-detect in full raises `UnsupportedCategoriesError` and names what is missing,
-instead of silently letting the data through:
+The Rust core detects 24 of the 27 categories of the TypeScript package, and
+serves every compliance preset but CCPA in full: `Anonyma(presets=["lgpd",
+"hipaa"])` works as is. A category it cannot detect yet (API keys, tracking
+numbers, case numbers) raises `UnsupportedCategoriesError` and names what is
+missing, instead of silently letting the data through:
 
 ```python
-Anonyma(presets=["lgpd"])                      # UnsupportedCategoriesError: cryptocurrency, social-media, ...
-engine = Anonyma(presets=["lgpd"], allow_partial=True)
-engine.undetected                              # ('cryptocurrency', 'social-media', ...)
+Anonyma(presets=["ccpa"])                      # UnsupportedCategoriesError: api-key
+engine = Anonyma(presets=["ccpa"], allow_partial=True)
+engine.undetected                              # ('api-key',)
 ```
 
 `anonyma.capabilities()` lists what the core passes in the conformance suite.
