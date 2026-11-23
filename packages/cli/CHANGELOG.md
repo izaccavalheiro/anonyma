@@ -4,6 +4,15 @@ All notable changes to `anonyma-cli` are documented in this file. The package fo
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) independently of `anonyma`; while it is
 at 0.x, a minor version may change its API or its command line.
 
+## [Unreleased]
+
+### Fixed
+
+- `anonyma scrub -o <file>` no longer leaves a `<file>.partial-<pid>` file behind when it fails
+  right after it starts, as it could on Windows: the partial file was removed before the stream
+  that creates it had opened it, and the open then created it again. The removal now waits for
+  the stream to close.
+
 ## [0.1.0] — 2026-11-21
 
 First release. Requires `anonyma` ^1.3.0.

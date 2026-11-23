@@ -125,8 +125,18 @@ export function openOutput(path: string | undefined, stdout: Writable): Sink {
     },
     async abort(): Promise<void> {
       if (file === undefined || partial === undefined) return;
-      file.destroy();
       gzip?.destroy();
+      // The file is opened asynchronously: removing it before the stream has
+      // closed could run before the open, which would then create it again.
+      if (!file.closed) {
+        const closed = new Promise<void>((resolve) =>
+          file.once("close", () => {
+            resolve();
+          }),
+        );
+        file.destroy();
+        await closed;
+      }
       await rm(partial, { force: true });
     },
     digest(): string {
