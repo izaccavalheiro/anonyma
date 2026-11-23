@@ -422,6 +422,897 @@
       }
     },
     {
+      "id": "validate.nino.32",
+      "description": "UK National Insurance number",
+      "op": "validate",
+      "requires": ["validate:nino"],
+      "input": {
+        "validator": "nino",
+        "value": "AB 12 34 56 A"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.nino.33",
+      "description": "the prefix letter D is never issued",
+      "op": "validate",
+      "requires": ["validate:nino"],
+      "input": {
+        "validator": "nino",
+        "value": "DA 12 34 56 A"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.bsn.34",
+      "description": "Dutch BSN, eleven-test",
+      "op": "validate",
+      "requires": ["validate:bsn"],
+      "input": {
+        "validator": "bsn",
+        "value": "111222333"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.bsn.35",
+      "description": "eleven-test fails",
+      "op": "validate",
+      "requires": ["validate:bsn"],
+      "input": {
+        "validator": "bsn",
+        "value": "111222334"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.pt-nif.36",
+      "description": "Portuguese NIF",
+      "op": "validate",
+      "requires": ["validate:pt-nif"],
+      "input": {
+        "validator": "pt-nif",
+        "value": "123456789"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.pt-nif.37",
+      "description": "check digit wrong",
+      "op": "validate",
+      "requires": ["validate:pt-nif"],
+      "input": {
+        "validator": "pt-nif",
+        "value": "123456788"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.es-dni.38",
+      "description": "Spanish DNI",
+      "op": "validate",
+      "requires": ["validate:es-dni"],
+      "input": {
+        "validator": "es-dni",
+        "value": "12345678Z"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.es-dni.39",
+      "description": "Spanish NIE: X counts as 0",
+      "op": "validate",
+      "requires": ["validate:es-dni"],
+      "input": {
+        "validator": "es-dni",
+        "value": "X1234567L"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.es-dni.40",
+      "description": "check letter wrong",
+      "op": "validate",
+      "requires": ["validate:es-dni"],
+      "input": {
+        "validator": "es-dni",
+        "value": "12345678A"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.it-fiscal-code.41",
+      "description": "Italian fiscal code",
+      "op": "validate",
+      "requires": ["validate:it-fiscal-code"],
+      "input": {
+        "validator": "it-fiscal-code",
+        "value": "RSSMRA85T10A562S"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.it-fiscal-code.42",
+      "description": "check letter wrong",
+      "op": "validate",
+      "requires": ["validate:it-fiscal-code"],
+      "input": {
+        "validator": "it-fiscal-code",
+        "value": "RSSMRA85T10A562T"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.fr-nir.43",
+      "description": "French NIR with its key",
+      "op": "validate",
+      "requires": ["validate:fr-nir"],
+      "input": {
+        "validator": "fr-nir",
+        "value": "2 84 05 75 123 456 72"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.fr-nir.44",
+      "description": "key wrong",
+      "op": "validate",
+      "requires": ["validate:fr-nir"],
+      "input": {
+        "validator": "fr-nir",
+        "value": "2 84 05 75 123 456 73"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.cn-resident-id.45",
+      "description": "Chinese resident ID with check character X",
+      "op": "validate",
+      "requires": ["validate:cn-resident-id"],
+      "input": {
+        "validator": "cn-resident-id",
+        "value": "11010519491231002X"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.cn-resident-id.46",
+      "description": "check character wrong",
+      "op": "validate",
+      "requires": ["validate:cn-resident-id"],
+      "input": {
+        "validator": "cn-resident-id",
+        "value": "110105194912310021"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.au-tfn.47",
+      "description": "Australian TFN",
+      "op": "validate",
+      "requires": ["validate:au-tfn"],
+      "input": {
+        "validator": "au-tfn",
+        "value": "123 456 782"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.au-tfn.48",
+      "description": "weighted sum fails",
+      "op": "validate",
+      "requires": ["validate:au-tfn"],
+      "input": {
+        "validator": "au-tfn",
+        "value": "123 456 783"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.se-personnummer.49",
+      "description": "Swedish personnummer, Luhn over ten digits",
+      "op": "validate",
+      "requires": ["validate:se-personnummer"],
+      "input": {
+        "validator": "se-personnummer",
+        "value": "811218-9876"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.se-personnummer.50",
+      "description": "Luhn fails",
+      "op": "validate",
+      "requires": ["validate:se-personnummer"],
+      "input": {
+        "validator": "se-personnummer",
+        "value": "811218-9877"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.nhs.51",
+      "description": "NHS number",
+      "op": "validate",
+      "requires": ["validate:nhs"],
+      "input": {
+        "validator": "nhs",
+        "value": "943 476 5919"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.nhs.52",
+      "description": "mod-11 check digit wrong",
+      "op": "validate",
+      "requires": ["validate:nhs"],
+      "input": {
+        "validator": "nhs",
+        "value": "943 476 5918"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.vin.53",
+      "description": "VIN with check character X",
+      "op": "validate",
+      "requires": ["validate:vin"],
+      "input": {
+        "validator": "vin",
+        "value": "1HGBH41JXMN109186"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.vin.54",
+      "description": "transliteration checksum fails",
+      "op": "validate",
+      "requires": ["validate:vin"],
+      "input": {
+        "validator": "vin",
+        "value": "1HGBH41JXMN109187"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.dea.55",
+      "description": "DEA registration number",
+      "op": "validate",
+      "requires": ["validate:dea"],
+      "input": {
+        "validator": "dea",
+        "value": "AB1234563"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.dea.56",
+      "description": "check digit wrong",
+      "op": "validate",
+      "requires": ["validate:dea"],
+      "input": {
+        "validator": "dea",
+        "value": "AB1234564"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.aadhaar.57",
+      "description": "Aadhaar: twelve digits, not starting with 0 or 1, Verhoeff",
+      "op": "validate",
+      "requires": ["validate:aadhaar"],
+      "input": {
+        "validator": "aadhaar",
+        "value": "2341 2341 2346"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.aadhaar.58",
+      "description": "Verhoeff fails",
+      "op": "validate",
+      "requires": ["validate:aadhaar"],
+      "input": {
+        "validator": "aadhaar",
+        "value": "2341 2341 2347"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.npi.59",
+      "description": "NPI: Luhn behind the prefix 80840",
+      "op": "validate",
+      "requires": ["validate:npi"],
+      "input": {
+        "validator": "npi",
+        "value": "1234567893"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.npi.60",
+      "description": "Luhn fails",
+      "op": "validate",
+      "requires": ["validate:npi"],
+      "input": {
+        "validator": "npi",
+        "value": "1234567894"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.imei.61",
+      "description": "IMEI with separators",
+      "op": "validate",
+      "requires": ["validate:imei"],
+      "input": {
+        "validator": "imei",
+        "value": "49-015420-323751-8"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.imei.62",
+      "description": "Luhn fails",
+      "op": "validate",
+      "requires": ["validate:imei"],
+      "input": {
+        "validator": "imei",
+        "value": "49-015420-323751-9"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "detect.national-id.canada-sin",
+      "description": "Canadian SIN with separators",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "SIN 046 454 286 on file",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "046 454 286",
+            "start": 4,
+            "end": 15,
+            "confidence": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.uk-nino-upper-case-only",
+      "description": "reference behaviour: the national-id patterns run case-sensitively, so a lower-case NINO is not matched",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "NINO AB 12 34 56 A and ab 12 34 56 a",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "AB 12 34 56 A",
+            "start": 5,
+            "end": 18,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.aadhaar",
+      "description": "Indian Aadhaar number",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "Aadhaar 2341 2341 2346",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "2341 2341 2346",
+            "start": 8,
+            "end": 22,
+            "confidence": 0.82
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.korea-rrn",
+      "description": "South Korean resident registration number",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "RRN 900101-1234567",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "900101-1234567",
+            "start": 4,
+            "end": 18,
+            "confidence": 0.87
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.sweden",
+      "description": "Swedish personnummer",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "Personnummer 811218-9876",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "811218-9876",
+            "start": 13,
+            "end": 24,
+            "confidence": 0.87
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.spain",
+      "description": "Spanish DNI and NIE",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "DNI 12345678Z, NIE X1234567L",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "12345678Z",
+            "start": 4,
+            "end": 13,
+            "confidence": 0.82
+          },
+          {
+            "category": "national-id",
+            "value": "X1234567L",
+            "start": 19,
+            "end": 28,
+            "confidence": 0.82
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.italy",
+      "description": "Italian fiscal code",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "Codice fiscale RSSMRA85T10A562S",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "RSSMRA85T10A562S",
+            "start": 15,
+            "end": 31,
+            "confidence": 0.88
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.france",
+      "description": "French NIR",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "NIR 2 84 05 75 123 456 72",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "2 84 05 75 123 456 72",
+            "start": 4,
+            "end": 25,
+            "confidence": 0.84
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.mexico-curp",
+      "description": "Mexican CURP",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "CURP GODE561231HDFRRN09",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "GODE561231HDFRRN09",
+            "start": 5,
+            "end": 23,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.china-with-label",
+      "description": "a Chinese resident ID needs a label, which also raises the confidence",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "National ID: 11010519491231002X",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "11010519491231002X",
+            "start": 13,
+            "end": 31,
+            "confidence": 0.8500000000000001
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.china-without-label",
+      "description": "without a label it is not reported",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "Resident 11010519491231002X",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.national-id.brazil-rg",
+      "description": "Brazilian RG after its own label",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "RG nº 12.345.678-9",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "12.345.678-9",
+            "start": 6,
+            "end": 18,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.labelled-digits",
+      "description": "ambiguous digit runs count only near a label",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "ID number: 123456789 and 12.345.678",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "123456789",
+            "start": 11,
+            "end": 20,
+            "confidence": 0.8
+          },
+          {
+            "category": "national-id",
+            "value": "12.345.678",
+            "start": 25,
+            "end": 35,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.invalid-default",
+      "description": "the default detector reports a number whose key fails",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "NIR 2 84 05 75 123 456 73",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "2 84 05 75 123 456 73",
+            "start": 4,
+            "end": 25,
+            "confidence": 0.84
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.invalid-strict",
+      "description": "the strict detector drops it",
+      "op": "detect",
+      "requires": ["detect:national-id", "detect:national-id+strict"],
+      "input": {
+        "text": "NIR 2 84 05 75 123 456 73",
+        "categories": ["national-id"],
+        "strict": true
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.national-id.sin-invalid-strict",
+      "description": "a SIN that fails Luhn is dropped in strict mode",
+      "op": "detect",
+      "requires": ["detect:national-id", "detect:national-id+strict"],
+      "input": {
+        "text": "SIN 046 454 287 on file",
+        "categories": ["national-id"],
+        "strict": true
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.passport.labelled",
+      "description": "a label raises the confidence by 0.15",
+      "op": "detect",
+      "requires": ["detect:passport"],
+      "input": {
+        "text": "Passport number: X1234567",
+        "categories": ["passport"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "passport",
+            "value": "X1234567",
+            "start": 17,
+            "end": 25,
+            "confidence": 0.88
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.passport.labelled-digits",
+      "description": "nine digits only after a label",
+      "op": "detect",
+      "requires": ["detect:passport"],
+      "input": {
+        "text": "Passport: 123456789",
+        "categories": ["passport"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "passport",
+            "value": "123456789",
+            "start": 10,
+            "end": 19,
+            "confidence": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.passport.unlabelled",
+      "description": "without a label, the letter-and-digits form is reported and nine digits alone are not",
+      "op": "detect",
+      "requires": ["detect:passport"],
+      "input": {
+        "text": "Ref A12345678 and 123456789",
+        "categories": ["passport"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "passport",
+            "value": "A12345678",
+            "start": 4,
+            "end": 13,
+            "confidence": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.passport.two-letters",
+      "description": "two letters and six digits",
+      "op": "detect",
+      "requires": ["detect:passport"],
+      "input": {
+        "text": "Code AB123456 here",
+        "categories": ["passport"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "passport",
+            "value": "AB123456",
+            "start": 5,
+            "end": 13,
+            "confidence": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.drivers-license.uk",
+      "description": "the UK DVLA form needs no label",
+      "op": "detect",
+      "requires": ["detect:drivers-license"],
+      "input": {
+        "text": "Licence MORGA75311629SMIJ held",
+        "categories": ["drivers-license"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "drivers-license",
+            "value": "MORGA75311629SMIJ",
+            "start": 8,
+            "end": 25,
+            "confidence": 0.78
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.drivers-license.labelled",
+      "description": "a generic number after a label",
+      "op": "detect",
+      "requires": ["detect:drivers-license"],
+      "input": {
+        "text": "Driver's license: D1234567 issued",
+        "categories": ["drivers-license"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "drivers-license",
+            "value": "D1234567",
+            "start": 18,
+            "end": 26,
+            "confidence": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.drivers-license.dl-label",
+      "description": "the DL# label",
+      "op": "detect",
+      "requires": ["detect:drivers-license"],
+      "input": {
+        "text": "DL# A1B2C3D4E5",
+        "categories": ["drivers-license"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "drivers-license",
+            "value": "A1B2C3D4E5",
+            "start": 4,
+            "end": 14,
+            "confidence": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.drivers-license.unlabelled",
+      "description": "a generic number without a label is not reported",
+      "op": "detect",
+      "requires": ["detect:drivers-license"],
+      "input": {
+        "text": "Reference D1234567",
+        "categories": ["drivers-license"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
       "id": "detect.email.basic",
       "description": "an address before a full stop",
       "op": "detect",
@@ -2822,7 +3713,7 @@
       }
     },
     {
-      "id": "digest.sha256.147",
+      "id": "digest.sha256.202",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -2834,7 +3725,7 @@
       }
     },
     {
-      "id": "digest.sha256.148",
+      "id": "digest.sha256.203",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -2846,7 +3737,7 @@
       }
     },
     {
-      "id": "digest.sha256.149",
+      "id": "digest.sha256.204",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],

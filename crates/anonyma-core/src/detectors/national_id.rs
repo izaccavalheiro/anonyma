@@ -1,58 +1,224 @@
-//! National identity numbers (`src/detectors/national-id.ts`): the Brazilian
-//! CPF entry only, so far ([`crate::Support::Partial`]).
+//! National identity numbers (`src/detectors/national-id.ts`): twenty
+//! country formats, in the reference's order. The first entry to report a
+//! range keeps it. Ambiguous formats need a label within 40 characters
+//! before them, and a label raises any entry's confidence by 0.05.
 //!
-//! The reference runs twenty country entries in order and keeps the first
-//! match of each range. With the CPF entry alone, the results agree on any
-//! text in which no other entry matches; the conformance cases that need only
-//! this entry (`detect:national-id/br-cpf`) are such texts.
+//! The reference compiles every entry with the `g` flag alone, dropping the
+//! `i` of the UK, Chinese, Spanish and Italian patterns: they match upper
+//! case only, here too. The strict variant drops a number whose check digits
+//! fail.
 
-use super::{has_context, label_ends, Collector, Match};
-use crate::jsregex::js_regex;
-use crate::validators::cpf;
+use std::sync::OnceLock;
+
+use super::{has_context, label_ends, Match};
+use crate::jsregex::JsRegex;
+use crate::validators::{
+    au_tfn, bsn, cn_resident_id, cpf, es_dni, fr_nir, it_fiscal_code, luhn, nino, pt_nif,
+    se_personnummer, verhoeff,
+};
 use crate::Category;
 
-js_regex!(cpf_pattern = r"\b\d{3}\.\d{3}\.\d{3}[-\s]\d{2}\b");
+/// The label of most entries.
+const NATIONAL_ID_LABEL: &str = r"\b(?:national\s+(?:id|identification|identity)\s*(?:number|no\.?|card|#)?|id\s+(?:number|no\.?|#)|citizen(?:ship)?\s+(?:number|id)|personal\s+(?:id|identification)\s*(?:number|no\.?)?|identificat(?:ion|or))\s*:?\s*";
 
-// Labels within 40 characters before a number raise its confidence.
-js_regex!(context = insensitive r"\b(?:national\s+(?:id|identification|identity)\s*(?:number|no\.?|card|#)?|id\s+(?:number|no\.?|#)|citizen(?:ship)?\s+(?:number|id)|personal\s+(?:id|identification)\s*(?:number|no\.?)?|identificat(?:ion|or))\s*:?\s*");
+/// The label of the Brazilian RG, in lower case; `É` is spelled out, as only
+/// ASCII letters are folded.
+const RG_LABEL: &str = r"\b(?:rg|r\.g\.|registro\s+geral|(?:carteira|c[éÉe]dula)\s+de\s+identidade|identidade)\s*(?:n[º°o.]?\s*)?:?\s*";
 
-const CPF_CONFIDENCE: f64 = 0.92;
+struct Entry {
+    pattern: JsRegex,
+    confidence: f64,
+    requires_label: bool,
+    validate: Option<fn(&str) -> bool>,
+    rg_label: bool,
+}
+
+fn entry(
+    source: &str,
+    confidence: f64,
+    requires_label: bool,
+    validate: Option<fn(&str) -> bool>,
+) -> Entry {
+    Entry {
+        pattern: JsRegex::new(source),
+        confidence,
+        requires_label,
+        validate,
+        rg_label: false,
+    }
+}
+
+fn entries() -> &'static [Entry] {
+    static CELL: OnceLock<Vec<Entry>> = OnceLock::new();
+    CELL.get_or_init(|| {
+        vec![
+            // Canada SIN
+            entry(r"\b\d{3}[\s-]\d{3}[\s-]\d{3}\b", 0.85, false, Some(luhn)),
+            // Mexico CURP
+            entry(
+                r"\b[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]\d\b",
+                0.9,
+                false,
+                None,
+            ),
+            // Mexico RFC
+            entry(r"\b[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}\b", 0.78, true, None),
+            // UK National Insurance number
+            entry(
+                r"\b[A-CEGHJ-PR-TW-Z]{2}[\s-]?\d{2}[\s-]?\d{2}[\s-]?\d{2}[\s-]?[A-D]\b",
+                0.9,
+                false,
+                Some(nino),
+            ),
+            // India Aadhaar
+            entry(
+                r"\b[2-9]\d{3}[\s-]?\d{4}[\s-]?\d{4}\b",
+                0.82,
+                false,
+                Some(verhoeff),
+            ),
+            // China resident ID
+            entry(r"\b\d{17}[\dX]\b", 0.8, true, Some(cn_resident_id)),
+            // South Korea RRN
+            entry(r"\b\d{6}[\s-]\d{7}\b", 0.87, false, None),
+            // Brazil CPF
+            entry(r"\b\d{3}\.\d{3}\.\d{3}[-\s]\d{2}\b", 0.92, false, Some(cpf)),
+            // Sweden personnummer
+            entry(r"\b\d{6}[-+]\d{4}\b", 0.87, false, Some(se_personnummer)),
+            // Spain DNI and NIE
+            entry(
+                r"\b(?:\d{8}[A-Z]|[XYZ]\d{7}[A-Z])\b",
+                0.82,
+                false,
+                Some(es_dni),
+            ),
+            // Italy codice fiscale
+            entry(
+                r"\b[A-Z]{6}\d{2}[A-EHLMPRST]\d{2}[A-Z]\d{3}[A-Z]\b",
+                0.88,
+                false,
+                Some(it_fiscal_code),
+            ),
+            // France NIR
+            entry(
+                r"\b[12]\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{3}\s?\d{3}\s?\d{2}\b",
+                0.84,
+                false,
+                Some(fr_nir),
+            ),
+            // More ambiguous: a label is required.
+            // Argentina DNI
+            entry(r"\b\d{2,3}[.\s]?\d{3}[.\s]?\d{3}\b", 0.75, true, None),
+            // South Africa ID
+            entry(r"\b\d{13}\b", 0.72, true, Some(luhn)),
+            // Nigeria NIN
+            entry(r"\b\d{11}\b", 0.7, true, None),
+            // Australia TFN
+            entry(r"\b\d{3}[\s-]?\d{3}[\s-]?\d{3}\b", 0.75, true, Some(au_tfn)),
+            // Germany Personalausweis
+            entry(r"\b[A-Z0-9]{9}\b", 0.75, true, None),
+            // Portugal NIF
+            entry(r"\b[1-9]\d{8}\b", 0.7, true, Some(pt_nif)),
+            // Netherlands BSN
+            entry(r"\b\d{9}\b", 0.7, true, Some(bsn)),
+            // Brazil RG, after its own label
+            Entry {
+                rg_label: true,
+                ..entry(r"\b\d{1,2}\.?\d{3}\.?\d{3}-?[\dXx]\b", 0.85, true, None)
+            },
+        ]
+    })
+}
+
+fn labels() -> &'static (JsRegex, JsRegex) {
+    static CELL: OnceLock<(JsRegex, JsRegex)> = OnceLock::new();
+    CELL.get_or_init(|| {
+        (
+            JsRegex::insensitive(NATIONAL_ID_LABEL),
+            JsRegex::insensitive(RG_LABEL),
+        )
+    })
+}
 
 pub(super) fn detect(text: &str, strict: bool) -> Vec<Match> {
-    let labels = label_ends(context().ranges(text));
-    let mut found = Collector::new(text, Category::NationalId);
-    for (start, end) in cpf_pattern().ranges(text) {
-        // The default detector does not verify the check digits; the strict one does.
-        if strict && !cpf(&text[start..end]) {
-            continue;
-        }
-        let confidence = if has_context(text, &labels, start, 40) {
-            (CPF_CONFIDENCE + 0.05).min(0.97)
+    let (national, rg) = labels();
+    let national_ends = label_ends(national.ranges(text));
+    let rg_ends = label_ends(rg.ranges(text));
+    let mut seen = std::collections::HashSet::new();
+    let mut found = Vec::new();
+    for entry in entries() {
+        let ends = if entry.rg_label {
+            &rg_ends
         } else {
-            CPF_CONFIDENCE
+            &national_ends
         };
-        found.push(start, end, confidence);
+        for (start, end) in entry.pattern.ranges(text) {
+            if seen.contains(&(start, end)) {
+                continue;
+            }
+            let labelled = has_context(text, ends, start, 40);
+            if entry.requires_label && !labelled {
+                continue;
+            }
+            // A number whose check digits fail may still be another country's number.
+            if strict
+                && entry
+                    .validate
+                    .is_some_and(|check| !check(&text[start..end]))
+            {
+                continue;
+            }
+            let confidence = if labelled {
+                (entry.confidence + 0.05).min(0.97)
+            } else {
+                entry.confidence
+            };
+            seen.insert((start, end));
+            found.push(Match::new(
+                Category::NationalId,
+                text,
+                start,
+                end,
+                confidence,
+            ));
+        }
     }
-    found.finish()
+    found
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    #[test]
-    fn check_digits_only_in_strict_mode() {
-        assert_eq!(detect("CPF 529.982.247-26", false).len(), 1);
-        assert!(detect("CPF 529.982.247-26", true).is_empty());
-        assert_eq!(detect("CPF 529.982.247-25", true).len(), 1);
+    fn values(text: &str, strict: bool) -> Vec<String> {
+        detect(text, strict).into_iter().map(|m| m.value).collect()
     }
 
     #[test]
-    fn a_label_raises_the_confidence() {
+    fn countries() {
         assert_eq!(
-            detect("National ID: 529.982.247-25", false)[0].confidence,
-            0.97
+            values("CPF 529.982.247-25 cadastrado", false),
+            ["529.982.247-25"]
         );
-        assert_eq!(detect("CPF 529.982.247-25", false)[0].confidence, 0.92);
+        assert_eq!(
+            values("DNI 12345678Z, NIE X1234567L", false),
+            ["12345678Z", "X1234567L"]
+        );
+        assert_eq!(values("RG nº 12.345.678-9", false), ["12.345.678-9"]);
+        assert!(values("Resident 11010519491231002X", false).is_empty());
+        assert_eq!(
+            values("National ID: 11010519491231002X", false),
+            ["11010519491231002X"]
+        );
+    }
+
+    #[test]
+    fn upper_case_only_and_strict() {
+        assert_eq!(
+            values("NINO AB 12 34 56 A and ab 12 34 56 a", false),
+            ["AB 12 34 56 A"]
+        );
+        assert_eq!(values("NIR 2 84 05 75 123 456 73", false).len(), 1);
+        assert!(values("NIR 2 84 05 75 123 456 73", true).is_empty());
     }
 }

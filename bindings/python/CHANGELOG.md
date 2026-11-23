@@ -14,7 +14,12 @@ change its API.
   aggressive mode), `url`, `date-of-birth`, `name` (after a greeting, a title or a context keyword)
   and `address` (US, European and Brazilian streets, UK postcodes, post office boxes, labelled
   addresses), ported to the Rust core and conformance-tested.
-- The PCI-DSS preset no longer needs `allow_partial=True`: the core detects all its categories.
+- Detection of `national-id` in full (twenty country formats, and check digits in strict mode),
+  `passport` and `drivers-license`; the validators `nhs`, `npi`, `imei`, `dea`, `vin`, `nino`,
+  `aadhaar`, `bsn`, `pt-nif`, `es-dni`, `it-fiscal-code`, `fr-nir`, `cn-resident-id`, `au-tfn` and
+  `se-personnummer`.
+- The PCI-DSS and FERPA presets no longer need `allow_partial=True`: the core detects all their
+  categories.
 
 ## [0.1.0a1] — 2026-11-23
 
