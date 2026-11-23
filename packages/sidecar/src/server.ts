@@ -64,18 +64,38 @@ function sameSecret(given: string, expected: string): boolean {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
-/** Code-point offset of a UTF-16 offset: the unit of the sidecar, as of the conformance suite. */
-function codePoints(text: string, index: number): number {
+/**
+ * Converts UTF-16 offsets of `text` to code-point offsets: the unit of the sidecar, as of the
+ * conformance suite. Offsets asked for in ascending order (the spans of a scan, start and end)
+ * cost one pass over the text in all; a smaller offset than the last starts again from the
+ * beginning. An offset between the two halves of a surrogate pair counts the pair as one
+ * code point.
+ */
+function codePointCounter(text: string): (index: number) => number {
+  let at = 0;
   let points = 0;
-  for (let at = 0; at < index; at++) {
-    const unit = text.charCodeAt(at);
-    if (unit >= 0xd800 && unit <= 0xdbff && at + 1 < index) {
-      const next = text.charCodeAt(at + 1);
-      if (next >= 0xdc00 && next <= 0xdfff) at++;
+  return (index) => {
+    if (index < at) {
+      at = 0;
+      points = 0;
     }
-    points++;
-  }
-  return points;
+    while (at < index) {
+      const unit = text.charCodeAt(at);
+      if (unit >= 0xd800 && unit <= 0xdbff && at + 1 < text.length) {
+        const next = text.charCodeAt(at + 1);
+        if (next >= 0xdc00 && next <= 0xdfff) {
+          // The offset splits the pair: count it without moving past its first half.
+          if (at + 1 >= index) return points + 1;
+          at += 2;
+          points++;
+          continue;
+        }
+      }
+      at++;
+      points++;
+    }
+    return points;
+  };
 }
 
 function text(body: Body): string {
@@ -183,12 +203,13 @@ export function createSidecar(options: SidecarOptions = {}): Sidecar {
     "/v1/detect": (body) => {
       const input = text(body);
       const spans = compilePipeline(specOf(body)).scan(input);
+      const codePoints = codePointCounter(input);
       return {
         matches: spans.map((span) => ({
           category: span.category,
           value: input.slice(span.start, span.end),
-          start: codePoints(input, span.start),
-          end: codePoints(input, span.end),
+          start: codePoints(span.start),
+          end: codePoints(span.end),
           confidence: span.confidence,
         })),
       };
