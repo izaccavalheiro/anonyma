@@ -30,6 +30,24 @@ detectBatch(texts);
 
 Without the third argument, `anonymizeBatchAsync()` processes every item at once.
 
+### Many short texts
+
+A call costs a fixed amount, whatever the length of the text. For log lines, rows or chat turns,
+that fixed cost is most of the work, so pass them together rather than one call at a time:
+`detectBatch()`, `anonymizeBatch()` and, in the span engine, `pipeline.scanBatch()` join texts under
+8 KB, scan them once and split the results back by text. The results are exactly those of one call
+per text, and short texts cost two to three times less.
+
+```ts
+import { compilePipeline } from "anonyma/engine";
+
+const pipeline = compilePipeline({ preset: "gdpr" }); // compile once, reuse
+const spans = pipeline.scanBatch(lines); // one array of spans per line, in order
+```
+
+`anonymizeBatchAsync()`'s third argument bounds how many asynchronous strategies run at once; the
+detection itself runs on one thread either way.
+
 ## Streams
 
 Which stream to use depends on how the text arrives.

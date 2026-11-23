@@ -13,6 +13,7 @@ import { UnsupportedStrategyError, UnknownCategoryError, ValidationError } from 
 import { combinePresets, type CombinedPreset } from "./presets.js";
 import { compileAllowlist } from "./internal/allowlist.js";
 import { replaceSpans, type Replacement } from "./internal/replace.js";
+import { fuseEach } from "./internal/fusion.js";
 import type {
   AnonymaPlugin,
   AnonymizationRule,
@@ -500,55 +501,6 @@ function detectWith(
 // ---------------------------------------------------------------------------
 
 /**
- * Joins the entries of a batch into one text, so that one scan pays the fixed
- * cost of the 27 detectors once for many entries.
- *
- * Fusion never changes a result. The built-in detectors keep three properties,
- * which `tests/batch-fusion.test.ts` checks, and a detector added later must
- * keep them too:
- *
- * - Every assertion at the edge of a match (`\b`, `(?<!\d)`, `(?![ ./-]?\d)`,
- *   `(?<![\p{L}\d])`, ...) treats `\n` as it treats the start and the end of
- *   the text. The one exception is `^` without the `m` flag in the greetings of
- *   the name detectors; entries that start with a greeting word are scanned
- *   alone (see {@link GREETING_START}).
- * - No pattern crosses the separator: it alternates `\n` and `\0`, so `\s`
- *   stops at the `\0` and `[^\n,]`, `.` and URL paths stop at the `\n`; no
- *   pattern repeats a class that holds both.
- * - Labels count for a value at most 40 UTF-16 units after them, and the
- *   separator is 43 units long, so a label never reaches the next entry.
- *
- * @internal
- */
-export const FUSION_SEPARATOR = "\n" + "\u0000\n".repeat(21);
-
-/**
- * Entries of this many UTF-16 units or more are scanned alone: their fixed cost
- * is under 5% of their scan, so fusing them gains nothing.
- *
- * @internal
- */
-const FUSION_MAX_ENTRY = 8192;
-
-/**
- * The fused text of one scan grows to about this many UTF-16 units. Detectors
- * compare candidates with the labels they found, so a bounded text keeps that
- * work proportional to the batch.
- *
- * @internal
- */
-const FUSION_CHUNK = 32_768;
-
-/**
- * Entries that start with one of these words could start a greeting, which the
- * name detectors anchor with `^`: only the first entry of a fused text would
- * see it. They are scanned alone.
- *
- * @internal
- */
-const GREETING_START = /^(?:dear|hi|hello|greetings|hey)/i;
-
-/**
  * The built-in detectors, as the module defined them: fusion is proven for
  * these functions only, so a registry entry replaced at run time is scanned
  * entry by entry.
@@ -576,66 +528,18 @@ export function detectEach(
   customDetectors: Partial<Record<PiiCategory, Detector>> | undefined,
   aggressive: boolean | undefined,
 ): (PiiMatch[] | undefined)[] {
-  const out = new Array<PiiMatch[] | undefined>(texts.length).fill(undefined);
   const fusable = categories.every(
     (category) =>
       ALL_CATEGORIES.includes(category) &&
       FUSABLE_DETECTORS.has(resolveDetector(category, customDetectors, aggressive, NO_PLUGINS)),
   );
-  if (!fusable) return out;
-
-  const names = categories.includes("name");
-  const members: { readonly index: number; readonly text: string }[] = [];
-  for (const [index, text] of texts.entries()) {
-    if (
-      typeof text === "string" &&
-      text.length < FUSION_MAX_ENTRY &&
-      !text.includes("\u0000") &&
-      !(names && GREETING_START.test(text))
-    ) {
-      members.push({ index, text });
-    }
-  }
-  if (members.length < 2) return out;
-
-  let chunk: typeof members = [];
-  let size = 0;
-  const scan = (): void => {
-    const matches = detectWith(
-      chunk.map(({ text }) => text).join(FUSION_SEPARATOR),
-      categories,
-      customDetectors,
-      aggressive,
-      NO_PLUGINS,
-    );
-    // Matches come sorted by start, and each lies inside one entry.
-    const pending = matches[Symbol.iterator]();
-    let match = pending.next();
-    let offset = 0;
-    for (const { index, text } of chunk) {
-      const next = offset + text.length + FUSION_SEPARATOR.length;
-      const found: PiiMatch[] = [];
-      while (match.done !== true && match.value.start < next) {
-        found.push({
-          ...match.value,
-          start: match.value.start - offset,
-          end: match.value.end - offset,
-        });
-        match = pending.next();
-      }
-      out[index] = found;
-      offset = next;
-    }
-    chunk = [];
-    size = 0;
-  };
-  for (const member of members) {
-    chunk.push(member);
-    size += member.text.length + FUSION_SEPARATOR.length;
-    if (size >= FUSION_CHUNK) scan();
-  }
-  if (chunk.length > 0) scan();
-  return out;
+  if (!fusable) return new Array<PiiMatch[] | undefined>(texts.length).fill(undefined);
+  return fuseEach(
+    texts,
+    categories.includes("name"),
+    (text) => detectWith(text, categories, customDetectors, aggressive, NO_PLUGINS),
+    (match, offset) => ({ ...match, start: match.start - offset, end: match.end - offset }),
+  );
 }
 
 // ---------------------------------------------------------------------------

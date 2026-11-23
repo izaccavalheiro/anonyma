@@ -6,6 +6,8 @@
  */
 
 import { AsyncStrategyError, ValidationError } from "../errors.js";
+import { fuseEach } from "../internal/fusion.js";
+import { BUILTIN_SPAN_DETECTORS } from "./fusable.js";
 import { resolveSpans } from "./resolve.js";
 import type { Candidate, Resolved } from "./resolve.js";
 import type {
@@ -208,6 +210,24 @@ export function createPipeline(options: PipelineOptions): Pipeline {
     return resolveSpans(text, candidates, overlap).map(describe);
   }
 
+  // Fusion is proven for the built-in detectors, and an allow rule that is a
+  // function sees the offsets of a span, which fusion moves.
+  const fusable =
+    detectors.every((detector) => BUILTIN_SPAN_DETECTORS.has(detector)) &&
+    !(options.allow ?? []).some((rule) => typeof rule === "function");
+  const names = detectors.some((detector) => detector.category === "name");
+
+  function scanBatch(texts: readonly string[]): DetectedSpan[][] {
+    const fused = fusable
+      ? fuseEach(texts, names, scan, (span, offset) => ({
+          ...span,
+          start: span.start - offset,
+          end: span.end - offset,
+        }))
+      : [];
+    return texts.map((text, index) => fused[index] ?? scan(text));
+  }
+
   function test(text: string): boolean {
     // Without allow rules any hit survives resolution in some form. With allow
     // rules an allow-listed hit can shadow others, so resolve to be exact.
@@ -292,7 +312,7 @@ export function createPipeline(options: PipelineOptions): Pipeline {
     return { text: parts.join(""), spans: applied };
   }
 
-  return Object.freeze({ detectors, scan, test, replace, transform, transformAsync });
+  return Object.freeze({ detectors, scan, scanBatch, test, replace, transform, transformAsync });
 }
 
 /**

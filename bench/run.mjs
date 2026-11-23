@@ -376,6 +376,13 @@ for (const size of QUICK ? [10_000, 100_000] : [1_000, 10_000, 100_000, 1_000_00
   await cell("detect/each", label(size), size, 1 / 200, "sparse", lines.length, () =>
     lines.map((line) => lib.detect(line)),
   );
+  const scanner = engine.compilePipeline({});
+  await cell("engine/scanBatch", label(size), size, 1 / 200, "sparse", lines.length, () =>
+    scanner.scanBatch(lines),
+  );
+  await cell("engine/scan/each", label(size), size, 1 / 200, "sparse", lines.length, () =>
+    lines.map((line) => scanner.scan(line)),
+  );
 }
 
 // Key derivation cost of the encrypt strategy.
