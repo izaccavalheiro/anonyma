@@ -4,7 +4,7 @@
 
 use std::sync::OnceLock;
 
-use crate::jsregex::{is_letter, js_regex, Guarded, Lookbehind};
+use crate::jsregex::{is_letter, js_regex, Guarded, Haystack, Lookbehind};
 use crate::validators::{iban_mod97, is_js_space};
 
 /// A detection: byte range and confidence.
@@ -404,10 +404,11 @@ fn end_of_iban(text: &str, start: usize, length: usize) -> Option<usize> {
 }
 
 pub(crate) fn iban(text: &str) -> Vec<Hit> {
+    let haystack = Haystack::new(text);
     let mut out = Vec::new();
     let mut at = 0;
     while at <= text.len() {
-        let Some(groups) = iban_start().candidate(text, at) else {
+        let Some(groups) = iban_start().candidate(&haystack, at) else {
             break;
         };
         let Some((start, match_end)) = group(&groups, 1) else {
@@ -514,10 +515,11 @@ fn is_reserved_ipv4(octets: &[u32]) -> bool {
 
 pub(crate) fn ipv4(text: &str) -> Vec<Hit> {
     let pattern = ipv4_pattern();
+    let haystack = Haystack::new(text);
     let mut out = Vec::new();
     let mut at = 0;
     while at <= text.len() {
-        let Some(groups) = pattern.candidate(text, at) else {
+        let Some(groups) = pattern.candidate(&haystack, at) else {
             break;
         };
         let Some((start, core_end)) = group(&groups, 1) else {

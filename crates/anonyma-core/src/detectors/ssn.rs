@@ -9,7 +9,7 @@
 //! is required.
 
 use super::Match;
-use crate::jsregex::{js_regex, next_char};
+use crate::jsregex::{js_regex, next_char, Haystack};
 use crate::Category;
 
 js_regex!(candidate = r"\b(\d{3})[- ]?(\d{2})[- ]?(\d{4})\b");
@@ -23,10 +23,11 @@ fn assignable(area: &str, group: &str, serial: &str) -> bool {
 }
 
 pub(super) fn detect(text: &str) -> Vec<Match> {
+    let haystack = Haystack::new(text);
     let mut matches = Vec::new();
     let mut at = 0;
     while at <= text.len() {
-        let Some(groups) = candidate().captures_at(text, at) else {
+        let Some(groups) = candidate().captures_at(&haystack, at) else {
             break;
         };
         let (Some((start, end)), Some(area), Some(group), Some(serial)) =
