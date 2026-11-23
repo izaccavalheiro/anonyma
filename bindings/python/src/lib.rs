@@ -173,13 +173,13 @@ impl PyEngine {
 
     fn detect(&self, py: Python<'_>, text: &str) -> Vec<MatchTuple> {
         let engine = &self.inner;
-        py.allow_threads(|| tuples(text, &engine.detect(text)))
+        py.detach(|| tuples(text, &engine.detect(text)))
     }
 
     /// (text, matches)
     fn anonymize(&self, py: Python<'_>, text: &str) -> PyResult<(String, Vec<MatchTuple>)> {
         let engine = &self.inner;
-        py.allow_threads(|| {
+        py.detach(|| {
             engine
                 .anonymize(text)
                 .map(|out| (out.text, tuples(text, &out.matches)))
@@ -190,7 +190,7 @@ impl PyEngine {
     /// (text, mapping)
     fn tokenize(&self, py: Python<'_>, text: &str) -> (String, Vec<(String, String)>) {
         let engine = &self.inner;
-        py.allow_threads(|| {
+        py.detach(|| {
             let out = engine.tokenize(text);
             (out.text, out.mapping)
         })

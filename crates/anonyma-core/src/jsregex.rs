@@ -169,6 +169,7 @@ impl JsRegex {
     }
 
     /// Whether the pattern matches anywhere in `text`.
+    #[cfg(test)]
     pub(crate) fn is_match(&self, text: &str) -> bool {
         self.regex.is_match(&self.haystack(text))
     }

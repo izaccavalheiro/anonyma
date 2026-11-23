@@ -20,4 +20,4 @@ anonyma-ffi = { path = "../../crates/anonyma-ffi", default-features = false }
 serde_json.workspace = true
 # The stable ABI of CPython 3.10: one wheel per platform serves every later version.
 # maturin turns on `pyo3/extension-module` (pyproject.toml).
-pyo3 = { version = "0.23", features = ["abi3-py310"] }
+pyo3 = { version = "0.29", features = ["abi3-py310"] }
