@@ -255,6 +255,18 @@ export interface Pipeline {
   readonly transform: (text: string) => TransformResult;
   /** Transform, awaiting replacers one at a time in document order. */
   readonly transformAsync: (text: string) => Promise<TransformResult>;
+  /**
+   * {@link Pipeline.transform} on each text of a batch, in order, with the
+   * spans of {@link Pipeline.scanBatch}: short texts are scanned together.
+   * Throws as `transform` does, for the first text that fails.
+   */
+  readonly transformBatch: (texts: readonly string[]) => TransformResult[];
+  /**
+   * {@link Pipeline.transformAsync} on each text of a batch, in order, with
+   * the spans of {@link Pipeline.scanBatch}. Texts are replaced one after the
+   * other, so replacers run in the order they would in a loop.
+   */
+  readonly transformBatchAsync: (texts: readonly string[]) => Promise<TransformResult[]>;
 }
 
 // ---------------------------------------------------------------------------

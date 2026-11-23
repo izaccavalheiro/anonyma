@@ -245,14 +245,10 @@ export function createSidecar(options: SidecarOptions = {}): Sidecar {
     },
 
     "/v1/anonymize/batch": async (body) => {
-      const inputs = texts(body);
-      const pipeline = compilePipeline(specOf(body));
-      const results = [];
-      for (const input of inputs) {
-        const result = await pipeline.transformAsync(input);
-        results.push({ text: result.text, counts: counts(result.spans) });
-      }
-      return { results };
+      const results = await compilePipeline(specOf(body)).transformBatchAsync(texts(body));
+      return {
+        results: results.map((result) => ({ text: result.text, counts: counts(result.spans) })),
+      };
     },
 
     "/v1/shield": (body) => {
