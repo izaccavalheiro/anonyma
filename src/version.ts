@@ -5,4 +5,4 @@
  */
 
 /** The version of anonyma, as published to npm. */
-export const VERSION = "1.3.3";
+export const VERSION = "1.4.0";

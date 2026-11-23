@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.4.0] — 2026-11-23
+
+Minor release: `rules` given with a preset now adjust the preset instead of replacing it, which
+changes the output of calls that combined the two. Two detector fixes keep card numbers whole.
+
 ### Fixed
 
 - `anonymize()`, `anonymizeAsync()`, `anonymizeObject()` and the methods of an anonymizer created
@@ -885,7 +892,8 @@ All types are zero-cost, type-only exports (stripped by `tsc`; no runtime overhe
 - **Prettier** code formatting.
 - **MIT License**.
 
-[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.3...HEAD
+[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.3...v1.4.0
 [1.3.3]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.0...v1.3.1
