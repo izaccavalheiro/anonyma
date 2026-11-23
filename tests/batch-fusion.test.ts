@@ -414,6 +414,34 @@ describe("batch fusion", () => {
       expect(starts).toEqual([2, 2]);
     });
 
+    it("transforms a batch as transform() and transformAsync() do on each text", async () => {
+      const texts = boundaryEntries().slice(0, 800);
+      // Deterministic strategies only: pseudonymize without a seed is random on every call.
+      const pipeline = compilePipeline({
+        rules: {
+          email: { strategy: "mask" },
+          passport: { strategy: "pseudonymize", seed: "s" },
+        },
+      });
+      const one = texts.map((text) => pipeline.transform(text));
+      expect(JSON.stringify(pipeline.transformBatch(texts))).toBe(JSON.stringify(one));
+      expect(JSON.stringify(await pipeline.transformBatchAsync(texts))).toBe(JSON.stringify(one));
+      const hashing = compilePipeline({
+        categories: ["email"],
+        defaultStrategy: { strategy: "hash", pepper: "p" },
+      });
+      const mails = ["a ana@example.com", "b", "c bea@example.com"];
+      expect(await hashing.transformBatchAsync(mails)).toEqual(
+        await Promise.all(mails.map((text) => hashing.transformAsync(text))),
+      );
+    });
+
+    it("rejects an invalid text in the asynchronous forms instead of throwing", async () => {
+      const pipeline = compilePipeline({});
+      await expect(pipeline.transformAsync(1 as unknown as string)).rejects.toThrow();
+      await expect(pipeline.transformBatchAsync([1 as unknown as string])).rejects.toThrow();
+    });
+
     it("throws for a text that is not a string, as scan() does", () => {
       expect(() => compilePipeline({}).scanBatch(["a", 1 as unknown as string])).toThrow();
     });

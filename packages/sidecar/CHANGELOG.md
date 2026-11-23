@@ -15,7 +15,8 @@ endpoints or settings.
   request for that text alone returns. The pipeline is compiled once per request, and the HTTP
   round trip, about 280–500 µs on loopback, is paid once instead of once per text.
 - `POST /v1/detect/batch` scans its texts with `Pipeline.scanBatch()`: 1,000 texts of 200 bytes
-  cost 35 µs each instead of 158. It needs the `anonyma` release that adds `scanBatch()`.
+  cost 35 µs each instead of 158. `POST /v1/anonymize/batch` uses `transformBatchAsync()` the same
+  way. Both need the `anonyma` release that adds them.
 
 ### Changed
 

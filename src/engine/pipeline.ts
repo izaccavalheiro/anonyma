@@ -216,7 +216,8 @@ export function createPipeline(options: PipelineOptions): Pipeline {
     !(options.allow ?? []).some((rule) => typeof rule === "function");
   const names = detectors.some((detector) => detector.category === "name");
 
-  function scanBatch(texts: readonly string[]): DetectedSpan[][] {
+  /** Each text with its spans, fused where fusion is proven. */
+  function scanEach(texts: readonly string[]): { text: string; spans: DetectedSpan[] }[] {
     const fused = fusable
       ? fuseEach(texts, names, scan, (span, offset) => ({
           ...span,
@@ -224,7 +225,11 @@ export function createPipeline(options: PipelineOptions): Pipeline {
           end: span.end - offset,
         }))
       : [];
-    return texts.map((text, index) => fused[index] ?? scan(text));
+    return texts.map((text, index) => ({ text, spans: fused[index] ?? scan(text) }));
+  }
+
+  function scanBatch(texts: readonly string[]): DetectedSpan[][] {
+    return scanEach(texts).map(({ spans }) => spans);
   }
 
   function test(text: string): boolean {
@@ -261,7 +266,15 @@ export function createPipeline(options: PipelineOptions): Pipeline {
   }
 
   function transform(text: string): TransformResult {
-    const spans = scan(text);
+    return apply(text, scan(text));
+  }
+
+  function transformBatch(texts: readonly string[]): TransformResult[] {
+    return scanEach(texts).map(({ text, spans }) => apply(text, spans));
+  }
+
+  /** Replace `spans`, found by `scan(text)`, with synchronous replacers. */
+  function apply(text: string, spans: readonly DetectedSpan[]): TransformResult {
     if (spans.length === 0) return { text, spans: NO_SPANS };
 
     const parts: string[] = [];
@@ -288,7 +301,22 @@ export function createPipeline(options: PipelineOptions): Pipeline {
   }
 
   async function transformAsync(text: string): Promise<TransformResult> {
+    // In an async function, an invalid text rejects the promise rather than throwing.
     const spans = scan(text);
+    return applyAsync(text, spans);
+  }
+
+  async function transformBatchAsync(texts: readonly string[]): Promise<TransformResult[]> {
+    const results: TransformResult[] = [];
+    for (const { text, spans } of scanEach(texts)) results.push(await applyAsync(text, spans));
+    return results;
+  }
+
+  /** Replace `spans`, found by `scan(text)`, awaiting asynchronous replacers. */
+  async function applyAsync(
+    text: string,
+    spans: readonly DetectedSpan[],
+  ): Promise<TransformResult> {
     if (spans.length === 0) return { text, spans: NO_SPANS };
 
     const parts: string[] = [];
@@ -311,7 +339,17 @@ export function createPipeline(options: PipelineOptions): Pipeline {
     return { text: parts.join(""), spans: applied };
   }
 
-  return Object.freeze({ detectors, scan, scanBatch, test, replace, transform, transformAsync });
+  return Object.freeze({
+    detectors,
+    scan,
+    scanBatch,
+    test,
+    replace,
+    transform,
+    transformAsync,
+    transformBatch,
+    transformBatchAsync,
+  });
 }
 
 /**
