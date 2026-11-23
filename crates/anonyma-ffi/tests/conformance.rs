@@ -35,23 +35,24 @@ fn sorted(value: &Value) -> Value {
 fn compare(op: &str, expected: &Value, actual: &Value) -> Vec<String> {
     let mut problems = Vec::new();
     match op {
-        "detect" => {
-            let want = expected["matches"].as_array().cloned().unwrap_or_default();
-            let got = actual["matches"].as_array().cloned().unwrap_or_default();
+        "detect" | "scan" => {
+            let list = if op == "scan" { "spans" } else { "matches" };
+            let want = expected[list].as_array().cloned().unwrap_or_default();
+            let got = actual[list].as_array().cloned().unwrap_or_default();
             if want.len() != got.len() {
                 problems.push(format!(
-                    "expected {} matches, got {}: {}",
+                    "expected {} {list}, got {}: {}",
                     want.len(),
                     got.len(),
-                    actual["matches"]
+                    actual[list]
                 ));
                 return problems;
             }
             for (i, (w, g)) in want.iter().zip(&got).enumerate() {
-                for key in ["category", "value", "start", "end"] {
-                    if w[key] != g[key] {
+                for key in ["category", "detector", "value", "start", "end", "residual"] {
+                    if w.get(key).is_some() && w[key] != g[key] {
                         problems.push(format!(
-                            "match {i} {key}: expected {}, got {}",
+                            "{list} {i} {key}: expected {}, got {}",
                             w[key], g[key]
                         ));
                     }
@@ -61,7 +62,7 @@ fn compare(op: &str, expected: &Value, actual: &Value) -> Vec<String> {
                     g["confidence"].as_f64().unwrap_or(-2.0),
                 );
                 if (wc - gc).abs() > 1e-9 {
-                    problems.push(format!("match {i} confidence: expected {wc}, got {gc}"));
+                    problems.push(format!("{list} {i} confidence: expected {wc}, got {gc}"));
                 }
             }
         }

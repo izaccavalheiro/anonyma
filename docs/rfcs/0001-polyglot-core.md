@@ -169,7 +169,9 @@ Next steps, in order:
 1. ~~Port the remaining detectors.~~ Done: all 27 categories and every
    validator are ported, and every preset is served in full.
 2. Port the precise detectors of the span engine (`anonyma/engine`) and give
-   the suite an engine-level `detect` operation.
+   the suite an engine-level operation. In progress: the `scan` operation,
+   the cover resolution and the precise e-mail, SSN and IBAN detectors are
+   ported; IPv4, IPv6 and cards come next.
 3. Publish prebuilt `libanonyma_ffi.a` per platform for Go.
 4. Benchmark the Rust core against the TypeScript engine (`bench/`), on Node.js
    through napi-rs and on Workers through WebAssembly. A native engine for the

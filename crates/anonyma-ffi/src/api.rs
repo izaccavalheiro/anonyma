@@ -16,8 +16,8 @@ use anonyma_core::offsets::OffsetMap;
 use anonyma_core::receipt::parse_iso8601;
 use anonyma_core::{
     canonicalize, capabilities, combine_presets, detokenize, restore, sha256_hex, validators,
-    AnonymaEngine, Category, InMemoryVault, IssueOptions, Json, Preset, ReceiptIssuer,
-    StrategySpec, Validator,
+    AnonymaEngine, Category, Detection, InMemoryVault, IssueOptions, Json, Pipeline, Preset,
+    ReceiptIssuer, StrategySpec, Validator,
 };
 use serde_json::{json, Map, Value};
 
@@ -308,6 +308,40 @@ pub fn call(op: &str, input: &Value) -> Result<Value, ApiError> {
                 })
                 .collect();
             Ok(json!({ "matches": matches }))
+        }
+        "scan" => {
+            let source = text(input, "text")?;
+            let offset = offset_of(input, source)?;
+            let mut builder =
+                Pipeline::builder().aggressive(input["aggressive"].as_bool().unwrap_or(false));
+            if !input["categories"].is_null() {
+                builder = builder.categories(categories(input)?);
+            }
+            builder = match input["detection"].as_str() {
+                None | Some("precise") => builder,
+                Some("legacy") => builder.detection(Detection::Legacy),
+                Some(other) => return Err(format!("unknown detection \"{other}\"")),
+            };
+            if let Some(minimum) = input["minConfidence"].as_f64() {
+                builder = builder.min_confidence(minimum);
+            }
+            let pipeline = builder.build().map_err(|e| e.to_string())?;
+            let spans: Vec<Value> = pipeline
+                .scan(source)
+                .into_iter()
+                .map(|span| {
+                    json!({
+                        "category": span.category.as_str(),
+                        "detector": span.detector,
+                        "value": &source[span.start..span.end],
+                        "start": offset(span.start),
+                        "end": offset(span.end),
+                        "confidence": span.confidence,
+                        "residual": span.residual,
+                    })
+                })
+                .collect();
+            Ok(json!({ "spans": spans }))
         }
         "tokenize" => {
             let out = engine(&with_partial(input))?.tokenize(text(input, "text")?);
