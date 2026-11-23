@@ -83,6 +83,33 @@ describe("sidecar", () => {
     expect(body.counts).toMatchObject({ "credit-card": 1, email: 1 });
   });
 
+  it("detects in many texts in one request, as one request per text would", async () => {
+    const texts = ["\u{1F4E7} ana@example.com", "nothing here", "", "call +1 202 555 0102"];
+    const response = await post("/v1/detect/batch", { texts, categories: ["email", "phone"] });
+    const { results } = (await response.json()) as { results: { matches: unknown[] }[] };
+    const single = await Promise.all(
+      texts.map(async (text) => {
+        const one = await post("/v1/detect", { text, categories: ["email", "phone"] });
+        return (await one.json()) as { matches: unknown[] };
+      }),
+    );
+    expect(results).toEqual(single);
+    expect(results[0]?.matches).toEqual([expect.objectContaining({ start: 2 })]);
+  });
+
+  it("anonymizes many texts in one request, as one request per text would", async () => {
+    const texts = ["Card 4111 1111 1111 1111", "mail ana@example.com", ""];
+    const response = await post("/v1/anonymize/batch", { texts, preset: "pci-dss" });
+    const { results } = (await response.json()) as { results: unknown[] };
+    const single = await Promise.all(
+      texts.map(async (text) => (await post("/v1/anonymize", { text, preset: "pci-dss" })).json()),
+    );
+    expect(results).toEqual(single);
+    expect(
+      ((await (await post("/v1/detect/batch", { texts: [] })).json()) as { results: [] }).results,
+    ).toEqual([]);
+  });
+
   it("shields prompts into a session and restores answers", async () => {
     const first = (await (
       await post("/v1/shield", { text: "Mail ana@example.com", categories: ["email"] })
@@ -129,6 +156,13 @@ describe("sidecar", () => {
     ["a body that is not JSON", () => post("/v1/detect", "{"), 400],
     ["a JSON body that is not an object", () => post("/v1/detect", [1]), 400],
     ["a missing text", () => post("/v1/detect", {}), 400],
+    ["batch texts that are not a list", () => post("/v1/detect/batch", { texts: "x" }), 400],
+    ["batch texts that are not strings", () => post("/v1/anonymize/batch", { texts: [1] }), 400],
+    [
+      "a batch with an unknown preset",
+      () => post("/v1/detect/batch", { texts: ["x"], preset: "nope" }),
+      400,
+    ],
     ["an unknown preset", () => post("/v1/anonymize", { text: "x", preset: "nope" }), 400],
     [
       "an invalid strategy",

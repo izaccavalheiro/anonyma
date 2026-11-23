@@ -123,5 +123,17 @@ report(
   "POST /v1/detect, empty text, node:http keep-alive",
   await perRequest("/v1/detect", { text: "" }, postRaw),
 );
+// Batches: microseconds per text, 1,000 texts per request.
+const batch = Array.from({ length: 1000 }, () => ENTRY);
+for (const path of ["/v1/detect/batch", "/v1/anonymize/batch"]) {
+  const reply = await postRaw(path, { texts: batch });
+  if (reply.results?.length !== batch.length) throw new Error(`unexpected answer from ${path}`);
+  for (let i = 0; i < 3; i++) await postRaw(path, { texts: batch });
+  const rounds = 10;
+  const start = process.hrtime.bigint();
+  for (let i = 0; i < rounds; i++) await postRaw(path, { texts: batch });
+  const perText = Number(process.hrtime.bigint() - start) / 1000 / rounds / batch.length;
+  report(`POST ${path}, 1,000 × 200 B, per text`, perText);
+}
 agent.destroy();
 server.close();

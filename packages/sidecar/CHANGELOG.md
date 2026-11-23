@@ -8,6 +8,13 @@ endpoints or settings.
 
 ## [Unreleased]
 
+### Added
+
+- `POST /v1/detect/batch` and `POST /v1/anonymize/batch`: the options of `/v1/detect` and
+  `/v1/anonymize` with a list of `texts`, answered with `results` in the same order, each what a
+  request for that text alone returns. The pipeline is compiled once per request, and the HTTP
+  round trip, about 280–500 µs on loopback, is paid once instead of once per text.
+
 ### Changed
 
 - The image runs on Node.js 24, the line the repository develops on (`.nvmrc`), in both stages:

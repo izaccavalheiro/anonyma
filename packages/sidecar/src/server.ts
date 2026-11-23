@@ -104,6 +104,30 @@ function text(body: Body): string {
   return value;
 }
 
+/** The texts of a batch request: a list of strings, possibly empty. */
+function texts(body: Body): string[] {
+  const value = body["texts"];
+  if (!Array.isArray(value) || !value.every((item) => typeof item === "string")) {
+    throw new HttpError(400, "texts must be a list of strings");
+  }
+  return value;
+}
+
+/** The matches of `spans` in `input`, with code-point offsets. */
+function matchesOf(
+  input: string,
+  spans: readonly { category: string; start: number; end: number; confidence: number }[],
+): Record<string, unknown>[] {
+  const codePoints = codePointCounter(input);
+  return spans.map((span) => ({
+    category: span.category,
+    value: input.slice(span.start, span.end),
+    start: codePoints(span.start),
+    end: codePoints(span.end),
+    confidence: span.confidence,
+  }));
+}
+
 function names(body: Body, key: string): string[] | undefined {
   const value = body[key];
   if (value === undefined) return undefined;
@@ -202,22 +226,33 @@ export function createSidecar(options: SidecarOptions = {}): Sidecar {
   const routes: Record<string, (body: Body) => unknown> = {
     "/v1/detect": (body) => {
       const input = text(body);
-      const spans = compilePipeline(specOf(body)).scan(input);
-      const codePoints = codePointCounter(input);
+      return { matches: matchesOf(input, compilePipeline(specOf(body)).scan(input)) };
+    },
+
+    // One request for many texts: the HTTP round trip, not detection, is most of the cost of a
+    // request on a short text. The pipeline is compiled once; results come in input order.
+    "/v1/detect/batch": (body) => {
+      const inputs = texts(body);
+      const pipeline = compilePipeline(specOf(body));
       return {
-        matches: spans.map((span) => ({
-          category: span.category,
-          value: input.slice(span.start, span.end),
-          start: codePoints(span.start),
-          end: codePoints(span.end),
-          confidence: span.confidence,
-        })),
+        results: inputs.map((input) => ({ matches: matchesOf(input, pipeline.scan(input)) })),
       };
     },
 
     "/v1/anonymize": async (body) => {
       const result = await compilePipeline(specOf(body)).transformAsync(text(body));
       return { text: result.text, counts: counts(result.spans) };
+    },
+
+    "/v1/anonymize/batch": async (body) => {
+      const inputs = texts(body);
+      const pipeline = compilePipeline(specOf(body));
+      const results = [];
+      for (const input of inputs) {
+        const result = await pipeline.transformAsync(input);
+        results.push({ text: result.text, counts: counts(result.spans) });
+      }
+      return { results };
     },
 
     "/v1/shield": (body) => {
