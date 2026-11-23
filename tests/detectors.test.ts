@@ -9,6 +9,7 @@ import { detectIban } from "../src/detectors/iban.js";
 import { detectDateOfBirth } from "../src/detectors/date-of-birth.js";
 import { detectName, detectNameAggressive } from "../src/detectors/name.js";
 import { DETECTOR_REGISTRY, AGGRESSIVE_DETECTOR_REGISTRY } from "../src/detectors/index.js";
+import { anonymize } from "../src/anonymize.js";
 
 // ---------------------------------------------------------------------------
 // Email
@@ -129,6 +130,20 @@ describe("detectCreditCard", () => {
   it("detects hyphen-separated card numbers", () => {
     const matches = detectCreditCard("4111-1111-1111-1111");
     expect(matches).toHaveLength(1);
+  });
+
+  it("leaves the separator after the last group out of the match when a word follows", () => {
+    const spaced = detectCreditCard("Refund 4111 1111 1111 1111 to ana@example.com");
+    expect(spaced[0]).toMatchObject({ value: "4111 1111 1111 1111", start: 7, end: 26 });
+    expect(detectCreditCard("4111-1111-1111-1111-x")[0]?.value).toBe("4111-1111-1111-1111");
+    expect(detectCreditCard("4111111111111111 exp")[0]?.value).toBe("4111111111111111");
+  });
+
+  it("keeps the last four digits and the following space with keepTrailing", () => {
+    const text = "Refund 4111 1111 1111 1111 to ana@example.com";
+    expect(anonymize(text, { preset: "pci-dss" }).text).toBe(
+      "Refund ***************1111 to [REDACTED]",
+    );
   });
 });
 

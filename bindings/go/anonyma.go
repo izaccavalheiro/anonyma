@@ -101,7 +101,9 @@ type Options struct {
 	Categories []string `json:"categories,omitempty"`
 	// Compliance presets ("lgpd", "gdpr", "hipaa", ...).
 	Presets []string `json:"preset,omitempty"`
-	// A strategy per category.
+	// A strategy per category. Without presets, the rules are the categories
+	// detected; with presets, they override the presets' strategies and add
+	// the categories they name.
 	Rules []Rule `json:"rules,omitempty"`
 	// Use the aggressive detectors.
 	Aggressive bool `json:"aggressive,omitempty"`

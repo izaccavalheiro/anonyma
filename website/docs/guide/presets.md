@@ -61,9 +61,22 @@ validating detectors and signed receipts.
 
 ## Changing a preset
 
-In `anonymize()`, `rules` replace the preset's rules and its list of categories (see
-[Per-category rules](strategies.md#per-category-rules)). To add a category to a preset, or change
-the strategy of one, compile a pipeline:
+In `anonymize()`, a rule changes the strategy of one category of the preset, or adds a category,
+and the preset's other categories are still replaced (see
+[Per-category rules](strategies.md#per-category-rules)):
+
+```ts
+import { anonymize } from "anonyma";
+
+anonymize("Card 4111 1111 1111 1111, VIN 1HGCM82633A004352", {
+  preset: "pci-dss",
+  rules: [{ category: "vin", strategy: { strategy: "redact", label: "[VIN]" } }],
+}).text;
+// "Card ***************1111, VIN [VIN]"
+```
+
+In a pipeline, which has validating detectors, `rules` only change strategies: a category is added
+in `categories`:
 
 ```ts
 import { getPreset } from "anonyma";

@@ -590,10 +590,7 @@ describe("compliance/policy", () => {
         policyToSpec(parsePolicy(regulationPolicy("pci-dss"))),
       ).transform(text).text;
       expect(viaPolicy).toBe("Card ***************1111 for [REDACTED]");
-      // The 1.x detector includes the space after the number, so the 1.x preset shows three digits.
-      expect(anonymize(text, { preset: "pci-dss" }).text).toBe(
-        "Card ****************111 for [REDACTED]",
-      );
+      expect(anonymize(text, { preset: "pci-dss" }).text).toBe(viaPolicy);
     });
   });
 });

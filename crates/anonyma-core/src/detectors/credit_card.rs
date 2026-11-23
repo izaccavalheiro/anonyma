@@ -5,10 +5,10 @@ use crate::jsregex::js_regex;
 use crate::validators::luhn_digits;
 use crate::Category;
 
-// 13 to 19 digits, each optionally followed by a space or a hyphen. As in the
-// reference, a separator after the last digit is part of the match when a word
-// follows (`4111 1111 1111 1111 exp`).
-js_regex!(card = r"\b(?:\d[ -]?){13,19}\b");
+// 13 to 19 digits, optionally separated by a space or a hyphen. The match
+// starts and ends with a digit: the separator after the last group is not part
+// of it (`4111 1111 1111 1111 exp`).
+js_regex!(card = r"\b\d(?:[ -]?\d){12,18}\b");
 
 js_regex!(masked = r"\*{4}[ -]?\*{4}[ -]?\*{4}[ -]?\d{4}\b");
 
@@ -48,9 +48,11 @@ mod tests {
     }
 
     #[test]
-    fn trailing_separator_is_kept_as_in_the_reference() {
+    fn the_separator_after_the_last_group_is_left_out() {
         let found = detect("Card 4111 1111 1111 1111 exp 12/30", false);
-        assert_eq!(found[0].value, "4111 1111 1111 1111 ");
+        assert_eq!(found[0].value, "4111 1111 1111 1111");
+        let found = detect("Card 4111-1111-1111-1111-x", false);
+        assert_eq!(found[0].value, "4111-1111-1111-1111");
     }
 
     #[test]

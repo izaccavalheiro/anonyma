@@ -888,6 +888,19 @@
       }
     },
     {
+      "id": "detect.national-id.aadhaar-inside-a-longer-number",
+      "description": "twelve digits in groups followed or preceded by more groups are not an Aadhaar number",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "card 4111 1111 1111 1112, ref 1234 2345 6789 0124",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
       "id": "detect.national-id.korea-rrn",
       "description": "South Korean resident registration number",
       "op": "detect",
@@ -2442,7 +2455,7 @@
     },
     {
       "id": "detect.credit-card.trailing-space",
-      "description": "reference behaviour: the separator after the last digit is part of the match",
+      "description": "the separator after the last group is not part of the number when a word follows",
       "op": "detect",
       "requires": ["detect:credit-card"],
       "input": {
@@ -2453,9 +2466,9 @@
         "matches": [
           {
             "category": "credit-card",
-            "value": "4111 1111 1111 1111 ",
+            "value": "4111 1111 1111 1111",
             "start": 5,
-            "end": 25,
+            "end": 24,
             "confidence": 0.97
           }
         ]
@@ -4965,6 +4978,23 @@
       },
       "expected": {
         "text": "SSN [REDACTED] e CPF [REDACTED]"
+      }
+    },
+    {
+      "id": "anonymize.preset-with-rules",
+      "description": "Rules override the strategies of a preset's categories and add categories; the preset's others are still replaced",
+      "op": "anonymize",
+      "requires": ["anonymize", "preset:pci-dss", "strategy:redact", "detect:ipv4"],
+      "input": {
+        "text": "Card 4111111111111111, mail ana@example.com from 192.0.2.10",
+        "preset": ["pci-dss"],
+        "rules": [
+          { "category": "email", "strategy": { "strategy": "redact", "label": "[EMAIL]" } },
+          { "category": "ipv4", "strategy": { "strategy": "redact", "label": "[IP]" } }
+        ]
+      },
+      "expected": {
+        "text": "Card ************1111, mail [EMAIL] from [IP]"
       }
     },
     {

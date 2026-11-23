@@ -7,6 +7,17 @@ change its API.
 
 ## [Unreleased]
 
+### Fixed
+
+- With presets, a rule for a category the presets do not cover now adds that category; it was
+  ignored. The rules of the other categories still override the presets' strategies
+  ([#47](https://github.com/izaccavalheiro/anonyma/issues/47)).
+- Card numbers written in groups no longer include the space or hyphen after them when a word
+  follows ([#48](https://github.com/izaccavalheiro/anonyma/issues/48)).
+- Twelve digits in groups of four that are part of a longer number written in groups (a card number)
+  are no longer reported as an Aadhaar number
+  ([#49](https://github.com/izaccavalheiro/anonyma/issues/49)).
+
 ## [0.1.0a4] — 2026-11-23
 
 The same results as 0.1.0a3, in one pass over the text: long texts with many values no longer take
