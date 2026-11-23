@@ -191,7 +191,11 @@ image and calls it. Tags release:
   `linux/arm64`) pushed to `ghcr.io/<owner>/anonyma-sidecar`, with provenance,
   an SBOM and an attestation.
 
-The npm packages keep their own workflow (`release.yml`, tags `v<version>`).
+Each release needs a section for its version in its own changelog
+(`bindings/python/CHANGELOG.md`, `packages/sidecar/CHANGELOG.md`), and nothing is published
+without one. The release then gets a GitHub release with those notes. These GitHub releases never
+take the "Latest" badge, which stays with the npm package. The npm packages keep their own
+workflow and changelog (`release.yml`, tags `v<version>`, `CHANGELOG.md`).
 
 Before the first Python release, the PyPI project `anonyma` needs a trusted
 publisher (this repository, `polyglot-release.yml`, environment `pypi`) and
