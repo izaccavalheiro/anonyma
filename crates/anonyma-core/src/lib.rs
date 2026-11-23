@@ -117,9 +117,10 @@ mod tests {
         assert!(caps.contains(&"validate:cpf".to_string()));
         assert!(caps.contains(&"detect:email".to_string()));
         assert!(caps.contains(&"detect:national-id".to_string()));
-        assert!(!caps.contains(&"detect:api-key".to_string()));
-        // Every preset but CCPA covers ported categories only; CCPA needs API keys.
-        assert!(caps.contains(&"preset:lgpd".to_string()));
-        assert!(!caps.contains(&"preset:ccpa".to_string()));
+        assert!(caps.contains(&"detect:api-key".to_string()));
+        // Every category is ported, so every preset is served in full.
+        for preset in crate::Preset::ALL {
+            assert!(caps.contains(&format!("preset:{preset}")), "{preset}");
+        }
     }
 }

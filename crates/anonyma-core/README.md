@@ -27,16 +27,17 @@ lists:
 
 | Area        | Ported                                                                              |
 | ----------- | ----------------------------------------------------------------------------------- |
-| Detectors   | 24 of the 27: all but `api-key`, `tracking-number` and `case-number` |
+| Detectors   | all 27                                                               |
 | Validators  | all 22 of `CHECKSUMS`                                                                |
 | Strategies  | `redact`, `mask`, `pseudonymize`                                                     |
 | Tokens      | classic (`[EMAIL_0001]`) and vault (`{{EMAIL_1}}`) tokens, restoration              |
 | Presets     | all eight definitions and their combination                                         |
 | Receipts    | canonical JSON, SHA-256, HMAC-SHA-256 receipts: issue and verify                    |
 
-An engine refuses a category it does not detect in full, and fails with
-`Error::UnsupportedCategories` rather than skipping it silently. Opt in with
-`EngineBuilder::allow_partial(true)`, and read `AnonymaEngine::undetected()`.
+Every category is ported. Should a future category reach the TypeScript package
+first, an engine asked for it fails with `Error::UnsupportedCategories` rather
+than skipping it silently; `EngineBuilder::allow_partial(true)` opts in to
+partial detection.
 
 ## Regular expressions
 

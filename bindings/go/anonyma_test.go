@@ -31,8 +31,8 @@ func TestAnonymizeWithRules(t *testing.T) {
 	}
 }
 
-func TestPresetsRefuseWhatTheCoreCannotDetect(t *testing.T) {
-	if _, err := Anonymize("x", Options{Presets: []string{"ccpa"}}); err == nil {
+func TestUnknownPresetsAreErrors(t *testing.T) {
+	if _, err := Anonymize("x", Options{Presets: []string{"nope"}}); err == nil {
 		t.Fatal("expected an error")
 	}
 }

@@ -166,10 +166,8 @@ published contract until a listener justifies its first dependency.
 
 Next steps, in order:
 
-1. Port the remaining detectors, starting with those every preset needs
-   (`api-key`, `tracking-number`, `case-number`), each with its conformance
-   cases first. 24 of the 27 are ported, with every validator, and every
-   preset but CCPA is served in full.
+1. ~~Port the remaining detectors.~~ Done: all 27 categories and every
+   validator are ported, and every preset is served in full.
 2. Port the precise detectors of the span engine (`anonyma/engine`) and give
    the suite an engine-level `detect` operation.
 3. Publish prebuilt `libanonyma_ffi.a` per platform for Go.

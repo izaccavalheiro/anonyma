@@ -280,21 +280,30 @@ mod tests {
     use crate::InMemoryVault;
 
     #[test]
-    fn refuses_categories_it_cannot_detect_unless_allowed() {
-        let error = AnonymaEngine::builder()
-            .preset(Preset::Ccpa)
-            .build()
-            .unwrap_err();
-        let Error::UnsupportedCategories(missing) = error else {
-            panic!("unexpected error");
-        };
-        assert_eq!(missing, vec![Category::ApiKey]);
+    fn serves_every_preset_in_full() {
+        for &preset in Preset::ALL {
+            let engine = AnonymaEngine::builder().preset(preset).build().unwrap();
+            assert!(engine.undetected().is_empty(), "{preset}");
+        }
+    }
+
+    #[test]
+    fn a_custom_detector_replaces_the_built_in_one() {
+        struct Nothing;
+        impl Detector for Nothing {
+            fn category(&self) -> Category {
+                Category::Email
+            }
+            fn detect(&self, _text: &str) -> Vec<crate::Match> {
+                Vec::new()
+            }
+        }
         let engine = AnonymaEngine::builder()
-            .preset(Preset::Ccpa)
-            .allow_partial(true)
+            .categories([Category::Email])
+            .detector(Arc::new(Nothing))
             .build()
             .unwrap();
-        assert_eq!(engine.undetected(), &[Category::ApiKey]);
+        assert!(engine.detect("ana@example.com").is_empty());
     }
 
     #[test]
