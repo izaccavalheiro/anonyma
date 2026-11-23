@@ -226,6 +226,8 @@ jobs:
         with:
           toolchain: stable
           targets: ${{ matrix.target }}
+          # llvm-objcopy, with which buildlib.go strips the LLVM bitcode sections.
+          components: llvm-tools
 
       - name: Cache
         uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
@@ -284,6 +286,22 @@ jobs:
           	fmt.Println(out)
           }
           GO
+          test "$(go run .)" = "Mail [REDACTED]"
+
+      # The newest Go release as well as go.mod's: a change of the toolchain, such as
+      # cgo's check of LTO sections (golang/go#83126), fails here, not in a user's build.
+      - name: Set up the newest Go
+        uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version: stable
+          check-latest: true
+          cache: false
+
+      - name: Test and link with the newest Go
+        run: |
+          go version
+          go test ./...
+          cd ../../../go-check/app
           test "$(go run .)" = "Mail [REDACTED]"
 
       - name: Upload the static library
