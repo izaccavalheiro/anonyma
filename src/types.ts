@@ -556,8 +556,10 @@ export interface AnonymizeOptions<
   S extends StrategyOptions | PluginStrategyOptions = StrategyOptions,
 > {
   /**
-   * Per-category overrides. When specified, only the listed categories are processed;
-   * all others are left untouched.
+   * Per-category strategies. Without a `preset`, a non-empty list is also the
+   * list of categories processed; all others are left untouched. With a
+   * `preset`, a rule overrides the strategy of its category, or adds the
+   * category, and the preset's other categories are still processed.
    */
   readonly rules?: readonly AnonymizationRule<S>[];
   /**
@@ -643,10 +645,11 @@ export interface AnonymizeOptions<
    */
   readonly confidenceThreshold?: number;
   /**
-   * Apply a built-in compliance preset, which pre-configures `enabledCategories`
-   * and `defaultStrategy`. Explicit `rules` and `defaultStrategy` options take
-   * precedence over preset values. A list of presets applies all of them, each
-   * category getting the most protective of their strategies.
+   * Apply a built-in compliance preset, which pre-configures the categories
+   * processed and their strategies: a category without a rule of the preset
+   * gets the preset's default strategy. `rules` override the strategies of the
+   * categories they name and add the others. A list of presets applies all of
+   * them, each category getting the most protective of their strategies.
    */
   readonly preset?: PresetSelection;
   /**
@@ -822,7 +825,9 @@ export interface AnonymizerConfig {
   readonly plugins?: readonly AnonymaPlugin[];
   /**
    * Apply a built-in compliance preset, or a list of presets combined with
-   * `combinePresets()`, as the base for this anonymizer.
+   * `combinePresets()`, as the base for this anonymizer. The `rules` given to
+   * one of its methods override the strategies of the categories they name and
+   * add the others; the preset's other categories are still replaced.
    */
   readonly preset?: PresetSelection;
   /**

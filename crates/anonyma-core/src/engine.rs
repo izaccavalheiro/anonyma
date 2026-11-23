@@ -68,8 +68,9 @@ impl EngineBuilder {
     }
 
     /// Detect these categories only, in this order. Without it, an engine
-    /// detects the categories of its presets; without presets, those of its
-    /// rules; without either, every category.
+    /// detects the categories of its presets and of its rules: with a preset,
+    /// a rule overrides the strategy of its category or adds the category, as
+    /// in `anonymize()`. Without presets or rules, it detects every category.
     pub fn categories(mut self, categories: impl IntoIterator<Item = Category>) -> Self {
         self.categories = Some(categories.into_iter().collect());
         self
@@ -135,14 +136,16 @@ impl EngineBuilder {
             Some(combine(&self.presets)?)
         };
 
-        // Categories: explicit, else the rules', else the presets', else all.
+        // Categories: explicit, else the presets' and the rules', else all.
+        // Duplicates are skipped below.
         let categories: Vec<Category> = match (&self.categories, &combined) {
             (Some(categories), _) => categories.clone(),
-            (None, _) if !self.rules.is_empty() && combined.is_none() => {
-                self.rules.iter().map(|(c, _)| *c).collect()
-            }
-            (None, Some(preset)) => preset.categories.clone(),
-            (None, None) => Category::ALL.to_vec(),
+            (None, None) if self.rules.is_empty() => Category::ALL.to_vec(),
+            (None, preset) => preset
+                .iter()
+                .flat_map(|preset| preset.categories.iter().copied())
+                .chain(self.rules.iter().map(|(c, _)| *c))
+                .collect(),
         };
 
         let mut rules: HashMap<Category, Arc<dyn AnonymizerStrategy>> = HashMap::new();
@@ -341,6 +344,36 @@ mod tests {
             .anonymize("Card 4111111111111111, mail ana@example.com")
             .unwrap();
         assert_eq!(out.text, "Card ************1111, mail [REDACTED]");
+    }
+
+    #[test]
+    fn rules_override_and_extend_a_preset() {
+        let engine = AnonymaEngine::builder()
+            .preset(Preset::PciDss)
+            .rule(
+                Category::Email,
+                StrategySpec::Mask {
+                    mask_char: None,
+                    keep_leading: None,
+                    keep_trailing: None,
+                    preserve_format: None,
+                },
+            )
+            .rule(
+                Category::Ipv4,
+                StrategySpec::Redact {
+                    label: Some("[IP]".into()),
+                },
+            )
+            .build()
+            .unwrap();
+        let out = engine
+            .anonymize("Card 4111111111111111, mail ana@example.com from 192.0.2.10")
+            .unwrap();
+        assert_eq!(
+            out.text,
+            "Card ************1111, mail *************** from [IP]"
+        );
     }
 
     #[test]

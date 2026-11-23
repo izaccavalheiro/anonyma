@@ -7,6 +7,12 @@ are documented in this file. The format is based on
 
 ## [Unreleased]
 
+### Fixed
+
+- With presets, a rule for a category the presets do not cover now adds that category; it was
+  ignored. The rules of the other categories still override the presets' strategies
+  ([#47](https://github.com/izaccavalheiro/anonyma/issues/47)).
+
 ## [0.1.0-alpha.2] — 2026-11-23
 
 ### Fixed

@@ -337,3 +337,65 @@ describe("preset lists", () => {
     expect(result).not.toContain("12345678");
   });
 });
+
+describe("presets with rules", () => {
+  const text = "a@example.com 555-867-5309";
+  const maskEmail = [{ category: "email" as const, strategy: { strategy: "mask" as const } }];
+
+  it("anonymize() overrides one category's strategy and keeps the preset's others", () => {
+    const result = anonymize(text, { preset: "gdpr", rules: maskEmail }).text;
+    expect(result.startsWith("************* ")).toBe(true);
+    expect(result).not.toContain("555-867-5309");
+  });
+
+  it("anonymize() adds a category the preset does not cover", () => {
+    const result = anonymize("Card 4111 1111 1111 1111, VIN 1HGCM82633A004352", {
+      preset: "pci-dss",
+      rules: [{ category: "vin", strategy: { strategy: "redact", label: "[VIN]" } }],
+    }).text;
+    expect(result).toBe("Card ***************1111, VIN [VIN]");
+  });
+
+  it("anonymize() keeps the preset's categories when rules is empty", () => {
+    const result = anonymize("mail a@example.com, VIN 1HGCM82633A004352", {
+      preset: "pci-dss",
+      rules: [],
+    }).text;
+    expect(result).toBe("mail [REDACTED], VIN 1HGCM82633A004352");
+  });
+
+  it("anonymize() keeps rules as the list of categories without a preset", () => {
+    expect(anonymize(text, { rules: maskEmail }).text).toBe("************* 555-867-5309");
+  });
+
+  it("anonymizeAsync() keeps the preset's other categories", async () => {
+    const result = (
+      await anonymizeAsync(text, {
+        preset: "gdpr",
+        rules: [{ category: "email", strategy: { strategy: "hash" } }],
+      })
+    ).text;
+    expect(result).toMatch(/^[0-9a-f]{16} /);
+    expect(result).not.toContain("555-867-5309");
+  });
+
+  it("an anonymizer with a preset applies the rules of a call over the preset's", () => {
+    const anonymizer = createAnonymizer({ preset: "gdpr" });
+    const result = anonymizer.anonymize(text, { rules: maskEmail }).text;
+    expect(result.startsWith("************* ")).toBe(true);
+    expect(result).not.toContain("555-867-5309");
+  });
+
+  it("an anonymizer ignores a preset given to a call", () => {
+    const anonymizer = createAnonymizer({ preset: "pci-dss" });
+    const result = anonymizer.anonymize("MRN: 12345678", { preset: "hipaa" }).text;
+    expect(result).toBe("MRN: 12345678");
+  });
+
+  it("an anonymizer without a preset keeps the rules of a call as its categories", () => {
+    const anonymizer = createAnonymizer({ categories: ["email", "phone"] });
+    expect(anonymizer.anonymize(text, { rules: maskEmail }).text).toBe(
+      "************* 555-867-5309",
+    );
+  });
+});

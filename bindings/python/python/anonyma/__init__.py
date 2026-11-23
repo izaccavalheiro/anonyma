@@ -136,6 +136,8 @@ class Anonyma:
         categories: Detect these categories only.
         rules: A strategy per category, ``{"credit-card": {"strategy": "mask",
             "keepTrailing": 4}}``; ``"redact"`` is short for ``{"strategy": "redact"}``.
+            Without presets, they are the categories detected; with presets, they
+            override the presets' strategies and add the categories they name.
         default_strategy: The strategy of categories without a rule.
         aggressive: Use the aggressive detectors (obfuscated e-mail addresses,
             masked card numbers).

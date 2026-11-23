@@ -10,11 +10,12 @@ import { redact } from "./strategies/redact.js";
 import { pseudonymize } from "./strategies/pseudonymize.js";
 import { generalize } from "./strategies/generalize.js";
 import { UnsupportedStrategyError, UnknownCategoryError, ValidationError } from "./errors.js";
-import { combinePresets } from "./presets.js";
+import { combinePresets, type CombinedPreset } from "./presets.js";
 import { compileAllowlist } from "./internal/allowlist.js";
 import { replaceSpans, type Replacement } from "./internal/replace.js";
 import type {
   AnonymaPlugin,
+  AnonymizationRule,
   AnonymizeOptions,
   AnonymizeResult,
   AnonymizerConfig,
@@ -364,6 +365,53 @@ function detectCustomPatterns(
 }
 
 /**
+ * The rules of a resolved preset, one per category of the preset: its own rule
+ * when it has one, `fallback` otherwise.
+ *
+ * @internal
+ */
+function presetRules<S extends StrategyOptions | PluginStrategyOptions>(
+  preset: CombinedPreset,
+  fallback: S,
+): AnonymizationRule<StrategyOptions | S>[] {
+  return preset.categories.map((category) => ({
+    category,
+    strategy: preset.rules.find((r) => r.category === category)?.strategy ?? fallback,
+  }));
+}
+
+/**
+ * `overrides` over `base`: a rule of `overrides` replaces the strategy of its
+ * category, or adds the category when `base` has no rule for it. The categories
+ * of `base` keep their order, and the others follow.
+ *
+ * @internal
+ */
+function mergeRules<S extends StrategyOptions | PluginStrategyOptions>(
+  base: readonly AnonymizationRule<S>[],
+  overrides: readonly AnonymizationRule<S>[],
+): AnonymizationRule<S>[] {
+  const merged = new Map<PiiCategory, S>();
+  for (const rule of [...base, ...overrides]) merged.set(rule.category, rule.strategy);
+  return Array.from(merged, ([category, strategy]) => ({ category, strategy }));
+}
+
+/**
+ * The rules `anonymize()` applies: with a preset, `options.rules` over the
+ * preset's rules, so that a rule changes the strategy of one category and the
+ * preset's other categories are still replaced; without one, `options.rules`.
+ *
+ * @internal
+ */
+function resolveRules(
+  options: AnonymizeOptions<StrategyOptions | PluginStrategyOptions>,
+  preset: CombinedPreset | undefined,
+): readonly AnonymizationRule<StrategyOptions | PluginStrategyOptions>[] {
+  const rules = options.rules ?? [];
+  return preset ? mergeRules(presetRules(preset, preset.defaultStrategy), rules) : rules;
+}
+
+/**
  * Resolve the list of categories to detect from `AnonymizeOptions`.
  * Handles `rules`, `enabledCategories`, and defaults.
  *
@@ -560,16 +608,9 @@ function anonymizeWith(
 
   // Resolve preset if provided.
   const resolvedPreset = options.preset ? combinePresets(options.preset) : undefined;
+  const rules = resolveRules(options, resolvedPreset);
 
   const {
-    rules = resolvedPreset
-      ? resolvedPreset.categories.map((category) => ({
-          category,
-          strategy:
-            resolvedPreset.rules.find((r) => r.category === category)?.strategy ??
-            resolvedPreset.defaultStrategy,
-        }))
-      : [],
     defaultStrategy = resolvedPreset?.defaultStrategy ?? { strategy: "redact" as const },
     includeMatches = false,
     customDetectors,
@@ -740,16 +781,9 @@ async function anonymizeAsyncWith(
 
   // Resolve identical logic as sync path.
   const resolvedPreset = options.preset ? combinePresets(options.preset) : undefined;
+  const rules = resolveRules(options, resolvedPreset);
 
   const {
-    rules = resolvedPreset
-      ? resolvedPreset.categories.map((category) => ({
-          category,
-          strategy:
-            resolvedPreset.rules.find((r) => r.category === category)?.strategy ??
-            resolvedPreset.defaultStrategy,
-        }))
-      : [],
     defaultStrategy = resolvedPreset?.defaultStrategy ?? { strategy: "redact" as const },
     includeMatches = false,
     customDetectors,
@@ -1188,10 +1222,18 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
     throw new UnsupportedStrategyError(defaultStrategy.strategy);
   }
 
-  /** Shared base options derived from config. */
-  function baseOptions(
-    overrides?: Partial<AnonymizeOptions<StrategyOptions | PluginStrategyOptions>>,
-  ): AnonymizeOptions<StrategyOptions | PluginStrategyOptions> {
+  /**
+   * Shared base options derived from config. With a preset, the rules of a call
+   * override the strategies of the preset's rules. The preset is the
+   * anonymizer's: one given to a call is ignored, as `rules` already holds the
+   * categories to replace.
+   */
+  function baseOptions({
+    preset: _preset,
+    ...overrides
+  }: Partial<AnonymizeOptions<StrategyOptions | PluginStrategyOptions>> = {}): AnonymizeOptions<
+    StrategyOptions | PluginStrategyOptions
+  > {
     const base: AnonymizeOptions<StrategyOptions | PluginStrategyOptions> = {
       defaultStrategy,
       ...(customDetectors !== undefined ? { customDetectors } : {}),
@@ -1200,19 +1242,13 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
       ...(consistentTokens !== undefined ? { consistentTokens } : {}),
       ...(aggressive !== undefined ? { aggressive } : {}),
       ...overrides,
-      rules:
-        overrides?.rules ??
-        (presetConfig
-          ? presetConfig.categories.map((category) => ({
-              category,
-              strategy:
-                presetConfig.rules.find((r) => r.category === category)?.strategy ??
-                defaultStrategy,
-            }))
-          : categories.map((category) => ({
-              category,
-              strategy: defaultStrategy,
-            }))),
+      rules: presetConfig
+        ? mergeRules(presetRules(presetConfig, defaultStrategy), overrides.rules ?? [])
+        : (overrides.rules ??
+          categories.map((category) => ({
+            category,
+            strategy: defaultStrategy,
+          }))),
     };
     return base;
   }

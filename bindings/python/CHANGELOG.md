@@ -7,6 +7,12 @@ change its API.
 
 ## [Unreleased]
 
+### Fixed
+
+- With presets, a rule for a category the presets do not cover now adds that category; it was
+  ignored. The rules of the other categories still override the presets' strategies
+  ([#47](https://github.com/izaccavalheiro/anonyma/issues/47)).
+
 ## [0.1.0a4] — 2026-11-23
 
 The same results as 0.1.0a3, in one pass over the text: long texts with many values no longer take

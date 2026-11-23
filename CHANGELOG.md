@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `anonymize()`, `anonymizeAsync()`, `anonymizeObject()` and the methods of an anonymizer created
+  with a preset: `rules` given with a preset override the strategies of the categories they name,
+  and add the categories the preset does not cover. They used to take the place of the preset's
+  rules, so the preset's other categories were left in the text (`preset: "gdpr"` with a rule for
+  `email` left phone numbers in place), and `rules: []` replaced every category. Without a preset,
+  `rules` is still the list of categories replaced
+  ([#47](https://github.com/izaccavalheiro/anonyma/issues/47)).
+
 ---
 
 ## [1.3.3] — 2026-11-23

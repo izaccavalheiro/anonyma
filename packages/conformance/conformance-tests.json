@@ -4968,6 +4968,23 @@
       }
     },
     {
+      "id": "anonymize.preset-with-rules",
+      "description": "Rules override the strategies of a preset's categories and add categories; the preset's others are still replaced",
+      "op": "anonymize",
+      "requires": ["anonymize", "preset:pci-dss", "strategy:redact", "detect:ipv4"],
+      "input": {
+        "text": "Card 4111111111111111, mail ana@example.com from 192.0.2.10",
+        "preset": ["pci-dss"],
+        "rules": [
+          { "category": "email", "strategy": { "strategy": "redact", "label": "[EMAIL]" } },
+          { "category": "ipv4", "strategy": { "strategy": "redact", "label": "[IP]" } }
+        ]
+      },
+      "expected": {
+        "text": "Card ************1111, mail [EMAIL] from [IP]"
+      }
+    },
+    {
       "id": "preset.lgpd",
       "description": "LGPD",
       "op": "preset",

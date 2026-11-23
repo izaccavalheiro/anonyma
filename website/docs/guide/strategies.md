@@ -46,23 +46,22 @@ anonymize("alice@example.com and 192.168.1.1", {
 // "a*************com and [IP REMOVED]"
 ```
 
-:::caution
+:::note
 
-In the options of `anonymize()` and of an anonymizer's methods, a non-empty `rules` list is also the
-list of categories to replace: **a category without a rule is left untouched, even when a preset is
-set** — the rules take the place of the preset's, and `defaultStrategy` does not add categories.
-
-To change one category of a [preset](presets.md) and keep the others, use a pipeline, whose rules
-only override strategies:
+Without a preset, a non-empty `rules` list is also the list of categories to replace: a category
+without a rule is left untouched, and `defaultStrategy` does not add categories. With a
+[preset](presets.md), a rule changes the strategy of its category, or adds the category, and the
+preset's other categories are still replaced:
 
 ```ts
-import { compilePipeline } from "anonyma/engine";
-
-compilePipeline({ preset: "gdpr", rules: { email: { strategy: "mask" } } }).transform(
-  "alice@example.com 555-867-5309",
-).text;
+anonymize("alice@example.com 555-867-5309", {
+  preset: "gdpr",
+  rules: [{ category: "email", strategy: { strategy: "mask" } }],
+}).text;
 // "***************** id_…" — the email masked, the phone pseudonymized by the preset
 ```
+
+In 1.3.3 and earlier, the rules took the place of the preset's, and the phone was left in place.
 
 :::
 

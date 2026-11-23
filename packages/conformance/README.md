@@ -86,7 +86,7 @@ bytes, Python counts code points. Each runner converts. Confidence values are eq
 | `detokenize`     | `text`, `mapping`                                                   | `text`, `replacedCount`, `unresolved`                                              |
 | `shield`         | `text`, `categories`, `vault` (pairs it starts with)                | `text`, `vault` (every pair afterwards, compared as a set)                         |
 | `restore`        | `text`, `vault`                                                     | `text`, `restored`, `unresolved`                                                   |
-| `anonymize`      | `text`, and `preset` (names) or `rules`                             | `text`, or `textPattern` when the output is random                                 |
+| `anonymize`      | `text`, and `preset` (names), `rules` or both                       | `text`, or `textPattern` when the output is random                                 |
 | `preset`         | `names`                                                             | `categories`, `defaultStrategy`, `rules`                                           |
 | `canonicalize`   | `value`                                                             | `text`                                                                             |
 | `digest`         | `text`                                                              | `hex`: SHA-256 of the UTF-8 encoding                                               |
@@ -116,7 +116,8 @@ The semantics are the reference's:
 - **restore** is `restore(text, vault)`: one left-to-right pass over every brace, bracket or angle
   token, each matched whole (`{{PERSON_1}}` never matches inside `{{PERSON_10}}`); a value is never
   restored again.
-- **anonymize** is `anonymize(text, { preset } | { rules })`.
+- **anonymize** is `anonymize(text, { preset, rules })`: with a preset, the rules override the
+  strategies of its categories and add categories; without one, they are the categories replaced.
 - **preset** is `combinePresets(names)`.
 - **canonicalize** is the canonical JSON of the audit log: object members sorted by their names'
   UTF-16 code units, strings escaped as `JSON.stringify` escapes them, no white space. The suite
