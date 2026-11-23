@@ -597,7 +597,29 @@ describe("vault/keyed", () => {
   describe("key rotation", () => {
     it("never brings back a record that is erased while the vault is being re-sealed", async () => {
       const keyring = await ringOf();
-      const vault = createMemoryVault();
+      const store = createMemoryVault();
+      // The re-seal reads the records, then the erasure runs to completion before the
+      // re-seal writes any of them back: the order is fixed, not left to the scheduler.
+      let signalListed!: () => void;
+      const listed = new Promise<void>((resolve) => (signalListed = resolve));
+      let signalErased!: () => void;
+      const erased = new Promise<void>((resolve) => (signalErased = resolve));
+      let lists = 0;
+      const vault: TokenVault = {
+        get: (token) => store.get(token),
+        putIfAbsent: (record) => store.putIfAbsent(record),
+        delete: (token) => store.delete(token),
+        list: () => {
+          const records = store.list();
+          lists++;
+          if (lists === 1) signalListed();
+          return records;
+        },
+        replace: async (record, expected) => {
+          await erased;
+          return store.replace(record, expected);
+        },
+      };
       const tokenizer = createKeyedTokenizer({ keyring, vault });
       const tokens: string[] = [];
       for (let i = 0; i < 50; i++) {
@@ -609,14 +631,16 @@ describe("vault/keyed", () => {
         );
       }
       await keyring.rotate({ id: "k2", material: raw(2) });
-      const [rewrap, receipt] = await Promise.all([
-        rewrapVault(vault, keyring),
-        tokenizer.forgetSubject("user-42"),
-      ]);
+      lists = 0;
+      const rewrapping = rewrapVault(vault, keyring);
+      await listed;
+      const receipt = await tokenizer.forgetSubject("user-42");
+      signalErased();
+      const rewrap = await rewrapping;
       expect(receipt.erased).toBe(50);
-      expect(rewrap.rewrapped + rewrap.skipped).toBe(50);
-      expect(rewrap.skipped).toBeGreaterThan(0);
-      expect(vault.size()).toBe(0);
+      // Every record the re-seal read was erased before it could be written back.
+      expect(rewrap).toMatchObject({ rewrapped: 0, skipped: 50, unrecoverable: 0 });
+      expect(store.size()).toBe(0);
       for (const token of tokens) expect(await tokenizer.detokenize(token)).toBe(undefined);
     });
 
