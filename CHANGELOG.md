@@ -9,6 +9,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Conformance suite** (`packages/conformance`): 121 language-neutral cases in one JSON file,
+  with a JSON Schema and a specification. They cover the detectors (e-mail, IP addresses, cards,
+  SSN, IBAN, CPF, CNPJ, PIX), checksum failures that must not be reported, classic and vault
+  tokens and their restoration (`{{PERSON_1}}` next to `{{PERSON_10}}`), presets alone and
+  combined, canonical JSON and signed receipts. The TypeScript reference passes every case; the
+  Rust core, Python and Go run the same file and skip only what they do not claim.
+- **Rust core** (`crates/anonyma-core`, `crates/anonyma-ffi`): a port of the detectors of
+  e-mail, IPv4, IPv6, cards, SSN, IBAN, tax IDs and bank accounts, and of the CPF entry of
+  national IDs, with the validators, the redact, mask and pseudonymize strategies, classic and
+  vault tokens, the eight presets and signed receipts. A JSON API and a C ABI serve the bindings.
+  It refuses categories it does not detect in full rather than skipping them.
+- **Python package** (`bindings/python`, PyPI `anonyma`, alpha): `Anonyma(presets=[...])`,
+  `shield_prompt()`, `restore()`, `ReceiptIssuer`, and integrations for chat messages, the OpenAI
+  SDK and LangChain. No runtime dependencies.
+- **Sidecar** (`packages/sidecar`): a local HTTP and MCP service, as a container image, that
+  brings all 27 detectors, every strategy and vault tokens to any language. Its gRPC contract is
+  published in `proto/`.
+- **Go, Node.js and WebAssembly bindings** (`bindings/go`, `bindings/node`, `bindings/wasm`):
+  first versions, built and tested in CI, not published yet.
+- **Polyglot workflow** (`.github/workflows/polyglot-release.yml`): the conformance suite in every
+  language on each pull request; Python wheels for Linux, macOS and Windows on `python-v*` tags
+  and a multi-architecture sidecar image on `sidecar-v*` tags.
+
 ---
 
 ## [1.3.2] — 2026-11-22

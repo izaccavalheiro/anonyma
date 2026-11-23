@@ -1,0 +1,23 @@
+[package]
+name = "anonyma-python"
+description = "Python bindings of anonyma-core (PyO3)."
+# The version of the Python package `anonyma` (maturin reads it: 0.1.0a1).
+version = "0.1.0-alpha.1"
+publish = false
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lib]
+name = "_native"
+crate-type = ["cdylib"]
+
+[dependencies]
+anonyma-core.workspace = true
+anonyma-ffi = { path = "../../crates/anonyma-ffi", default-features = false }
+serde_json.workspace = true
+# The stable ABI of CPython 3.10: one wheel per platform serves every later version.
+# maturin turns on `pyo3/extension-module` (pyproject.toml).
+pyo3 = { version = "0.23", features = ["abi3-py310"] }

@@ -1,0 +1,20 @@
+[package]
+name = "anonyma-wasm"
+description = "WebAssembly bindings of anonyma-core (wasm-bindgen), for browsers and edge runtimes."
+publish = false
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+anonyma-core.workspace = true
+anonyma-ffi = { path = "../../crates/anonyma-ffi", default-features = false }
+wasm-bindgen = "0.2"
+# Random identifiers (receipts, pseudonyms) from crypto.getRandomValues().
+getrandom = { workspace = true, features = ["js"] }

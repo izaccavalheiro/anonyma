@@ -66,7 +66,23 @@ packages/
 ├── vitest.shared.mjs     # Shared alias: `anonyma/*` resolves to the root dist/*.js
 ├── vercel-ai/            # "anonyma-vercel-ai" — AI SDK 7 middleware, withAnonyma(), generateText/streamText
 ├── mcp/                  # "anonyma-mcp" — MCP connection guard, anonyma-mcp-proxy, guardMcpClient()
-└── cli/                  # "anonyma-cli" — the `anonyma` command: scrub and scan text, JSON Lines and CSV as streams
+├── cli/                  # "anonyma-cli" — the `anonyma` command: scrub and scan text, JSON Lines and CSV as streams
+├── conformance/          # private — the language-neutral conformance suite (JSON + schema) and its TypeScript runner
+└── sidecar/              # private — local HTTP + MCP service on anonyma, Dockerfile, gRPC contract (proto/)
+```
+
+Other languages share one engine in Rust (docs/rfcs/0001-polyglot-core.md). The Rust workspace
+(`Cargo.toml`) is separate from the npm workspace; the two meet only in the conformance suite:
+
+```
+crates/
+├── anonyma-core/         # the engine: detectors, validators, strategies, vault tokens, presets, receipts
+└── anonyma-ffi/          # its JSON API (api::call) and C ABI (include/anonyma.h); runs the conformance suite
+bindings/
+├── python/               # PyPI "anonyma" — PyO3 + maturin, Pythonic API, LLM integrations, pytest suite
+├── node/                 # napi-rs scaffold (not published)
+├── wasm/                 # wasm-bindgen scaffold (not published)
+└── go/                   # cgo over the C ABI, io.Reader, net/http middleware
 ```
 
 The site (`website/`, Docusaurus, its own `package.json` and lockfile) is published to GitHub
@@ -148,6 +164,24 @@ the tests. Do not bypass them with `--no-verify`.
 9. Wrap it for the span engine in `src/engine/builtin.ts`: a camel-cased detector export (`bankAccountDetector`), an entry in `LEGACY_DETECTORS` (and `LEGACY_AGGRESSIVE_DETECTORS` for an aggressive variant) and in `BUILTIN_CATEGORIES`, which the MCP declarations also read. Export it from `src/engine/index.ts`.
 10. Add the category to `PiiCategorySchema` in `src/schemas.ts`.
 11. If a regulation in `src/compliance/regulations.ts` names this kind of data, map the category to the provision there.
+
+---
+
+## Changing Behaviour That Other Languages Share
+
+The TypeScript package is the reference; `crates/anonyma-core` ports it and the bindings call the
+port. A change to a detector, validator, token format, preset or receipt is a change for every
+language:
+
+1. Add or update its case in `packages/conformance/conformance-tests.json` (synthetic data only),
+   with the capability it needs (`detect:<category>`, `validate:<name>`, ...).
+2. Make the reference pass it: `npm run build && npm test --workspace anonyma-conformance`.
+3. Make `crates/anonyma-core` pass it (`cargo test -p anonyma-ffi` runs the suite), or leave the
+   capability out of `capabilities()`: the case is then skipped, never failed silently.
+4. Never re-implement a rule in a binding: bindings call the core.
+
+The Rust core refuses categories it does not detect in full (`Error::UnsupportedCategories`)
+unless the caller opts in to partial detection; keep it that way.
 
 ---
 

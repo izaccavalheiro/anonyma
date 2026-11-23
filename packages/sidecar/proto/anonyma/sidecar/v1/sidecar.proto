@@ -1,0 +1,102 @@
+// The gRPC contract of anonyma-sidecar, matching its HTTP endpoints
+// (packages/sidecar/README.md). The sidecar serves HTTP and MCP today; this
+// contract is published first so that generated clients and a gRPC listener
+// can follow without changing it. Offsets are Unicode code points.
+
+syntax = "proto3";
+
+package anonyma.sidecar.v1;
+
+option go_package = "github.com/izaccavalheiro/anonyma/bindings/go/sidecarpb";
+option java_package = "dev.anonyma.sidecar.v1";
+option csharp_namespace = "Anonyma.Sidecar.V1";
+
+service Sidecar {
+  // Every value of personal data found in a text.
+  rpc Detect(DetectRequest) returns (DetectResponse);
+  // Replace every value found with its category's strategy.
+  rpc Anonymize(AnonymizeRequest) returns (AnonymizeResponse);
+  // Replace personal data with vault tokens ({{EMAIL_1}}) kept in a session.
+  rpc Shield(ShieldRequest) returns (ShieldResponse);
+  // Put the original values back into a text, from a session's vault.
+  rpc Restore(RestoreRequest) returns (RestoreResponse);
+  // Forget a session and the values its vault holds.
+  rpc DeleteSession(DeleteSessionRequest) returns (DeleteSessionResponse);
+}
+
+message Selection {
+  // Categories to detect ("email", "credit-card", ...); empty for all, or for the presets'.
+  repeated string categories = 1;
+  // Compliance presets ("lgpd", "gdpr", "hipaa", ...).
+  repeated string presets = 2;
+  bool aggressive = 3;
+}
+
+message Strategy {
+  // "redact", "mask", "hash", "encrypt", "pseudonymize", "generalize", "synthesize", "tokenize".
+  string strategy = 1;
+  // The options of the strategy, as anonyma spells them ({"keepTrailing": 4}), as JSON.
+  string options_json = 2;
+}
+
+message Match {
+  string category = 1;
+  string value = 2;
+  uint32 start = 3;
+  uint32 end = 4;
+  double confidence = 5;
+}
+
+message DetectRequest {
+  string text = 1;
+  Selection selection = 2;
+}
+
+message DetectResponse {
+  repeated Match matches = 1;
+}
+
+message AnonymizeRequest {
+  string text = 1;
+  Selection selection = 2;
+  Strategy default_strategy = 3;
+  // A strategy per category.
+  map<string, Strategy> rules = 4;
+}
+
+message AnonymizeResponse {
+  string text = 1;
+  map<string, uint32> counts = 2;
+}
+
+message ShieldRequest {
+  string text = 1;
+  Selection selection = 2;
+  // A session from an earlier Shield; empty to start one.
+  string session = 3;
+}
+
+message ShieldResponse {
+  string text = 1;
+  string session = 2;
+  map<string, uint32> counts = 3;
+}
+
+message RestoreRequest {
+  string text = 1;
+  string session = 2;
+}
+
+message RestoreResponse {
+  string text = 1;
+  uint32 restored = 2;
+  repeated string unresolved = 3;
+}
+
+message DeleteSessionRequest {
+  string session = 1;
+}
+
+message DeleteSessionResponse {
+  bool deleted = 1;
+}

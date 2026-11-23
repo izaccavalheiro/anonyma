@@ -1,0 +1,423 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/izaccavalheiro/anonyma/blob/main/packages/conformance/conformance-tests.schema.json",
+  "title": "anonyma conformance suite",
+  "description": "Language-neutral test cases that every implementation of anonyma (the TypeScript reference, the Rust core and each binding) must pass. See packages/conformance/README.md for the semantics of each operation.",
+  "type": "object",
+  "required": ["suite", "version", "reference", "offsets", "cases"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "suite": { "const": "anonyma-conformance" },
+    "version": {
+      "description": "Version of the suite. A major version changes when an operation changes meaning.",
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "reference": {
+      "description": "The release of the TypeScript reference the expected values were checked against.",
+      "type": "string",
+      "pattern": "^anonyma@\\d+\\.\\d+\\.\\d+$"
+    },
+    "offsets": {
+      "description": "Unit of every start and end offset: Unicode code points (scalar values) from the start of the text.",
+      "const": "code-points"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/case" }
+    }
+  },
+  "$defs": {
+    "capability": {
+      "description": "Something an implementation provides, such as `validate:cpf`, `detect:email`, `detect:email+aggressive`, `detect:national-id/br-cpf`, `shield` or `preset:lgpd`.",
+      "type": "string",
+      "pattern": "^[a-z0-9-]+(?::[a-z0-9-]+(?:/[a-z0-9-]+)?(?:\\+[a-z]+)?)?$"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "email",
+        "phone",
+        "ssn",
+        "credit-card",
+        "ipv4",
+        "ipv6",
+        "url",
+        "iban",
+        "date-of-birth",
+        "name",
+        "address",
+        "passport",
+        "drivers-license",
+        "national-id",
+        "bank-account",
+        "cryptocurrency",
+        "tax-id",
+        "medical-record",
+        "health-insurance",
+        "prescription",
+        "api-key",
+        "social-media",
+        "vin",
+        "license-plate",
+        "tracking-number",
+        "case-number",
+        "company-registration"
+      ]
+    },
+    "preset": {
+      "type": "string",
+      "enum": ["gdpr", "lgpd", "pipeda", "hipaa", "ccpa", "pci-dss", "sox", "ferpa"]
+    },
+    "strategy": {
+      "type": "object",
+      "required": ["strategy"],
+      "properties": {
+        "strategy": { "enum": ["redact", "mask", "pseudonymize"] },
+        "label": { "type": "string", "minLength": 1 },
+        "maskChar": { "type": "string", "minLength": 1, "maxLength": 1 },
+        "keepLeading": { "type": "integer", "minimum": 0 },
+        "keepTrailing": { "type": "integer", "minimum": 0 },
+        "preserveFormat": { "type": "boolean" },
+        "seed": { "type": "string" },
+        "prefix": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "pairs": {
+      "description": "Key-value pairs, compared as a set.",
+      "type": "array",
+      "items": {
+        "type": "array",
+        "prefixItems": [{ "type": "string" }, { "type": "string" }],
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "match": {
+      "type": "object",
+      "required": ["category", "value", "start", "end", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "category": { "$ref": "#/$defs/category" },
+        "value": { "type": "string" },
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "receiptBody": {
+      "type": "object",
+      "required": ["v", "id", "timestamp", "library", "stats", "total", "output", "alg"],
+      "properties": {
+        "v": { "const": 1 },
+        "id": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "library": { "type": "string" },
+        "presets": { "type": "array", "items": { "type": "string" } },
+        "stats": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+        "total": { "type": "integer", "minimum": 0 },
+        "output": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "input": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "alg": { "const": "HMAC-SHA-256" },
+        "keyId": { "type": "string" },
+        "signature": { "type": "string" }
+      }
+    },
+    "case": {
+      "type": "object",
+      "required": ["id", "description", "op", "requires", "input", "expected"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.+-]*$" },
+        "description": { "type": "string", "minLength": 1 },
+        "op": {
+          "enum": [
+            "validate",
+            "detect",
+            "tokenize",
+            "detokenize",
+            "shield",
+            "restore",
+            "anonymize",
+            "preset",
+            "canonicalize",
+            "digest",
+            "receipt.sign",
+            "receipt.verify",
+            "receipt.issue"
+          ]
+        },
+        "requires": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/capability" }
+        },
+        "input": { "type": "object" },
+        "expected": { "type": "object" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "op": { "const": "validate" } } },
+          "then": {
+            "properties": {
+              "input": {
+                "required": ["validator", "value"],
+                "properties": { "validator": { "type": "string" }, "value": { "type": "string" } }
+              },
+              "expected": {
+                "required": ["valid"],
+                "properties": { "valid": { "type": "boolean" } }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "detect" } } },
+          "then": {
+            "properties": {
+              "input": {
+                "required": ["text", "categories"],
+                "properties": {
+                  "text": { "type": "string" },
+                  "categories": { "type": "array", "items": { "$ref": "#/$defs/category" } },
+                  "aggressive": { "type": "boolean" },
+                  "strict": { "type": "boolean" }
+                }
+              },
+              "expected": {
+                "required": ["matches"],
+                "properties": {
+                  "matches": { "type": "array", "items": { "$ref": "#/$defs/match" } }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "tokenize" } } },
+          "then": {
+            "properties": {
+              "input": {
+                "required": ["text", "categories"],
+                "properties": {
+                  "text": { "type": "string" },
+                  "categories": { "type": "array", "items": { "$ref": "#/$defs/category" } }
+                }
+              },
+              "expected": {
+                "required": ["text", "mapping"],
+                "properties": {
+                  "text": { "type": "string" },
+                  "mapping": { "$ref": "#/$defs/pairs" }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "detokenize" } } },
+          "then": {
+            "properties": {
+              "input": {
+                "required": ["text", "mapping"],
+                "properties": {
+                  "text": { "type": "string" },
+                  "mapping": { "$ref": "#/$defs/pairs" }
+                }
+              },
+              "expected": {
+                "required": ["text", "replacedCount", "unresolved"],
+                "properties": {
+                  "text": { "type": "string" },
+                  "replacedCount": { "type": "integer" },
+                  "unresolved": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "shield" } } },
+          "then": {
+            "properties": {
+              "input": {
+                "required": ["text", "categories", "vault"],
+                "properties": {
+                  "text": { "type": "string" },
+                  "categories": { "type": "array", "items": { "$ref": "#/$defs/category" } },
+                  "vault": { "$ref": "#/$defs/pairs" }
+                }
+              },
+              "expected": {
+                "required": ["text", "vault"],
+                "properties": { "text": { "type": "string" }, "vault": { "$ref": "#/$defs/pairs" } }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "restore" } } },
+          "then": {
+            "properties": {
+              "input": {
+                "required": ["text", "vault"],
+                "properties": { "text": { "type": "string" }, "vault": { "$ref": "#/$defs/pairs" } }
+              },
+              "expected": {
+                "required": ["text", "restored", "unresolved"],
+                "properties": {
+                  "text": { "type": "string" },
+                  "restored": { "type": "integer" },
+                  "unresolved": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "anonymize" } } },
+          "then": {
+            "properties": {
+              "input": {
+                "required": ["text"],
+                "properties": {
+                  "text": { "type": "string" },
+                  "preset": { "type": "array", "items": { "$ref": "#/$defs/preset" } },
+                  "rules": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["category", "strategy"],
+                      "properties": {
+                        "category": { "$ref": "#/$defs/category" },
+                        "strategy": { "$ref": "#/$defs/strategy" }
+                      }
+                    }
+                  }
+                }
+              },
+              "expected": {
+                "oneOf": [
+                  { "required": ["text"], "properties": { "text": { "type": "string" } } },
+                  {
+                    "required": ["textPattern"],
+                    "properties": { "textPattern": { "type": "string" } }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "preset" } } },
+          "then": {
+            "properties": {
+              "input": {
+                "required": ["names"],
+                "properties": {
+                  "names": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/preset" } }
+                }
+              },
+              "expected": {
+                "required": ["categories", "defaultStrategy", "rules"],
+                "properties": {
+                  "categories": { "type": "array", "items": { "$ref": "#/$defs/category" } },
+                  "defaultStrategy": { "$ref": "#/$defs/strategy" },
+                  "rules": { "type": "array" }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "canonicalize" } } },
+          "then": {
+            "properties": {
+              "input": { "required": ["value"] },
+              "expected": { "required": ["text"], "properties": { "text": { "type": "string" } } }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "digest" } } },
+          "then": {
+            "properties": {
+              "input": { "required": ["text"], "properties": { "text": { "type": "string" } } },
+              "expected": {
+                "required": ["hex"],
+                "properties": { "hex": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "receipt.sign" } } },
+          "then": {
+            "properties": {
+              "input": {
+                "required": ["key", "body"],
+                "properties": {
+                  "key": { "type": "string", "minLength": 1 },
+                  "body": { "$ref": "#/$defs/receiptBody" }
+                }
+              },
+              "expected": {
+                "required": ["signature"],
+                "properties": { "signature": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "receipt.verify" } } },
+          "then": {
+            "properties": {
+              "input": {
+                "required": ["key", "receipt"],
+                "properties": {
+                  "key": { "type": "string", "minLength": 1 },
+                  "receipt": { "$ref": "#/$defs/receiptBody" }
+                }
+              },
+              "expected": {
+                "required": ["valid"],
+                "properties": {
+                  "valid": { "type": "boolean" },
+                  "reason": { "enum": ["malformed", "signature", "output", "input"] }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "receipt.issue" } } },
+          "then": {
+            "properties": {
+              "input": {
+                "required": ["key", "text", "counts", "timestamp"],
+                "properties": {
+                  "key": { "type": "string", "minLength": 1 },
+                  "text": { "type": "string" },
+                  "counts": {
+                    "type": "object",
+                    "additionalProperties": { "type": "integer", "minimum": 0 }
+                  },
+                  "presets": { "type": "array", "items": { "type": "string" } },
+                  "timestamp": { "type": "string" }
+                }
+              },
+              "expected": {
+                "required": ["receipt"],
+                "properties": { "receipt": { "type": "object" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

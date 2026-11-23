@@ -1,0 +1,30 @@
+{
+  "name": "anonyma-conformance",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The language-neutral conformance suite of anonyma: one JSON file of test cases that the TypeScript reference, the Rust core and every binding must pass.",
+  "license": "MIT",
+  "author": "Izac Cavalheiro <izac@izaccavalheiro.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/izaccavalheiro/anonyma.git",
+    "directory": "packages/conformance"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./typescript": "./src/typescript.ts",
+    "./conformance-tests.json": "./conformance-tests.json",
+    "./conformance-tests.schema.json": "./conformance-tests.schema.json"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "anonyma": "file:../.."
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

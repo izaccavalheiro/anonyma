@@ -1,0 +1,29 @@
+[package]
+name = "anonyma-ffi"
+description = "The JSON API of anonyma-core and its C ABI, for Go and every language with a C foreign function interface."
+readme = "README.md"
+publish = false
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lib]
+name = "anonyma_ffi"
+# rlib: the JSON API for the Node.js and WebAssembly bindings;
+# staticlib and cdylib: the C ABI, for cgo and other FFIs.
+crate-type = ["rlib", "staticlib", "cdylib"]
+
+[features]
+default = ["c-abi"]
+# The exported C functions. The Node.js and WebAssembly bindings turn it off.
+c-abi = []
+
+[dependencies]
+anonyma-core.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+regex.workspace = true
