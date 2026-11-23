@@ -4,7 +4,7 @@
 
 use std::sync::OnceLock;
 
-use super::{has_context, label_ends, Collector, Match};
+use super::{after_labels, has_context, label_ends, Collector, Match};
 use crate::jsregex::{js_regex, Guarded};
 use crate::Category;
 
@@ -39,7 +39,7 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     for (start, end) in linkedin().ranges(text) {
         found.push(start, end, 0.92);
     }
-    for (start, end) in discord_id().ranges(text) {
+    for (start, end) in after_labels(&labels, || discord_id().ranges(text)) {
         if has_context(text, &labels, start, 30) {
             found.push(start, end, 0.85);
         }

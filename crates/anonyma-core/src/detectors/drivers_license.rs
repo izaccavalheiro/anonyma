@@ -1,7 +1,7 @@
 //! Driving licence numbers (`src/detectors/drivers-license.ts`): the UK DVLA
 //! format on its own, any other number only within 20 characters after a label.
 
-use super::{has_context, label_ends, Collector, Match};
+use super::{after_labels, has_context, label_ends, Collector, Match};
 use crate::jsregex::js_regex;
 use crate::Category;
 
@@ -15,7 +15,7 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     for (start, end) in uk_dvla().ranges(text) {
         found.push(start, end, 0.78);
     }
-    for (start, end) in generic().ranges(text) {
+    for (start, end) in after_labels(&labels, || generic().ranges(text)) {
         if has_context(text, &labels, start, 20) {
             found.push(start, end, 0.85);
         }

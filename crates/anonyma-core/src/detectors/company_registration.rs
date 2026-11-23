@@ -2,7 +2,7 @@
 //! US EINs, and UK, Australian and European registration numbers within 30
 //! characters after a label.
 
-use super::{has_context, label_ends, Collector, Match};
+use super::{after_labels, has_context, label_ends, Collector, Match};
 use crate::jsregex::js_regex;
 use crate::Category;
 
@@ -19,17 +19,17 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     for (start, end) in us_ein().ranges(text) {
         found.push(start, end, if labelled(start) { 0.88 } else { 0.72 });
     }
-    for (start, end) in uk_companies_house().ranges(text) {
+    for (start, end) in after_labels(&labels, || uk_companies_house().ranges(text)) {
         if labelled(start) {
             found.push(start, end, 0.85);
         }
     }
-    for (start, end) in au_acn().ranges(text) {
+    for (start, end) in after_labels(&labels, || au_acn().ranges(text)) {
         if labelled(start) {
             found.push(start, end, 0.82);
         }
     }
-    for (start, end) in european().ranges(text) {
+    for (start, end) in after_labels(&labels, || european().ranges(text)) {
         if labelled(start) {
             found.push(start, end, 0.78);
         }

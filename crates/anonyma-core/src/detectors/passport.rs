@@ -33,6 +33,10 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     let mut seen = std::collections::HashSet::new();
     let mut found = Vec::new();
     for (pattern, base) in formats() {
+        // A format below 0.7 is reported only after a label: without one, nothing.
+        if *base < 0.7 && labels.is_empty() {
+            continue;
+        }
         for (start, end) in pattern.ranges(text) {
             if seen.contains(&(start, end)) {
                 continue;

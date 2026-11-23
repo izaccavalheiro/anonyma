@@ -4,7 +4,7 @@
 
 use std::sync::OnceLock;
 
-use super::{has_context, label_ends, Collector, Match};
+use super::{after_labels, has_context, label_ends, Collector, Match};
 use crate::jsregex::{js_regex, JsRegex};
 use crate::Category;
 
@@ -51,7 +51,7 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
             found.push(start, end, *confidence);
         }
     }
-    for (start, end) in generic().ranges(text) {
+    for (start, end) in after_labels(&labels, || generic().ranges(text)) {
         if has_context(text, &labels, start, 10) {
             found.push(start, end, 0.82);
         }

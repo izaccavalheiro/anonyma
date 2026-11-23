@@ -1,7 +1,7 @@
 //! Parcel tracking numbers (`src/detectors/tracking-number.ts`): UPS, Amazon,
 //! USPS and DHL formats on their own, digit runs within 30 characters after a label.
 
-use super::{has_context, label_ends, Collector, Match};
+use super::{after_labels, has_context, label_ends, Collector, Match};
 use crate::jsregex::js_regex;
 use crate::Category;
 
@@ -35,12 +35,12 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
             found.push(start, end, 0.78);
         }
     }
-    for (start, end) in usps_long().ranges(text) {
+    for (start, end) in after_labels(&labels, || usps_long().ranges(text)) {
         if labelled(start) {
             found.push(start, end, 0.8);
         }
     }
-    for (start, end) in fedex().ranges(text) {
+    for (start, end) in after_labels(&labels, || fedex().ranges(text)) {
         if labelled(start) {
             found.push(start, end, 0.78);
         }

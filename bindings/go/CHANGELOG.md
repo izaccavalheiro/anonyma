@@ -13,6 +13,9 @@ are documented in this file. The format is based on
   in one pass without copying it: the Go side of a call costs 1.9 µs instead of 11.7 µs, and a
   `Detect` call allocates 17 times instead of 37. `NewReader` and `Middleware` encode their
   options once, not once per line or request.
+- Detection skips the patterns that count only after a label (generic account, member and record
+  numbers, ten national-id formats, ...) when the text holds no such label. Results are unchanged;
+  a call on a 200-character text without labels takes about 30% less time.
 
 ### Fixed
 

@@ -7,6 +7,12 @@ change its API.
 
 ## [Unreleased]
 
+### Changed
+
+- Detection skips the patterns that count only after a label (generic account, member and record
+  numbers, ten national-id formats, ...) when the text holds no such label. Results are unchanged;
+  a call on a 200-character text without labels takes about 30% less time.
+
 ### Fixed
 
 - Detecting addresses, names, phone numbers, IBANs, IPv4 addresses and US SSNs in a text with

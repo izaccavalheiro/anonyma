@@ -1,7 +1,7 @@
 //! Court case numbers (`src/detectors/case-number.ts`): US federal case
 //! numbers on their own, other case numbers within 30 characters after a label.
 
-use super::{has_context, label_ends, Collector, Match};
+use super::{after_labels, has_context, label_ends, Collector, Match};
 use crate::jsregex::js_regex;
 use crate::Category;
 
@@ -16,7 +16,7 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     for (start, end) in federal().ranges(text) {
         found.push(start, end, if labelled(start) { 0.92 } else { 0.8 });
     }
-    for (start, end) in general().ranges(text) {
+    for (start, end) in after_labels(&labels, || general().ranges(text)) {
         if labelled(start) {
             found.push(start, end, 0.78);
         }

@@ -2,7 +2,7 @@
 //! verified by their check digit, NDC drug codes, and prescription numbers
 //! within 30 characters after a label.
 
-use super::{has_context, label_ends, Collector, Match};
+use super::{after_labels, has_context, label_ends, Collector, Match};
 use crate::jsregex::js_regex;
 use crate::validators::dea;
 use crate::Category;
@@ -27,7 +27,7 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     for (start, end) in ndc().ranges(text) {
         found.push(start, end, if labelled(start) { 0.9 } else { 0.78 });
     }
-    for (start, end) in rx_number().ranges(text) {
+    for (start, end) in after_labels(&labels, || rx_number().ranges(text)) {
         if labelled(start) {
             found.push(start, end, 0.82);
         }
