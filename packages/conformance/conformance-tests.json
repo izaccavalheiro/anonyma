@@ -1247,6 +1247,396 @@
       }
     },
     {
+      "id": "detect.url.path-query-fragment",
+      "description": "path, query and fragment; the full stop after it is not part",
+      "op": "detect",
+      "requires": ["detect:url"],
+      "input": {
+        "text": "See https://example.com/a/b?q=1#top.",
+        "categories": ["url"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "url",
+            "value": "https://example.com/a/b?q=1#top",
+            "start": 4,
+            "end": 35,
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.url.localhost-port",
+      "description": "localhost with a port; the closing parenthesis is not part",
+      "op": "detect",
+      "requires": ["detect:url"],
+      "input": {
+        "text": "Local http://localhost:8080/api)",
+        "categories": ["url"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "url",
+            "value": "http://localhost:8080/api",
+            "start": 6,
+            "end": 31,
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.url.ip-host-only-http",
+      "description": "an IP host; schemes other than http and https are ignored",
+      "op": "detect",
+      "requires": ["detect:url"],
+      "input": {
+        "text": "ftp://example.com and https://192.0.2.4/x",
+        "categories": ["url"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "url",
+            "value": "https://192.0.2.4/x",
+            "start": 22,
+            "end": 41,
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.date-of-birth.numeric",
+      "description": "ISO, US and European numeric dates",
+      "op": "detect",
+      "requires": ["detect:date-of-birth"],
+      "input": {
+        "text": "Born 1990-05-17, 05/17/1990, 17.05.1990",
+        "categories": ["date-of-birth"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "date-of-birth",
+            "value": "1990-05-17",
+            "start": 5,
+            "end": 15,
+            "confidence": 0.85
+          },
+          {
+            "category": "date-of-birth",
+            "value": "05/17/1990",
+            "start": 17,
+            "end": 27,
+            "confidence": 0.8
+          },
+          {
+            "category": "date-of-birth",
+            "value": "17.05.1990",
+            "start": 29,
+            "end": 39,
+            "confidence": 0.78
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.date-of-birth.long",
+      "description": "month names, US and European order",
+      "op": "detect",
+      "requires": ["detect:date-of-birth"],
+      "input": {
+        "text": "DOB: May 17, 1990 or 17 May 1990",
+        "categories": ["date-of-birth"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "date-of-birth",
+            "value": "May 17, 1990",
+            "start": 5,
+            "end": 17,
+            "confidence": 0.88
+          },
+          {
+            "category": "date-of-birth",
+            "value": "17 May 1990",
+            "start": 21,
+            "end": 32,
+            "confidence": 0.88
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.date-of-birth.invalid-month",
+      "description": "month 13 is not a date",
+      "op": "detect",
+      "requires": ["detect:date-of-birth"],
+      "input": {
+        "text": "Not 1990-13-01",
+        "categories": ["date-of-birth"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.date-of-birth.overlap",
+      "description": "overlapping candidates: the most confident is kept, then document order",
+      "op": "detect",
+      "requires": ["detect:date-of-birth"],
+      "input": {
+        "text": "Seen 2021-01-02/2021-03-04 on file",
+        "categories": ["date-of-birth"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "date-of-birth",
+            "value": "2021-01-02",
+            "start": 5,
+            "end": 15,
+            "confidence": 0.85
+          },
+          {
+            "category": "date-of-birth",
+            "value": "2021-03-04",
+            "start": 16,
+            "end": 26,
+            "confidence": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.phone.us-parentheses",
+      "description": "North American number with the area code in parentheses",
+      "op": "detect",
+      "requires": ["detect:phone"],
+      "input": {
+        "text": "Call (555) 123-4567 now",
+        "categories": ["phone"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "phone",
+            "value": "(555) 123-4567",
+            "start": 5,
+            "end": 19,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.phone.us-country-code",
+      "description": "with the country code",
+      "op": "detect",
+      "requires": ["detect:phone"],
+      "input": {
+        "text": "Call +1 555 123 4567 or 1-555-765-4321",
+        "categories": ["phone"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "phone",
+            "value": "+1 555 123 4567",
+            "start": 5,
+            "end": 20,
+            "confidence": 0.9
+          },
+          {
+            "category": "phone",
+            "value": "1-555-765-4321",
+            "start": 24,
+            "end": 38,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.phone.international",
+      "description": "an international number in E.164 style with spaces",
+      "op": "detect",
+      "requires": ["detect:phone"],
+      "input": {
+        "text": "Ring +44 20 7946 0958 today",
+        "categories": ["phone"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "phone",
+            "value": "+44 20 7946 0958",
+            "start": 5,
+            "end": 21,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.phone.brazil",
+      "description": "Brazilian mobile and landline numbers",
+      "op": "detect",
+      "requires": ["detect:phone"],
+      "input": {
+        "text": "Ligue (11) 91234-5678 ou 21 3456 7890",
+        "categories": ["phone"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "phone",
+            "value": "(11) 91234-5678",
+            "start": 6,
+            "end": 21,
+            "confidence": 0.88
+          },
+          {
+            "category": "phone",
+            "value": "21 3456 7890",
+            "start": 25,
+            "end": 37,
+            "confidence": 0.82
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.phone.france-same-separator",
+      "description": "French numbers need the same separator between the five pairs",
+      "op": "detect",
+      "requires": ["detect:phone"],
+      "input": {
+        "text": "Appelez 06 12 34 56 78 ou 06 12.34 56 78",
+        "categories": ["phone"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "phone",
+            "value": "06 12 34 56 78",
+            "start": 8,
+            "end": 22,
+            "confidence": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.phone.uk",
+      "description": "United Kingdom landline and mobile",
+      "op": "detect",
+      "requires": ["detect:phone"],
+      "input": {
+        "text": "Office 020 7946 0958, mobile 07700 900123",
+        "categories": ["phone"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "phone",
+            "value": "020 7946 0958",
+            "start": 7,
+            "end": 20,
+            "confidence": 0.82
+          },
+          {
+            "category": "phone",
+            "value": "07700 900123",
+            "start": 29,
+            "end": 41,
+            "confidence": 0.82
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.phone.germany",
+      "description": "German numbers after a non-ASCII word",
+      "op": "detect",
+      "requires": ["detect:phone"],
+      "input": {
+        "text": "Büro 030 12345678, Handy 0151-23456789",
+        "categories": ["phone"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "phone",
+            "value": "030 12345678",
+            "start": 5,
+            "end": 17,
+            "confidence": 0.76
+          },
+          {
+            "category": "phone",
+            "value": "0151-23456789",
+            "start": 25,
+            "end": 38,
+            "confidence": 0.76
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.phone.too-many-digits",
+      "description": "a long run of digits is not a phone number",
+      "op": "detect",
+      "requires": ["detect:phone"],
+      "input": {
+        "text": "Order 12345678901234567890",
+        "categories": ["phone"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.phone.seven-digit-standard",
+      "description": "seven digits alone are not reported by the standard detector",
+      "op": "detect",
+      "requires": ["detect:phone"],
+      "input": {
+        "text": "Ext 555-0199 inside",
+        "categories": ["phone"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.phone.seven-digit-aggressive",
+      "description": "seven digits are reported by the aggressive detector",
+      "op": "detect",
+      "requires": ["detect:phone", "detect:phone+aggressive"],
+      "input": {
+        "text": "Ext 555-0199 inside",
+        "categories": ["phone"],
+        "aggressive": true
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "phone",
+            "value": "555-0199",
+            "start": 4,
+            "end": 12,
+            "confidence": 0.7
+          }
+        ]
+      }
+    },
+    {
       "id": "detect.mixed.document-order",
       "description": "several categories, reported in document order",
       "op": "detect",
@@ -2091,7 +2481,7 @@
       }
     },
     {
-      "id": "digest.sha256.113",
+      "id": "digest.sha256.130",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -2103,7 +2493,7 @@
       }
     },
     {
-      "id": "digest.sha256.114",
+      "id": "digest.sha256.131",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -2115,7 +2505,7 @@
       }
     },
     {
-      "id": "digest.sha256.115",
+      "id": "digest.sha256.132",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],

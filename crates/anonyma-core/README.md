@@ -27,7 +27,7 @@ lists:
 
 | Area        | Ported                                                                              |
 | ----------- | ----------------------------------------------------------------------------------- |
-| Detectors   | `email`, `ipv4`, `ipv6`, `credit-card`, `ssn`, `iban`, `tax-id`, `bank-account` in full; `national-id` for the Brazilian CPF only |
+| Detectors   | `email`, `phone`, `ipv4`, `ipv6`, `url`, `credit-card`, `ssn`, `iban`, `date-of-birth`, `tax-id`, `bank-account` in full; `national-id` for the Brazilian CPF only |
 | Validators  | `luhn`, `verhoeff`, `iban`, `cpf`, `cnpj`, `aba-routing`, `pix`                       |
 | Strategies  | `redact`, `mask`, `pseudonymize`                                                     |
 | Tokens      | classic (`[EMAIL_0001]`) and vault (`{{EMAIL_1}}`) tokens, restoration              |

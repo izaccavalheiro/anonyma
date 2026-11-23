@@ -78,6 +78,7 @@ pub fn capabilities() -> Vec<String> {
             "detect:email+aggressive",
             "detect:credit-card+aggressive",
             "detect:ssn+aggressive",
+            "detect:phone+aggressive",
             "detect:national-id/br-cpf",
             "detect:national-id+strict",
             "tokenize",

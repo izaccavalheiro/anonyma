@@ -295,7 +295,7 @@ mod tests {
             .allow_partial(true)
             .build()
             .unwrap();
-        assert!(engine.undetected().contains(&Category::Phone));
+        assert!(engine.undetected().contains(&Category::Address));
     }
 
     #[test]
