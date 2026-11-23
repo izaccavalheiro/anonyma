@@ -217,7 +217,7 @@ pub fn pseudonymize(value: &str, seed: Option<&str>, prefix: &str) -> Result<Str
         }
         None => {
             let mut bytes = [0u8; 8];
-            getrandom::getrandom(&mut bytes)
+            getrandom::fill(&mut bytes)
                 .map_err(|error| Error::Unsupported(format!("no random source: {error}")))?;
             Ok(format!("{prefix}{}", crate::receipt::hex(&bytes)))
         }

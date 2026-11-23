@@ -17,4 +17,4 @@ anonyma-core.workspace = true
 anonyma-ffi = { path = "../../crates/anonyma-ffi", default-features = false }
 wasm-bindgen = "0.2"
 # Random identifiers (receipts, pseudonyms) from crypto.getRandomValues().
-getrandom = { workspace = true, features = ["js"] }
+getrandom = { workspace = true, features = ["wasm_js"] }

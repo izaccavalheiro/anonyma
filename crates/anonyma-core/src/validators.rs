@@ -112,7 +112,7 @@ pub fn luhn(value: &str) -> bool {
 
 /// Luhn over a string of ASCII digits.
 pub(crate) fn luhn_digits(stripped: &str) -> bool {
-    let mut sum = 0;
+    let mut sum: u32 = 0;
     for (i, d) in digits(stripped).into_iter().rev().enumerate() {
         let mut d = d;
         if i % 2 == 1 {
@@ -123,7 +123,7 @@ pub(crate) fn luhn_digits(stripped: &str) -> bool {
         }
         sum += d;
     }
-    sum % 10 == 0
+    sum.is_multiple_of(10)
 }
 
 const VERHOEFF_D: [[u8; 10]; 10] = [
@@ -270,7 +270,7 @@ pub fn aba_routing(value: &str) -> bool {
         .zip([3, 7, 1, 3, 7, 1, 3, 7, 1])
         .map(|(d, w)| d * w)
         .sum();
-    sum % 10 == 0
+    sum.is_multiple_of(10)
 }
 
 /// Brazilian PIX "copia e cola" payload: it ends with `6304` and the

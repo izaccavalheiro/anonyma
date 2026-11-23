@@ -91,3 +91,8 @@ updates:
       default-days: 7
     commit-message:
       prefix: build(sidecar)
+    ignore:
+      # The runtime image names its Node.js major (distroless nodejs24), which Dependabot
+      # cannot bump: a new major is changed in both stages by hand.
+      - dependency-name: node
+        update-types: ["version-update:semver-major"]

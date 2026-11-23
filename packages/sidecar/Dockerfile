@@ -5,9 +5,11 @@
 # Run, reachable from this host only:
 #   docker run --rm -p 127.0.0.1:7878:7878 anonyma-sidecar
 #
-# Base images are pinned by digest; Dependabot keeps the pins current.
+# Base images are pinned by digest; Dependabot keeps the pins current. Both stages run the
+# Node.js line of .nvmrc: the runtime image names its major (nodejs24), so a new major is
+# changed in both FROM lines by hand.
 
-FROM node:22-alpine@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a AS build
+FROM node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 AS build
 WORKDIR /repo
 ENV HUSKY=0
 COPY package.json package-lock.json tsconfig.json tsup.config.ts ./
@@ -17,7 +19,7 @@ RUN npm ci --ignore-scripts --no-audit --no-fund --include-workspace-root --work
 RUN npm run build && npm run build --workspace anonyma-sidecar
 
 # Runtime: Node.js and the two builds, nothing else (no shell, no package manager).
-FROM gcr.io/distroless/nodejs22-debian12:nonroot@sha256:13593b7570658e8477de39e2f4a1dd25db2f836d68a0ba771251572d23bb4f8e
+FROM gcr.io/distroless/nodejs24-debian13:nonroot@sha256:39b0407357c9fadf1a9708d22088f02de21f0e1e8a688474eea2d8701e7d5693
 WORKDIR /app
 COPY --from=build /repo/packages/sidecar/package.json ./package.json
 COPY --from=build /repo/packages/sidecar/dist ./dist

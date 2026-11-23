@@ -5,7 +5,7 @@
 //! fingerprints its output, without any of the data, and is signed with
 //! HMAC-SHA-256 so that it cannot be forged without the key.
 
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::{Digest, Sha256};
 
 use crate::{Error, Result};
@@ -126,14 +126,15 @@ pub(crate) fn hex(bytes: &[u8]) -> String {
 
 /// SHA-256 of the UTF-8 encoding of `text`, in lower-case hex.
 pub fn sha256_hex(text: &str) -> String {
-    hex(&Sha256::digest(text.as_bytes()))
+    hex(Sha256::digest(text.as_bytes()).as_slice())
 }
 
 /// HMAC-SHA-256 of `text` keyed with `key`, in lower-case hex.
 pub fn hmac_sha256_hex(key: &[u8], text: &str) -> String {
-    let mut mac = <Hmac<Sha256> as Mac>::new_from_slice(key).expect("HMAC accepts any key length");
-    mac.update(text.as_bytes());
-    hex(&mac.finalize().into_bytes())
+    let mut mac =
+        <Hmac<Sha256> as KeyInit>::new_from_slice(key).expect("HMAC accepts any key length");
+    Mac::update(&mut mac, text.as_bytes());
+    hex(mac.finalize().into_bytes().as_slice())
 }
 
 /// Domain separator of receipt signatures.
@@ -360,7 +361,7 @@ impl ReceiptIssuer {
         stats.sort_by(|(a, _), (b, _)| a.encode_utf16().cmp(b.encode_utf16()));
 
         let mut id = [0u8; 16];
-        getrandom::getrandom(&mut id)
+        getrandom::fill(&mut id)
             .map_err(|error| Error::Unsupported(format!("no random source: {error}")))?;
         let timestamp_ms = match options.timestamp_ms {
             Some(ms) => ms,

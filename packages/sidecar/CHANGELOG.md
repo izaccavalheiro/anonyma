@@ -6,6 +6,14 @@ container image is released from tags `sidecar-v<version>` to
 `ghcr.io/izaccavalheiro/anonyma-sidecar`. While it is at 0.x, a minor version may change its
 endpoints or settings.
 
+## [Unreleased]
+
+### Changed
+
+- The image runs on Node.js 24, the line the repository develops on (`.nvmrc`), in both stages:
+  `node:24-alpine` to build and distroless `nodejs24-debian13` to run (was Node.js 22 on
+  Debian 12).
+
 ## [0.1.0] — 2026-11-23
 
 First release, built on `anonyma` 1.3.2.
