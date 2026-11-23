@@ -7,7 +7,9 @@ are documented in this file. The format is based on
 
 ## [Unreleased]
 
-First release (0.1.0-alpha.1): cgo bindings of the Rust core of anonyma, with its static library
+## [0.1.0-alpha.1] — 2026-11-23
+
+First release: cgo bindings of the Rust core of anonyma, with its static library
 prebuilt for linux/amd64, linux/arm64, darwin/amd64, darwin/arm64 and windows/amd64,
 so `go get` needs no Rust toolchain.
 
@@ -17,5 +19,6 @@ so `go get` needs no Rust toolchain.
 - `Scan`, the span engine: precise detectors and overlaps resolved by covering.
 - `Vault`: `Shield` and `Restore` for LLM prompts, with the tokens kept in the process.
 - `Validate` and the checksum validators of the core.
-- An `io.Reader` that anonymizes text, and `net/http` middleware that scrubs request bodies.
+- `NewReader`, an `io.Reader` that anonymizes text line by line, and `Middleware`, which
+  anonymizes the bodies of text and JSON requests and refuses (413) one too large to scrub.
 - All 27 detection categories, every preset and every strategy of the conformance suite.
