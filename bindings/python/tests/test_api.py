@@ -13,9 +13,9 @@ from anonyma import Anonyma, AnonymaError, UnsupportedCategoriesError, Vault
 def test_presets_refuse_categories_the_core_does_not_detect() -> None:
     with pytest.raises(UnsupportedCategoriesError) as raised:
         Anonyma(presets=["lgpd", "hipaa"])
-    assert "passport" in str(raised.value)
+    assert "cryptocurrency" in str(raised.value)
     engine = Anonyma(presets=["lgpd", "hipaa"], allow_partial=True)
-    assert "passport" in engine.undetected
+    assert "cryptocurrency" in engine.undetected
     assert engine.anonymize("CPF 529.982.247-25, card 4111111111111111.") == (
         "CPF [REDACTED], card [REDACTED]."
     )

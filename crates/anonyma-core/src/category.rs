@@ -61,9 +61,9 @@ categories! {
     DateOfBirth => "date-of-birth", "DATE", Full;
     Name => "name", "PERSON", Full;
     Address => "address", "ADDRESS", Full;
-    Passport => "passport", "PASSPORT", None;
-    DriversLicense => "drivers-license", "DRIVERS_LICENSE", None;
-    NationalId => "national-id", "NATIONAL_ID", Partial;
+    Passport => "passport", "PASSPORT", Full;
+    DriversLicense => "drivers-license", "DRIVERS_LICENSE", Full;
+    NationalId => "national-id", "NATIONAL_ID", Full;
     BankAccount => "bank-account", "BANK_ACCOUNT", Full;
     Cryptocurrency => "cryptocurrency", "CRYPTO", None;
     TaxId => "tax-id", "TAX_ID", Full;
@@ -85,8 +85,8 @@ categories! {
 pub enum Support {
     /// Every pattern of the reference detector, conformance-tested.
     Full,
-    /// Some entries of a composite detector: `national-id` detects the
-    /// Brazilian CPF only.
+    /// Some entries of a composite detector, conformance-tested on inputs
+    /// that only those entries match. No category is partial at present.
     Partial,
     /// Not ported yet.
     None,

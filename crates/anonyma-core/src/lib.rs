@@ -115,7 +115,8 @@ mod tests {
         let caps = super::capabilities();
         assert!(caps.contains(&"validate:cpf".to_string()));
         assert!(caps.contains(&"detect:email".to_string()));
-        assert!(!caps.contains(&"detect:national-id".to_string()));
+        assert!(caps.contains(&"detect:national-id".to_string()));
+        assert!(!caps.contains(&"detect:vin".to_string()));
         // PCI-DSS covers ported categories only; LGPD needs passports, among others.
         assert!(caps.contains(&"preset:pci-dss".to_string()));
         assert!(!caps.contains(&"preset:lgpd".to_string()));

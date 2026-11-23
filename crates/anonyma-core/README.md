@@ -27,8 +27,8 @@ lists:
 
 | Area        | Ported                                                                              |
 | ----------- | ----------------------------------------------------------------------------------- |
-| Detectors   | `email`, `phone`, `name`, `address`, `ipv4`, `ipv6`, `url`, `credit-card`, `ssn`, `iban`, `date-of-birth`, `tax-id`, `bank-account` in full; `national-id` for the Brazilian CPF only |
-| Validators  | `luhn`, `verhoeff`, `iban`, `cpf`, `cnpj`, `aba-routing`, `pix`                       |
+| Detectors   | `email`, `phone`, `name`, `address`, `ipv4`, `ipv6`, `url`, `credit-card`, `ssn`, `iban`, `date-of-birth`, `passport`, `drivers-license`, `national-id`, `tax-id`, `bank-account` |
+| Validators  | all 22 of `CHECKSUMS`                                                                |
 | Strategies  | `redact`, `mask`, `pseudonymize`                                                     |
 | Tokens      | classic (`[EMAIL_0001]`) and vault (`{{EMAIL_1}}`) tokens, restoration              |
 | Presets     | all eight definitions and their combination                                         |

@@ -13,11 +13,13 @@ mod address;
 mod bank_account;
 mod credit_card;
 mod date_of_birth;
+mod drivers_license;
 mod email;
 mod iban;
 mod ip;
 mod name;
 mod national_id;
+mod passport;
 mod phone;
 mod ssn;
 mod tax_id;
@@ -108,6 +110,8 @@ impl Detector for BuiltinDetector {
             Category::Phone => phone::detect(text, self.aggressive),
             Category::Name => name::detect(text, self.aggressive),
             Category::Address => address::detect(text),
+            Category::Passport => passport::detect(text),
+            Category::DriversLicense => drivers_license::detect(text),
             Category::Url => url::detect(text),
             Category::DateOfBirth => date_of_birth::detect(text),
             _ => Vec::new(),
@@ -216,7 +220,7 @@ mod tests {
 
     #[test]
     fn unsupported_categories_have_no_detector() {
-        assert!(BuiltinDetector::new(Category::Passport, false, false).is_none());
+        assert!(BuiltinDetector::new(Category::Vin, false, false).is_none());
         assert!(BuiltinDetector::new(Category::Email, false, false).is_some());
     }
 }
