@@ -30,6 +30,24 @@ char *anonyma_vault_call(AnonymaVault *vault, const char *op, const char *input_
 /* Free a vault and every value it holds. */
 void anonyma_vault_free(AnonymaVault *vault);
 
+/* An engine built once from options and reused: each call skips parsing the
+ * options and building the detectors. It may be shared by threads. */
+typedef struct AnonymaEngine AnonymaEngine;
+
+/* Build an engine from JSON options (categories, preset, rules,
+ * defaultStrategy, aggressive, strict, allowPartial). Returns NULL on failure,
+ * and then, when error is not NULL, stores an error JSON string in it to free
+ * with anonyma_string_free. */
+AnonymaEngine *anonyma_engine_new(const char *options_json, char **error);
+
+/* "detect" and "anonymize" on input.text; "detect_batch" and "anonymize_batch"
+ * on input.texts, answering {"results": [...]} in order (short texts are
+ * scanned together). "offsets" as for anonyma_call. */
+char *anonyma_engine_call(const AnonymaEngine *engine, const char *op, const char *input_json);
+
+/* Free an engine. */
+void anonyma_engine_free(AnonymaEngine *engine);
+
 /* Free a string returned by this library. */
 void anonyma_string_free(char *text);
 

@@ -116,3 +116,32 @@ def test_engines_are_shared_between_threads() -> None:
     for thread in threads:
         thread.join()
     assert results == ["Mail [REDACTED]"] * 8
+
+
+def _batch_texts() -> list[str]:
+    texts = ["", "no data", "José: jose@example.com", "a\x00ana@example.com", "Dear Ana Example"]
+    for i in range(300):
+        texts += [
+            "see Passport:" + ["", " ", "\n"][i % 3],
+            f"A1234567 user{i}@example.com card 4111 1111 1111 1111",
+            f"Request {i} from 192.0.2.{i % 250}, José paid with 4111111111111111",
+        ]
+    return texts
+
+
+def test_batches_match_one_call_per_text() -> None:
+    engine = Anonyma()
+    texts = _batch_texts()
+    assert engine.detect_batch(texts) == [engine.detect(text) for text in texts]
+    assert engine.anonymize_batch(iter(texts)) == [engine.anonymize(text) for text in texts]
+    assert engine.detect_batch([]) == []
+    # Offsets stay code points of each text.
+    [found] = engine.detect_batch(["José: jose@example.com", "x"])[0]
+    assert (found.start, found.end) == (6, 22)
+
+
+def test_batches_report_strategy_errors() -> None:
+    # An empty label is refused when the strategy is applied, not when the engine is built.
+    engine = Anonyma(rules={"email": {"strategy": "redact", "label": " "}})
+    with pytest.raises(AnonymaError):
+        engine.anonymize_batch(["ana@example.com", "bea@example.com"])

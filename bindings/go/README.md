@@ -19,6 +19,17 @@ prompt, _ := vault.Shield("Mail ana@example.com", anonyma.Options{Categories: []
 answer, _ := vault.Restore(modelAnswer)
 ```
 
+For many calls with the same options, build an `Engine` once. Its batch methods
+take many texts in one cgo call and scan short ones together, about twice as fast
+as a call per text for log lines and rows:
+
+```go
+engine, err := anonyma.NewEngine(anonyma.Options{Presets: []string{"gdpr"}})
+if err != nil { /* ... */ }
+defer engine.Close()
+clean, err := engine.AnonymizeBatch(lines) // one result per line, in order
+```
+
 Offsets in `Match` and `Span` are byte offsets into the Go string.
 
 ## Platforms

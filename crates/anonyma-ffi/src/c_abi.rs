@@ -9,7 +9,7 @@ use std::ptr;
 
 use anonyma_core::InMemoryVault;
 
-use crate::api::call_json_with_vault;
+use crate::api::{call_engine_json, call_json_with_vault, engine_json};
 
 /// A token vault owned by the caller: tokens issued by `shield` and restored
 /// by `restore` through [`anonyma_vault_call`]. It holds original values in
@@ -118,6 +118,89 @@ pub unsafe extern "C" fn anonyma_vault_free(vault: *mut AnonymaVault) {
     }
 }
 
+/// An engine built once from options and kept by the caller: each call skips
+/// parsing the options and building the detectors. It may be shared by
+/// threads.
+pub struct AnonymaEngine {
+    inner: anonyma_core::AnonymaEngine,
+}
+
+/// Build an engine from JSON options (`categories`, `preset`, `rules`,
+/// `defaultStrategy`, `aggressive`, `strict`, `allowPartial`). On failure,
+/// returns null and, when `error` is not null, stores in it an error JSON
+/// string to free with [`anonyma_string_free`].
+///
+/// # Safety
+///
+/// `options_json` is null or a NUL-terminated string valid for the call;
+/// `error` is null or valid for a write.
+#[no_mangle]
+pub unsafe extern "C" fn anonyma_engine_new(
+    options_json: *const c_char,
+    error: *mut *mut c_char,
+) -> *mut AnonymaEngine {
+    // SAFETY: the caller passes a valid string or null.
+    let built = unsafe { read(options_json, "options") }.and_then(|options| {
+        catch_unwind(AssertUnwindSafe(|| engine_json(options)))
+            .unwrap_or_else(|_| Err("internal error".to_string()))
+    });
+    match built {
+        Ok(inner) => Box::into_raw(Box::new(AnonymaEngine { inner })),
+        Err(message) => {
+            if !error.is_null() {
+                // SAFETY: the caller passes a pointer valid for a write.
+                unsafe { *error = error_json(&message) };
+            }
+            ptr::null_mut()
+        }
+    }
+}
+
+/// Perform an engine operation: `detect` and `anonymize` on `input.text`,
+/// `detect_batch` and `anonymize_batch` on `input.texts` (short texts are
+/// scanned together); `offsets` as in [`anonyma_call`].
+///
+/// # Safety
+///
+/// `engine` is null or returned by [`anonyma_engine_new`] and not freed;
+/// `op` and `input_json` are null or NUL-terminated strings valid for the call.
+#[no_mangle]
+pub unsafe extern "C" fn anonyma_engine_call(
+    engine: *const AnonymaEngine,
+    op: *const c_char,
+    input_json: *const c_char,
+) -> *mut c_char {
+    if engine.is_null() {
+        return error_json("engine is null");
+    }
+    // SAFETY: a live engine from anonyma_engine_new.
+    let engine = unsafe { &(*engine).inner };
+    // SAFETY: the caller passes valid strings or null.
+    let arguments =
+        unsafe { read(op, "op").and_then(|op| read(input_json, "input").map(|input| (op, input))) };
+    let (op, input) = match arguments {
+        Ok(pair) => pair,
+        Err(message) => return error_json(&message),
+    };
+    match catch_unwind(AssertUnwindSafe(|| call_engine_json(engine, op, input))) {
+        Ok(result) => respond(result),
+        Err(_) => error_json("internal error"),
+    }
+}
+
+/// Free an engine.
+///
+/// # Safety
+///
+/// `engine` is null or returned by [`anonyma_engine_new`], not freed before.
+#[no_mangle]
+pub unsafe extern "C" fn anonyma_engine_free(engine: *mut AnonymaEngine) {
+    if !engine.is_null() {
+        // SAFETY: allocated by Box::into_raw in anonyma_engine_new.
+        drop(unsafe { Box::from_raw(engine) });
+    }
+}
+
 /// Free a string returned by this library.
 ///
 /// # Safety
@@ -164,6 +247,73 @@ mod tests {
         assert!(restored.contains("Hi ann@example.com"), "{restored}");
         // SAFETY: allocated above, not used again.
         unsafe { anonyma_vault_free(vault) };
+    }
+
+    fn engine_call(engine: *const AnonymaEngine, op: &str, input: &str) -> String {
+        let op = CString::new(op).unwrap();
+        let input = CString::new(input).unwrap();
+        // SAFETY: valid strings and engine for the duration of the call.
+        unsafe {
+            let out = anonyma_engine_call(engine, op.as_ptr(), input.as_ptr());
+            let text = CStr::from_ptr(out).to_str().unwrap().to_string();
+            anonyma_string_free(out);
+            text
+        }
+    }
+
+    #[test]
+    fn an_engine_handle_detects_and_anonymizes_texts_and_batches() {
+        let options = CString::new(r#"{"categories":["email"]}"#).unwrap();
+        // SAFETY: a valid string; the error pointer may be null.
+        let engine = unsafe { anonyma_engine_new(options.as_ptr(), ptr::null_mut()) };
+        assert!(!engine.is_null());
+        let one = engine_call(engine, "detect", r#"{"text":"José ana@example.com"}"#);
+        assert!(one.contains(r#""start":5"#), "{one}");
+        let batch = engine_call(
+            engine,
+            "detect_batch",
+            r#"{"texts":["José ana@example.com","none"],"offsets":"bytes"}"#,
+        );
+        assert!(
+            batch.contains(r#""start":6"#) && batch.contains(r#""matches":[]"#),
+            "{batch}"
+        );
+        let anonymized = engine_call(
+            engine,
+            "anonymize_batch",
+            r#"{"texts":["a ana@example.com"]}"#,
+        );
+        assert!(anonymized.contains("a [REDACTED]"), "{anonymized}");
+        let single = engine_call(engine, "anonymize", r#"{"text":"b ana@example.com"}"#);
+        assert!(single.contains("b [REDACTED]"), "{single}");
+        assert!(engine_call(engine, "nope", "{}").contains("unknown engine operation"));
+        assert!(engine_call(engine, "detect_batch", r#"{"texts":"x"}"#).contains("must be a list"));
+        assert!(engine_call(engine, "detect", "not json").contains("not JSON"));
+        // SAFETY: allocated above, not used again.
+        unsafe { anonyma_engine_free(engine) };
+    }
+
+    #[test]
+    fn engine_options_that_fail_report_an_error() {
+        let options = CString::new(r#"{"categories":["nope"]}"#).unwrap();
+        let mut error: *mut c_char = ptr::null_mut();
+        // SAFETY: valid string and error pointer.
+        unsafe {
+            let engine = anonyma_engine_new(options.as_ptr(), &mut error);
+            assert!(engine.is_null());
+            assert!(CStr::from_ptr(error).to_str().unwrap().contains("error"));
+            anonyma_string_free(error);
+            assert!(anonyma_engine_new(ptr::null(), ptr::null_mut()).is_null());
+            let out = anonyma_engine_call(ptr::null(), ptr::null(), ptr::null());
+            assert!(CStr::from_ptr(out)
+                .to_str()
+                .unwrap()
+                .contains("engine is null"));
+            anonyma_string_free(out);
+            let bad = CString::new("not json").unwrap();
+            assert!(anonyma_engine_new(bad.as_ptr(), ptr::null_mut()).is_null());
+            anonyma_engine_free(ptr::null_mut());
+        }
     }
 
     #[test]

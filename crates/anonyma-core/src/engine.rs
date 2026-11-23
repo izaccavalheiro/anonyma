@@ -165,6 +165,7 @@ impl EngineBuilder {
             };
 
         let mut detectors: Vec<Arc<dyn Detector>> = Vec::new();
+        let mut fusable = true;
         let mut undetected = Vec::new();
         let mut seen = Vec::new();
         for category in categories {
@@ -174,6 +175,8 @@ impl EngineBuilder {
             seen.push(category);
             if let Some(custom) = self.detectors.iter().find(|d| d.category() == category) {
                 detectors.push(Arc::clone(custom));
+                // Fusion is proven for the built-in detectors only.
+                fusable = false;
                 continue;
             }
             if category.support() != Support::Full {
@@ -187,11 +190,14 @@ impl EngineBuilder {
             return Err(Error::UnsupportedCategories(undetected));
         }
 
+        let names = seen.contains(&Category::Name);
         Ok(AnonymaEngine {
             detectors,
             rules,
             default_strategy,
             undetected,
+            fusable,
+            names,
         })
     }
 }
@@ -216,6 +222,10 @@ pub struct AnonymaEngine {
     rules: HashMap<Category, Arc<dyn AnonymizerStrategy>>,
     default_strategy: Arc<dyn AnonymizerStrategy>,
     undetected: Vec<Category>,
+    /// Every detector is built in, so a batch may be scanned as fused texts.
+    fusable: bool,
+    /// The name detector runs (greetings anchor at the start of a text).
+    names: bool,
 }
 
 impl std::fmt::Debug for AnonymaEngine {
@@ -248,9 +258,49 @@ impl AnonymaEngine {
         resolve(raw)
     }
 
+    /// [`detect`](Self::detect) on each text of a batch, in order. With the
+    /// built-in detectors, texts under 8 KB are joined, scanned once and split
+    /// back: the same matches, at a fraction of the cost for short texts.
+    pub fn detect_batch<S: AsRef<str>>(&self, texts: &[S]) -> Vec<Vec<Match>> {
+        let texts: Vec<&str> = texts.iter().map(AsRef::as_ref).collect();
+        let fused = if self.fusable {
+            crate::fusion::fuse_each(
+                &texts,
+                self.names,
+                |text| self.detect(text),
+                |m| m.start,
+                |mut m, offset| {
+                    m.start -= offset;
+                    m.end -= offset;
+                    m
+                },
+            )
+        } else {
+            texts.iter().map(|_| None).collect()
+        };
+        texts
+            .iter()
+            .zip(fused)
+            .map(|(text, found)| found.unwrap_or_else(|| self.detect(text)))
+            .collect()
+    }
+
+    /// [`anonymize`](Self::anonymize) on each text of a batch, in order, with
+    /// the matches of [`detect_batch`](Self::detect_batch).
+    pub fn anonymize_batch<S: AsRef<str>>(&self, texts: &[S]) -> Vec<Result<Anonymized>> {
+        texts
+            .iter()
+            .zip(self.detect_batch(texts))
+            .map(|(text, matches)| self.anonymize_matches(text.as_ref(), matches))
+            .collect()
+    }
+
     /// Replace every value found with its category's strategy.
     pub fn anonymize(&self, text: &str) -> Result<Anonymized> {
-        let matches = self.detect(text);
+        self.anonymize_matches(text, self.detect(text))
+    }
+
+    fn anonymize_matches(&self, text: &str, matches: Vec<Match>) -> Result<Anonymized> {
         let mut spans = Vec::with_capacity(matches.len());
         for m in matches.iter().rev() {
             let strategy = self

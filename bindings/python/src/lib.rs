@@ -176,6 +176,32 @@ impl PyEngine {
         py.detach(|| tuples(text, &engine.detect(text)))
     }
 
+    /// detect() of each text, in one call with the GIL released: short texts
+    /// are scanned together.
+    fn detect_batch(&self, py: Python<'_>, texts: Vec<String>) -> Vec<Vec<MatchTuple>> {
+        let engine = &self.inner;
+        py.detach(|| {
+            texts
+                .iter()
+                .zip(engine.detect_batch(&texts))
+                .map(|(text, matches)| tuples(text, &matches))
+                .collect()
+        })
+    }
+
+    /// The anonymized text of each text, in one call with the GIL released.
+    fn anonymize_batch(&self, py: Python<'_>, texts: Vec<String>) -> PyResult<Vec<String>> {
+        let engine = &self.inner;
+        py.detach(|| {
+            engine
+                .anonymize_batch(&texts)
+                .into_iter()
+                .map(|out| out.map(|out| out.text))
+                .collect::<Result<Vec<String>, _>>()
+        })
+        .map_err(to_py)
+    }
+
     /// (text, matches)
     fn anonymize(&self, py: Python<'_>, text: &str) -> PyResult<(String, Vec<MatchTuple>)> {
         let engine = &self.inner;

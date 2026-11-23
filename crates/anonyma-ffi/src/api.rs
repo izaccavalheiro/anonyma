@@ -450,6 +450,96 @@ pub fn call_json(op: &str, input: &str) -> String {
 }
 
 /// [`call_with_vault`] with JSON text in and out.
+/// The matches of a text as JSON, offsets in the unit `input.offsets` asks for.
+fn matches_json(
+    input: &Value,
+    text: &str,
+    matches: Vec<anonyma_core::Match>,
+) -> Result<Value, ApiError> {
+    let offset = offset_of(input, text)?;
+    Ok(Value::Array(
+        matches
+            .into_iter()
+            .map(|m| {
+                json!({
+                    "category": m.category.as_str(),
+                    "value": m.value,
+                    "start": offset(m.start),
+                    "end": offset(m.end),
+                    "confidence": m.confidence,
+                })
+            })
+            .collect(),
+    ))
+}
+
+fn anonymized_json(out: anonyma_core::Anonymized) -> Value {
+    let counts: Map<String, Value> = out
+        .counts()
+        .into_iter()
+        .map(|(category, n)| (category, json!(n)))
+        .collect();
+    json!({ "text": out.text, "counts": counts })
+}
+
+/// Perform `op` with an engine built once ([`engine`]): `detect` and
+/// `anonymize` on `input.text`, `detect_batch` and `anonymize_batch` on
+/// `input.texts`. Batches scan short texts together and answer `results` in
+/// input order; `anonymize_batch` fails as a whole on the first text a
+/// strategy fails on.
+pub fn call_engine(engine: &AnonymaEngine, op: &str, input: &Value) -> Result<Value, ApiError> {
+    match op {
+        "detect" => {
+            let source = text(input, "text")?;
+            Ok(json!({ "matches": matches_json(input, source, engine.detect(source))? }))
+        }
+        "anonymize" => Ok(anonymized_json(
+            engine
+                .anonymize(text(input, "text")?)
+                .map_err(|e| e.to_string())?,
+        )),
+        "detect_batch" => {
+            let texts = strings(input, "texts")?;
+            let results = texts
+                .iter()
+                .zip(engine.detect_batch(&texts))
+                .map(|(source, matches)| {
+                    Ok(json!({ "matches": matches_json(input, source, matches)? }))
+                })
+                .collect::<Result<Vec<Value>, ApiError>>()?;
+            Ok(json!({ "results": results }))
+        }
+        "anonymize_batch" => {
+            let texts = strings(input, "texts")?;
+            let results = engine
+                .anonymize_batch(&texts)
+                .into_iter()
+                .map(|out| out.map(anonymized_json).map_err(|e| e.to_string()))
+                .collect::<Result<Vec<Value>, ApiError>>()?;
+            Ok(json!({ "results": results }))
+        }
+        other => Err(format!("unknown engine operation \"{other}\"")),
+    }
+}
+
+/// [`call_engine`] on a JSON input, answering `{"ok": ...}` or `{"error": ...}`.
+pub fn call_engine_json(engine: &AnonymaEngine, op: &str, input: &str) -> String {
+    let outcome = serde_json::from_str::<Value>(input)
+        .map_err(|e| format!("input is not JSON: {e}"))
+        .and_then(|input| call_engine(engine, op, &input));
+    match outcome {
+        Ok(value) => json!({ "ok": value }).to_string(),
+        Err(message) => json!({ "error": message }).to_string(),
+    }
+}
+
+/// An engine from JSON options (as [`engine`] reads them), or the error message.
+pub fn engine_json(options: &str) -> Result<AnonymaEngine, ApiError> {
+    let options =
+        serde_json::from_str::<Value>(options).map_err(|e| format!("options are not JSON: {e}"))?;
+    engine(&options)
+}
+
 pub fn call_json_with_vault(op: &str, input: &str, vault: Option<&mut InMemoryVault>) -> String {
     let outcome = serde_json::from_str::<Value>(input)
         .map_err(|e| format!("input is not JSON: {e}"))

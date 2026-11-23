@@ -66,3 +66,42 @@ func BenchmarkInputEncoding(b *testing.B) {
 		_ = textInput(text, fields)
 	}
 }
+
+func BenchmarkEngineDetectShortEntry(b *testing.B) {
+	engine, err := NewEngine(Options{})
+	if err != nil {
+		b.Fatal(err)
+	}
+	defer engine.Close()
+	entries := make([]string, 1000)
+	for i := range entries {
+		entries[i] = entry(i)
+	}
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if _, err := engine.Detect(entries[i%len(entries)]); err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+// BenchmarkEngineDetectBatch reports the time per entry of a batch of 1,000.
+func BenchmarkEngineDetectBatch(b *testing.B) {
+	engine, err := NewEngine(Options{})
+	if err != nil {
+		b.Fatal(err)
+	}
+	defer engine.Close()
+	entries := make([]string, 1000)
+	for i := range entries {
+		entries[i] = entry(i)
+	}
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i += len(entries) {
+		if _, err := engine.DetectBatch(entries); err != nil {
+			b.Fatal(err)
+		}
+	}
+}

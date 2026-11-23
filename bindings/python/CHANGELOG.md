@@ -7,6 +7,13 @@ change its API.
 
 ## [Unreleased]
 
+### Added
+
+- `Anonyma.detect_batch(texts)` and `Anonyma.anonymize_batch(texts)`: `detect()` and `anonymize()`
+  on each text, in order, in one call with the GIL released. Short texts are joined, scanned once
+  and split back, as the TypeScript package's `detectBatch()` does: the same results, at about half
+  the cost per text for log lines and rows.
+
 ### Changed
 
 - Detection skips the patterns that count only after a label (generic account, member and record

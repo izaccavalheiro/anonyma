@@ -25,6 +25,9 @@ engine.restore(answer, shielded.vault)             # values back in the answer
   presets; each category gets the most protective strategy.
 - **Signed receipts.** `ReceiptIssuer(key).issue(output, counts)` records what
   was replaced, without the data, signed with HMAC-SHA-256.
+- **Batches.** `engine.detect_batch(lines)` and `engine.anonymize_batch(lines)`
+  process many texts in one call with the GIL released, scanning short texts
+  together: about twice as fast as a call per text for log lines and rows.
 - **The same results as the TypeScript package.** Both run the same conformance
   suite.
 
