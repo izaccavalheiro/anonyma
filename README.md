@@ -113,6 +113,10 @@ anonyma scan fixtures/customers.csv --fail-on-pii
 | [`anonyma-vercel-ai`](packages/vercel-ai#readme) | Vercel AI SDK middleware: prompts tokenized, answers restored              |
 | [`anonyma-mcp`](packages/mcp#readme)             | A privacy proxy for any MCP server: tool results reach the model as tokens |
 
+Outside JavaScript, the same detectors run in Python (`pip install --pre anonyma`), in Go
+(`github.com/izaccavalheiro/anonyma-go`) and, over HTTP, in any language through the sidecar: see
+[other languages](https://izaccavalheiro.github.io/anonyma/docs/guides/other-languages).
+
 ## Learn more
 
 The [documentation site](https://izaccavalheiro.github.io/anonyma/) is the reference for everything

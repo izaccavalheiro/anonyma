@@ -50,7 +50,7 @@ src/
 ├── mcp/                  # "anonyma/mcp" — MCP declarations and server
 ├── middleware/           # "anonyma/middleware", "/express", "/hono" — HTTP payload scrubbing
 └── internal/             # Web Crypto lookup, byte encodings, lossless JSON numbers, allowlist matching and one-pass span replacement shared by the modules above
-bench/                    # Benchmark (run.mjs), corpus generator, saved results
+bench/                    # Benchmark (run.mjs), Rust core vs TypeScript (core.mjs, CI only), corpus generator, saved results
 scripts/                  # Repository checks run by CI: package smoke test, size budget, privacy invariants, benchmark scaling
 scripts/runtime/          # Feature checks of dist/ on Node.js, Bun, Deno and Cloudflare Workers (run.mjs, workerd.mjs)
 tests/fixtures/corpus/    # Labelled detector corpora used by tests/engine/precision.test.ts

@@ -13,7 +13,10 @@ wasm-pack build bindings/wasm --target web --release
 import init, { call, Vault } from "./pkg/anonyma_wasm.js";
 await init();
 const { ok } = JSON.parse(
-  call("detect", JSON.stringify({ text: "Mail ana@example.com", categories: ["email"], offsets: "utf-16" })),
+  call(
+    "detect",
+    JSON.stringify({ text: "Mail ana@example.com", categories: ["email"], offsets: "utf-16" }),
+  ),
 );
 ```
 
@@ -21,10 +24,11 @@ const { ok } = JSON.parse(
 
 A scaffold: CI builds it for `wasm32-unknown-unknown`; it is not published.
 The TypeScript package `anonyma` already runs on every one of these runtimes
-with zero dependencies and is what the site's playground uses. This binding
-becomes useful when the Rust core is faster than the TypeScript engine on a
-runtime that matters, or detects something the TypeScript engine does not;
-the benchmark in `bench/` decides, before anything ships.
+with zero dependencies and is what the site's playground uses. The core benchmark
+(`bench/core.mjs`) measured this build on V8, the engine of Workers: slower
+than the TypeScript engine almost everywhere, with a first call ten times
+slower. It stays unpublished; the benchmark still runs it, so the question can
+be reopened if the core gets faster.
 
 Binary size matters on the edge: the release profile uses LTO and strips
 symbols; `wasm-opt -Oz` (from wasm-pack) shrinks it further. The `regex`
