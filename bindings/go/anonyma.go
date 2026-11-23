@@ -26,7 +26,7 @@ package anonyma
 #cgo windows,amd64 LDFLAGS: ${SRCDIR}/lib/windows_amd64/libanonyma_ffi.a
 #cgo linux LDFLAGS: -lm -lrt -lpthread -lutil -ldl
 #cgo windows LDFLAGS: -lkernel32 -lntdll -luserenv -lws2_32 -ldbghelp -lsynchronization
-#include <stdlib.h>
+#include <string.h>
 #include "anonyma.h"
 */
 import "C"
@@ -48,44 +48,47 @@ func (e *Error) Error() string { return "anonyma: " + e.Message }
 // ErrClosed is returned by the methods of a closed [Vault].
 var ErrClosed = errors.New("anonyma: vault is closed")
 
-type envelope struct {
-	OK    json.RawMessage `json:"ok"`
-	Error *string         `json:"error"`
-}
-
+// decode reads an answer of the JSON API, `{"ok": …}` or `{"error": "…"}`, in
+// one pass and in place: the result goes straight into out, and the C string
+// is read without a copy and freed afterwards.
 func decode(raw *C.char, out any) error {
 	defer C.anonyma_string_free(raw)
-	var answer envelope
-	if err := json.Unmarshal([]byte(C.GoString(raw)), &answer); err != nil {
+	answer := struct {
+		OK    any     `json:"ok"`
+		Error *string `json:"error"`
+	}{OK: out}
+	if out == nil {
+		answer.OK = new(json.RawMessage)
+	}
+	text := unsafe.Slice((*byte)(unsafe.Pointer(raw)), C.strlen(raw))
+	if err := json.Unmarshal(text, &answer); err != nil {
 		return fmt.Errorf("anonyma: unreadable answer: %w", err)
 	}
 	if answer.Error != nil {
 		return &Error{Message: *answer.Error}
 	}
-	if out == nil {
-		return nil
-	}
-	return json.Unmarshal(answer.OK, out)
+	return nil
 }
 
-func cStrings(op string, input any) (*C.char, *C.char, error) {
-	payload, err := json.Marshal(input)
-	if err != nil {
-		return nil, nil, err
-	}
-	return C.CString(op), C.CString(string(payload)), nil
+// cPointer is the address of a NUL-terminated buffer, for the duration of a call.
+func cPointer(buf []byte) *C.char {
+	return (*C.char)(unsafe.Pointer(&buf[0]))
+}
+
+// call performs op on an input already encoded and NUL-terminated.
+func call(op string, input []byte, out any) error {
+	cop := cString(op)
+	return decode(C.anonyma_call(cPointer(cop), cPointer(input)), out)
 }
 
 // Call performs an operation of the JSON API (see packages/conformance/README.md)
 // and decodes its result into out.
 func Call(op string, input any, out any) error {
-	cop, cinput, err := cStrings(op, input)
+	payload, err := marshalInput(input)
 	if err != nil {
 		return err
 	}
-	defer C.free(unsafe.Pointer(cop))
-	defer C.free(unsafe.Pointer(cinput))
-	return decode(C.anonyma_call(cop, cinput), out)
+	return call(op, payload, out)
 }
 
 // Rule anonymizes one category with a strategy, such as
@@ -113,15 +116,9 @@ type Options struct {
 	AllowPartial bool `json:"allowPartial,omitempty"`
 }
 
-func (o Options) with(text string) map[string]any {
-	input := map[string]any{"text": text, "offsets": "bytes"}
-	raw, _ := json.Marshal(o)
-	var fields map[string]any
-	_ = json.Unmarshal(raw, &fields)
-	for key, value := range fields {
-		input[key] = value
-	}
-	return input
+// fields encodes the options once, as members to splice into each call's input.
+func (o Options) fields() ([]byte, error) {
+	return optionFields(o)
 }
 
 // Match is a value of personal data found in a text. Start and End are byte offsets.
@@ -135,10 +132,14 @@ type Match struct {
 
 // Detect finds every value of personal data in text, without overlaps, in document order.
 func Detect(text string, opts Options) ([]Match, error) {
+	fields, err := opts.fields()
+	if err != nil {
+		return nil, err
+	}
 	var out struct {
 		Matches []Match `json:"matches"`
 	}
-	if err := Call("detect", opts.with(text), &out); err != nil {
+	if err := call("detect", textInput(text, fields), &out); err != nil {
 		return nil, err
 	}
 	return out.Matches, nil
@@ -146,10 +147,20 @@ func Detect(text string, opts Options) ([]Match, error) {
 
 // Anonymize replaces every value found with its category's strategy.
 func Anonymize(text string, opts Options) (string, error) {
+	fields, err := opts.fields()
+	if err != nil {
+		return "", err
+	}
+	return anonymize(text, fields)
+}
+
+// anonymize is [Anonymize] with the options already encoded, for callers that
+// make many calls with one set of options.
+func anonymize(text string, fields []byte) (string, error) {
 	var out struct {
 		Text string `json:"text"`
 	}
-	if err := Call("anonymize", opts.with(text), &out); err != nil {
+	if err := call("anonymize", textInput(text, fields), &out); err != nil {
 		return "", err
 	}
 	return out.Text, nil
@@ -189,28 +200,27 @@ func (v *Vault) Close() error {
 	return nil
 }
 
-func (v *Vault) call(op string, input any, out any) error {
+func (v *Vault) call(op string, input []byte, out any) error {
 	v.mu.Lock()
 	defer v.mu.Unlock()
 	if v.ptr == nil {
 		return ErrClosed
 	}
-	cop, cinput, err := cStrings(op, input)
-	if err != nil {
-		return err
-	}
-	defer C.free(unsafe.Pointer(cop))
-	defer C.free(unsafe.Pointer(cinput))
-	return decode(C.anonyma_vault_call(v.ptr, cop, cinput), out)
+	cop := cString(op)
+	return decode(C.anonyma_vault_call(v.ptr, cPointer(cop), cPointer(input)), out)
 }
 
 // Shield replaces personal data with vault tokens ({{EMAIL_1}}) before a
 // prompt leaves for a model.
 func (v *Vault) Shield(text string, opts Options) (string, error) {
+	fields, err := opts.fields()
+	if err != nil {
+		return "", err
+	}
 	var out struct {
 		Text string `json:"text"`
 	}
-	if err := v.call("shield", opts.with(text), &out); err != nil {
+	if err := v.call("shield", textInput(text, fields), &out); err != nil {
 		return "", err
 	}
 	return out.Text, nil
@@ -222,7 +232,11 @@ func (v *Vault) Restore(text string) (string, error) {
 	var out struct {
 		Text string `json:"text"`
 	}
-	if err := v.call("restore", map[string]string{"text": text}, &out); err != nil {
+	input, err := marshalInput(map[string]string{"text": text})
+	if err != nil {
+		return "", err
+	}
+	if err := v.call("restore", input, &out); err != nil {
 		return "", err
 	}
 	return out.Text, nil

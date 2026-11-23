@@ -28,22 +28,20 @@ type Span struct {
 // Scan runs the span engine: the precise detectors, with overlaps resolved by
 // covering, in document order.
 func Scan(text string, opts ScanOptions) ([]Span, error) {
-	input := map[string]any{
-		"text":          text,
-		"offsets":       "bytes",
-		"aggressive":    opts.Aggressive,
-		"minConfidence": opts.MinConfidence,
-	}
-	if len(opts.Categories) > 0 {
-		input["categories"] = opts.Categories
-	}
-	if opts.Detection != "" {
-		input["detection"] = opts.Detection
+	// aggressive and minConfidence are sent even when zero, as they always were.
+	fields, err := optionFields(struct {
+		Categories    []string `json:"categories,omitempty"`
+		Detection     string   `json:"detection,omitempty"`
+		Aggressive    bool     `json:"aggressive"`
+		MinConfidence float64  `json:"minConfidence"`
+	}{opts.Categories, opts.Detection, opts.Aggressive, opts.MinConfidence})
+	if err != nil {
+		return nil, err
 	}
 	var out struct {
 		Spans []Span `json:"spans"`
 	}
-	if err := Call("scan", input, &out); err != nil {
+	if err := call("scan", textInput(text, fields), &out); err != nil {
 		return nil, err
 	}
 	return out.Spans, nil
