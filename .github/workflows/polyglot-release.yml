@@ -117,6 +117,12 @@ jobs:
       - name: Test
         run: cargo test -p anonyma-core -p anonyma-ffi -- --nocapture
 
+      # Detection must grow linearly with the text (examples/scaling.rs): a
+      # label-heavy text and one with capitals and labelled addresses.
+      - name: Check scaling
+        if: runner.os == 'Linux'
+        run: cargo run --release -p anonyma-core --example scaling
+
       - name: Package the crate
         if: runner.os == 'Linux'
         run: cargo package -p anonyma-core --allow-dirty
