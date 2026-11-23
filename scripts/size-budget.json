@@ -7,11 +7,11 @@
   "./stream": 33.5,
   "./engine": 41,
   "./vault": 19,
-  "./audit": 45,
+  "./audit": 46,
   "./compliance": 33,
-  "./ai": 52,
+  "./ai": 53,
   "./mcp": 67,
-  "./middleware": 45.5,
-  "./middleware/express": 46,
-  "./middleware/hono": 46
+  "./middleware": 46.5,
+  "./middleware/express": 47,
+  "./middleware/hono": 47
 }

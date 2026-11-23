@@ -6,8 +6,7 @@
  */
 
 import { AsyncStrategyError, ValidationError } from "../errors.js";
-import { fuseEach } from "../internal/fusion.js";
-import { BUILTIN_SPAN_DETECTORS } from "./fusable.js";
+import { FUSABLE_SPAN_DETECTORS, fuseEach } from "../internal/fusion.js";
 import { resolveSpans } from "./resolve.js";
 import type { Candidate, Resolved } from "./resolve.js";
 import type {
@@ -213,7 +212,7 @@ export function createPipeline(options: PipelineOptions): Pipeline {
   // Fusion is proven for the built-in detectors, and an allow rule that is a
   // function sees the offsets of a span, which fusion moves.
   const fusable =
-    detectors.every((detector) => BUILTIN_SPAN_DETECTORS.has(detector)) &&
+    detectors.every((detector) => FUSABLE_SPAN_DETECTORS.has(detector)) &&
     !(options.allow ?? []).some((rule) => typeof rule === "function");
   const names = detectors.some((detector) => detector.category === "name");
 

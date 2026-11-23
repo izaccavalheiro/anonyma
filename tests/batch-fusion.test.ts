@@ -1,8 +1,21 @@
 /**
  * Batch fusion: detectBatch(), anonymizeBatch() and Pipeline.scanBatch() scan short entries joined
- * into one text. These tests check that every result equals the per-entry
- * call, at the boundaries between entries where fusion could change one, and
- * that the invariants fusion relies on still hold in the detectors' source.
+ * into one text (src/internal/fusion.ts). These tests check that every result equals the per-entry
+ * call, at the boundaries between entries where fusion could change one, and that the invariants
+ * fusion relies on still hold in the detectors' source. A detector added later must keep them:
+ *
+ * - Every assertion at the edge of a match (`\b`, `(?<!\d)`, `(?![ ./-]?\d)`, `(?<![\p{L}\d])`,
+ *   ...) treats `\n` as it treats the start and the end of the text. The one exception is `^`
+ *   without the `m` flag in the greetings of the name detectors: entries that start with a
+ *   greeting word are scanned alone.
+ * - No pattern crosses the separator: it alternates `\n` and `\0` over 43 units, so `\s` stops at
+ *   the `\0` and `[^\n,]`, `.` and URL paths stop at the `\n`; no pattern repeats a class that
+ *   holds both. Prefilters test for characters or runs that cannot span it either.
+ * - Labels count for a value at most 40 UTF-16 units after them. The precise email and IPv4
+ *   detectors look back 96 and 48 units with patterns whose classes exclude `\n` or `\0`. Card
+ *   groups are joined by one or two characters. Overlap resolution works cluster by cluster.
+ * - Only the built-in detectors fuse (a replaced registry entry, a custom detector or a span
+ *   allow rule that is a function, which sees offsets, turns fusion off).
  */
 import { readFileSync, readdirSync } from "node:fs";
 import fc from "fast-check";
