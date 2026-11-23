@@ -1,10 +1,10 @@
 {
-  ".": 37,
+  ".": 38,
   "./schemas": 5,
   "./detectors": 16.5,
   "./validators": 3.5,
   "./crypto": 4.5,
-  "./stream": 32.5,
+  "./stream": 33.5,
   "./engine": 41,
   "./vault": 19,
   "./audit": 45,

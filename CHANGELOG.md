@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `detectBatch()` and `anonymizeBatch()` scan short entries together: entries under 8 KB are joined
+  into texts of about 32 KB with a separator no detector matches across, scanned once, and the
+  matches are split back by entry. The results are those of `detect()` and `anonymize()` on each
+  entry, and 745 lines of 100 KB take 2.6 times less time (113 → 44 ms). `anonymizeBatch()` also
+  resolves its options once per batch. Entries that start with a greeting word ("Dear", "Hi"),
+  hold a NUL character or are 8 KB or longer are still scanned one by one, as is every entry when
+  a custom detector is given or a built-in one was replaced in `DETECTOR_REGISTRY`.
+
 ---
 
 ## [1.4.0] — 2026-11-23

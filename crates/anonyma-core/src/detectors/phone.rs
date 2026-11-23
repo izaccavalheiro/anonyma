@@ -9,7 +9,9 @@
 use std::sync::OnceLock;
 
 use super::{overlaps, Match};
-use crate::jsregex::{js_regex, Guarded, JsRegex, NOT_BEFORE_DIGIT, NOT_BEFORE_SEPARATED_DIGIT};
+use crate::jsregex::{
+    js_regex, Guarded, Haystack, JsRegex, NOT_BEFORE_DIGIT, NOT_BEFORE_SEPARATED_DIGIT,
+};
 use crate::Category;
 
 /// North American numbers: `(?<!\d)` before them.
@@ -43,10 +45,11 @@ fn international() -> &'static Guarded {
 
 /// Matches of the standard pattern, as the reference's `exec` loop finds them.
 fn standard_ranges(text: &str) -> Vec<(usize, usize)> {
+    let haystack = Haystack::new(text);
     let mut out = Vec::new();
     let mut at = 0;
     while at <= text.len() {
-        let Some(groups) = standard().captures_at(text, at) else {
+        let Some(groups) = standard().captures_at(&haystack, at) else {
             break;
         };
         let (first, second) = (groups[1], groups[2]);
@@ -57,7 +60,7 @@ fn standard_ranges(text: &str) -> Vec<(usize, usize)> {
         let found = if first.is_some() && preceded_by_digit {
             // The first alternative fails its lookbehind: the second one is tried at the same start.
             international()
-                .candidate(text, start)
+                .candidate(&haystack, start)
                 .and_then(|g| g[1])
                 .filter(|&(s, _)| s == start)
         } else {

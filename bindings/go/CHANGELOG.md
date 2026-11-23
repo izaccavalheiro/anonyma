@@ -18,6 +18,11 @@ are documented in this file. The format is based on
 
 - Options that `encoding/json` cannot encode (a strategy holding a channel or a function) are
   now an error. They were dropped, so the call detected every category with its default strategy.
+- Detecting addresses, names, phone numbers, IBANs, IPv4 addresses and US SSNs in a text with
+  capital letters took time and memory proportional to the length of the text times the number of
+  candidates: each candidate lower-cased the whole text again. A 119 KB text with 1,000 labelled
+  addresses allocated 240 MB; it now allocates a few times its own size. Long untrusted text can
+  no longer make detection quadratic this way.
 - The package links again with Go 1.26.11, 1.27.4 and later releases, which refused the prebuilt
   library ("disallowed LTO section", golang/go#83126). The library no longer holds the LLVM
   bitcode sections that Rust's standard library put in it; the linker never used them. Building

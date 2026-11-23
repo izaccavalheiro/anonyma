@@ -115,6 +115,44 @@ pub(crate) fn translate(source: &str) -> String {
     out
 }
 
+/// ASCII letters of `text` lower-cased, borrowed when it has none in upper case.
+fn lower_cased(text: &str) -> std::borrow::Cow<'_, str> {
+    if text.bytes().any(|b| b.is_ascii_uppercase()) {
+        std::borrow::Cow::Owned(text.to_ascii_lowercase())
+    } else {
+        std::borrow::Cow::Borrowed(text)
+    }
+}
+
+/// A text prepared for repeated searches: its ASCII-lower-cased form, which
+/// case-insensitive patterns read, is computed once, on first use. ASCII
+/// lower-casing keeps every byte offset, so ranges found in either form are
+/// ranges of the text.
+pub(crate) struct Haystack<'t> {
+    raw: &'t str,
+    lower: std::cell::OnceCell<std::borrow::Cow<'t, str>>,
+}
+
+impl<'t> Haystack<'t> {
+    /// Prepare `raw`; nothing is computed until a pattern needs it.
+    pub(crate) fn new(raw: &'t str) -> Self {
+        Haystack {
+            raw,
+            lower: std::cell::OnceCell::new(),
+        }
+    }
+
+    /// The text as given.
+    pub(crate) fn raw(&self) -> &'t str {
+        self.raw
+    }
+
+    /// The text with ASCII letters lower-cased.
+    fn lower(&self) -> &str {
+        self.lower.get_or_init(|| lower_cased(self.raw))
+    }
+}
+
 /// A compiled pattern with ECMAScript semantics.
 pub(crate) struct JsRegex {
     regex: Regex,
@@ -151,10 +189,20 @@ impl JsRegex {
     }
 
     fn haystack<'t>(&self, text: &'t str) -> std::borrow::Cow<'t, str> {
-        if self.insensitive && text.bytes().any(|b| b.is_ascii_uppercase()) {
-            std::borrow::Cow::Owned(text.to_ascii_lowercase())
+        if self.insensitive {
+            lower_cased(text)
         } else {
             std::borrow::Cow::Borrowed(text)
+        }
+    }
+
+    /// The text this pattern reads in `haystack`: lower-cased for a
+    /// case-insensitive pattern, as is otherwise.
+    fn view<'h>(&self, haystack: &'h Haystack<'_>) -> &'h str {
+        if self.insensitive {
+            haystack.lower()
+        } else {
+            haystack.raw()
         }
     }
 
@@ -176,14 +224,16 @@ impl JsRegex {
     /// The capture groups of the leftmost match that starts at or after
     /// `start`; assertions see the text before `start`. Byte ranges of the
     /// groups, `None` for a group that did not participate.
+    ///
+    /// The haystack is prepared once by the caller, so that a loop over the
+    /// candidates of a long text lower-cases it once, not once per candidate.
     pub(crate) fn captures_at(
         &self,
-        text: &str,
+        haystack: &Haystack<'_>,
         start: usize,
     ) -> Option<Vec<Option<(usize, usize)>>> {
-        let haystack = self.haystack(text);
         self.regex
-            .captures_at(&haystack, start)
+            .captures_at(self.view(haystack), start)
             .map(|caps: Captures<'_>| {
                 caps.iter()
                     .map(|group| group.map(|m| (m.start(), m.end())))
@@ -272,8 +322,12 @@ impl Guarded {
 
     /// The candidate at or after `at`: the byte range of the match, and the
     /// groups of `core` (group 1 is the whole match).
-    pub(crate) fn candidate(&self, text: &str, at: usize) -> Option<Vec<Option<(usize, usize)>>> {
-        self.regex.captures_at(text, at)
+    pub(crate) fn candidate(
+        &self,
+        haystack: &Haystack<'_>,
+        at: usize,
+    ) -> Option<Vec<Option<(usize, usize)>>> {
+        self.regex.captures_at(haystack, at)
     }
 
     /// Whether a match may start at `start`: the lookbehind holds.
@@ -291,10 +345,11 @@ impl Guarded {
     /// resumes at its end. Checks the caller makes afterwards (the reference's
     /// `continue`) do not change where the next search starts.
     pub(crate) fn matches(&self, text: &str) -> Vec<Vec<Option<(usize, usize)>>> {
+        let haystack = Haystack::new(text);
         let mut out = Vec::new();
         let mut at = 0;
         while at <= text.len() {
-            let Some(groups) = self.candidate(text, at) else {
+            let Some(groups) = self.candidate(&haystack, at) else {
                 break;
             };
             let Some((start, end)) = groups[1] else {
@@ -322,10 +377,11 @@ impl Guarded {
         text: &str,
         accept: impl Fn(&[Option<(usize, usize)>]) -> bool,
     ) -> Vec<(usize, usize)> {
+        let haystack = Haystack::new(text);
         let mut out = Vec::new();
         let mut at = 0;
         while at <= text.len() {
-            let Some(groups) = self.candidate(text, at) else {
+            let Some(groups) = self.candidate(&haystack, at) else {
                 break;
             };
             let Some((start, end)) = groups[1] else {

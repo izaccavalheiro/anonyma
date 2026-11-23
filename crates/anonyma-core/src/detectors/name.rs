@@ -9,7 +9,7 @@
 use std::sync::OnceLock;
 
 use super::Match;
-use crate::jsregex::{next_char, JsRegex};
+use crate::jsregex::{next_char, Haystack, JsRegex};
 use crate::Category;
 
 const TITLES: &str = "(?:Mr|Mrs|Ms|Miss|Mx|Dr|Prof(?:essor)?|Rev(?:erend)?|Hon(?:orable)?|Capt(?:ain)?|Cmdr|Commander|Lt|Lieu?t(?:enant)?|Sgt|Sergeant|Fr|Father|Sr|Sister|Br|Brother|Esq|Esquire)";
@@ -66,9 +66,10 @@ fn patterns() -> &'static Patterns {
 }
 
 fn extract(text: &str, pattern: &JsRegex, confidence: f64, out: &mut Vec<Match>) {
+    let haystack = Haystack::new(text);
     let mut at = 0;
     while at <= text.len() {
-        let Some(groups) = pattern.captures_at(text, at) else {
+        let Some(groups) = pattern.captures_at(&haystack, at) else {
             break;
         };
         let Some((start, end)) = groups[0] else {
