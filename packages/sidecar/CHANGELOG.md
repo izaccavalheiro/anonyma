@@ -8,6 +8,11 @@ endpoints or settings.
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-11-23
+
+Batch endpoints, on anonyma 1.5.0: many texts in one request, at about a twelfth of the cost of a
+request per text.
+
 ### Added
 
 - `POST /v1/detect/batch` and `POST /v1/anonymize/batch`: the options of `/v1/detect` and
