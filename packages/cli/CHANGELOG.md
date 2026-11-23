@@ -6,6 +6,10 @@ at 0.x, a minor version may change its API or its command line.
 
 ## [Unreleased]
 
+## [0.1.1] — 2026-11-23
+
+Requires `anonyma` ^1.3.0.
+
 ### Fixed
 
 - `anonyma scrub -o <file>` no longer leaves a `<file>.partial-<pid>` file behind when it fails

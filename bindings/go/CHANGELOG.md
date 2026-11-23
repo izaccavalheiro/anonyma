@@ -7,6 +7,8 @@ are documented in this file. The format is based on
 
 ## [Unreleased]
 
+## [0.1.0-alpha.2] — 2026-11-23
+
 ### Fixed
 
 - `Anonymize` took time proportional to the length of the text times the number of matches,

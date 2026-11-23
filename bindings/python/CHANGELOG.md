@@ -7,6 +7,11 @@ change its API.
 
 ## [Unreleased]
 
+## [0.1.0a4] — 2026-11-23
+
+The same results as 0.1.0a3, in one pass over the text: long texts with many values no longer take
+seconds.
+
 ### Fixed
 
 - Detection, `scan()`, anonymization and tokenization took time proportional to the length of the

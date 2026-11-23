@@ -9,13 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [1.3.3] — 2026-11-23
+
+Patch release: `anonymize()` and `tokenize()` take time linear in the length of the text, however
+many values they replace, and **`anonyma-cli` 0.1.1** is published.
+
 ### Fixed
 
 - `anonymize()`, `anonymizeAsync()`, `tokenize()` and the `tokenize()` of `createAnonymizer()`
   took time proportional to the length of the text times the number of matches: each replacement
   copied the whole text again. On the benchmark corpus, anonymizing 1,000,000 characters with the
   `gdpr` preset took 1.7 s with sparse personal data and 8 s with dense data, where detection takes
-  0.2 s. They now assemble the result once; the output is unchanged.
+  0.2 s. They now assemble the result once; the output is unchanged
+  ([#79](https://github.com/izaccavalheiro/anonyma/pull/79)).
+- **`anonyma-cli` 0.1.1**: `anonyma scrub -o <file>` no longer leaves a `<file>.partial-<pid>` file
+  behind when it fails right after it starts, as it could on Windows
+  ([#69](https://github.com/izaccavalheiro/anonyma/pull/69)).
 
 ---
 
@@ -856,7 +867,8 @@ All types are zero-cost, type-only exports (stripped by `tsc`; no runtime overhe
 - **Prettier** code formatting.
 - **MIT License**.
 
-[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.2...HEAD
+[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.3...HEAD
+[1.3.3]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/izaccavalheiro/anonyma/compare/v1.2.0...v1.3.0
