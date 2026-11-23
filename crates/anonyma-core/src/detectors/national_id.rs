@@ -11,7 +11,7 @@
 use std::sync::OnceLock;
 
 use super::{has_context, label_ends, Match};
-use crate::anchored::Candidates;
+use crate::anchored::TextIndex;
 use crate::jsregex::JsRegex;
 use crate::validators::{
     au_tfn, bsn, cn_resident_id, cpf, es_dni, fr_nir, it_fiscal_code, luhn, nino, pt_nif,
@@ -158,13 +158,18 @@ fn in_longer_number(text: &str, start: usize, end: usize) -> bool {
         || (end + 1 < bytes.len() && separator(bytes[end]) && bytes[end + 1].is_ascii_digit())
 }
 
+/// [`detect_in`] with an index of its own, for tests.
+#[cfg(test)]
 pub(super) fn detect(text: &str, strict: bool) -> Vec<Match> {
+    detect_in(text, &TextIndex::new(text, true), strict)
+}
+
+pub(super) fn detect_in(text: &str, index: &TextIndex<'_>, strict: bool) -> Vec<Match> {
     let (national, rg) = labels();
     let national_ends = label_ends(national.ranges(text));
     let rg_ends = label_ends(rg.ranges(text));
     // Every format begins with a word boundary and a digit, a capital, `&` or
-    // `Ñ`: one index of those starts serves all twenty (src/anchored.rs).
-    let candidates = Candidates::new(text);
+    // `Ñ`: the call's index of those starts serves all twenty (src/anchored.rs).
     let mut seen = std::collections::HashSet::new();
     let mut found = Vec::new();
     for entry in entries() {
@@ -177,7 +182,7 @@ pub(super) fn detect(text: &str, strict: bool) -> Vec<Match> {
         if entry.requires_label && ends.is_empty() {
             continue;
         }
-        for (start, end) in entry.pattern.ranges_in(text, &candidates) {
+        for (start, end) in entry.pattern.ranges_with(text, index) {
             if seen.contains(&(start, end)) {
                 continue;
             }
@@ -218,70 +223,6 @@ pub(super) fn detect(text: &str, strict: bool) -> Vec<Match> {
 mod tests {
     use super::*;
 
-    /// Texts where the anchored search could differ from a full scan: values at
-    /// the edges, glued to letters and digits, separators, `&`, `Ñ` and other
-    /// multi-byte characters, and random strings over the characters the
-    /// patterns read.
-    fn parity_texts() -> Vec<String> {
-        let values = [
-            "123.456.789-09",
-            "123 456 782",
-            "AB 12 34 56 C",
-            "AB123456C",
-            "2345 6789 0124",
-            "850101-1234567",
-            "850101+1234",
-            "12345678Z",
-            "X1234567L",
-            "RSSMRA85T10A562S",
-            "GODE561231GR8",
-            "ÑAPE561231GR8",
-            "&ABC561231GR8",
-            "1 85 05 78 006 084 36",
-            "12.345.678",
-            "1234567890123",
-            "12345678901",
-            "123456789",
-            "11010519491231002X",
-            "12.345.678-9",
-            "A1234567",
-            "4111 1111 1111 1111",
-        ];
-        let edges = [
-            "", " ", "x", "9", "A", "-", ".", "&", "Ñ", "é", "\n", "_", "Z1",
-        ];
-        let mut texts = Vec::new();
-        for value in values {
-            for before in edges {
-                for after in edges {
-                    texts.push(format!("{before}{value}{after}"));
-                    texts.push(format!("id {before}{value}{after}, national id {value}"));
-                }
-            }
-        }
-        texts.push(values.join(" "));
-        texts.push(values.join(""));
-        texts.push(values.join("\n").repeat(50));
-        // Random strings over the characters the patterns read, xorshift-seeded.
-        let alphabet: Vec<char> = "0123456789 -.+/XABCDEFHMZÑ&xé\n\t,".chars().collect();
-        let mut state: u64 = 0x9E37_79B9_7F4A_7C15;
-        for _ in 0..5000 {
-            let mut text = String::new();
-            state ^= state << 13;
-            state ^= state >> 7;
-            state ^= state << 17;
-            let length = 1 + (state % 40) as usize;
-            for _ in 0..length {
-                state ^= state << 13;
-                state ^= state >> 7;
-                state ^= state << 17;
-                text.push(alphabet[(state % alphabet.len() as u64) as usize]);
-            }
-            texts.push(text);
-        }
-        texts
-    }
-
     #[test]
     fn every_format_is_searched_at_candidate_starts() {
         for entry in entries() {
@@ -294,15 +235,8 @@ mod tests {
 
     #[test]
     fn the_anchored_search_finds_what_a_full_scan_finds() {
-        for text in parity_texts() {
-            let candidates = Candidates::new(&text);
-            for (index, entry) in entries().iter().enumerate() {
-                assert_eq!(
-                    entry.pattern.ranges_in(&text, &candidates),
-                    entry.pattern.ranges(&text),
-                    "format {index} on {text:?}"
-                );
-            }
+        for entry in entries() {
+            crate::anchored::parity::check(&entry.pattern);
         }
     }
 

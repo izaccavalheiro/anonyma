@@ -3,6 +3,7 @@
 //! characters after a label.
 
 use super::{after_labels, has_context, label_ends, Collector, Match};
+use crate::anchored::TextIndex;
 use crate::jsregex::js_regex;
 use crate::Category;
 
@@ -12,24 +13,30 @@ js_regex!(uk_companies_house = insensitive r"\b(?:[a-z]{2}\d{6}|\d{8})\b");
 js_regex!(au_acn = r"\b\d{3}[\s]?\d{3}[\s]?\d{3}\b");
 js_regex!(european = r"\b[A-Z]{2}[\s-]?[A-Z0-9]{5,12}\b");
 
+/// [`detect_in`] with an index of its own, for tests.
+#[cfg(test)]
 pub(super) fn detect(text: &str) -> Vec<Match> {
+    detect_in(text, &TextIndex::new(text, true))
+}
+
+pub(super) fn detect_in(text: &str, index: &TextIndex<'_>) -> Vec<Match> {
     let labels = label_ends(label().ranges(text));
     let labelled = |index: usize| has_context(text, &labels, index, 30);
     let mut found = Collector::new(text, Category::CompanyRegistration);
-    for (start, end) in us_ein().ranges(text) {
+    for (start, end) in us_ein().ranges_with(text, index) {
         found.push(start, end, if labelled(start) { 0.88 } else { 0.72 });
     }
-    for (start, end) in after_labels(&labels, || uk_companies_house().ranges(text)) {
+    for (start, end) in after_labels(&labels, || uk_companies_house().ranges_with(text, index)) {
         if labelled(start) {
             found.push(start, end, 0.85);
         }
     }
-    for (start, end) in after_labels(&labels, || au_acn().ranges(text)) {
+    for (start, end) in after_labels(&labels, || au_acn().ranges_with(text, index)) {
         if labelled(start) {
             found.push(start, end, 0.82);
         }
     }
-    for (start, end) in after_labels(&labels, || european().ranges(text)) {
+    for (start, end) in after_labels(&labels, || european().ranges_with(text, index)) {
         if labelled(start) {
             found.push(start, end, 0.78);
         }
@@ -40,6 +47,14 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn its_case_sensitive_patterns_are_searched_at_candidate_starts() {
+        for pattern in [us_ein(), au_acn(), european()] {
+            assert!(pattern.is_anchored());
+            crate::anchored::parity::check(pattern);
+        }
+    }
 
     #[test]
     fn numbers() {

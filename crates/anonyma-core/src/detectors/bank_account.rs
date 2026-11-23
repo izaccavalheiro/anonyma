@@ -3,6 +3,7 @@
 //! numbers after a label.
 
 use super::{after_labels, has_context, label_ends, Collector, Match};
+use crate::anchored::TextIndex;
 use crate::jsregex::js_regex;
 use crate::validators::{aba_routing, pix_payload};
 use crate::Category;
@@ -62,7 +63,13 @@ fn scan_pix_payloads(text: &str, found: &mut Collector<'_>) {
     }
 }
 
+/// [`detect_in`] with an index of its own, for tests.
+#[cfg(test)]
 pub(super) fn detect(text: &str) -> Vec<Match> {
+    detect_in(text, &TextIndex::new(text, true))
+}
+
+pub(super) fn detect_in(text: &str, index: &TextIndex<'_>) -> Vec<Match> {
     let labels = label_ends(context().ranges(text));
     let labelled = |index: usize| has_context(text, &labels, index, 30);
     let mut found = Collector::new(text, Category::BankAccount);
@@ -73,7 +80,7 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     // PIX random keys: only after a PIX label.
     let pix_labels = label_ends(pix_context().ranges(text));
     if !pix_labels.is_empty() {
-        for (start, end) in pix_random_key().ranges(text) {
+        for (start, end) in pix_random_key().ranges_with(text, index) {
             if has_context(text, &pix_labels, start, 30) {
                 found.push(start, end, 0.9);
             }
@@ -81,7 +88,7 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     }
 
     // US ABA routing numbers: only after a label; valid check digits raise the confidence.
-    for (start, end) in after_labels(&labels, || us_aba().ranges(text)) {
+    for (start, end) in after_labels(&labels, || us_aba().ranges_with(text, index)) {
         if labelled(start) {
             let confidence = if aba_routing(&text[start..end]) {
                 0.9
@@ -93,15 +100,15 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     }
 
     // UK sort codes and SWIFT/BIC codes: distinctive, no label needed.
-    for (start, end) in uk_sort_code().ranges(text) {
+    for (start, end) in uk_sort_code().ranges_with(text, index) {
         found.push(start, end, 0.8);
     }
-    for (start, end) in swift_bic().ranges(text) {
+    for (start, end) in swift_bic().ranges_with(text, index) {
         found.push(start, end, 0.82);
     }
 
     // Any account number: only after a label.
-    for (start, end) in after_labels(&labels, || generic_account().ranges(text)) {
+    for (start, end) in after_labels(&labels, || generic_account().ranges_with(text, index)) {
         if labelled(start) {
             found.push(start, end, 0.8);
         }
@@ -112,6 +119,14 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn its_case_sensitive_patterns_are_searched_at_candidate_starts() {
+        for pattern in [us_aba(), uk_sort_code(), swift_bic(), generic_account()] {
+            assert!(pattern.is_anchored());
+            crate::anchored::parity::check(pattern);
+        }
+    }
 
     const PAYLOAD: &str = "00020126400014br.gov.bcb.pix0118fulano@example.com5204000053039865802BR5913FULANO DE TAL6009SAO PAULO62070503***63049F63";
 

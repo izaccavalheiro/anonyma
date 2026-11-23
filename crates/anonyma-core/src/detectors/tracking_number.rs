@@ -2,6 +2,7 @@
 //! USPS and DHL formats on their own, digit runs within 30 characters after a label.
 
 use super::{after_labels, has_context, label_ends, Collector, Match};
+use crate::anchored::TextIndex;
 use crate::jsregex::js_regex;
 use crate::Category;
 
@@ -13,20 +14,26 @@ js_regex!(dhl = insensitive r"\bjd\d{9}\b|\b\d{10,11}\b");
 js_regex!(usps_long = r"\b\d{20,22}\b");
 js_regex!(fedex = r"\b(?:\d{12}|\d{15}|\d{20,22})\b");
 
+/// [`detect_in`] with an index of its own, for tests.
+#[cfg(test)]
 pub(super) fn detect(text: &str) -> Vec<Match> {
+    detect_in(text, &TextIndex::new(text, true))
+}
+
+pub(super) fn detect_in(text: &str, index: &TextIndex<'_>) -> Vec<Match> {
     let labels = label_ends(label().ranges(text));
     let labelled = |index: usize| has_context(text, &labels, index, 30);
     let mut found = Collector::new(text, Category::TrackingNumber);
-    for (start, end) in ups().ranges(text) {
+    for (start, end) in ups().ranges_with(text, index) {
         found.push(start, end, 0.96);
     }
-    for (start, end) in amazon().ranges(text) {
+    for (start, end) in amazon().ranges_with(text, index) {
         found.push(start, end, 0.97);
     }
-    for (start, end) in usps_format().ranges(text) {
+    for (start, end) in usps_format().ranges_with(text, index) {
         found.push(start, end, 0.9);
     }
-    for (start, end) in dhl().ranges(text) {
+    for (start, end) in dhl().ranges_with(text, index) {
         // The reference tests the prefix in upper or lower case, not mixed.
         let value = &text[start..end];
         if value.starts_with("JD") || value.starts_with("jd") {
@@ -35,12 +42,12 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
             found.push(start, end, 0.78);
         }
     }
-    for (start, end) in after_labels(&labels, || usps_long().ranges(text)) {
+    for (start, end) in after_labels(&labels, || usps_long().ranges_with(text, index)) {
         if labelled(start) {
             found.push(start, end, 0.8);
         }
     }
-    for (start, end) in after_labels(&labels, || fedex().ranges(text)) {
+    for (start, end) in after_labels(&labels, || fedex().ranges_with(text, index)) {
         if labelled(start) {
             found.push(start, end, 0.78);
         }
@@ -51,6 +58,14 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn its_case_sensitive_patterns_are_searched_at_candidate_starts() {
+        for pattern in [usps_long(), fedex()] {
+            assert!(pattern.is_anchored());
+            crate::anchored::parity::check(pattern);
+        }
+    }
 
     #[test]
     fn carriers_and_labels() {

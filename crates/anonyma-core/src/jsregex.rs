@@ -241,6 +241,18 @@ impl JsRegex {
         self.ranges(text)
     }
 
+    /// [`ranges_in`](Self::ranges_in) when `index` is enabled, a full scan otherwise.
+    pub(crate) fn ranges_with(
+        &self,
+        text: &str,
+        index: &crate::anchored::TextIndex<'_>,
+    ) -> Vec<(usize, usize)> {
+        match index.candidates() {
+            Some(candidates) => self.ranges_in(text, candidates),
+            None => self.ranges(text),
+        }
+    }
+
     /// Whether the pattern has a search at candidate starts.
     #[cfg(test)]
     pub(crate) fn is_anchored(&self) -> bool {

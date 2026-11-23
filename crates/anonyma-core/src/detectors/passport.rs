@@ -5,6 +5,7 @@
 use std::sync::OnceLock;
 
 use super::{has_context, label_ends, Match};
+use crate::anchored::TextIndex;
 use crate::jsregex::{js_regex, JsRegex};
 use crate::Category;
 
@@ -28,7 +29,13 @@ fn formats() -> &'static [(JsRegex, f64)] {
     })
 }
 
+/// [`detect_in`] with an index of its own, for tests.
+#[cfg(test)]
 pub(super) fn detect(text: &str) -> Vec<Match> {
+    detect_in(text, &TextIndex::new(text, true))
+}
+
+pub(super) fn detect_in(text: &str, index: &TextIndex<'_>) -> Vec<Match> {
     let labels = label_ends(label().ranges(text));
     let mut seen = std::collections::HashSet::new();
     let mut found = Vec::new();
@@ -37,7 +44,7 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
         if *base < 0.7 && labels.is_empty() {
             continue;
         }
-        for (start, end) in pattern.ranges(text) {
+        for (start, end) in pattern.ranges_with(text, index) {
             if seen.contains(&(start, end)) {
                 continue;
             }
@@ -60,6 +67,14 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn its_case_sensitive_patterns_are_searched_at_candidate_starts() {
+        for pattern in formats().iter().map(|(p, _)| p) {
+            assert!(pattern.is_anchored());
+            crate::anchored::parity::check(pattern);
+        }
+    }
 
     #[test]
     fn labels_and_formats() {

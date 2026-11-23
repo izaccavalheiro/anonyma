@@ -9,9 +9,11 @@ change its API.
 
 ### Changed
 
-- National-id detection reads a long text 1.7 times faster with the same results: its twenty formats
-  are tried only where one can start (a word boundary and a run of digits or capitals long enough),
-  instead of each scanning the whole text.
+- Detection reads long texts faster with the same results: the patterns of national-id, passport,
+  bank-account, tax-id, tracking-number, health-insurance, medical-record, company-registration,
+  drivers-license, license-plate and prescription that begin with a word boundary are tried only
+  where one can start (a run of digits or capitals long enough), instead of each scanning the whole
+  text. With every category, 1 MB of log text costs 137 ns per byte instead of 194.
 
 ## [0.1.0a5] — 2026-11-23
 

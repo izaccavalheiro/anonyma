@@ -3,6 +3,7 @@
 //! EHIC or member numbers within 40 characters after a label.
 
 use super::{after_labels, has_context, label_ends, Collector, Match};
+use crate::anchored::TextIndex;
 use crate::jsregex::js_regex;
 use crate::validators::nhs;
 use crate::Category;
@@ -13,24 +14,30 @@ js_regex!(nhs_number = r"\b\d{3}[\s-]\d{3}[\s-]\d{4}\b|\b\d{10}\b");
 js_regex!(ehic = r"\b[A-Z]{2}\d{6,10}\b");
 js_regex!(member = r"\b[A-Z0-9]{8,14}\b");
 
+/// [`detect_in`] with an index of its own, for tests.
+#[cfg(test)]
 pub(super) fn detect(text: &str) -> Vec<Match> {
+    detect_in(text, &TextIndex::new(text, true))
+}
+
+pub(super) fn detect_in(text: &str, index: &TextIndex<'_>) -> Vec<Match> {
     let labels = label_ends(label().ranges(text));
     let labelled = |index: usize| has_context(text, &labels, index, 40);
     let mut found = Collector::new(text, Category::HealthInsurance);
-    for (start, end) in mbi().ranges(text) {
+    for (start, end) in mbi().ranges_with(text, index) {
         found.push(start, end, if labelled(start) { 0.9 } else { 0.8 });
     }
-    for (start, end) in nhs_number().ranges(text) {
+    for (start, end) in nhs_number().ranges_with(text, index) {
         if nhs(&text[start..end]) {
             found.push(start, end, if labelled(start) { 0.92 } else { 0.82 });
         }
     }
-    for (start, end) in after_labels(&labels, || ehic().ranges(text)) {
+    for (start, end) in after_labels(&labels, || ehic().ranges_with(text, index)) {
         if labelled(start) {
             found.push(start, end, 0.78);
         }
     }
-    for (start, end) in after_labels(&labels, || member().ranges(text)) {
+    for (start, end) in after_labels(&labels, || member().ranges_with(text, index)) {
         if labelled(start) {
             found.push(start, end, 0.75);
         }
@@ -41,6 +48,14 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn its_case_sensitive_patterns_are_searched_at_candidate_starts() {
+        for pattern in [nhs_number(), ehic(), member()] {
+            assert!(pattern.is_anchored());
+            crate::anchored::parity::check(pattern);
+        }
+    }
 
     #[test]
     fn numbers() {
