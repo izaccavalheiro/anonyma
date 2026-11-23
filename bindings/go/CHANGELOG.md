@@ -7,6 +7,11 @@ are documented in this file. The format is based on
 
 ## [Unreleased]
 
+## [0.1.0-alpha.3] — 2026-11-23
+
+An `Engine` built once with batches on every core, `NewReader` in batches, links with current Go
+releases again, and a fix for long texts with capital letters, which took quadratic time.
+
 ### Added
 
 - `NewEngine(opts)` builds an `Engine` once for many calls: `Detect`, `Anonymize`, and

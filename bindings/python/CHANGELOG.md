@@ -7,6 +7,10 @@ change its API.
 
 ## [Unreleased]
 
+## [0.1.0a5] — 2026-11-23
+
+Batches, on every core, and a fix for long texts with capital letters, which took quadratic time.
+
 ### Added
 
 - `Anonyma.detect_batch(texts)` and `Anonyma.anonymize_batch(texts)`: `detect()` and `anonymize()`
