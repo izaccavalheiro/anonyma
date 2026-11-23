@@ -12,6 +12,7 @@ import { generalize } from "./strategies/generalize.js";
 import { UnsupportedStrategyError, UnknownCategoryError, ValidationError } from "./errors.js";
 import { combinePresets } from "./presets.js";
 import { compileAllowlist } from "./internal/allowlist.js";
+import { replaceSpans, type Replacement } from "./internal/replace.js";
 import type {
   AnonymaPlugin,
   AnonymizeOptions,
@@ -635,8 +636,9 @@ function anonymizeWith(
     return token;
   }
 
-  // Apply strategies in reverse order to preserve indices.
-  let result = text;
+  // Strategies run from the last match to the first, as they always have:
+  // consistent tokens are numbered in that order.
+  const replacements: Replacement[] = [];
   const reversed = [...allDeduped].reverse();
 
   for (const match of reversed) {
@@ -655,8 +657,9 @@ function anonymizeWith(
       replacement = applyStrategy(match.value, strategy, plugins);
     }
 
-    result = result.slice(0, match.start) + replacement + result.slice(match.end);
+    replacements.push({ start: match.start, end: match.end, replacement });
   }
+  const result = replaceSpans(text, replacements.reverse());
 
   // Only include built-in PiiMatch objects in the public result (custom matches
   // have a non-PiiCategory category and are not part of the public API surface).
@@ -801,7 +804,8 @@ async function anonymizeAsyncWith(
     return token;
   }
 
-  let result = text;
+  // From the last match to the first, as anonymize() does.
+  const replacements: Replacement[] = [];
   const reversed = [...allDeduped].reverse();
 
   for (const match of reversed) {
@@ -822,11 +826,11 @@ async function anonymizeAsyncWith(
       }
     }
 
-    result = result.slice(0, match.start) + replacement + result.slice(match.end);
+    replacements.push({ start: match.start, end: match.end, replacement });
   }
 
   return {
-    text: result,
+    text: replaceSpans(text, replacements.reverse()),
     matches: includeMatches ? filteredBuiltInMatches : [],
   };
 }
@@ -1269,7 +1273,7 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
       ).filter((m) => m.confidence >= tConfidence && !isAllowlisted(m.value));
 
       const store = createTokenStore();
-      let tResult = text;
+      const tReplacements: Replacement[] = [];
       const tTokens: TokenMatch[] = [];
       for (const match of [...tMatches].reverse()) {
         // detect() exclusively returns PiiCategory matches, so the toUpperCase() fallback
@@ -1284,9 +1288,13 @@ export function createAnonymizer(config: AnonymizerConfig = {}): Anonymizer {
           start: match.start,
           end: match.end,
         });
-        tResult = tResult.slice(0, match.start) + token + tResult.slice(match.end);
+        tReplacements.push({ start: match.start, end: match.end, replacement: token });
       }
-      return { text: tResult, mapping: store.tokens, tokens: tTokens };
+      return {
+        text: replaceSpans(text, tReplacements.reverse()),
+        mapping: store.tokens,
+        tokens: tTokens,
+      };
     },
 
     hasPII(text: string): boolean {
