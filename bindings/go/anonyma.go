@@ -14,14 +14,18 @@ package anonyma
 
 //go:generate go run buildlib.go
 
+// The system libraries are those rustc prints with --print native-static-libs
+// (buildlib.go shows them). On darwin, clang links libSystem by default and
+// nothing in the library calls libiconv, so it needs no flag.
+
 /*
 #cgo linux,amd64 LDFLAGS: ${SRCDIR}/lib/linux_amd64/libanonyma_ffi.a
 #cgo linux,arm64 LDFLAGS: ${SRCDIR}/lib/linux_arm64/libanonyma_ffi.a
 #cgo darwin,amd64 LDFLAGS: ${SRCDIR}/lib/darwin_amd64/libanonyma_ffi.a
 #cgo darwin,arm64 LDFLAGS: ${SRCDIR}/lib/darwin_arm64/libanonyma_ffi.a
 #cgo windows,amd64 LDFLAGS: ${SRCDIR}/lib/windows_amd64/libanonyma_ffi.a
-#cgo linux LDFLAGS: -lm -ldl -lpthread
-#cgo windows LDFLAGS: -lws2_32 -luserenv -lbcrypt -lntdll -ladvapi32 -lkernel32
+#cgo linux LDFLAGS: -lm -lrt -lpthread -lutil -ldl
+#cgo windows LDFLAGS: -lkernel32 -lntdll -luserenv -lws2_32 -ldbghelp -lsynchronization
 #include <stdlib.h>
 #include "anonyma.h"
 */
