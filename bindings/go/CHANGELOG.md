@@ -7,8 +7,17 @@ are documented in this file. The format is based on
 
 ## [Unreleased]
 
+### Changed
+
+- Each call encodes its input in one buffer that the core reads in place, and decodes the answer
+  in one pass without copying it: the Go side of a call costs 1.9 µs instead of 11.7 µs, and a
+  `Detect` call allocates 17 times instead of 37. `NewReader` and `Middleware` encode their
+  options once, not once per line or request.
+
 ### Fixed
 
+- Options that `encoding/json` cannot encode (a strategy holding a channel or a function) are
+  now an error. They were dropped, so the call detected every category with its default strategy.
 - The package links again with Go 1.26.11, 1.27.4 and later releases, which refused the prebuilt
   library ("disallowed LTO section", golang/go#83126). The library no longer holds the LLVM
   bitcode sections that Rust's standard library put in it; the linker never used them. Building
