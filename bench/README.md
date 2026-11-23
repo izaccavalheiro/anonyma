@@ -26,3 +26,20 @@ Each cell is warmed up once and then sampled for at least 300 ms and 5 iteration
 - `results/current.json` — the build with the span engine; contains the 1.x functions and the engine from the same run.
 
 Both were taken on Node v25.9.0, Intel Core i5-10400F, on an idle machine. Absolute numbers depend on the machine; compare ratios and slopes.
+
+## The Rust core
+
+`bench/core.mjs` times the same operations (detect, scan, anonymize with a preset)
+on the TypeScript build and on the Rust core, through its Node.js addon (napi-rs)
+and its WebAssembly build (wasm-bindgen; the engine Cloudflare Workers would run,
+on the same V8). The core is called through its JSON API, so its timings include
+serializing the input and parsing the answer. Before timing, it checks that both
+Rust engines return TypeScript's results on every input up to 100,000 characters.
+
+It needs a Rust toolchain, so it runs in the "Core benchmark" workflow
+(`.github/workflows/core-bench.yml`), by hand from the Actions tab or when the
+script changes; the tables are in the job summary.
+
+```sh
+node bench/core.mjs --native anonyma_native.node --wasm pkg/anonyma_wasm.js [--quick]
+```

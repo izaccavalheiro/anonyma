@@ -1,0 +1,103 @@
+# Core benchmark: the TypeScript engine against the Rust core (bench/core.mjs).
+#
+# Step 4 of docs/rfcs/0001-polyglot-core.md. It builds the Node.js addon (napi-rs)
+# and the WebAssembly build (wasm-bindgen, Node.js glue) of the core, checks
+# that both give TypeScript's results on the benchmark corpus, and times the
+# three. The tables go to the job summary and the numbers to an artifact.
+#
+# It runs when the benchmark changes, and by hand from the Actions tab. It
+# never gates a merge: shared runners are too noisy to fail a build on time.
+
+name: Core benchmark
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - bench/core.mjs
+      - bench/corpus.mjs
+      - .github/workflows/core-bench.yml
+  workflow_dispatch:
+    inputs:
+      quick:
+        description: Smaller matrix (up to 100,000 characters)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HUSKY: "0"
+  CARGO_TERM_COLOR: always
+
+jobs:
+  bench:
+    name: TypeScript vs Rust core
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+
+      - name: Cache
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+
+      - name: Build anonyma
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build the Node.js addon
+        run: |
+          cargo build -p anonyma-node --release
+          cp target/release/libanonyma_node.so "$RUNNER_TEMP/anonyma_native.node"
+
+      # The CLI must be the version of the wasm-bindgen crate the build resolved.
+      - name: Build the WebAssembly module
+        run: |
+          cargo build -p anonyma-wasm --target wasm32-unknown-unknown --release
+          version=$(cargo pkgid -p wasm-bindgen | sed 's/.*[#@]//')
+          cargo install wasm-bindgen-cli --version "$version" --locked
+          wasm-bindgen --target nodejs --out-dir "$RUNNER_TEMP/wasm" \
+            target/wasm32-unknown-unknown/release/anonyma_wasm.wasm
+          ls -l "$RUNNER_TEMP/wasm"
+
+      - name: Run the benchmark
+        env:
+          QUICK: ${{ inputs.quick && '--quick' || '' }}
+        run: |
+          # shellcheck disable=SC2086 # QUICK is one flag or nothing
+          node bench/core.mjs $QUICK \
+            --native "$RUNNER_TEMP/anonyma_native.node" \
+            --wasm "$RUNNER_TEMP/wasm/anonyma_wasm.js" \
+            --json "$RUNNER_TEMP/core.json" \
+            --markdown "$RUNNER_TEMP/core.md"
+          cat "$RUNNER_TEMP/core.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the results
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: core-bench
+          path: |
+            ${{ runner.temp }}/core.json
+            ${{ runner.temp }}/core.md
+          retention-days: 30
