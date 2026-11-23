@@ -48,10 +48,17 @@ messages never quote the text.
 | `GET /v1/info`             |                                                                                 | version, categories, presets                          |
 | `POST /v1/detect`          | `text`, `categories?`, `preset?`, `aggressive?`, `detection?`, `minConfidence?` | `matches`: category, value, start, end, confidence    |
 | `POST /v1/anonymize`       | as detect, plus `defaultStrategy?`, `rules?` (a strategy per category)          | `text`, `counts` per category                         |
+| `POST /v1/detect/batch`    | as detect, with `texts` (a list) in place of `text`                             | `results`: one `{matches}` per text, in order         |
+| `POST /v1/anonymize/batch` | as anonymize, with `texts` (a list) in place of `text`                          | `results`: one `{text, counts}` per text, in order    |
 | `POST /v1/shield`          | `text`, `session?`, `categories?`, `preset?`                                    | `text` with `{{EMAIL_1}}` tokens, `session`, `counts` |
 | `POST /v1/restore`         | `text`, `session`                                                               | `text`, `restored`, `unresolved`                      |
 | `DELETE /v1/sessions/{id}` |                                                                                 | 204, or 404 if unknown                                |
 | `POST /mcp`                | a JSON-RPC message or batch                                                     | the MCP tools of `anonyma/mcp`                        |
+
+Send many short texts (log lines, rows, chat turns) to a batch endpoint: a request
+costs a few hundred microseconds of HTTP whatever its size, more than detecting a
+short text, and a batch pays it once. A batch answers exactly what one request per
+text would, and is bounded by the same body limit.
 
 Strategies are written as anonyma spells them:
 `{"strategy": "mask", "keepTrailing": 4}`. A `hash` strategy needs a
