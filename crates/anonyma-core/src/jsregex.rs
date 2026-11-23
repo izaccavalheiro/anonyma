@@ -212,6 +212,91 @@ macro_rules! js_regex {
 }
 pub(crate) use js_regex;
 
+/// ECMAScript's `(?!\d)` after a match, as a consuming alternative: the end of
+/// the text, or a character that is not a digit.
+pub(crate) const NOT_BEFORE_DIGIT: &str = r"$|[^\d]";
+
+/// ECMAScript's `(?![ ./-]?\d)` after a match: no digit next, nor after one
+/// separator.
+pub(crate) const NOT_BEFORE_SEPARATED_DIGIT: &str = r"$|[^\d ./-]|[ ./-](?:$|[^\d])";
+
+/// A pattern with the lookarounds of ECMAScript that the `regex` crate cannot
+/// express, emulated exactly:
+///
+/// - a negative lookahead at the end, `(?!X)`, becomes a consuming group with
+///   its positive complement after the match (`tail`), cut off the result: a
+///   backtracking engine takes the first path of the pattern whose lookahead
+///   holds, and the `regex` crate takes the first path whose tail matches;
+/// - a negative lookbehind of one character at the start, `(?<!X)`, is checked
+///   on the candidate; a rejected candidate resumes the search one character
+///   later, where the next attempt of a backtracking engine starts (no other
+///   path can succeed at a start whose lookbehind fails).
+pub(crate) struct Guarded {
+    regex: JsRegex,
+    not_after: fn(char) -> bool,
+}
+
+impl Guarded {
+    /// `core` followed by `tail`; a match preceded by a character for which
+    /// `not_after` holds is rejected.
+    pub(crate) fn new(core: &str, tail: &str, not_after: fn(char) -> bool) -> Self {
+        Guarded {
+            regex: JsRegex::new(&format!("({core})(?:{tail})")),
+            not_after,
+        }
+    }
+
+    /// The candidate at or after `at`: the byte range of the match, and the
+    /// groups of `core` (group 1 is the whole match).
+    pub(crate) fn candidate(&self, text: &str, at: usize) -> Option<Vec<Option<(usize, usize)>>> {
+        self.regex.captures_at(text, at)
+    }
+
+    /// Whether a match may start at `start`: the lookbehind holds.
+    pub(crate) fn may_start(&self, text: &str, start: usize) -> bool {
+        !text[..start]
+            .chars()
+            .next_back()
+            .is_some_and(self.not_after)
+    }
+
+    /// The successive matches, as a global ECMAScript `exec` loop finds them,
+    /// keeping those `accept` accepts (a check the regex crate cannot express,
+    /// such as a backreference); a rejected candidate resumes one character later.
+    pub(crate) fn ranges_where(
+        &self,
+        text: &str,
+        accept: impl Fn(&[Option<(usize, usize)>]) -> bool,
+    ) -> Vec<(usize, usize)> {
+        let mut out = Vec::new();
+        let mut at = 0;
+        while at <= text.len() {
+            let Some(groups) = self.candidate(text, at) else {
+                break;
+            };
+            let Some((start, end)) = groups[1] else {
+                break;
+            };
+            if self.may_start(text, start) && accept(&groups) {
+                out.push((start, end));
+                at = if end > start {
+                    end
+                } else {
+                    next_char(text, end)
+                };
+            } else {
+                at = next_char(text, start);
+            }
+        }
+        out
+    }
+
+    /// [`Guarded::ranges_where`] accepting every candidate.
+    pub(crate) fn ranges(&self, text: &str) -> Vec<(usize, usize)> {
+        self.ranges_where(text, |_| true)
+    }
+}
+
 /// The byte offset of the character after the one that starts at `at`.
 pub(crate) fn next_char(text: &str, at: usize) -> usize {
     text[at..]
@@ -291,6 +376,17 @@ mod tests {
         assert_eq!(re.ranges("PIX Kelvin"), vec![(0, 3), (4, 10)]);
         // The Kelvin sign folds to `k` in Unicode, not in ECMAScript without `u`.
         assert!(!re.is_match("\u{212A}elvin"));
+    }
+
+    #[test]
+    fn guarded_patterns_emulate_lookarounds() {
+        // (?<!\d)\d{3}(?!\d): three digits, not inside a longer run.
+        let three = Guarded::new(r"\d{3}", NOT_BEFORE_DIGIT, |c| c.is_ascii_digit());
+        assert_eq!(three.ranges("123 4567 890"), vec![(0, 3), (9, 12)]);
+        // (?![ ./-]?\d): no digit next, nor after one separator.
+        let pair = Guarded::new(r"\d{2}", NOT_BEFORE_SEPARATED_DIGIT, |_| false);
+        assert_eq!(pair.ranges("12 3"), Vec::<(usize, usize)>::new());
+        assert_eq!(pair.ranges("12-x 34."), vec![(0, 2), (5, 7)]);
     }
 
     #[test]

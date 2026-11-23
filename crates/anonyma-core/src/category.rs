@@ -51,14 +51,14 @@ macro_rules! categories {
 
 categories! {
     Email => "email", "EMAIL", Full;
-    Phone => "phone", "PHONE", None;
+    Phone => "phone", "PHONE", Full;
     Ssn => "ssn", "SSN", Full;
     CreditCard => "credit-card", "CREDIT_CARD", Full;
     Ipv4 => "ipv4", "IPV4", Full;
     Ipv6 => "ipv6", "IPV6", Full;
-    Url => "url", "URL", None;
+    Url => "url", "URL", Full;
     Iban => "iban", "IBAN", Full;
-    DateOfBirth => "date-of-birth", "DATE", None;
+    DateOfBirth => "date-of-birth", "DATE", Full;
     Name => "name", "PERSON", None;
     Address => "address", "ADDRESS", None;
     Passport => "passport", "PASSPORT", None;

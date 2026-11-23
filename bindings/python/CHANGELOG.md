@@ -5,6 +5,14 @@ All notable changes to `anonyma` for Python are documented in this file. The pac
 `anonyma`, and is released from tags `python-v<version>`. While it is at 0.x, a minor version may
 change its API.
 
+## [Unreleased]
+
+### Added
+
+- Detection of `phone` (North American, international, and the national formats of Brazil,
+  France, the United Kingdom, Spain, Italy and German-speaking countries; seven-digit numbers in
+  aggressive mode), `url` and `date-of-birth`, ported to the Rust core and conformance-tested.
+
 ## [0.1.0a1] — 2026-11-23
 
 First release, an alpha. Wheels for CPython 3.10 and later (stable ABI) on Linux (x86_64,
