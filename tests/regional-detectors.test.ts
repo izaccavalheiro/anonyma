@@ -265,3 +265,24 @@ describe("anonymize with the new formats", () => {
     }
   });
 });
+
+describe("Aadhaar numbers inside longer numbers", () => {
+  it("are not reported when more digit groups follow", () => {
+    expect(detectNationalId("card 4111 1111 1111 1112")).toEqual([]);
+    expect(detectNationalId("ref 2345-6789-0124-5")).toEqual([]);
+  });
+
+  it("are not reported when digit groups come before", () => {
+    expect(detectNationalId("card 1234 2345 6789 0124")).toEqual([]);
+    expect(detectNationalIdStrict("card 1234 2345 6789 0124")).toEqual([]);
+  });
+
+  it("are still reported on their own", () => {
+    expect(values(detectNationalId("Aadhaar 2345 6789 0124, phone"))).toEqual(["2345 6789 0124"]);
+    expect(values(detectNationalId("2345-6789-0124 a"))).toEqual(["2345-6789-0124"]);
+  });
+
+  it("leave a Luhn-invalid card number whole in anonymize()", () => {
+    expect(anonymize("card 4111 1111 1111 1112").text).toBe("card 4111 1111 1111 1112");
+  });
+});

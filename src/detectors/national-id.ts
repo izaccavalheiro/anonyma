@@ -6,7 +6,8 @@
  * - Canada: SIN (XXX-XXX-XXX)
  * - Mexico: CURP (18 chars alphanumeric) and RFC (13 chars)
  * - UK: NINO (AB 12 34 56 C)
- * - India: Aadhaar (12 digits, verified with format check)
+ * - India: Aadhaar (12 digits, verified with format check; never part of a
+ *   longer number written in groups, such as a card number)
  * - China: Resident ID (18 digits with letter checksum)
  * - South Korea: RRN (XXXXXX-XXXXXXX)
  * - Germany: Personalausweis (9 alphanumeric)
@@ -208,6 +209,12 @@ interface NationalIdEntry {
   readonly context?: RegExp;
   /** Check digits that {@link detectNationalIdStrict} verifies. */
   readonly validate?: (value: string) => boolean;
+  /**
+   * When true, a match that is part of a longer number written in groups (see
+   * {@link inLongerNumber}) is not reported: `4111 1111 1111` of a 16-digit
+   * card number is not an Aadhaar number.
+   */
+  readonly standalone?: boolean;
 }
 
 const NATIONAL_ID_ENTRIES: readonly NationalIdEntry[] = [
@@ -215,7 +222,13 @@ const NATIONAL_ID_ENTRIES: readonly NationalIdEntry[] = [
   { pattern: MX_CURP_PATTERN, confidence: 0.9, requiresContext: false },
   { pattern: MX_RFC_PATTERN, confidence: 0.78, requiresContext: true },
   { pattern: UK_NINO_PATTERN, confidence: 0.9, requiresContext: false, validate: ninoValid },
-  { pattern: IN_AADHAAR_PATTERN, confidence: 0.82, requiresContext: false, validate: verhoeff },
+  {
+    pattern: IN_AADHAAR_PATTERN,
+    confidence: 0.82,
+    requiresContext: false,
+    validate: verhoeff,
+    standalone: true,
+  },
   {
     pattern: CN_RESIDENT_ID_PATTERN,
     confidence: 0.8,
@@ -259,6 +272,20 @@ const NATIONAL_ID_ENTRIES: readonly NationalIdEntry[] = [
   { pattern: BR_RG_PATTERN, confidence: 0.85, requiresContext: true, context: BR_RG_CONTEXT_RE },
 ];
 
+/**
+ * True when the digits from `start` to `end` of `text` continue a longer
+ * number: a digit and a space or hyphen come right before them, or a space or
+ * hyphen and a digit right after.
+ *
+ * @internal
+ */
+function inLongerNumber(text: string, start: number, end: number): boolean {
+  return (
+    /\d[ -]$/.test(text.slice(Math.max(0, start - 2), start)) ||
+    /^[ -]\d/.test(text.slice(end, end + 2))
+  );
+}
+
 /** End offsets of every label `context` finds in `text`. @internal */
 function labelEnds(text: string, context: RegExp): number[] {
   const ends: number[] = [];
@@ -292,6 +319,8 @@ function scanNationalId(text: string, strict: boolean): PiiMatch[] {
       const hasContext = ends.some((pos) => pos <= match.index && match.index - pos <= 40);
 
       if (entry.requiresContext && !hasContext) continue;
+      const end = match.index + match[0].length;
+      if (entry.standalone === true && inLongerNumber(text, match.index, end)) continue;
       // A number whose check digits fail may still be another country's number.
       if (strict && entry.validate !== undefined && !entry.validate(match[0])) continue;
 

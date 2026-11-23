@@ -31,6 +31,9 @@ struct Entry {
     requires_label: bool,
     validate: Option<fn(&str) -> bool>,
     rg_label: bool,
+    /// A match that is part of a longer number written in groups is not
+    /// reported ([`in_longer_number`]).
+    standalone: bool,
 }
 
 fn entry(
@@ -45,6 +48,7 @@ fn entry(
         requires_label,
         validate,
         rg_label: false,
+        standalone: false,
     }
 }
 
@@ -70,13 +74,16 @@ fn entries() -> &'static [Entry] {
                 false,
                 Some(nino),
             ),
-            // India Aadhaar
-            entry(
-                r"\b[2-9]\d{3}[\s-]?\d{4}[\s-]?\d{4}\b",
-                0.82,
-                false,
-                Some(verhoeff),
-            ),
+            // India Aadhaar, never part of a longer number such as a card number
+            Entry {
+                standalone: true,
+                ..entry(
+                    r"\b[2-9]\d{3}[\s-]?\d{4}[\s-]?\d{4}\b",
+                    0.82,
+                    false,
+                    Some(verhoeff),
+                )
+            },
             // China resident ID
             entry(r"\b\d{17}[\dX]\b", 0.8, true, Some(cn_resident_id)),
             // South Korea RRN
@@ -140,6 +147,16 @@ fn labels() -> &'static (JsRegex, JsRegex) {
     })
 }
 
+/// True when the digits from `start` to `end` of `text` continue a longer
+/// number: a digit and a space or hyphen come right before them, or a space or
+/// hyphen and a digit right after.
+fn in_longer_number(text: &str, start: usize, end: usize) -> bool {
+    let bytes = text.as_bytes();
+    let separator = |b: u8| b == b' ' || b == b'-';
+    (start >= 2 && separator(bytes[start - 1]) && bytes[start - 2].is_ascii_digit())
+        || (end + 1 < bytes.len() && separator(bytes[end]) && bytes[end + 1].is_ascii_digit())
+}
+
 pub(super) fn detect(text: &str, strict: bool) -> Vec<Match> {
     let (national, rg) = labels();
     let national_ends = label_ends(national.ranges(text));
@@ -158,6 +175,9 @@ pub(super) fn detect(text: &str, strict: bool) -> Vec<Match> {
             }
             let labelled = has_context(text, ends, start, 40);
             if entry.requires_label && !labelled {
+                continue;
+            }
+            if entry.standalone && in_longer_number(text, start, end) {
                 continue;
             }
             // A number whose check digits fail may still be another country's number.
@@ -210,6 +230,18 @@ mod tests {
             values("National ID: 11010519491231002X", false),
             ["11010519491231002X"]
         );
+    }
+
+    #[test]
+    fn aadhaar_numbers_inside_longer_numbers() {
+        assert!(values("card 4111 1111 1111 1112", false).is_empty());
+        assert!(values("card 1234 2345 6789 0124", true).is_empty());
+        assert!(values("ref 2345-6789-0124-5", false).is_empty());
+        assert_eq!(
+            values("Aadhaar 2345 6789 0124, phone", false),
+            ["2345 6789 0124"]
+        );
+        assert_eq!(values("2345-6789-0124 a", false), ["2345-6789-0124"]);
     }
 
     #[test]

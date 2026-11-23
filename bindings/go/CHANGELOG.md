@@ -14,6 +14,9 @@ are documented in this file. The format is based on
   ([#47](https://github.com/izaccavalheiro/anonyma/issues/47)).
 - Card numbers written in groups no longer include the space or hyphen after them when a word
   follows ([#48](https://github.com/izaccavalheiro/anonyma/issues/48)).
+- Twelve digits in groups of four that are part of a longer number written in groups (a card number)
+  are no longer reported as an Aadhaar number
+  ([#49](https://github.com/izaccavalheiro/anonyma/issues/49)).
 
 ## [0.1.0-alpha.2] — 2026-11-23
 

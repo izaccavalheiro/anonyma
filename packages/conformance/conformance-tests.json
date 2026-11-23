@@ -888,6 +888,19 @@
       }
     },
     {
+      "id": "detect.national-id.aadhaar-inside-a-longer-number",
+      "description": "twelve digits in groups followed or preceded by more groups are not an Aadhaar number",
+      "op": "detect",
+      "requires": ["detect:national-id"],
+      "input": {
+        "text": "card 4111 1111 1111 1112, ref 1234 2345 6789 0124",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
       "id": "detect.national-id.korea-rrn",
       "description": "South Korean resident registration number",
       "op": "detect",

@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   after a card number written in groups when a word follows it: `"4111 1111 1111 1111 "` was one
   match, so `keepTrailing: 4` and the `pci-dss` preset showed three digits and removed the space
   ([#48](https://github.com/izaccavalheiro/anonyma/issues/48)).
+- The national-ID detector no longer reports twelve digits in groups of four as an Aadhaar number
+  when they are part of a longer number written in groups: `anonymize("card 4111 1111 1111 1112")`
+  replaced the first twelve digits of this Luhn-invalid card number and left `1112` in the text
+  ([#49](https://github.com/izaccavalheiro/anonyma/issues/49)).
 
 ---
 
