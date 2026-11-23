@@ -232,7 +232,7 @@ pub(crate) fn tokenize_matches(text: &str, matches: &[Match]) -> Tokenized {
     let mut index: HashMap<String, String> = HashMap::new();
     let mut counters: HashMap<&'static str, usize> = HashMap::new();
     let mut mapping: Vec<(String, String)> = Vec::new();
-    let mut result = text.to_string();
+    let mut spans = Vec::with_capacity(matches.len());
     for m in matches.iter().rev() {
         let prefix = m.category.token_prefix();
         let key = format!("{prefix}:{}", m.value.to_lowercase());
@@ -247,10 +247,10 @@ pub(crate) fn tokenize_matches(text: &str, matches: &[Match]) -> Tokenized {
                 token
             }
         };
-        result.replace_range(m.start..m.end, &token);
+        spans.push((m.start, m.end, token));
     }
     Tokenized {
-        text: result,
+        text: crate::splice::replace_spans(text, &spans),
         mapping,
     }
 }
