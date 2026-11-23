@@ -45,8 +45,6 @@ partial detection.
 `Pipeline` is its span engine (`compilePipeline(...).scan()` of `anonyma/engine`): precise
 detectors where there is one, the redaction labels allow-listed, and overlaps resolved by
 covering, so a weaker detection keeps the characters no stronger one claims as residual spans.
-The precise IPv4, IPv6 and card detectors are not ported yet: a pipeline refuses those
-categories in precise mode.
 
 ## Regular expressions
 

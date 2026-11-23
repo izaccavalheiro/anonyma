@@ -59,9 +59,10 @@ pub struct PipelineBuilder {
     min_confidence: f64,
 }
 
-/// The categories whose precise detector is not ported yet.
-pub(crate) const PRECISE_PENDING: &[Category] =
-    &[Category::Ipv4, Category::Ipv6, Category::CreditCard];
+/// The categories whose precise detector is not ported yet: none. A category
+/// the reference gives a precise detector first is listed here and refused in
+/// precise mode until it is ported.
+pub(crate) const PRECISE_PENDING: &[Category] = &[];
 
 impl PipelineBuilder {
     /// Detect these categories, in this order (every category by default).
@@ -138,6 +139,18 @@ impl PipelineBuilder {
                     }
                 }
                 Category::Iban if precise => add(&mut sources, "iban", Arc::new(precise::iban)),
+                Category::Ipv4 if precise => add(&mut sources, "ipv4", Arc::new(precise::ipv4)),
+                Category::Ipv6 if precise => add(&mut sources, "ipv6", Arc::new(precise::ipv6)),
+                Category::CreditCard if precise => {
+                    add(&mut sources, "credit-card", Arc::new(precise::card));
+                    if aggressive {
+                        add(
+                            &mut sources,
+                            "credit-card/masked",
+                            Arc::new(precise::masked_card),
+                        );
+                    }
+                }
                 _ if precise && PRECISE_PENDING.contains(&category) => missing.push(category),
                 _ => {
                     // The classic detector; national-id runs strict in precise mode.
@@ -388,17 +401,13 @@ mod tests {
     }
 
     #[test]
-    fn precise_detectors_not_ported_are_refused() {
-        let error = Pipeline::builder()
-            .categories([Category::Ipv4])
-            .build()
-            .unwrap_err();
-        assert_eq!(error, Error::UnsupportedCategories(vec![Category::Ipv4]));
+    fn every_category_builds_in_both_modes() {
+        assert!(Pipeline::builder().build().is_ok());
         assert!(Pipeline::builder()
-            .categories([Category::Ipv4])
             .detection(Detection::Legacy)
             .build()
             .is_ok());
+        assert!(Pipeline::builder().min_confidence(1.5).build().is_err());
     }
 
     #[test]
