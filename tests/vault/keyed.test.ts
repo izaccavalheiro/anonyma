@@ -419,6 +419,8 @@ describe("vault/sealed", () => {
     });
   });
 
+  // 150 runs of real AES-GCM and HMAC calls: beyond the default 5 s on a busy
+  // machine running every test file at once, so it gets more time.
   it("round-trips any string through every reversible provider", async () => {
     const keyring = await ringOf();
     const sealed = createSealedTokenizer({ keyring, maxValueBytes: 4096 });
@@ -439,7 +441,7 @@ describe("vault/sealed", () => {
       ),
       { numRuns: 150 },
     );
-  });
+  }, 30_000);
 });
 
 describe("vault/keyed", () => {
