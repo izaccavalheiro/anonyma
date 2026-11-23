@@ -1,9 +1,9 @@
 {
   "environment": {
-    "node": "v25.9.0",
-    "cpu": "Intel(R) Core(TM) i5-10400F CPU @ 2.90GHz",
-    "cores": 12,
-    "dist": "/home/izac/anonyma/dist",
+    "node": "v26.13.1",
+    "cpu": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
+    "cores": 8,
+    "dist": "dist (this repository, npm run build)",
     "quick": false
   },
   "results": [
@@ -13,11 +13,11 @@
       "sizeLabel": "100B",
       "density": "none",
       "matches": 0,
-      "iterations": 3671,
-      "medianMs": 0.07745900000000461,
-      "p95Ms": 0.09655899999999917,
-      "opsPerSec": 12910.05564233905,
-      "mbPerSec": 1.2910055642339051
+      "iterations": 3438,
+      "medianMs": 0.07630000000000337,
+      "p95Ms": 0.1308999999999969,
+      "opsPerSec": 13106.159895150144,
+      "mbPerSec": 1.3106159895150145
     },
     {
       "op": "hasPII",
@@ -25,11 +25,11 @@
       "sizeLabel": "100B",
       "density": "none",
       "matches": 0,
-      "iterations": 3703,
-      "medianMs": 0.07537300000001323,
-      "p95Ms": 0.12311699999997927,
-      "opsPerSec": 13267.35037745379,
-      "mbPerSec": 1.3267350377453788
+      "iterations": 3816,
+      "medianMs": 0.07300000000003593,
+      "p95Ms": 0.10719999999992069,
+      "opsPerSec": 13698.63013697956,
+      "mbPerSec": 1.369863013697956
     },
     {
       "op": "anonymize/redact",
@@ -37,11 +37,11 @@
       "sizeLabel": "100B",
       "density": "none",
       "matches": 0,
-      "iterations": 3760,
-      "medianMs": 0.07661799999993946,
-      "p95Ms": 0.09136100000000624,
-      "opsPerSec": 13051.763293231228,
-      "mbPerSec": 1.3051763293231229
+      "iterations": 3716,
+      "medianMs": 0.07429999999999382,
+      "p95Ms": 0.11020000000007713,
+      "opsPerSec": 13458.950201885373,
+      "mbPerSec": 1.3458950201885376
     },
     {
       "op": "anonymize/mask",
@@ -49,11 +49,11 @@
       "sizeLabel": "100B",
       "density": "none",
       "matches": 0,
-      "iterations": 3779,
-      "medianMs": 0.07484899999985828,
-      "p95Ms": 0.10992400000009184,
-      "opsPerSec": 13360.231933651665,
-      "mbPerSec": 1.3360231933651665
+      "iterations": 3715,
+      "medianMs": 0.07490000000007058,
+      "p95Ms": 0.10990000000015243,
+      "opsPerSec": 13351.13484644937,
+      "mbPerSec": 1.335113484644937
     },
     {
       "op": "anonymize/consistentTokens",
@@ -61,11 +61,11 @@
       "sizeLabel": "100B",
       "density": "none",
       "matches": 0,
-      "iterations": 3754,
-      "medianMs": 0.076528000000053,
-      "p95Ms": 0.10018599999989419,
-      "opsPerSec": 13067.112690770797,
-      "mbPerSec": 1.3067112690770797
+      "iterations": 3721,
+      "medianMs": 0.07569999999986976,
+      "p95Ms": 0.10910000000012587,
+      "opsPerSec": 13210.039630141619,
+      "mbPerSec": 1.321003963014162
     },
     {
       "op": "tokenize+detokenize",
@@ -73,11 +73,11 @@
       "sizeLabel": "100B",
       "density": "none",
       "matches": 0,
-      "iterations": 3804,
-      "medianMs": 0.07679099999995742,
-      "p95Ms": 0.08741099999997459,
-      "opsPerSec": 13022.359391081696,
-      "mbPerSec": 1.3022359391081697
+      "iterations": 3673,
+      "medianMs": 0.07470000000012078,
+      "p95Ms": 0.11140000000000327,
+      "opsPerSec": 13386.88085673873,
+      "mbPerSec": 1.338688085673873
     },
     {
       "op": "anonymizeAsync/hash",
@@ -85,11 +85,11 @@
       "sizeLabel": "100B",
       "density": "none",
       "matches": 0,
-      "iterations": 3024,
-      "medianMs": 0.09542599999986123,
-      "p95Ms": 0.10757100000000719,
-      "opsPerSec": 10479.324293184814,
-      "mbPerSec": 1.0479324293184817
+      "iterations": 3011,
+      "medianMs": 0.0929999999998472,
+      "p95Ms": 0.12740000000007967,
+      "opsPerSec": 10752.688172060676,
+      "mbPerSec": 1.0752688172060678
     },
     {
       "op": "detect",
@@ -97,11 +97,11 @@
       "sizeLabel": "100B",
       "density": "sparse",
       "matches": 1,
-      "iterations": 4063,
-      "medianMs": 0.0713490000002821,
-      "p95Ms": 0.08242499999960273,
-      "opsPerSec": 14015.613393264743,
-      "mbPerSec": 1.4015613393264743
+      "iterations": 3946,
+      "medianMs": 0.07110000000011496,
+      "p95Ms": 0.10600000000022192,
+      "opsPerSec": 14064.697608978666,
+      "mbPerSec": 1.4064697608978667
     },
     {
       "op": "hasPII",
@@ -110,10 +110,10 @@
       "density": "sparse",
       "matches": 1,
       "iterations": 20000,
-      "medianMs": 0.0007799999998496787,
-      "p95Ms": 0.001408999999966909,
-      "opsPerSec": 1282051.2822983584,
-      "mbPerSec": 128.20512822983585
+      "medianMs": 0.0009000000000014552,
+      "p95Ms": 0.0010000000002037268,
+      "opsPerSec": 1111111.1111093145,
+      "mbPerSec": 111.11111111093146
     },
     {
       "op": "anonymize/redact",
@@ -121,11 +121,11 @@
       "sizeLabel": "100B",
       "density": "sparse",
       "matches": 1,
-      "iterations": 3859,
-      "medianMs": 0.07524399999965681,
-      "p95Ms": 0.08694999999988795,
-      "opsPerSec": 13290.096220357253,
-      "mbPerSec": 1.3290096220357253
+      "iterations": 3811,
+      "medianMs": 0.07439999999996871,
+      "p95Ms": 0.09529999999995198,
+      "opsPerSec": 13440.860215059416,
+      "mbPerSec": 1.3440860215059416
     },
     {
       "op": "anonymize/mask",
@@ -133,11 +133,11 @@
       "sizeLabel": "100B",
       "density": "sparse",
       "matches": 1,
-      "iterations": 3908,
-      "medianMs": 0.07453200000009019,
-      "p95Ms": 0.08435599999984333,
-      "opsPerSec": 13417.055761267507,
-      "mbPerSec": 1.341705576126751
+      "iterations": 3325,
+      "medianMs": 0.08369999999968059,
+      "p95Ms": 0.11320000000023356,
+      "opsPerSec": 11947.431302315605,
+      "mbPerSec": 1.1947431302315608
     },
     {
       "op": "anonymize/consistentTokens",
@@ -145,11 +145,11 @@
       "sizeLabel": "100B",
       "density": "sparse",
       "matches": 1,
-      "iterations": 3858,
-      "medianMs": 0.07483999999976731,
-      "p95Ms": 0.09182899999996152,
-      "opsPerSec": 13361.838589031388,
-      "mbPerSec": 1.336183858903139
+      "iterations": 3002,
+      "medianMs": 0.09760000000005675,
+      "p95Ms": 0.11439999999993233,
+      "opsPerSec": 10245.901639338304,
+      "mbPerSec": 1.0245901639338304
     },
     {
       "op": "tokenize+detokenize",
@@ -157,11 +157,11 @@
       "sizeLabel": "100B",
       "density": "sparse",
       "matches": 1,
-      "iterations": 3694,
-      "medianMs": 0.07904000000007727,
-      "p95Ms": 0.08974399999988236,
-      "opsPerSec": 12651.82186233581,
-      "mbPerSec": 1.265182186233581
+      "iterations": 2683,
+      "medianMs": 0.10840000000007421,
+      "p95Ms": 0.1390000000001237,
+      "opsPerSec": 9225.092250916194,
+      "mbPerSec": 0.9225092250916194
     },
     {
       "op": "anonymizeAsync/hash",
@@ -169,11 +169,11 @@
       "sizeLabel": "100B",
       "density": "sparse",
       "matches": 1,
-      "iterations": 2037,
-      "medianMs": 0.1343309999997473,
-      "p95Ms": 0.18013599999994767,
-      "opsPerSec": 7444.298039930331,
-      "mbPerSec": 0.7444298039930332
+      "iterations": 897,
+      "medianMs": 0.2602999999999156,
+      "p95Ms": 0.5202999999996791,
+      "opsPerSec": 3841.7210910500357,
+      "mbPerSec": 0.3841721091050036
     },
     {
       "op": "detect",
@@ -181,11 +181,11 @@
       "sizeLabel": "100B",
       "density": "dense",
       "matches": 2,
-      "iterations": 4133,
-      "medianMs": 0.06991600000037579,
-      "p95Ms": 0.08158600000024308,
-      "opsPerSec": 14302.877738924211,
-      "mbPerSec": 1.4302877738924213
+      "iterations": 2725,
+      "medianMs": 0.0963000000001557,
+      "p95Ms": 0.20229999999992287,
+      "opsPerSec": 10384.215991675837,
+      "mbPerSec": 1.0384215991675838
     },
     {
       "op": "hasPII",
@@ -194,10 +194,10 @@
       "density": "dense",
       "matches": 2,
       "iterations": 20000,
-      "medianMs": 0.0008370000005015754,
-      "p95Ms": 0.0009159999999610591,
-      "opsPerSec": 1194743.129511047,
-      "mbPerSec": 119.4743129511047
+      "medianMs": 0.001299999999901047,
+      "p95Ms": 0.0014000000001033186,
+      "opsPerSec": 769230.7692893213,
+      "mbPerSec": 76.92307692893213
     },
     {
       "op": "anonymize/redact",
@@ -205,11 +205,11 @@
       "sizeLabel": "100B",
       "density": "dense",
       "matches": 2,
-      "iterations": 3926,
-      "medianMs": 0.07459599999947386,
-      "p95Ms": 0.08367500000076689,
-      "opsPerSec": 13405.54453331349,
-      "mbPerSec": 1.3405544533313491
+      "iterations": 2894,
+      "medianMs": 0.10040000000026339,
+      "p95Ms": 0.11749999999938154,
+      "opsPerSec": 9960.159362523671,
+      "mbPerSec": 0.9960159362523672
     },
     {
       "op": "anonymize/mask",
@@ -217,11 +217,11 @@
       "sizeLabel": "100B",
       "density": "dense",
       "matches": 2,
-      "iterations": 3704,
-      "medianMs": 0.07607800000005227,
-      "p95Ms": 0.11814599999979691,
-      "opsPerSec": 13144.40442702638,
-      "mbPerSec": 1.3144404427026382
+      "iterations": 2912,
+      "medianMs": 0.0988999999999578,
+      "p95Ms": 0.11520000000018626,
+      "opsPerSec": 10111.223458042738,
+      "mbPerSec": 1.0111223458042737
     },
     {
       "op": "anonymize/consistentTokens",
@@ -229,11 +229,11 @@
       "sizeLabel": "100B",
       "density": "dense",
       "matches": 2,
-      "iterations": 3703,
-      "medianMs": 0.07893299999977899,
-      "p95Ms": 0.09445400000004156,
-      "opsPerSec": 12668.972419682515,
-      "mbPerSec": 1.2668972419682516
+      "iterations": 2722,
+      "medianMs": 0.1044000000001688,
+      "p95Ms": 0.17230000000017753,
+      "opsPerSec": 9578.544061287195,
+      "mbPerSec": 0.9578544061287195
     },
     {
       "op": "tokenize+detokenize",
@@ -241,11 +241,11 @@
       "sizeLabel": "100B",
       "density": "dense",
       "matches": 2,
-      "iterations": 3588,
-      "medianMs": 0.08280999999988126,
-      "p95Ms": 0.08790399999998044,
-      "opsPerSec": 12075.836251677743,
-      "mbPerSec": 1.2075836251677745
+      "iterations": 2743,
+      "medianMs": 0.10640000000057626,
+      "p95Ms": 0.12089999999989232,
+      "opsPerSec": 9398.496240550601,
+      "mbPerSec": 0.9398496240550603
     },
     {
       "op": "anonymizeAsync/hash",
@@ -253,11 +253,11 @@
       "sizeLabel": "100B",
       "density": "dense",
       "matches": 2,
-      "iterations": 1853,
-      "medianMs": 0.1562549999998737,
-      "p95Ms": 0.19406100000014703,
-      "opsPerSec": 6399.795206558563,
-      "mbPerSec": 0.6399795206558564
+      "iterations": 1044,
+      "medianMs": 0.27599999999983993,
+      "p95Ms": 0.3720000000002983,
+      "opsPerSec": 3623.188405799203,
+      "mbPerSec": 0.3623188405799203
     },
     {
       "op": "detect",
@@ -265,11 +265,11 @@
       "sizeLabel": "1KB",
       "density": "none",
       "matches": 0,
-      "iterations": 989,
-      "medianMs": 0.3030699999999342,
-      "p95Ms": 0.31062500000007276,
-      "opsPerSec": 3299.5677566245986,
-      "mbPerSec": 3.2995677566245987
+      "iterations": 743,
+      "medianMs": 0.36120000000028085,
+      "p95Ms": 0.6426000000001295,
+      "opsPerSec": 2768.5492801750343,
+      "mbPerSec": 2.7685492801750344
     },
     {
       "op": "hasPII",
@@ -277,11 +277,11 @@
       "sizeLabel": "1KB",
       "density": "none",
       "matches": 0,
-      "iterations": 986,
-      "medianMs": 0.299619000000348,
-      "p95Ms": 0.3372589999999036,
-      "opsPerSec": 3337.572049832749,
-      "mbPerSec": 3.3375720498327492
+      "iterations": 816,
+      "medianMs": 0.3591999999998734,
+      "p95Ms": 0.4098999999996522,
+      "opsPerSec": 2783.964365257106,
+      "mbPerSec": 2.783964365257106
     },
     {
       "op": "anonymize/redact",
@@ -289,11 +289,11 @@
       "sizeLabel": "1KB",
       "density": "none",
       "matches": 0,
-      "iterations": 977,
-      "medianMs": 0.3033629999999903,
-      "p95Ms": 0.32599500000014814,
-      "opsPerSec": 3296.380903406256,
-      "mbPerSec": 3.296380903406256
+      "iterations": 814,
+      "medianMs": 0.36370000000079017,
+      "p95Ms": 0.39760000000023865,
+      "opsPerSec": 2749.5188341980406,
+      "mbPerSec": 2.749518834198041
     },
     {
       "op": "anonymize/mask",
@@ -301,11 +301,11 @@
       "sizeLabel": "1KB",
       "density": "none",
       "matches": 0,
-      "iterations": 982,
-      "medianMs": 0.3027560000000449,
-      "p95Ms": 0.34394199999951525,
-      "opsPerSec": 3302.9898664266,
-      "mbPerSec": 3.3029898664266
+      "iterations": 816,
+      "medianMs": 0.36380000000008295,
+      "p95Ms": 0.39729999999963184,
+      "opsPerSec": 2748.763056623892,
+      "mbPerSec": 2.748763056623892
     },
     {
       "op": "anonymize/consistentTokens",
@@ -313,11 +313,11 @@
       "sizeLabel": "1KB",
       "density": "none",
       "matches": 0,
-      "iterations": 979,
-      "medianMs": 0.30318199999965145,
-      "p95Ms": 0.33553200000005745,
-      "opsPerSec": 3298.3488465712003,
-      "mbPerSec": 3.2983488465712
+      "iterations": 824,
+      "medianMs": 0.35320000000047,
+      "p95Ms": 0.4147000000002663,
+      "opsPerSec": 2831.2570781389277,
+      "mbPerSec": 2.8312570781389277
     },
     {
       "op": "tokenize+detokenize",
@@ -325,11 +325,11 @@
       "sizeLabel": "1KB",
       "density": "none",
       "matches": 0,
-      "iterations": 965,
-      "medianMs": 0.30541400000038266,
-      "p95Ms": 0.3443090000000666,
-      "opsPerSec": 3274.244140736008,
-      "mbPerSec": 3.2742441407360077
+      "iterations": 802,
+      "medianMs": 0.36639999999988504,
+      "p95Ms": 0.39870000000064465,
+      "opsPerSec": 2729.2576419222537,
+      "mbPerSec": 2.7292576419222536
     },
     {
       "op": "anonymizeAsync/hash",
@@ -337,11 +337,11 @@
       "sizeLabel": "1KB",
       "density": "none",
       "matches": 0,
-      "iterations": 914,
-      "medianMs": 0.32291299999997136,
-      "p95Ms": 0.36219699999946897,
-      "opsPerSec": 3096.8093573194287,
-      "mbPerSec": 3.096809357319429
+      "iterations": 766,
+      "medianMs": 0.38580000000001746,
+      "p95Ms": 0.4124000000001615,
+      "opsPerSec": 2592.0165889060518,
+      "mbPerSec": 2.5920165889060516
     },
     {
       "op": "detect",
@@ -349,11 +349,11 @@
       "sizeLabel": "1KB",
       "density": "sparse",
       "matches": 4,
-      "iterations": 887,
-      "medianMs": 0.33421699999962584,
-      "p95Ms": 0.3662559999993391,
-      "opsPerSec": 2992.0680276620265,
-      "mbPerSec": 2.9920680276620266
+      "iterations": 731,
+      "medianMs": 0.40650000000005093,
+      "p95Ms": 0.4585000000006403,
+      "opsPerSec": 2460.0246002456943,
+      "mbPerSec": 2.4600246002456942
     },
     {
       "op": "hasPII",
@@ -362,10 +362,10 @@
       "density": "sparse",
       "matches": 4,
       "iterations": 20000,
-      "medianMs": 0.0073350000002392335,
-      "p95Ms": 0.007560000000012224,
-      "opsPerSec": 136332.65166562845,
-      "mbPerSec": 136.33265166562845
+      "medianMs": 0.011300000000119326,
+      "p95Ms": 0.013100000000122236,
+      "opsPerSec": 88495.57522030444,
+      "mbPerSec": 88.49557522030445
     },
     {
       "op": "anonymize/redact",
@@ -373,1547 +373,1547 @@
       "sizeLabel": "1KB",
       "density": "sparse",
       "matches": 4,
-      "iterations": 891,
-      "medianMs": 0.33335799999986193,
-      "p95Ms": 0.34516599999915343,
-      "opsPerSec": 2999.778016428027,
-      "mbPerSec": 2.999778016428027
-    },
-    {
-      "op": "anonymize/mask",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "sparse",
-      "matches": 4,
-      "iterations": 890,
-      "medianMs": 0.3345850000005157,
-      "p95Ms": 0.35744100000010803,
-      "opsPerSec": 2988.7771418278126,
-      "mbPerSec": 2.9887771418278124
-    },
-    {
-      "op": "anonymize/consistentTokens",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "sparse",
-      "matches": 4,
-      "iterations": 881,
-      "medianMs": 0.3360560000000987,
-      "p95Ms": 0.375330999999278,
-      "opsPerSec": 2975.6945271017516,
-      "mbPerSec": 2.975694527101752
-    },
-    {
-      "op": "tokenize+detokenize",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "sparse",
-      "matches": 4,
-      "iterations": 866,
-      "medianMs": 0.3424460000005638,
-      "p95Ms": 0.3676660000000993,
-      "opsPerSec": 2920.168435310541,
-      "mbPerSec": 2.9201684353105417
-    },
-    {
-      "op": "anonymizeAsync/hash",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "sparse",
-      "matches": 4,
-      "iterations": 616,
-      "medianMs": 0.47502499999973224,
-      "p95Ms": 0.5514860000002955,
-      "opsPerSec": 2105.152360403271,
-      "mbPerSec": 2.1051523604032707
-    },
-    {
-      "op": "detect",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "dense",
-      "matches": 24,
-      "iterations": 733,
-      "medianMs": 0.40081500000087544,
-      "p95Ms": 0.4546149999987392,
-      "opsPerSec": 2494.916607406948,
-      "mbPerSec": 2.494916607406948
-    },
-    {
-      "op": "hasPII",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "dense",
-      "matches": 24,
-      "iterations": 20000,
-      "medianMs": 0.006519000000480446,
-      "p95Ms": 0.006706000000122003,
-      "opsPerSec": 153397.76038139296,
-      "mbPerSec": 153.39776038139294
-    },
-    {
-      "op": "anonymize/redact",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "dense",
-      "matches": 24,
-      "iterations": 710,
-      "medianMs": 0.40211599999929604,
-      "p95Ms": 0.5919250000006286,
-      "opsPerSec": 2486.844592112104,
-      "mbPerSec": 2.486844592112104
-    },
-    {
-      "op": "anonymize/mask",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "dense",
-      "matches": 24,
-      "iterations": 728,
-      "medianMs": 0.4056160000000091,
-      "p95Ms": 0.4528229999996256,
-      "opsPerSec": 2465.3859808291036,
-      "mbPerSec": 2.4653859808291037
-    },
-    {
-      "op": "anonymize/consistentTokens",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "dense",
-      "matches": 24,
-      "iterations": 728,
-      "medianMs": 0.40792700000019977,
-      "p95Ms": 0.4354609999991226,
-      "opsPerSec": 2451.4190038892016,
-      "mbPerSec": 2.4514190038892014
-    },
-    {
-      "op": "tokenize+detokenize",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "dense",
-      "matches": 24,
       "iterations": 652,
-      "medianMs": 0.43081100000017614,
-      "p95Ms": 0.6305349999984173,
-      "opsPerSec": 2321.2034975884812,
-      "mbPerSec": 2.321203497588481
-    },
-    {
-      "op": "anonymizeAsync/hash",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "dense",
-      "matches": 24,
-      "iterations": 307,
-      "medianMs": 0.956199000000197,
-      "p95Ms": 1.0879509999995207,
-      "opsPerSec": 1045.807410381933,
-      "mbPerSec": 1.045807410381933
-    },
-    {
-      "op": "detect",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 136,
-      "medianMs": 2.206745999999839,
-      "p95Ms": 2.366431000000375,
-      "opsPerSec": 453.1559137300228,
-      "mbPerSec": 4.531559137300229
-    },
-    {
-      "op": "hasPII",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 130,
-      "medianMs": 2.2105499999997846,
-      "p95Ms": 3.2466540000004898,
-      "opsPerSec": 452.3761054941519,
-      "mbPerSec": 4.523761054941518
-    },
-    {
-      "op": "anonymize/redact",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 133,
-      "medianMs": 2.2640059999994264,
-      "p95Ms": 2.3600289999994857,
-      "opsPerSec": 441.69494250468125,
-      "mbPerSec": 4.416949425046813
+      "medianMs": 0.41450000000077125,
+      "p95Ms": 0.5809000000008382,
+      "opsPerSec": 2412.5452352186717,
+      "mbPerSec": 2.4125452352186714
     },
     {
       "op": "anonymize/mask",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 134,
-      "medianMs": 2.212093999998615,
-      "p95Ms": 2.372347999998965,
-      "opsPerSec": 452.0603554824642,
-      "mbPerSec": 4.520603554824643
-    },
-    {
-      "op": "anonymize/consistentTokens",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 135,
-      "medianMs": 2.2075799999984156,
-      "p95Ms": 2.3258289999994304,
-      "opsPerSec": 452.9847162959973,
-      "mbPerSec": 4.529847162959973
-    },
-    {
-      "op": "tokenize+detokenize",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 130,
-      "medianMs": 2.2111020000011194,
-      "p95Ms": 3.282719000000725,
-      "opsPerSec": 452.2631701294168,
-      "mbPerSec": 4.522631701294168
-    },
-    {
-      "op": "anonymizeAsync/hash",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 134,
-      "medianMs": 2.228971000000456,
-      "p95Ms": 2.3931850000008126,
-      "opsPerSec": 448.63751031296295,
-      "mbPerSec": 4.48637510312963
-    },
-    {
-      "op": "stream/lines",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 42,
-      "medianMs": 7.005715999999666,
-      "p95Ms": 7.9893969999993715,
-      "opsPerSec": 142.74058497376254,
-      "mbPerSec": 1.4274058497376254
-    },
-    {
-      "op": "stream/64KB",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 128,
-      "medianMs": 2.2486099999987346,
-      "p95Ms": 3.335268000000724,
-      "opsPerSec": 444.71918207273063,
-      "mbPerSec": 4.447191820727307
-    },
-    {
-      "op": "detect",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 49,
-      "iterations": 125,
-      "medianMs": 2.385771000001114,
-      "p95Ms": 2.520386000000144,
-      "opsPerSec": 419.1517123812525,
-      "mbPerSec": 4.191517123812525
-    },
-    {
-      "op": "hasPII",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 49,
-      "iterations": 4123,
-      "medianMs": 0.07192199999917648,
-      "p95Ms": 0.0739770000000135,
-      "opsPerSec": 13903.95150317636,
-      "mbPerSec": 139.0395150317636
-    },
-    {
-      "op": "anonymize/redact",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 49,
-      "iterations": 118,
-      "medianMs": 2.4243719999994937,
-      "p95Ms": 3.5896780000002764,
-      "opsPerSec": 412.4779530534954,
-      "mbPerSec": 4.124779530534955
-    },
-    {
-      "op": "anonymize/mask",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 49,
-      "iterations": 122,
-      "medianMs": 2.424765000001571,
-      "p95Ms": 2.612691000000268,
-      "opsPerSec": 412.41109963206833,
-      "mbPerSec": 4.124110996320683
-    },
-    {
-      "op": "anonymize/consistentTokens",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 49,
-      "iterations": 122,
-      "medianMs": 2.4323199999998906,
-      "p95Ms": 2.6291700000001583,
-      "opsPerSec": 411.13011445864237,
-      "mbPerSec": 4.111301144586424
-    },
-    {
-      "op": "tokenize+detokenize",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 49,
-      "iterations": 121,
-      "medianMs": 2.469989999999598,
-      "p95Ms": 2.6132070000003296,
-      "opsPerSec": 404.8599387042712,
-      "mbPerSec": 4.048599387042713
-    },
-    {
-      "op": "anonymizeAsync/hash",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 49,
-      "iterations": 83,
-      "medianMs": 3.5807930000009947,
-      "p95Ms": 3.97931299999982,
-      "opsPerSec": 279.26774879187997,
-      "mbPerSec": 2.7926774879188
-    },
-    {
-      "op": "stream/lines",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 49,
-      "iterations": 41,
-      "medianMs": 7.4217830000015965,
-      "p95Ms": 7.71854500000336,
-      "opsPerSec": 134.7385122954666,
-      "mbPerSec": 1.3473851229546658
-    },
-    {
-      "op": "stream/64KB",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 49,
-      "iterations": 120,
-      "medianMs": 2.4498659999990196,
-      "p95Ms": 2.694488999997702,
-      "opsPerSec": 408.1855905589939,
-      "mbPerSec": 4.081855905589939
-    },
-    {
-      "op": "detect",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "dense",
-      "matches": 244,
-      "iterations": 109,
-      "medianMs": 2.7237850000019534,
-      "p95Ms": 2.9002069999987725,
-      "opsPerSec": 367.1361726418505,
-      "mbPerSec": 3.671361726418505
-    },
-    {
-      "op": "hasPII",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "dense",
-      "matches": 244,
-      "iterations": 4039,
-      "medianMs": 0.07241699999940465,
-      "p95Ms": 0.07924999999886495,
-      "opsPerSec": 13808.912272093861,
-      "mbPerSec": 138.08912272093863
-    },
-    {
-      "op": "anonymize/redact",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "dense",
-      "matches": 244,
-      "iterations": 100,
-      "medianMs": 2.9428289999996196,
-      "p95Ms": 3.51021000000037,
-      "opsPerSec": 339.80907487323566,
-      "mbPerSec": 3.3980907487323564
-    },
-    {
-      "op": "anonymize/mask",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "dense",
-      "matches": 244,
-      "iterations": 101,
-      "medianMs": 2.940425000000687,
-      "p95Ms": 3.2344670000020415,
-      "opsPerSec": 340.0868922008779,
-      "mbPerSec": 3.400868922008779
-    },
-    {
-      "op": "anonymize/consistentTokens",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "dense",
-      "matches": 244,
-      "iterations": 100,
-      "medianMs": 2.9672409999984666,
-      "p95Ms": 3.2292229999984556,
-      "opsPerSec": 337.01340740456095,
-      "mbPerSec": 3.3701340740456094
-    },
-    {
-      "op": "tokenize+detokenize",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "dense",
-      "matches": 244,
-      "iterations": 95,
-      "medianMs": 3.1243519999989076,
-      "p95Ms": 3.4281949999967765,
-      "opsPerSec": 320.06636896237995,
-      "mbPerSec": 3.2006636896237994
-    },
-    {
-      "op": "anonymizeAsync/hash",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "dense",
-      "matches": 244,
-      "iterations": 36,
-      "medianMs": 8.406087999999727,
-      "p95Ms": 8.918731999998272,
-      "opsPerSec": 118.96140035650738,
-      "mbPerSec": 1.189614003565074
-    },
-    {
-      "op": "stream/lines",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "dense",
-      "matches": 244,
-      "iterations": 46,
-      "medianMs": 6.608862000000954,
-      "p95Ms": 6.776122999999643,
-      "opsPerSec": 151.31198079183005,
-      "mbPerSec": 1.5131198079183006
-    },
-    {
-      "op": "stream/64KB",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "dense",
-      "matches": 244,
-      "iterations": 102,
-      "medianMs": 2.914629999999306,
-      "p95Ms": 3.186040000000503,
-      "opsPerSec": 343.0967223970926,
-      "mbPerSec": 3.430967223970926
-    },
-    {
-      "op": "detect",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 15,
-      "medianMs": 19.96494999999777,
-      "p95Ms": 21.113987999997335,
-      "opsPerSec": 50.08777883240938,
-      "mbPerSec": 5.008777883240938
-    },
-    {
-      "op": "hasPII",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 15,
-      "medianMs": 20.13374500000282,
-      "p95Ms": 20.995867999998154,
-      "opsPerSec": 49.66785861248665,
-      "mbPerSec": 4.966785861248665
-    },
-    {
-      "op": "anonymize/redact",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 16,
-      "medianMs": 19.99063699999897,
-      "p95Ms": 20.490638999999646,
-      "opsPerSec": 50.0234184633562,
-      "mbPerSec": 5.002341846335621
-    },
-    {
-      "op": "anonymize/mask",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 16,
-      "medianMs": 19.874470999999176,
-      "p95Ms": 21.023568000000523,
-      "opsPerSec": 50.31580463198449,
-      "mbPerSec": 5.031580463198449
-    },
-    {
-      "op": "anonymize/consistentTokens",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 15,
-      "medianMs": 20.105610999999044,
-      "p95Ms": 20.853311999999278,
-      "opsPerSec": 49.737359386891924,
-      "mbPerSec": 4.973735938689193
-    },
-    {
-      "op": "tokenize+detokenize",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 16,
-      "medianMs": 19.86592600000222,
-      "p95Ms": 20.371047999997245,
-      "opsPerSec": 50.33744714441644,
-      "mbPerSec": 5.033744714441644
-    },
-    {
-      "op": "anonymizeAsync/hash",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 15,
-      "medianMs": 20.009091000003536,
-      "p95Ms": 20.79459599999973,
-      "opsPerSec": 49.977282826082565,
-      "mbPerSec": 4.997728282608257
-    },
-    {
-      "op": "stream/lines",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 5,
-      "medianMs": 71.00232899999901,
-      "p95Ms": 71.85765999999785,
-      "opsPerSec": 14.084045045902846,
-      "mbPerSec": 1.4084045045902847
-    },
-    {
-      "op": "stream/64KB",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 15,
-      "medianMs": 20.815270999999484,
-      "p95Ms": 21.432082999999693,
-      "opsPerSec": 48.04165172771591,
-      "mbPerSec": 4.804165172771591
-    },
-    {
-      "op": "detect",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "sparse",
-      "matches": 509,
-      "iterations": 14,
-      "medianMs": 21.83143199999904,
-      "p95Ms": 21.970754999998462,
-      "opsPerSec": 45.80551564368494,
-      "mbPerSec": 4.580551564368494
-    },
-    {
-      "op": "hasPII",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "sparse",
-      "matches": 509,
-      "iterations": 416,
-      "medianMs": 0.717850000000908,
-      "p95Ms": 0.7676829999982147,
-      "opsPerSec": 1393.0486870498503,
-      "mbPerSec": 139.30486870498504
-    },
-    {
-      "op": "anonymize/redact",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "sparse",
-      "matches": 509,
-      "iterations": 12,
-      "medianMs": 25.758292999998957,
-      "p95Ms": 26.0497260000011,
-      "opsPerSec": 38.82244836643641,
-      "mbPerSec": 3.8822448366436415
-    },
-    {
-      "op": "anonymize/mask",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "sparse",
-      "matches": 509,
-      "iterations": 12,
-      "medianMs": 25.84069300000192,
-      "p95Ms": 29.018239000000904,
-      "opsPerSec": 38.698652547744196,
-      "mbPerSec": 3.86986525477442
-    },
-    {
-      "op": "anonymize/consistentTokens",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "sparse",
-      "matches": 509,
-      "iterations": 12,
-      "medianMs": 26.06336100000044,
-      "p95Ms": 26.50696500000049,
-      "opsPerSec": 38.368037030987026,
-      "mbPerSec": 3.836803703098703
-    },
-    {
-      "op": "tokenize+detokenize",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "sparse",
-      "matches": 509,
-      "iterations": 12,
-      "medianMs": 26.537748999999167,
-      "p95Ms": 27.702876999999717,
-      "opsPerSec": 37.68217115928074,
-      "mbPerSec": 3.7682171159280746
-    },
-    {
-      "op": "anonymizeAsync/hash",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "sparse",
-      "matches": 509,
-      "iterations": 8,
-      "medianMs": 39.34965399999783,
-      "p95Ms": 39.97106100000019,
-      "opsPerSec": 25.413184065101444,
-      "mbPerSec": 2.5413184065101446
-    },
-    {
-      "op": "stream/lines",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "sparse",
-      "matches": 509,
-      "iterations": 5,
-      "medianMs": 72.87414300000091,
-      "p95Ms": 74.39416400000118,
-      "opsPerSec": 13.722288301901369,
-      "mbPerSec": 1.3722288301901369
-    },
-    {
-      "op": "stream/64KB",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "sparse",
-      "matches": 509,
-      "iterations": 13,
-      "medianMs": 24.201453999998193,
-      "p95Ms": 25.363682000002882,
-      "opsPerSec": 41.31983144484107,
-      "mbPerSec": 4.131983144484107
-    },
-    {
-      "op": "detect",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "dense",
-      "matches": 2503,
-      "iterations": 12,
-      "medianMs": 24.810584999999264,
-      "p95Ms": 25.523026999999274,
-      "opsPerSec": 40.30537772487145,
-      "mbPerSec": 4.030537772487145
-    },
-    {
-      "op": "hasPII",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "dense",
-      "matches": 2503,
-      "iterations": 410,
-      "medianMs": 0.729204999999638,
-      "p95Ms": 0.7589330000009795,
-      "opsPerSec": 1371.3564772601621,
-      "mbPerSec": 137.13564772601623
-    },
-    {
-      "op": "anonymize/redact",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "dense",
-      "matches": 2503,
-      "iterations": 8,
-      "medianMs": 42.28094200000123,
-      "p95Ms": 53.56917600000088,
-      "opsPerSec": 23.651317891639472,
-      "mbPerSec": 2.3651317891639474
-    },
-    {
-      "op": "anonymize/mask",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "dense",
-      "matches": 2503,
-      "iterations": 7,
-      "medianMs": 45.05341699999917,
-      "p95Ms": 45.858508000001166,
-      "opsPerSec": 22.195874732431914,
-      "mbPerSec": 2.2195874732431915
-    },
-    {
-      "op": "anonymize/consistentTokens",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "dense",
-      "matches": 2503,
-      "iterations": 7,
-      "medianMs": 44.36828400000013,
-      "p95Ms": 45.431250999998156,
-      "opsPerSec": 22.538622408745784,
-      "mbPerSec": 2.2538622408745783
-    },
-    {
-      "op": "tokenize+detokenize",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "dense",
-      "matches": 2503,
-      "iterations": 7,
-      "medianMs": 46.96941799999695,
-      "p95Ms": 52.9841579999993,
-      "opsPerSec": 21.29044903217802,
-      "mbPerSec": 2.1290449032178023
-    },
-    {
-      "op": "anonymizeAsync/hash",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "dense",
-      "matches": 2503,
-      "iterations": 5,
-      "medianMs": 107.54563399999824,
-      "p95Ms": 107.72012199999881,
-      "opsPerSec": 9.298378398141354,
-      "mbPerSec": 0.9298378398141355
-    },
-    {
-      "op": "stream/lines",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "dense",
-      "matches": 2503,
-      "iterations": 5,
-      "medianMs": 61.66149999999834,
-      "p95Ms": 62.576271000001725,
-      "opsPerSec": 16.217574986012778,
-      "mbPerSec": 1.621757498601278
-    },
-    {
-      "op": "stream/64KB",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "dense",
-      "matches": 2503,
-      "iterations": 9,
-      "medianMs": 34.888709999999264,
-      "p95Ms": 35.75380999999834,
-      "opsPerSec": 28.662567346285407,
-      "mbPerSec": 2.866256734628541
-    },
-    {
-      "op": "detect",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 5,
-      "medianMs": 196.4660499999991,
-      "p95Ms": 198.56022400000074,
-      "opsPerSec": 5.089937930751927,
-      "mbPerSec": 5.089937930751927
-    },
-    {
-      "op": "hasPII",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 5,
-      "medianMs": 196.02438900000197,
-      "p95Ms": 198.51668600000266,
-      "opsPerSec": 5.101406029634353,
-      "mbPerSec": 5.1014060296343535
-    },
-    {
-      "op": "anonymize/redact",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 5,
-      "medianMs": 198.01879799999733,
-      "p95Ms": 198.5885549999948,
-      "opsPerSec": 5.050025604134883,
-      "mbPerSec": 5.050025604134883
-    },
-    {
-      "op": "anonymize/mask",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 5,
-      "medianMs": 194.8076130000045,
-      "p95Ms": 196.8050790000052,
-      "opsPerSec": 5.133269612004213,
-      "mbPerSec": 5.133269612004214
-    },
-    {
-      "op": "anonymize/consistentTokens",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 5,
-      "medianMs": 194.80262399999629,
-      "p95Ms": 197.21460600000137,
-      "opsPerSec": 5.133401077800775,
-      "mbPerSec": 5.133401077800775
-    },
-    {
-      "op": "tokenize+detokenize",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 5,
-      "medianMs": 196.01111300000048,
-      "p95Ms": 199.15142500000366,
-      "opsPerSec": 5.101751552219376,
-      "mbPerSec": 5.101751552219376
-    },
-    {
-      "op": "stream/lines",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 5,
-      "medianMs": 683.37068,
-      "p95Ms": 694.1361429999961,
-      "opsPerSec": 1.4633346575536428,
-      "mbPerSec": 1.4633346575536428
-    },
-    {
-      "op": "stream/64KB",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 5,
-      "medianMs": 204.13860399999976,
-      "p95Ms": 206.90828200000396,
-      "opsPerSec": 4.89863249971084,
-      "mbPerSec": 4.89863249971084
-    },
-    {
-      "op": "detect",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "sparse",
-      "matches": 5067,
-      "iterations": 5,
-      "medianMs": 215.55112699999881,
-      "p95Ms": 215.6988660000061,
-      "opsPerSec": 4.639270570828449,
-      "mbPerSec": 4.639270570828449
-    },
-    {
-      "op": "hasPII",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "sparse",
-      "matches": 5067,
-      "iterations": 41,
-      "medianMs": 7.267463999996835,
-      "p95Ms": 7.6877909999966505,
-      "opsPerSec": 137.5995808166969,
-      "mbPerSec": 137.59958081669694
-    },
-    {
-      "op": "anonymize/redact",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "sparse",
-      "matches": 5067,
-      "iterations": 5,
-      "medianMs": 1878.7202039999975,
-      "p95Ms": 1891.2360950000002,
-      "opsPerSec": 0.5322772373826036,
-      "mbPerSec": 0.5322772373826036
-    },
-    {
-      "op": "anonymize/mask",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "sparse",
-      "matches": 5067,
-      "iterations": 5,
-      "medianMs": 1925.6419260000039,
-      "p95Ms": 1961.7369379999946,
-      "opsPerSec": 0.5193073470711284,
-      "mbPerSec": 0.5193073470711282
-    },
-    {
-      "op": "anonymize/consistentTokens",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "sparse",
-      "matches": 5067,
-      "iterations": 5,
-      "medianMs": 1918.4953470000037,
-      "p95Ms": 1949.0297979999887,
-      "opsPerSec": 0.521241816699594,
-      "mbPerSec": 0.521241816699594
-    },
-    {
-      "op": "tokenize+detokenize",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "sparse",
-      "matches": 5067,
-      "iterations": 5,
-      "medianMs": 1926.5105320000002,
-      "p95Ms": 1938.4399140000023,
-      "opsPerSec": 0.519073206914604,
-      "mbPerSec": 0.519073206914604
-    },
-    {
-      "op": "stream/lines",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "sparse",
-      "matches": 5067,
-      "iterations": 5,
-      "medianMs": 718.1271430000052,
-      "p95Ms": 740.2877509999962,
-      "opsPerSec": 1.392511075159281,
-      "mbPerSec": 1.392511075159281
-    },
-    {
-      "op": "stream/64KB",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "sparse",
-      "matches": 5067,
-      "iterations": 5,
-      "medianMs": 246.56939499999862,
-      "p95Ms": 247.57863399999042,
-      "opsPerSec": 4.055653379041651,
-      "mbPerSec": 4.055653379041651
-    },
-    {
-      "op": "detect",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "dense",
-      "matches": 25112,
-      "iterations": 5,
-      "medianMs": 274.60284600000887,
-      "p95Ms": 276.91300200000114,
-      "opsPerSec": 3.641622854848226,
-      "mbPerSec": 3.6416228548482255
-    },
-    {
-      "op": "hasPII",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "dense",
-      "matches": 25112,
-      "iterations": 41,
-      "medianMs": 7.353951999990386,
-      "p95Ms": 7.633117000004859,
-      "opsPerSec": 135.9813063780274,
-      "mbPerSec": 135.9813063780274
-    },
-    {
-      "op": "anonymize/redact",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "dense",
-      "matches": 25112,
-      "iterations": 5,
-      "medianMs": 7866.892292000004,
-      "p95Ms": 7888.412733000005,
-      "opsPerSec": 0.12711499825883207,
-      "mbPerSec": 0.12711499825883207
-    },
-    {
-      "op": "anonymize/mask",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "dense",
-      "matches": 25112,
-      "iterations": 5,
-      "medianMs": 8943.410279000003,
-      "p95Ms": 9317.481173000007,
-      "opsPerSec": 0.11181417030012558,
-      "mbPerSec": 0.11181417030012558
-    },
-    {
-      "op": "anonymize/consistentTokens",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "dense",
-      "matches": 25112,
-      "iterations": 5,
-      "medianMs": 7761.879796000023,
-      "p95Ms": 7896.400297000015,
-      "opsPerSec": 0.12883477022091172,
-      "mbPerSec": 0.12883477022091172
-    },
-    {
-      "op": "tokenize+detokenize",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "dense",
-      "matches": 25112,
-      "iterations": 5,
-      "medianMs": 8267.647595999995,
-      "p95Ms": 8319.670970000006,
-      "opsPerSec": 0.12095338950874178,
-      "mbPerSec": 0.1209533895087418
-    },
-    {
-      "op": "stream/lines",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "dense",
-      "matches": 25112,
-      "iterations": 5,
-      "medianMs": 593.606708999956,
-      "p95Ms": 606.5684140000376,
-      "opsPerSec": 1.6846170786794024,
-      "mbPerSec": 1.6846170786794024
-    },
-    {
-      "op": "stream/64KB",
-      "size": 1000000,
-      "sizeLabel": "1MB",
-      "density": "dense",
-      "matches": 25112,
-      "iterations": 5,
-      "medianMs": 359.62095800001407,
-      "p95Ms": 361.00141299999086,
-      "opsPerSec": 2.7807055672210317,
-      "mbPerSec": 2.7807055672210317
-    },
-    {
-      "op": "engine/scan",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "none",
-      "matches": 0,
-      "iterations": 4407,
-      "medianMs": 0.06556200003251433,
-      "p95Ms": 0.08072800002992153,
-      "opsPerSec": 15252.737858882698,
-      "mbPerSec": 1.5252737858882697
-    },
-    {
-      "op": "engine/test",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "none",
-      "matches": 0,
-      "iterations": 4670,
-      "medianMs": 0.06261700001778081,
-      "p95Ms": 0.06697300000814721,
-      "opsPerSec": 15970.103960841921,
-      "mbPerSec": 1.5970103960841924
-    },
-    {
-      "op": "engine/transform",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "none",
-      "matches": 0,
-      "iterations": 4633,
-      "medianMs": 0.0631470000371337,
-      "p95Ms": 0.0717329999897629,
-      "opsPerSec": 15836.065045242822,
-      "mbPerSec": 1.5836065045242822
-    },
-    {
-      "op": "engine/transform(1.x detectors)",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "none",
-      "matches": 0,
-      "iterations": 4272,
-      "medianMs": 0.0679680000175722,
-      "p95Ms": 0.07806700002402067,
-      "opsPerSec": 14712.806022561554,
-      "mbPerSec": 1.4712806022561555
-    },
-    {
-      "op": "engine/scan",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "sparse",
-      "matches": 1,
-      "iterations": 4311,
-      "medianMs": 0.06799200002569705,
-      "p95Ms": 0.07513599999947473,
-      "opsPerSec": 14707.61265475435,
-      "mbPerSec": 1.470761265475435
-    },
-    {
-      "op": "engine/test",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "sparse",
-      "matches": 1,
-      "iterations": 4450,
-      "medianMs": 0.06606899999314919,
-      "p95Ms": 0.07450400001835078,
-      "opsPerSec": 15135.69147563444,
-      "mbPerSec": 1.5135691475634439
-    },
-    {
-      "op": "engine/transform",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "sparse",
-      "matches": 1,
-      "iterations": 4348,
-      "medianMs": 0.0673160000005737,
-      "p95Ms": 0.07473100000061095,
-      "opsPerSec": 14855.309287412763,
-      "mbPerSec": 1.4855309287412763
-    },
-    {
-      "op": "engine/transform(1.x detectors)",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "sparse",
-      "matches": 1,
-      "iterations": 4052,
-      "medianMs": 0.07201299996813759,
-      "p95Ms": 0.07838299998547882,
-      "opsPerSec": 13886.381631683911,
-      "mbPerSec": 1.3886381631683913
-    },
-    {
-      "op": "engine/scan",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "dense",
-      "matches": 2,
-      "iterations": 4215,
-      "medianMs": 0.06968299997970462,
-      "p95Ms": 0.07661400001961738,
-      "opsPerSec": 14350.702471065439,
-      "mbPerSec": 1.435070247106544
-    },
-    {
-      "op": "engine/test",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "dense",
-      "matches": 2,
-      "iterations": 4291,
-      "medianMs": 0.0681769999791868,
-      "p95Ms": 0.07403900002827868,
-      "opsPerSec": 14667.703188836143,
-      "mbPerSec": 1.4667703188836143
-    },
-    {
-      "op": "engine/transform",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "dense",
-      "matches": 2,
-      "iterations": 4130,
-      "medianMs": 0.0706169999903068,
-      "p95Ms": 0.08054300001822412,
-      "opsPerSec": 14160.896103449091,
-      "mbPerSec": 1.4160896103449092
-    },
-    {
-      "op": "engine/transform(1.x detectors)",
-      "size": 100,
-      "sizeLabel": "100B",
-      "density": "dense",
-      "matches": 2,
-      "iterations": 4088,
-      "medianMs": 0.07138400000985712,
-      "p95Ms": 0.07884800003375858,
-      "opsPerSec": 14008.741452733304,
-      "mbPerSec": 1.4008741452733307
-    },
-    {
-      "op": "engine/scan",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 1122,
-      "medianMs": 0.2613800000399351,
-      "p95Ms": 0.29743099998449907,
-      "opsPerSec": 3825.847424620148,
-      "mbPerSec": 3.825847424620149
-    },
-    {
-      "op": "engine/test",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 1119,
-      "medianMs": 0.2639130000025034,
-      "p95Ms": 0.30123800004366785,
-      "opsPerSec": 3789.127477579787,
-      "mbPerSec": 3.7891274775797874
-    },
-    {
-      "op": "engine/transform",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 1128,
-      "medianMs": 0.2639140000101179,
-      "p95Ms": 0.2860799999907613,
-      "opsPerSec": 3789.1131200378236,
-      "mbPerSec": 3.7891131200378236
-    },
-    {
-      "op": "engine/transform(1.x detectors)",
-      "size": 1000,
-      "sizeLabel": "1KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 1081,
-      "medianMs": 0.2733400000142865,
-      "p95Ms": 0.3040699999546632,
-      "opsPerSec": 3658.4473547513485,
-      "mbPerSec": 3.6584473547513485
-    },
-    {
-      "op": "engine/scan",
       "size": 1000,
       "sizeLabel": "1KB",
       "density": "sparse",
       "matches": 4,
-      "iterations": 956,
-      "medianMs": 0.30859899998176843,
-      "p95Ms": 0.34707399999024346,
-      "opsPerSec": 3240.4512006165883,
-      "mbPerSec": 3.240451200616588
+      "iterations": 743,
+      "medianMs": 0.39800000000104774,
+      "p95Ms": 0.42890000000079453,
+      "opsPerSec": 2512.5628140637373,
+      "mbPerSec": 2.5125628140637373
     },
     {
-      "op": "engine/test",
+      "op": "anonymize/consistentTokens",
       "size": 1000,
       "sizeLabel": "1KB",
       "density": "sparse",
       "matches": 4,
-      "iterations": 970,
-      "medianMs": 0.3067919999593869,
-      "p95Ms": 0.3343790000071749,
-      "opsPerSec": 3259.5374068827737,
-      "mbPerSec": 3.259537406882774
+      "iterations": 741,
+      "medianMs": 0.40060000000084983,
+      "p95Ms": 0.444099999998798,
+      "opsPerSec": 2496.2556165698415,
+      "mbPerSec": 2.496255616569842
     },
     {
-      "op": "engine/transform",
+      "op": "tokenize+detokenize",
       "size": 1000,
       "sizeLabel": "1KB",
       "density": "sparse",
       "matches": 4,
-      "iterations": 964,
-      "medianMs": 0.3070329999900423,
-      "p95Ms": 0.34054499998455867,
-      "opsPerSec": 3256.9788916254342,
-      "mbPerSec": 3.2569788916254345
+      "iterations": 710,
+      "medianMs": 0.4161999999996624,
+      "p95Ms": 0.4454999999998108,
+      "opsPerSec": 2402.691013937557,
+      "mbPerSec": 2.402691013937557
     },
     {
-      "op": "engine/transform(1.x detectors)",
+      "op": "anonymizeAsync/hash",
       "size": 1000,
       "sizeLabel": "1KB",
       "density": "sparse",
       "matches": 4,
-      "iterations": 931,
-      "medianMs": 0.3160639999550767,
-      "p95Ms": 0.3509910000138916,
-      "opsPerSec": 3163.916169326888,
-      "mbPerSec": 3.1639161693268876
+      "iterations": 376,
+      "medianMs": 0.7335000000002765,
+      "p95Ms": 1.335399999999936,
+      "opsPerSec": 1363.326516700236,
+      "mbPerSec": 1.363326516700236
     },
     {
-      "op": "engine/scan",
+      "op": "detect",
       "size": 1000,
       "sizeLabel": "1KB",
       "density": "dense",
       "matches": 24,
-      "iterations": 714,
-      "medianMs": 0.4106639999663457,
-      "p95Ms": 0.476319000008516,
-      "opsPerSec": 2435.080747477137,
-      "mbPerSec": 2.4350807474771368
+      "iterations": 406,
+      "medianMs": 0.5882000000001426,
+      "p95Ms": 1.1576999999997497,
+      "opsPerSec": 1700.102006119955,
+      "mbPerSec": 1.7001020061199552
     },
     {
-      "op": "engine/test",
+      "op": "hasPII",
       "size": 1000,
       "sizeLabel": "1KB",
       "density": "dense",
       "matches": 24,
-      "iterations": 754,
-      "medianMs": 0.3904329999932088,
-      "p95Ms": 0.4349830000428483,
-      "opsPerSec": 2561.258910023984,
-      "mbPerSec": 2.5612589100239838
+      "iterations": 20000,
+      "medianMs": 0.010000000000218279,
+      "p95Ms": 0.010400000001027365,
+      "opsPerSec": 99999.99999781721,
+      "mbPerSec": 99.99999999781721
     },
     {
-      "op": "engine/transform",
+      "op": "anonymize/redact",
       "size": 1000,
       "sizeLabel": "1KB",
       "density": "dense",
       "matches": 24,
-      "iterations": 742,
-      "medianMs": 0.40186600002925843,
-      "p95Ms": 0.4283539999742061,
-      "opsPerSec": 2488.3916527578685,
-      "mbPerSec": 2.4883916527578687
+      "iterations": 556,
+      "medianMs": 0.5292000000008557,
+      "p95Ms": 0.5716000000011263,
+      "opsPerSec": 1889.6447467845487,
+      "mbPerSec": 1.8896447467845487
     },
     {
-      "op": "engine/transform(1.x detectors)",
+      "op": "anonymize/mask",
       "size": 1000,
       "sizeLabel": "1KB",
       "density": "dense",
       "matches": 24,
-      "iterations": 772,
-      "medianMs": 0.3839750000042841,
-      "p95Ms": 0.4233820000081323,
-      "opsPerSec": 2604.3362197769197,
-      "mbPerSec": 2.60433621977692
+      "iterations": 541,
+      "medianMs": 0.5454000000008818,
+      "p95Ms": 0.6722999999983585,
+      "opsPerSec": 1833.5166849988689,
+      "mbPerSec": 1.833516684998869
     },
     {
-      "op": "engine/scan",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 155,
-      "medianMs": 1.9460839999956079,
-      "p95Ms": 2.0223560000304133,
-      "opsPerSec": 513.8524339145982,
-      "mbPerSec": 5.138524339145982
-    },
-    {
-      "op": "engine/test",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 156,
-      "medianMs": 1.905306999979075,
-      "p95Ms": 2.0081409999984317,
-      "opsPerSec": 524.849801113932,
-      "mbPerSec": 5.24849801113932
-    },
-    {
-      "op": "engine/transform",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 156,
-      "medianMs": 1.9310050000203773,
-      "p95Ms": 2.030933999980334,
-      "opsPerSec": 517.8650495412737,
-      "mbPerSec": 5.178650495412738
-    },
-    {
-      "op": "engine/transform(1.x detectors)",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 140,
-      "medianMs": 2.1463179999846034,
-      "p95Ms": 2.3619449999532662,
-      "opsPerSec": 465.9141842015831,
-      "mbPerSec": 4.659141842015831
-    },
-    {
-      "op": "engine/chunks/lines",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 117,
-      "medianMs": 2.5344500000355765,
-      "p95Ms": 2.693685000005644,
-      "opsPerSec": 394.56292291659446,
-      "mbPerSec": 3.9456292291659443
-    },
-    {
-      "op": "engine/chunks/64KB",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 133,
-      "medianMs": 2.207801999989897,
-      "p95Ms": 2.6603790000081062,
-      "opsPerSec": 452.9391675542354,
-      "mbPerSec": 4.529391675542354
-    },
-    {
-      "op": "engine/scan",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 50,
-      "iterations": 123,
-      "medianMs": 2.3767900000093505,
-      "p95Ms": 2.910941999987699,
-      "opsPerSec": 420.73552985163434,
-      "mbPerSec": 4.207355298516344
-    },
-    {
-      "op": "engine/test",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 50,
-      "iterations": 126,
-      "medianMs": 2.308041999989655,
-      "p95Ms": 2.6622369999531657,
-      "opsPerSec": 433.26767883967545,
-      "mbPerSec": 4.332676788396755
-    },
-    {
-      "op": "engine/transform",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 50,
-      "iterations": 127,
-      "medianMs": 2.3549609999754466,
-      "p95Ms": 2.4977380000054836,
-      "opsPerSec": 424.6354822905459,
-      "mbPerSec": 4.246354822905459
-    },
-    {
-      "op": "engine/transform(1.x detectors)",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 49,
-      "iterations": 130,
-      "medianMs": 2.2992879999801517,
-      "p95Ms": 2.5180210000253282,
-      "opsPerSec": 434.91724395057616,
-      "mbPerSec": 4.349172439505762
-    },
-    {
-      "op": "engine/chunks/lines",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 50,
-      "iterations": 105,
-      "medianMs": 2.852790000033565,
-      "p95Ms": 3.026179000036791,
-      "opsPerSec": 350.53403860369474,
-      "mbPerSec": 3.5053403860369476
-    },
-    {
-      "op": "engine/chunks/64KB",
-      "size": 10000,
-      "sizeLabel": "10KB",
-      "density": "sparse",
-      "matches": 50,
-      "iterations": 119,
-      "medianMs": 2.542786000005435,
-      "p95Ms": 2.650216000038199,
-      "opsPerSec": 393.2694296719671,
-      "mbPerSec": 3.9326942967196707
-    },
-    {
-      "op": "engine/scan",
-      "size": 10000,
-      "sizeLabel": "10KB",
+      "op": "anonymize/consistentTokens",
+      "size": 1000,
+      "sizeLabel": "1KB",
       "density": "dense",
-      "matches": 244,
+      "matches": 24,
+      "iterations": 541,
+      "medianMs": 0.5429000000003725,
+      "p95Ms": 0.6296000000002095,
+      "opsPerSec": 1841.959845274109,
+      "mbPerSec": 1.841959845274109
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 510,
+      "medianMs": 0.5849999999991269,
+      "p95Ms": 0.6238000000012107,
+      "opsPerSec": 1709.4017094042606,
+      "mbPerSec": 1.7094017094042606
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
       "iterations": 104,
-      "medianMs": 2.8031189999892376,
-      "p95Ms": 3.277954999997746,
-      "opsPerSec": 356.7454681745011,
-      "mbPerSec": 3.5674546817450117
+      "medianMs": 2.834499999999025,
+      "p95Ms": 4.063799999999901,
+      "opsPerSec": 352.7959075675936,
+      "mbPerSec": 0.3527959075675936
+    },
+    {
+      "op": "detect",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 88,
+      "medianMs": 2.960800000000745,
+      "p95Ms": 5.399400000000242,
+      "opsPerSec": 337.74655498505416,
+      "mbPerSec": 3.3774655498505415
+    },
+    {
+      "op": "hasPII",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 104,
+      "medianMs": 2.9161999999996624,
+      "p95Ms": 3.0239999999994325,
+      "opsPerSec": 342.9120087785871,
+      "mbPerSec": 3.429120087785871
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 104,
+      "medianMs": 2.918499999999767,
+      "p95Ms": 2.975699999999051,
+      "opsPerSec": 342.6417680315504,
+      "mbPerSec": 3.4264176803155038
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 104,
+      "medianMs": 2.8677999999999884,
+      "p95Ms": 3.267199999998411,
+      "opsPerSec": 348.6993514192078,
+      "mbPerSec": 3.486993514192078
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 105,
+      "medianMs": 2.8510000000005675,
+      "p95Ms": 2.973200000000361,
+      "opsPerSec": 350.7541213608562,
+      "mbPerSec": 3.5075412136085617
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 103,
+      "medianMs": 2.8888999999999214,
+      "p95Ms": 3.1041999999997643,
+      "opsPerSec": 346.1525147980294,
+      "mbPerSec": 3.4615251479802946
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 102,
+      "medianMs": 2.9166999999997643,
+      "p95Ms": 3.1476000000002387,
+      "opsPerSec": 342.85322453460446,
+      "mbPerSec": 3.4285322453460445
+    },
+    {
+      "op": "stream/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 30,
+      "medianMs": 10.449399999999514,
+      "p95Ms": 11.839500000000044,
+      "opsPerSec": 95.69927459950298,
+      "mbPerSec": 0.9569927459950299
+    },
+    {
+      "op": "stream/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 102,
+      "medianMs": 2.9629000000004453,
+      "p95Ms": 3.0301999999992404,
+      "opsPerSec": 337.50717202735484,
+      "mbPerSec": 3.3750717202735485
+    },
+    {
+      "op": "detect",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 88,
+      "medianMs": 3.4381000000012136,
+      "p95Ms": 3.662000000000262,
+      "opsPerSec": 290.85832291080743,
+      "mbPerSec": 2.908583229108074
+    },
+    {
+      "op": "hasPII",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 2728,
+      "medianMs": 0.10850000000027649,
+      "p95Ms": 0.12359999999898719,
+      "opsPerSec": 9216.589861727665,
+      "mbPerSec": 92.16589861727667
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 87,
+      "medianMs": 3.4439999999995052,
+      "p95Ms": 3.698899999999412,
+      "opsPerSec": 290.36004645764916,
+      "mbPerSec": 2.9036004645764915
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 87,
+      "medianMs": 3.4490999999998166,
+      "p95Ms": 3.6889999999984866,
+      "opsPerSec": 289.9307065611473,
+      "mbPerSec": 2.899307065611473
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 87,
+      "medianMs": 3.457399999999325,
+      "p95Ms": 3.8502000000007683,
+      "opsPerSec": 289.2346850234845,
+      "mbPerSec": 2.892346850234845
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 80,
+      "medianMs": 3.576199999999517,
+      "p95Ms": 4.152400000002672,
+      "opsPerSec": 279.62641910411475,
+      "mbPerSec": 2.7962641910411477
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 37,
+      "medianMs": 9.045700000002398,
+      "p95Ms": 10.214599999999336,
+      "opsPerSec": 110.5497639762246,
+      "mbPerSec": 1.105497639762246
+    },
+    {
+      "op": "stream/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 30,
+      "medianMs": 9.72019999999975,
+      "p95Ms": 13.539999999997235,
+      "opsPerSec": 102.87854159379701,
+      "mbPerSec": 1.0287854159379701
+    },
+    {
+      "op": "stream/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 85,
+      "medianMs": 3.478899999998248,
+      "p95Ms": 3.7651999999980035,
+      "opsPerSec": 287.4471815805294,
+      "mbPerSec": 2.8744718158052938
+    },
+    {
+      "op": "detect",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 70,
+      "medianMs": 4.249499999998079,
+      "p95Ms": 4.763999999999214,
+      "opsPerSec": 235.321802565114,
+      "mbPerSec": 2.35321802565114
+    },
+    {
+      "op": "hasPII",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 2703,
+      "medianMs": 0.10989999999947031,
+      "p95Ms": 0.11759999999776483,
+      "opsPerSec": 9099.181073747222,
+      "mbPerSec": 90.99181073747222
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 71,
+      "medianMs": 4.114799999999377,
+      "p95Ms": 5.046399999999267,
+      "opsPerSec": 243.02517740841628,
+      "mbPerSec": 2.4302517740841627
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 70,
+      "medianMs": 4.211299999999028,
+      "p95Ms": 4.951399999998102,
+      "opsPerSec": 237.45636739254644,
+      "mbPerSec": 2.3745636739254645
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 71,
+      "medianMs": 4.277699999998731,
+      "p95Ms": 4.589600000002974,
+      "opsPerSec": 233.770484138742,
+      "mbPerSec": 2.33770484138742
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 64,
+      "medianMs": 4.5297000000027765,
+      "p95Ms": 6.0372000000024855,
+      "opsPerSec": 220.7651720863163,
+      "mbPerSec": 2.207651720863163
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 17,
+      "medianMs": 17.43959999999788,
+      "p95Ms": 24.723300000001473,
+      "opsPerSec": 57.34076469644496,
+      "mbPerSec": 0.5734076469644497
+    },
+    {
+      "op": "stream/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 33,
+      "medianMs": 8.35859999999957,
+      "p95Ms": 15.707299999998213,
+      "opsPerSec": 119.63725982820706,
+      "mbPerSec": 1.1963725982820708
+    },
+    {
+      "op": "stream/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 244,
+      "iterations": 72,
+      "medianMs": 4.146700000001147,
+      "p95Ms": 4.68500000000131,
+      "opsPerSec": 241.1556177200481,
+      "mbPerSec": 2.4115561772004814
+    },
+    {
+      "op": "detect",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 12,
+      "medianMs": 25.98240000000078,
+      "p95Ms": 26.878199999999197,
+      "opsPerSec": 38.48759160046686,
+      "mbPerSec": 3.8487591600466855
+    },
+    {
+      "op": "hasPII",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 12,
+      "medianMs": 25.865899999997055,
+      "p95Ms": 26.68999999999869,
+      "opsPerSec": 38.660939692804575,
+      "mbPerSec": 3.866093969280458
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 12,
+      "medianMs": 25.932400000001508,
+      "p95Ms": 28.276099999999133,
+      "opsPerSec": 38.5617991392984,
+      "mbPerSec": 3.8561799139298403
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 12,
+      "medianMs": 26.224199999996927,
+      "p95Ms": 27.913899999999558,
+      "opsPerSec": 38.13271710862933,
+      "mbPerSec": 3.8132717108629333
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 12,
+      "medianMs": 25.849500000000262,
+      "p95Ms": 26.20969999999943,
+      "opsPerSec": 38.68546780401903,
+      "mbPerSec": 3.8685467804019034
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 12,
+      "medianMs": 25.90020000000004,
+      "p95Ms": 28.02230000000054,
+      "opsPerSec": 38.609740465324535,
+      "mbPerSec": 3.8609740465324536
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 12,
+      "medianMs": 26.166799999999057,
+      "p95Ms": 27.21519999999873,
+      "opsPerSec": 38.216365776481496,
+      "mbPerSec": 3.82163657764815
+    },
+    {
+      "op": "stream/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 91.5831999999973,
+      "p95Ms": 107.65380000000005,
+      "opsPerSec": 10.919033185125977,
+      "mbPerSec": 1.0919033185125977
+    },
+    {
+      "op": "stream/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 11,
+      "medianMs": 27.826100000002043,
+      "p95Ms": 31.233499999998457,
+      "opsPerSec": 35.937483154302136,
+      "mbPerSec": 3.5937483154302137
+    },
+    {
+      "op": "detect",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 9,
+      "medianMs": 33.77079999999842,
+      "p95Ms": 34.70839999999953,
+      "opsPerSec": 29.611380245657397,
+      "mbPerSec": 2.96113802456574
+    },
+    {
+      "op": "hasPII",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 278,
+      "medianMs": 1.090199999998731,
+      "p95Ms": 1.183999999997468,
+      "opsPerSec": 917.2628875446376,
+      "mbPerSec": 91.72628875446378
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 10,
+      "medianMs": 33.203700000001845,
+      "p95Ms": 33.55879999999888,
+      "opsPerSec": 30.117125501072003,
+      "mbPerSec": 3.0117125501072
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 9,
+      "medianMs": 33.70669999999882,
+      "p95Ms": 34.771999999997206,
+      "opsPerSec": 29.667692179894058,
+      "mbPerSec": 2.966769217989406
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 9,
+      "medianMs": 33.96720000000278,
+      "p95Ms": 43.40110000000277,
+      "opsPerSec": 29.440165807011418,
+      "mbPerSec": 2.944016580701142
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 9,
+      "medianMs": 35.23689999999988,
+      "p95Ms": 36.75670000000173,
+      "opsPerSec": 28.37934097494398,
+      "mbPerSec": 2.837934097494398
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 5,
+      "medianMs": 84.53389999999854,
+      "p95Ms": 103.73049999999785,
+      "opsPerSec": 11.829573697652862,
+      "mbPerSec": 1.1829573697652862
+    },
+    {
+      "op": "stream/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 5,
+      "medianMs": 96.58460000000196,
+      "p95Ms": 99.83320000000094,
+      "opsPerSec": 10.353617450400787,
+      "mbPerSec": 1.0353617450400787
+    },
+    {
+      "op": "stream/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 509,
+      "iterations": 9,
+      "medianMs": 34.22920000000158,
+      "p95Ms": 44.18569999999818,
+      "opsPerSec": 29.214822432307905,
+      "mbPerSec": 2.9214822432307908
+    },
+    {
+      "op": "detect",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 8,
+      "medianMs": 37.68019999999888,
+      "p95Ms": 43.10239999999976,
+      "opsPerSec": 26.539137265726556,
+      "mbPerSec": 2.6539137265726556
+    },
+    {
+      "op": "hasPII",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 255,
+      "medianMs": 1.1640000000006694,
+      "p95Ms": 1.228900000001886,
+      "opsPerSec": 859.106529209128,
+      "mbPerSec": 85.9106529209128
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 8,
+      "medianMs": 37.81450000000041,
+      "p95Ms": 38.293299999997544,
+      "opsPerSec": 26.444882254161477,
+      "mbPerSec": 2.644488225416148
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 8,
+      "medianMs": 39.8083000000006,
+      "p95Ms": 43.20679999999993,
+      "opsPerSec": 25.12038946651791,
+      "mbPerSec": 2.512038946651791
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 8,
+      "medianMs": 39.512399999999616,
+      "p95Ms": 40.22869999999966,
+      "opsPerSec": 25.30851074599391,
+      "mbPerSec": 2.5308510745993913
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 8,
+      "medianMs": 42.27390000000014,
+      "p95Ms": 46.704900000000634,
+      "opsPerSec": 23.655257735860584,
+      "mbPerSec": 2.365525773586058
+    },
+    {
+      "op": "anonymizeAsync/hash",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 5,
+      "medianMs": 228.46909999999843,
+      "p95Ms": 273.09990000000107,
+      "opsPerSec": 4.37695951006069,
+      "mbPerSec": 0.43769595100606906
+    },
+    {
+      "op": "stream/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 5,
+      "medianMs": 79.22230000000127,
+      "p95Ms": 148.64589999999953,
+      "opsPerSec": 12.622708505054561,
+      "mbPerSec": 1.262270850505456
+    },
+    {
+      "op": "stream/64KB",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "dense",
+      "matches": 2503,
+      "iterations": 8,
+      "medianMs": 39.14930000000095,
+      "p95Ms": 41.909499999997934,
+      "opsPerSec": 25.54324087531516,
+      "mbPerSec": 2.554324087531516
+    },
+    {
+      "op": "detect",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 255.23799999999756,
+      "p95Ms": 265.5931000000055,
+      "opsPerSec": 3.9179119096686605,
+      "mbPerSec": 3.91791190966866
+    },
+    {
+      "op": "hasPII",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 256.15140000000247,
+      "p95Ms": 259.1593999999968,
+      "opsPerSec": 3.903941184783649,
+      "mbPerSec": 3.903941184783649
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 257.07790000000386,
+      "p95Ms": 262.1330999999991,
+      "opsPerSec": 3.889871513653974,
+      "mbPerSec": 3.8898715136539743
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 256.4288000000015,
+      "p95Ms": 271.00270000000455,
+      "opsPerSec": 3.8997179723962136,
+      "mbPerSec": 3.899717972396213
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 254.3703999999998,
+      "p95Ms": 260.0182999999961,
+      "opsPerSec": 3.9312750225655217,
+      "mbPerSec": 3.931275022565522
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 257.2644,
+      "p95Ms": 262.10339999999997,
+      "opsPerSec": 3.8870516091616247,
+      "mbPerSec": 3.887051609161625
+    },
+    {
+      "op": "stream/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 876.0108000000037,
+      "p95Ms": 885.9997999999978,
+      "opsPerSec": 1.1415384376539601,
+      "mbPerSec": 1.1415384376539603
+    },
+    {
+      "op": "stream/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 5,
+      "medianMs": 265.0728999999992,
+      "p95Ms": 266.95130000000063,
+      "opsPerSec": 3.7725470993074093,
+      "mbPerSec": 3.7725470993074093
+    },
+    {
+      "op": "detect",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 333.02900000000227,
+      "p95Ms": 335.19600000000355,
+      "opsPerSec": 3.0027415029922113,
+      "mbPerSec": 3.0027415029922113
+    },
+    {
+      "op": "hasPII",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 29,
+      "medianMs": 10.411800000001676,
+      "p95Ms": 13.0795999999973,
+      "opsPerSec": 96.04487216425969,
+      "mbPerSec": 96.04487216425969
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 323.1756999999998,
+      "p95Ms": 325.67169999999896,
+      "opsPerSec": 3.094292052279923,
+      "mbPerSec": 3.094292052279923
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 329.23229999999603,
+      "p95Ms": 330.4855000000025,
+      "opsPerSec": 3.0373690552233548,
+      "mbPerSec": 3.0373690552233548
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 332.3182000000015,
+      "p95Ms": 335.1950999999972,
+      "opsPerSec": 3.0091641083756335,
+      "mbPerSec": 3.0091641083756335
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 307.4077000000034,
+      "p95Ms": 322.9951000000001,
+      "opsPerSec": 3.253008951955299,
+      "mbPerSec": 3.253008951955299
+    },
+    {
+      "op": "stream/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 915.8955999999962,
+      "p95Ms": 950.6696999999986,
+      "opsPerSec": 1.0918274964963302,
+      "mbPerSec": 1.0918274964963302
+    },
+    {
+      "op": "stream/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 5067,
+      "iterations": 5,
+      "medianMs": 336.0613000000012,
+      "p95Ms": 391.7624000000069,
+      "opsPerSec": 2.9756475976257795,
+      "mbPerSec": 2.9756475976257795
+    },
+    {
+      "op": "detect",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 386.61449999999604,
+      "p95Ms": 401.148199999996,
+      "opsPerSec": 2.58655585861371,
+      "mbPerSec": 2.58655585861371
+    },
+    {
+      "op": "hasPII",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 26,
+      "medianMs": 11.551600000006147,
+      "p95Ms": 12.417499999995925,
+      "opsPerSec": 86.56809446305861,
+      "mbPerSec": 86.56809446305861
+    },
+    {
+      "op": "anonymize/redact",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 385.1960999999865,
+      "p95Ms": 387.7283000000025,
+      "opsPerSec": 2.596080282225171,
+      "mbPerSec": 2.5960802822251705
+    },
+    {
+      "op": "anonymize/mask",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 394.24690000001283,
+      "p95Ms": 414.9423999999999,
+      "opsPerSec": 2.5364815804511522,
+      "mbPerSec": 2.5364815804511522
+    },
+    {
+      "op": "anonymize/consistentTokens",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 410.92760000001,
+      "p95Ms": 426.63739999999234,
+      "opsPerSec": 2.4335187025645775,
+      "mbPerSec": 2.4335187025645775
+    },
+    {
+      "op": "tokenize+detokenize",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 450.97189999998955,
+      "p95Ms": 468.8822999999975,
+      "opsPerSec": 2.2174330595764906,
+      "mbPerSec": 2.2174330595764906
+    },
+    {
+      "op": "stream/lines",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 775.6448999999993,
+      "p95Ms": 789.7143999999971,
+      "opsPerSec": 1.28924975849129,
+      "mbPerSec": 1.28924975849129
+    },
+    {
+      "op": "stream/64KB",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "dense",
+      "matches": 25112,
+      "iterations": 5,
+      "medianMs": 389.2204000000056,
+      "p95Ms": 412.23489999999583,
+      "opsPerSec": 2.569238405797809,
+      "mbPerSec": 2.569238405797809
+    },
+    {
+      "op": "engine/scan",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3245,
+      "medianMs": 0.0868999999947846,
+      "p95Ms": 0.14799999998649582,
+      "opsPerSec": 11507.479862600876,
+      "mbPerSec": 1.1507479862600878
+    },
+    {
+      "op": "engine/test",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3747,
+      "medianMs": 0.07889999999315478,
+      "p95Ms": 0.09070000000065193,
+      "opsPerSec": 12674.271230503906,
+      "mbPerSec": 1.2674271230503908
+    },
+    {
+      "op": "engine/transform",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3601,
+      "medianMs": 0.07959999999729916,
+      "p95Ms": 0.09449999999196734,
+      "opsPerSec": 12562.814070778017,
+      "mbPerSec": 1.2562814070778017
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "none",
+      "matches": 0,
+      "iterations": 3304,
+      "medianMs": 0.08869999999296851,
+      "p95Ms": 0.10050000000046566,
+      "opsPerSec": 11273.957159856513,
+      "mbPerSec": 1.1273957159856514
+    },
+    {
+      "op": "engine/scan",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3428,
+      "medianMs": 0.08560000000579748,
+      "p95Ms": 0.10139999999955762,
+      "opsPerSec": 11682.242989862994,
+      "mbPerSec": 1.1682242989862996
+    },
+    {
+      "op": "engine/test",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3515,
+      "medianMs": 0.08310000000346918,
+      "p95Ms": 0.09429999999701977,
+      "opsPerSec": 12033.694343661287,
+      "mbPerSec": 1.2033694343661288
+    },
+    {
+      "op": "engine/transform",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3228,
+      "medianMs": 0.08879999999771826,
+      "p95Ms": 0.1137999999918975,
+      "opsPerSec": 11261.261261550622,
+      "mbPerSec": 1.1261261261550624
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "sparse",
+      "matches": 1,
+      "iterations": 3096,
+      "medianMs": 0.09209999999438878,
+      "p95Ms": 0.1088000000017928,
+      "opsPerSec": 10857.763301421555,
+      "mbPerSec": 1.0857763301421557
+    },
+    {
+      "op": "engine/scan",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 3186,
+      "medianMs": 0.09209999999438878,
+      "p95Ms": 0.10919999999168795,
+      "opsPerSec": 10857.763301421555,
+      "mbPerSec": 1.0857763301421557
+    },
+    {
+      "op": "engine/test",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 3171,
+      "medianMs": 0.09020000000600703,
+      "p95Ms": 0.11189999998896383,
+      "opsPerSec": 11086.474500370325,
+      "mbPerSec": 1.1086474500370325
+    },
+    {
+      "op": "engine/transform",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 2961,
+      "medianMs": 0.09470000000146683,
+      "p95Ms": 0.12170000000332948,
+      "opsPerSec": 10559.662090649532,
+      "mbPerSec": 1.0559662090649533
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 100,
+      "sizeLabel": "100B",
+      "density": "dense",
+      "matches": 2,
+      "iterations": 2817,
+      "medianMs": 0.1045999999914784,
+      "p95Ms": 0.13800000000628643,
+      "opsPerSec": 9560.22944628555,
+      "mbPerSec": 0.956022944628555
+    },
+    {
+      "op": "engine/scan",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 852,
+      "medianMs": 0.325700000001234,
+      "p95Ms": 0.5408000000024913,
+      "opsPerSec": 3070.3101013086007,
+      "mbPerSec": 3.0703101013086007
+    },
+    {
+      "op": "engine/test",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 945,
+      "medianMs": 0.3167000000103144,
+      "p95Ms": 0.3361000000004424,
+      "opsPerSec": 3157.56236175381,
+      "mbPerSec": 3.15756236175381
+    },
+    {
+      "op": "engine/transform",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 937,
+      "medianMs": 0.31759999999485444,
+      "p95Ms": 0.3533999999926891,
+      "opsPerSec": 3148.6146096228003,
+      "mbPerSec": 3.1486146096228005
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 887,
+      "medianMs": 0.3322000000043772,
+      "p95Ms": 0.356500000008964,
+      "opsPerSec": 3010.234798274604,
+      "mbPerSec": 3.0102347982746047
+    },
+    {
+      "op": "engine/scan",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 742,
+      "medianMs": 0.38629999999830034,
+      "p95Ms": 0.577900000003865,
+      "opsPerSec": 2588.6616619321767,
+      "mbPerSec": 2.5886616619321767
+    },
+    {
+      "op": "engine/test",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 790,
+      "medianMs": 0.3742999999958556,
+      "p95Ms": 0.39959999998973217,
+      "opsPerSec": 2671.6537537031054,
+      "mbPerSec": 2.6716537537031053
+    },
+    {
+      "op": "engine/transform",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 778,
+      "medianMs": 0.37850000000617,
+      "p95Ms": 0.4363000000012107,
+      "opsPerSec": 2642.0079259807103,
+      "mbPerSec": 2.6420079259807103
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 4,
+      "iterations": 748,
+      "medianMs": 0.39780000000610016,
+      "p95Ms": 0.4198000000033062,
+      "opsPerSec": 2513.826043199259,
+      "mbPerSec": 2.513826043199259
+    },
+    {
+      "op": "engine/scan",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 477,
+      "medianMs": 0.5761000000056811,
+      "p95Ms": 0.9844000000011874,
+      "opsPerSec": 1735.8097552337072,
+      "mbPerSec": 1.7358097552337073
+    },
+    {
+      "op": "engine/test",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 532,
+      "medianMs": 0.5497000000032131,
+      "p95Ms": 0.6662999999971362,
+      "opsPerSec": 1819.1740949502544,
+      "mbPerSec": 1.8191740949502544
+    },
+    {
+      "op": "engine/transform",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 523,
+      "medianMs": 0.5587999999988824,
+      "p95Ms": 0.6175999999977648,
+      "opsPerSec": 1789.549033647101,
+      "mbPerSec": 1.789549033647101
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "dense",
+      "matches": 24,
+      "iterations": 543,
+      "medianMs": 0.5380999999906635,
+      "p95Ms": 0.6024000000033993,
+      "opsPerSec": 1858.3906337434507,
+      "mbPerSec": 1.8583906337434508
+    },
+    {
+      "op": "engine/scan",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 118,
+      "medianMs": 2.54670000000624,
+      "p95Ms": 2.8289999999979045,
+      "opsPerSec": 392.6650174726312,
+      "mbPerSec": 3.9266501747263116
+    },
+    {
+      "op": "engine/test",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 116,
+      "medianMs": 2.569100000007893,
+      "p95Ms": 2.7228999999933876,
+      "opsPerSec": 389.24136857145606,
+      "mbPerSec": 3.8924136857145606
+    },
+    {
+      "op": "engine/transform",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 116,
+      "medianMs": 2.614099999991595,
+      "p95Ms": 2.6939999999885913,
+      "opsPerSec": 382.540836235498,
+      "mbPerSec": 3.82540836235498
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 111,
+      "medianMs": 2.7181999999884283,
+      "p95Ms": 2.797900000005029,
+      "opsPerSec": 367.8905157840693,
+      "mbPerSec": 3.6789051578406933
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 92,
+      "medianMs": 3.2044000000023516,
+      "p95Ms": 3.716100000005099,
+      "opsPerSec": 312.07090250882106,
+      "mbPerSec": 3.120709025088211
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 104,
+      "medianMs": 2.9082999999955064,
+      "p95Ms": 3.062100000010105,
+      "opsPerSec": 343.8434824473215,
+      "mbPerSec": 3.4384348244732146
+    },
+    {
+      "op": "engine/scan",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 50,
+      "iterations": 83,
+      "medianMs": 3.3686000000016065,
+      "p95Ms": 6.016900000002352,
+      "opsPerSec": 296.85922935329904,
+      "mbPerSec": 2.96859229353299
+    },
+    {
+      "op": "engine/test",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 50,
+      "iterations": 89,
+      "medianMs": 3.370999999999185,
+      "p95Ms": 3.7207999999955064,
+      "opsPerSec": 296.6478789677371,
+      "mbPerSec": 2.966478789677371
+    },
+    {
+      "op": "engine/transform",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 50,
+      "iterations": 89,
+      "medianMs": 3.3583999999973457,
+      "p95Ms": 3.57050000000163,
+      "opsPerSec": 297.7608384947565,
+      "mbPerSec": 2.9776083849475654
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 49,
+      "iterations": 88,
+      "medianMs": 3.430999999996857,
+      "p95Ms": 3.552299999995739,
+      "opsPerSec": 291.4602156808266,
+      "mbPerSec": 2.9146021568082663
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 50,
+      "iterations": 78,
+      "medianMs": 3.8273000000044703,
+      "p95Ms": 4.329800000006799,
+      "opsPerSec": 261.28079847381497,
+      "mbPerSec": 2.6128079847381493
+    },
+    {
+      "op": "engine/chunks/64KB",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 50,
+      "iterations": 83,
+      "medianMs": 3.6313000000081956,
+      "p95Ms": 3.7788000000000466,
+      "opsPerSec": 275.38347148342,
+      "mbPerSec": 2.7538347148342
+    },
+    {
+      "op": "engine/scan",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "dense",
+      "matches": 239,
+      "iterations": 60,
+      "medianMs": 4.653200000000652,
+      "p95Ms": 8.021299999993062,
+      "opsPerSec": 214.90587122837186,
+      "mbPerSec": 2.1490587122837184
     },
     {
       "op": "engine/test",
       "size": 10000,
       "sizeLabel": "10KB",
       "density": "dense",
-      "matches": 244,
-      "iterations": 110,
-      "medianMs": 2.7347200000076555,
-      "p95Ms": 2.931778999976814,
-      "opsPerSec": 365.6681488405397,
-      "mbPerSec": 3.656681488405397
+      "matches": 239,
+      "iterations": 68,
+      "medianMs": 4.256699999998091,
+      "p95Ms": 6.568900000012945,
+      "opsPerSec": 234.92376723763678,
+      "mbPerSec": 2.349237672376368
     },
     {
       "op": "engine/transform",
       "size": 10000,
       "sizeLabel": "10KB",
       "density": "dense",
-      "matches": 244,
-      "iterations": 109,
-      "medianMs": 2.761904999963008,
-      "p95Ms": 3.014644999988377,
-      "opsPerSec": 362.06893430925163,
-      "mbPerSec": 3.6206893430925167
+      "matches": 239,
+      "iterations": 67,
+      "medianMs": 4.305899999992107,
+      "p95Ms": 5.308699999994133,
+      "opsPerSec": 232.23948535772615,
+      "mbPerSec": 2.322394853577262
     },
     {
       "op": "engine/transform(1.x detectors)",
@@ -1921,95 +1921,95 @@
       "sizeLabel": "10KB",
       "density": "dense",
       "matches": 244,
-      "iterations": 115,
-      "medianMs": 2.593192999949679,
-      "p95Ms": 2.7710729999816976,
-      "opsPerSec": 385.6249804852185,
-      "mbPerSec": 3.8562498048521845
+      "iterations": 71,
+      "medianMs": 4.192599999994854,
+      "p95Ms": 4.391600000002654,
+      "opsPerSec": 238.5154796549223,
+      "mbPerSec": 2.3851547965492235
     },
     {
       "op": "engine/chunks/lines",
       "size": 10000,
       "sizeLabel": "10KB",
       "density": "dense",
-      "matches": 244,
-      "iterations": 84,
-      "medianMs": 3.5854509999626316,
-      "p95Ms": 3.8356269999640062,
-      "opsPerSec": 278.90494111073394,
-      "mbPerSec": 2.7890494111073396
+      "matches": 239,
+      "iterations": 56,
+      "medianMs": 4.962199999994482,
+      "p95Ms": 8.841399999990244,
+      "opsPerSec": 201.52351779475072,
+      "mbPerSec": 2.0152351779475075
     },
     {
       "op": "engine/chunks/64KB",
       "size": 10000,
       "sizeLabel": "10KB",
       "density": "dense",
-      "matches": 244,
-      "iterations": 100,
-      "medianMs": 2.977461000031326,
-      "p95Ms": 3.247097000014037,
-      "opsPerSec": 335.8566241470431,
-      "mbPerSec": 3.358566241470431
+      "matches": 239,
+      "iterations": 64,
+      "medianMs": 4.602200000008452,
+      "p95Ms": 5.741199999989476,
+      "opsPerSec": 217.28738429406883,
+      "mbPerSec": 2.1728738429406884
     },
     {
       "op": "engine/scan",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 17,
-      "medianMs": 17.616917999985162,
-      "p95Ms": 18.336339999979828,
-      "opsPerSec": 56.76361779062843,
-      "mbPerSec": 5.676361779062843
-    },
-    {
-      "op": "engine/test",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 18,
-      "medianMs": 17.539807999972254,
-      "p95Ms": 18.596707999997307,
-      "opsPerSec": 57.01316684889492,
-      "mbPerSec": 5.701316684889492
-    },
-    {
-      "op": "engine/transform",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 18,
-      "medianMs": 17.236450000025798,
-      "p95Ms": 18.35082599997986,
-      "opsPerSec": 58.01658694211994,
-      "mbPerSec": 5.801658694211994
-    },
-    {
-      "op": "engine/transform(1.x detectors)",
-      "size": 100000,
-      "sizeLabel": "100KB",
-      "density": "none",
-      "matches": 0,
-      "iterations": 17,
-      "medianMs": 18.369573000003584,
-      "p95Ms": 19.255678999994416,
-      "opsPerSec": 54.43784675886614,
-      "mbPerSec": 5.443784675886614
-    },
-    {
-      "op": "engine/chunks/lines",
       "size": 100000,
       "sizeLabel": "100KB",
       "density": "none",
       "matches": 0,
       "iterations": 13,
-      "medianMs": 24.302137000020593,
-      "p95Ms": 25.029517000017222,
-      "opsPerSec": 41.14864466442406,
-      "mbPerSec": 4.114864466442406
+      "medianMs": 23.453100000013364,
+      "p95Ms": 24.931200000006356,
+      "opsPerSec": 42.638286623066044,
+      "mbPerSec": 4.263828662306604
+    },
+    {
+      "op": "engine/test",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 13,
+      "medianMs": 23.209799999996903,
+      "p95Ms": 24.481199999994715,
+      "opsPerSec": 43.08524847263369,
+      "mbPerSec": 4.308524847263369
+    },
+    {
+      "op": "engine/transform",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 13,
+      "medianMs": 23.930300000007264,
+      "p95Ms": 26.77969999999914,
+      "opsPerSec": 41.788026059000366,
+      "mbPerSec": 4.178802605900037
+    },
+    {
+      "op": "engine/transform(1.x detectors)",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 13,
+      "medianMs": 24.917600000000675,
+      "p95Ms": 25.90679999999702,
+      "opsPerSec": 40.132275981634386,
+      "mbPerSec": 4.013227598163438
+    },
+    {
+      "op": "engine/chunks/lines",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "none",
+      "matches": 0,
+      "iterations": 10,
+      "medianMs": 31.996200000008685,
+      "p95Ms": 32.48610000000917,
+      "opsPerSec": 31.25371137821768,
+      "mbPerSec": 3.1253711378217686
     },
     {
       "op": "engine/chunks/64KB",
@@ -2017,47 +2017,47 @@
       "sizeLabel": "100KB",
       "density": "none",
       "matches": 0,
-      "iterations": 17,
-      "medianMs": 18.49900000001071,
-      "p95Ms": 19.349986000044737,
-      "opsPerSec": 54.05697605272831,
-      "mbPerSec": 5.405697605272831
+      "iterations": 13,
+      "medianMs": 25.086800000004587,
+      "p95Ms": 26.489099999991595,
+      "opsPerSec": 39.86160052297691,
+      "mbPerSec": 3.9861600522976914
     },
     {
       "op": "engine/scan",
       "size": 100000,
       "sizeLabel": "100KB",
       "density": "sparse",
-      "matches": 514,
-      "iterations": 15,
-      "medianMs": 20.111605999991298,
-      "p95Ms": 21.302046000026166,
-      "opsPerSec": 49.722533347184346,
-      "mbPerSec": 4.972253334718435
+      "matches": 509,
+      "iterations": 9,
+      "medianMs": 33.86690000000817,
+      "p95Ms": 39.26440000000002,
+      "opsPerSec": 29.52735561860574,
+      "mbPerSec": 2.952735561860574
     },
     {
       "op": "engine/test",
       "size": 100000,
       "sizeLabel": "100KB",
       "density": "sparse",
-      "matches": 514,
-      "iterations": 15,
-      "medianMs": 20.3887420000392,
-      "p95Ms": 21.50568999996176,
-      "opsPerSec": 49.04667487567783,
-      "mbPerSec": 4.9046674875677825
+      "matches": 509,
+      "iterations": 10,
+      "medianMs": 32.022199999992154,
+      "p95Ms": 35.20010000000184,
+      "opsPerSec": 31.22833534236389,
+      "mbPerSec": 3.1228335342363893
     },
     {
       "op": "engine/transform",
       "size": 100000,
       "sizeLabel": "100KB",
       "density": "sparse",
-      "matches": 514,
-      "iterations": 15,
-      "medianMs": 20.165940000035334,
-      "p95Ms": 20.42781099997228,
-      "opsPerSec": 49.58856368700134,
-      "mbPerSec": 4.958856368700134
+      "matches": 509,
+      "iterations": 10,
+      "medianMs": 32.624199999991106,
+      "p95Ms": 33.18390000000363,
+      "opsPerSec": 30.652092618371412,
+      "mbPerSec": 3.0652092618371416
     },
     {
       "op": "engine/transform(1.x detectors)",
@@ -2065,71 +2065,71 @@
       "sizeLabel": "100KB",
       "density": "sparse",
       "matches": 509,
-      "iterations": 15,
-      "medianMs": 20.618458000011742,
-      "p95Ms": 21.469014999980573,
-      "opsPerSec": 48.50023217058378,
-      "mbPerSec": 4.850023217058378
+      "iterations": 10,
+      "medianMs": 32.971099999995204,
+      "p95Ms": 33.646200000002864,
+      "opsPerSec": 30.32959167271172,
+      "mbPerSec": 3.0329591672711724
     },
     {
       "op": "engine/chunks/lines",
       "size": 100000,
       "sizeLabel": "100KB",
       "density": "sparse",
-      "matches": 514,
-      "iterations": 11,
-      "medianMs": 27.835832000011578,
-      "p95Ms": 28.69986999995308,
-      "opsPerSec": 35.9249186444143,
-      "mbPerSec": 3.5924918644414294
+      "matches": 509,
+      "iterations": 8,
+      "medianMs": 39.07399999999325,
+      "p95Ms": 44.65669999999227,
+      "opsPerSec": 25.59246557813822,
+      "mbPerSec": 2.559246557813822
     },
     {
       "op": "engine/chunks/64KB",
       "size": 100000,
       "sizeLabel": "100KB",
       "density": "sparse",
-      "matches": 514,
-      "iterations": 14,
-      "medianMs": 21.46792899997672,
-      "p95Ms": 22.209073000005446,
-      "opsPerSec": 46.58111175982948,
-      "mbPerSec": 4.658111175982949
+      "matches": 509,
+      "iterations": 9,
+      "medianMs": 34.718900000007125,
+      "p95Ms": 38.16580000000249,
+      "opsPerSec": 28.802755847673595,
+      "mbPerSec": 2.88027558476736
     },
     {
       "op": "engine/scan",
       "size": 100000,
       "sizeLabel": "100KB",
       "density": "dense",
-      "matches": 2507,
-      "iterations": 12,
-      "medianMs": 25.120555999979842,
-      "p95Ms": 25.995143000036478,
-      "opsPerSec": 39.80803609604829,
-      "mbPerSec": 3.980803609604829
+      "matches": 2484,
+      "iterations": 8,
+      "medianMs": 40.47530000000552,
+      "p95Ms": 48.11160000000382,
+      "opsPerSec": 24.706425894307483,
+      "mbPerSec": 2.4706425894307484
     },
     {
       "op": "engine/test",
       "size": 100000,
       "sizeLabel": "100KB",
       "density": "dense",
-      "matches": 2507,
-      "iterations": 12,
-      "medianMs": 25.02322199998889,
-      "p95Ms": 25.835785000002943,
-      "opsPerSec": 39.96287928071149,
-      "mbPerSec": 3.996287928071149
+      "matches": 2484,
+      "iterations": 8,
+      "medianMs": 40.33759999999893,
+      "p95Ms": 45.083599999998114,
+      "opsPerSec": 24.790765935505,
+      "mbPerSec": 2.4790765935505004
     },
     {
       "op": "engine/transform",
       "size": 100000,
       "sizeLabel": "100KB",
       "density": "dense",
-      "matches": 2507,
-      "iterations": 12,
-      "medianMs": 25.296786000020802,
-      "p95Ms": 26.0762790000299,
-      "opsPerSec": 39.53071350641847,
-      "mbPerSec": 3.9530713506418476
+      "matches": 2484,
+      "iterations": 8,
+      "medianMs": 40.80220000000554,
+      "p95Ms": 42.278899999990244,
+      "opsPerSec": 24.50848238575038,
+      "mbPerSec": 2.450848238575038
     },
     {
       "op": "engine/transform(1.x detectors)",
@@ -2137,35 +2137,35 @@
       "sizeLabel": "100KB",
       "density": "dense",
       "matches": 2503,
-      "iterations": 13,
-      "medianMs": 24.249492999981157,
-      "p95Ms": 25.337085000006482,
-      "opsPerSec": 41.23797557337702,
-      "mbPerSec": 4.123797557337702
+      "iterations": 8,
+      "medianMs": 38.98549999999523,
+      "p95Ms": 48.768699999985984,
+      "opsPerSec": 25.65056238858351,
+      "mbPerSec": 2.565056238858351
     },
     {
       "op": "engine/chunks/lines",
       "size": 100000,
       "sizeLabel": "100KB",
       "density": "dense",
-      "matches": 2507,
-      "iterations": 9,
-      "medianMs": 35.20418999996036,
-      "p95Ms": 36.062945000012405,
-      "opsPerSec": 28.405709661296736,
-      "mbPerSec": 2.8405709661296736
+      "matches": 2484,
+      "iterations": 6,
+      "medianMs": 53.47830000000249,
+      "p95Ms": 69.47460000000137,
+      "opsPerSec": 18.699173309547113,
+      "mbPerSec": 1.8699173309547115
     },
     {
       "op": "engine/chunks/64KB",
       "size": 100000,
       "sizeLabel": "100KB",
       "density": "dense",
-      "matches": 2507,
-      "iterations": 12,
-      "medianMs": 26.462668999971356,
-      "p95Ms": 27.095750000036787,
-      "opsPerSec": 37.789083179821446,
-      "mbPerSec": 3.7789083179821445
+      "matches": 2484,
+      "iterations": 7,
+      "medianMs": 44.6076999999932,
+      "p95Ms": 49.20460000001185,
+      "opsPerSec": 22.41765435115804,
+      "mbPerSec": 2.241765435115804
     },
     {
       "op": "engine/scan",
@@ -2174,10 +2174,10 @@
       "density": "none",
       "matches": 0,
       "iterations": 5,
-      "medianMs": 171.2350040000165,
-      "p95Ms": 174.98661600000923,
-      "opsPerSec": 5.839927448478371,
-      "mbPerSec": 5.839927448478371
+      "medianMs": 229.45279999999912,
+      "p95Ms": 244.84689999998955,
+      "opsPerSec": 4.358194800847947,
+      "mbPerSec": 4.358194800847947
     },
     {
       "op": "engine/test",
@@ -2186,10 +2186,10 @@
       "density": "none",
       "matches": 0,
       "iterations": 5,
-      "medianMs": 171.16500199999427,
-      "p95Ms": 173.37635799997952,
-      "opsPerSec": 5.842315825755276,
-      "mbPerSec": 5.842315825755276
+      "medianMs": 230.79169999998703,
+      "p95Ms": 235.67870000000403,
+      "opsPerSec": 4.332911452188515,
+      "mbPerSec": 4.332911452188515
     },
     {
       "op": "engine/transform",
@@ -2198,10 +2198,10 @@
       "density": "none",
       "matches": 0,
       "iterations": 5,
-      "medianMs": 171.95201400003862,
-      "p95Ms": 174.33442999998806,
-      "opsPerSec": 5.815575966442449,
-      "mbPerSec": 5.815575966442449
+      "medianMs": 229.1545999999944,
+      "p95Ms": 262.4837000000116,
+      "opsPerSec": 4.363866141024551,
+      "mbPerSec": 4.363866141024551
     },
     {
       "op": "engine/transform(1.x detectors)",
@@ -2210,10 +2210,10 @@
       "density": "none",
       "matches": 0,
       "iterations": 5,
-      "medianMs": 181.4414509999915,
-      "p95Ms": 183.90353199996753,
-      "opsPerSec": 5.511419769234798,
-      "mbPerSec": 5.511419769234798
+      "medianMs": 247.91220000000612,
+      "p95Ms": 248.9988000000012,
+      "opsPerSec": 4.0336861195212474,
+      "mbPerSec": 4.033686119521247
     },
     {
       "op": "engine/chunks/lines",
@@ -2222,10 +2222,10 @@
       "density": "none",
       "matches": 0,
       "iterations": 5,
-      "medianMs": 242.50575800001388,
-      "p95Ms": 246.70342599996366,
-      "opsPerSec": 4.123613427768353,
-      "mbPerSec": 4.123613427768353
+      "medianMs": 322.2228000000032,
+      "p95Ms": 336.18039999999746,
+      "opsPerSec": 3.1034427110682117,
+      "mbPerSec": 3.1034427110682112
     },
     {
       "op": "engine/chunks/64KB",
@@ -2234,46 +2234,46 @@
       "density": "none",
       "matches": 0,
       "iterations": 5,
-      "medianMs": 180.6056019999669,
-      "p95Ms": 184.8151760000037,
-      "opsPerSec": 5.536926811385304,
-      "mbPerSec": 5.536926811385304
+      "medianMs": 245.2725999999966,
+      "p95Ms": 247.76570000000356,
+      "opsPerSec": 4.077096259427322,
+      "mbPerSec": 4.077096259427322
     },
     {
       "op": "engine/scan",
       "size": 1000000,
       "sizeLabel": "1MB",
       "density": "sparse",
-      "matches": 5094,
+      "matches": 5052,
       "iterations": 5,
-      "medianMs": 205.21192600001814,
-      "p95Ms": 207.58646700001555,
-      "opsPerSec": 4.873011132890549,
-      "mbPerSec": 4.873011132890549
+      "medianMs": 323.10800000000745,
+      "p95Ms": 327.976800000004,
+      "opsPerSec": 3.0949403914479894,
+      "mbPerSec": 3.0949403914479894
     },
     {
       "op": "engine/test",
       "size": 1000000,
       "sizeLabel": "1MB",
       "density": "sparse",
-      "matches": 5094,
+      "matches": 5052,
       "iterations": 5,
-      "medianMs": 203.77707399998326,
-      "p95Ms": 206.4865310000023,
-      "opsPerSec": 4.90732338221758,
-      "mbPerSec": 4.90732338221758
+      "medianMs": 327.00770000000193,
+      "p95Ms": 328.0146999999997,
+      "opsPerSec": 3.058031966831344,
+      "mbPerSec": 3.0580319668313436
     },
     {
       "op": "engine/transform",
       "size": 1000000,
       "sizeLabel": "1MB",
       "density": "sparse",
-      "matches": 5094,
+      "matches": 5052,
       "iterations": 5,
-      "medianMs": 204.09917099995073,
-      "p95Ms": 205.75233200000366,
-      "opsPerSec": 4.899578940476154,
-      "mbPerSec": 4.899578940476154
+      "medianMs": 326.2813000000024,
+      "p95Ms": 343.9331999999995,
+      "opsPerSec": 3.0648400628537176,
+      "mbPerSec": 3.0648400628537176
     },
     {
       "op": "engine/transform(1.x detectors)",
@@ -2282,70 +2282,70 @@
       "density": "sparse",
       "matches": 5067,
       "iterations": 5,
-      "medianMs": 207.36605499999132,
-      "p95Ms": 208.42442200001096,
-      "opsPerSec": 4.822390048361782,
-      "mbPerSec": 4.822390048361782
+      "medianMs": 324.8764999999985,
+      "p95Ms": 337.28199999999197,
+      "opsPerSec": 3.0780927521689154,
+      "mbPerSec": 3.078092752168915
     },
     {
       "op": "engine/chunks/lines",
       "size": 1000000,
       "sizeLabel": "1MB",
       "density": "sparse",
-      "matches": 5094,
+      "matches": 5052,
       "iterations": 5,
-      "medianMs": 280.7720500000287,
-      "p95Ms": 284.93731000000844,
-      "opsPerSec": 3.561608073167888,
-      "mbPerSec": 3.5616080731678874
+      "medianMs": 404.58170000000973,
+      "p95Ms": 407.1831999999995,
+      "opsPerSec": 2.4716886601642534,
+      "mbPerSec": 2.4716886601642534
     },
     {
       "op": "engine/chunks/64KB",
       "size": 1000000,
       "sizeLabel": "1MB",
       "density": "sparse",
-      "matches": 5094,
+      "matches": 5052,
       "iterations": 5,
-      "medianMs": 211.18378199997824,
-      "p95Ms": 214.83185700001195,
-      "opsPerSec": 4.735212100710002,
-      "mbPerSec": 4.735212100710002
+      "medianMs": 341.42179999999644,
+      "p95Ms": 349.0823999999993,
+      "opsPerSec": 2.9289283812574665,
+      "mbPerSec": 2.9289283812574665
     },
     {
       "op": "engine/scan",
       "size": 1000000,
       "sizeLabel": "1MB",
       "density": "dense",
-      "matches": 25168,
+      "matches": 24924,
       "iterations": 5,
-      "medianMs": 265.98023499996634,
-      "p95Ms": 267.78078800003277,
-      "opsPerSec": 3.759677857266825,
-      "mbPerSec": 3.7596778572668246
+      "medianMs": 408.0856000000058,
+      "p95Ms": 425.1287999999913,
+      "opsPerSec": 2.4504662747227193,
+      "mbPerSec": 2.4504662747227193
     },
     {
       "op": "engine/test",
       "size": 1000000,
       "sizeLabel": "1MB",
       "density": "dense",
-      "matches": 25168,
+      "matches": 24924,
       "iterations": 5,
-      "medianMs": 269.77396800002316,
-      "p95Ms": 272.3617320000194,
-      "opsPerSec": 3.7068068776744023,
-      "mbPerSec": 3.7068068776744023
+      "medianMs": 403.9805000000051,
+      "p95Ms": 426.7509999999893,
+      "opsPerSec": 2.475367004100414,
+      "mbPerSec": 2.475367004100414
     },
     {
       "op": "engine/transform",
       "size": 1000000,
       "sizeLabel": "1MB",
       "density": "dense",
-      "matches": 25168,
+      "matches": 24924,
       "iterations": 5,
-      "medianMs": 277.53335700003663,
-      "p95Ms": 290.41090199997416,
-      "opsPerSec": 3.60317048303447,
-      "mbPerSec": 3.60317048303447
+      "medianMs": 411.2049999999872,
+      "p95Ms": 436.59419999999227,
+      "opsPerSec": 2.431877044296716,
+      "mbPerSec": 2.431877044296716
     },
     {
       "op": "engine/transform(1.x detectors)",
@@ -2354,34 +2354,130 @@
       "density": "dense",
       "matches": 25112,
       "iterations": 5,
-      "medianMs": 261.3399770000251,
-      "p95Ms": 263.24262799997814,
-      "opsPerSec": 3.8264333359144054,
-      "mbPerSec": 3.8264333359144054
+      "medianMs": 402.29429999997956,
+      "p95Ms": 432.2256000000052,
+      "opsPerSec": 2.4857424030120505,
+      "mbPerSec": 2.4857424030120505
     },
     {
       "op": "engine/chunks/lines",
       "size": 1000000,
       "sizeLabel": "1MB",
       "density": "dense",
-      "matches": 25168,
+      "matches": 24924,
       "iterations": 5,
-      "medianMs": 345.9450100000249,
-      "p95Ms": 355.38729199999943,
-      "opsPerSec": 2.8906328205165552,
-      "mbPerSec": 2.8906328205165552
+      "medianMs": 521.9174000000057,
+      "p95Ms": 539.1646999999939,
+      "opsPerSec": 1.9160119973007013,
+      "mbPerSec": 1.9160119973007013
     },
     {
       "op": "engine/chunks/64KB",
       "size": 1000000,
       "sizeLabel": "1MB",
       "density": "dense",
-      "matches": 25168,
+      "matches": 24924,
       "iterations": 5,
-      "medianMs": 261.01101000001654,
-      "p95Ms": 266.16665199998533,
-      "opsPerSec": 3.831256007169723,
-      "mbPerSec": 3.8312560071697233
+      "medianMs": 417.81399999998393,
+      "p95Ms": 443.6900000000023,
+      "opsPerSec": 2.39340950758002,
+      "mbPerSec": 2.39340950758002
+    },
+    {
+      "op": "labelled/detect",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "labelled",
+      "matches": 46,
+      "iterations": 452,
+      "medianMs": 0.6442000000097323,
+      "p95Ms": 0.74299999998766,
+      "opsPerSec": 1552.3129462665204,
+      "mbPerSec": 1.5523129462665204
+    },
+    {
+      "op": "labelled/scan",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "labelled",
+      "matches": 46,
+      "iterations": 454,
+      "medianMs": 0.655399999988731,
+      "p95Ms": 0.7593000000051688,
+      "opsPerSec": 1525.785779702768,
+      "mbPerSec": 1.5257857797027679
+    },
+    {
+      "op": "labelled/detect",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "labelled",
+      "matches": 449,
+      "iterations": 73,
+      "medianMs": 3.971799999999348,
+      "p95Ms": 4.9210000000020955,
+      "opsPerSec": 251.77501384766708,
+      "mbPerSec": 2.517750138476671
+    },
+    {
+      "op": "labelled/scan",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "labelled",
+      "matches": 449,
+      "iterations": 67,
+      "medianMs": 4.245300000009593,
+      "p95Ms": 5.405500000022585,
+      "opsPerSec": 235.55461333656996,
+      "mbPerSec": 2.3555461333656997
+    },
+    {
+      "op": "labelled/detect",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "labelled",
+      "matches": 4494,
+      "iterations": 8,
+      "medianMs": 40.797500000015134,
+      "p95Ms": 41.53039999998873,
+      "opsPerSec": 24.511305839809523,
+      "mbPerSec": 2.4511305839809525
+    },
+    {
+      "op": "labelled/scan",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "labelled",
+      "matches": 4494,
+      "iterations": 7,
+      "medianMs": 42.56680000000051,
+      "p95Ms": 56.4598999999871,
+      "opsPerSec": 23.4924871026243,
+      "mbPerSec": 2.3492487102624295
+    },
+    {
+      "op": "labelled/detect",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "labelled",
+      "matches": 44944,
+      "iterations": 5,
+      "medianMs": 424.71390000000247,
+      "p95Ms": 443.6982999999891,
+      "opsPerSec": 2.354526188099787,
+      "mbPerSec": 2.354526188099787
+    },
+    {
+      "op": "labelled/scan",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "labelled",
+      "matches": 44944,
+      "iterations": 5,
+      "medianMs": 467.60029999999097,
+      "p95Ms": 565.4762000000046,
+      "opsPerSec": 2.138578610834979,
+      "mbPerSec": 2.138578610834979
     },
     {
       "op": "anonymizeObject",
@@ -2389,11 +2485,11 @@
       "sizeLabel": "1KB",
       "density": "sparse",
       "matches": -1,
-      "iterations": 299,
-      "medianMs": 0.9847309999749996,
-      "p95Ms": 1.1428520000190474,
-      "opsPerSec": 1015.5057574356733,
-      "mbPerSec": 1.0155057574356734
+      "iterations": 206,
+      "medianMs": 1.4039000000047963,
+      "p95Ms": 1.714399999997113,
+      "opsPerSec": 712.3014459695019,
+      "mbPerSec": 0.7123014459695018
     },
     {
       "op": "anonymizeBatch",
@@ -2401,11 +2497,71 @@
       "sizeLabel": "1KB",
       "density": "sparse",
       "matches": 8,
-      "iterations": 432,
-      "medianMs": 0.6827000000048429,
-      "p95Ms": 0.7335849999799393,
-      "opsPerSec": 1464.772227908168,
-      "mbPerSec": 1.464772227908168
+      "iterations": 622,
+      "medianMs": 0.46030000000610016,
+      "p95Ms": 0.7333999999973457,
+      "opsPerSec": 2172.4961981028623,
+      "mbPerSec": 2.172496198102862
+    },
+    {
+      "op": "anonymize/each",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 8,
+      "iterations": 304,
+      "medianMs": 0.9321000000054482,
+      "p95Ms": 1.4559000000008382,
+      "opsPerSec": 1072.846261124509,
+      "mbPerSec": 1.072846261124509
+    },
+    {
+      "op": "detectBatch",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 8,
+      "iterations": 661,
+      "medianMs": 0.4434999999939464,
+      "p95Ms": 0.4756999999808613,
+      "opsPerSec": 2254.791431823336,
+      "mbPerSec": 2.254791431823336
+    },
+    {
+      "op": "detect/each",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 8,
+      "iterations": 325,
+      "medianMs": 0.9004000000131782,
+      "p95Ms": 1.1683000000193715,
+      "opsPerSec": 1110.6175033155976,
+      "mbPerSec": 1.1106175033155976
+    },
+    {
+      "op": "engine/scanBatch",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 8,
+      "iterations": 695,
+      "medianMs": 0.42389999999431893,
+      "p95Ms": 0.4903999999805819,
+      "opsPerSec": 2359.046945065822,
+      "mbPerSec": 2.359046945065822
+    },
+    {
+      "op": "engine/scan/each",
+      "size": 1000,
+      "sizeLabel": "1KB",
+      "density": "sparse",
+      "matches": 8,
+      "iterations": 370,
+      "medianMs": 0.7913000000116881,
+      "p95Ms": 0.8901000000187196,
+      "opsPerSec": 1263.743207361594,
+      "mbPerSec": 1.263743207361594
     },
     {
       "op": "anonymizeObject",
@@ -2413,11 +2569,11 @@
       "sizeLabel": "10KB",
       "density": "sparse",
       "matches": -1,
-      "iterations": 23,
-      "medianMs": 13.41482200002065,
-      "p95Ms": 13.934038000006694,
-      "opsPerSec": 74.54441065252009,
-      "mbPerSec": 0.7454441065252008
+      "iterations": 16,
+      "medianMs": 19.648099999991246,
+      "p95Ms": 21.034100000018952,
+      "opsPerSec": 50.895506435759465,
+      "mbPerSec": 0.5089550643575947
     },
     {
       "op": "anonymizeBatch",
@@ -2425,11 +2581,71 @@
       "sizeLabel": "10KB",
       "density": "sparse",
       "matches": 77,
-      "iterations": 46,
-      "medianMs": 6.581426999997348,
-      "p95Ms": 6.832777999981772,
-      "opsPerSec": 151.94273217653299,
-      "mbPerSec": 1.51942732176533
+      "iterations": 75,
+      "medianMs": 3.8568000000086613,
+      "p95Ms": 4.939400000002934,
+      "opsPerSec": 259.282306574817,
+      "mbPerSec": 2.5928230657481706
+    },
+    {
+      "op": "anonymize/each",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 77,
+      "iterations": 30,
+      "medianMs": 9.121100000018487,
+      "p95Ms": 15.549299999984214,
+      "opsPerSec": 109.6358991786049,
+      "mbPerSec": 1.096358991786049
+    },
+    {
+      "op": "detectBatch",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 77,
+      "iterations": 79,
+      "medianMs": 3.8030999999900814,
+      "p95Ms": 4.100599999976112,
+      "opsPerSec": 262.9433882891872,
+      "mbPerSec": 2.6294338828918726
+    },
+    {
+      "op": "detect/each",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 77,
+      "iterations": 35,
+      "medianMs": 8.67269999999553,
+      "p95Ms": 10.326700000005076,
+      "opsPerSec": 115.30434582085341,
+      "mbPerSec": 1.1530434582085343
+    },
+    {
+      "op": "engine/scanBatch",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 77,
+      "iterations": 79,
+      "medianMs": 3.721399999980349,
+      "p95Ms": 4.763700000010431,
+      "opsPerSec": 268.71607459700124,
+      "mbPerSec": 2.687160745970013
+    },
+    {
+      "op": "engine/scan/each",
+      "size": 10000,
+      "sizeLabel": "10KB",
+      "density": "sparse",
+      "matches": 77,
+      "iterations": 39,
+      "medianMs": 7.7277999999932945,
+      "p95Ms": 8.206799999985378,
+      "opsPerSec": 129.40293485867488,
+      "mbPerSec": 1.294029348586749
     },
     {
       "op": "anonymizeObject",
@@ -2438,10 +2654,10 @@
       "density": "sparse",
       "matches": -1,
       "iterations": 5,
-      "medianMs": 139.9546449999907,
-      "p95Ms": 143.17129999998724,
-      "opsPerSec": 7.145171923376079,
-      "mbPerSec": 0.7145171923376079
+      "medianMs": 205.19109999999637,
+      "p95Ms": 232.5497000000032,
+      "opsPerSec": 4.87350572222683,
+      "mbPerSec": 0.487350572222683
     },
     {
       "op": "anonymizeBatch",
@@ -2449,11 +2665,71 @@
       "sizeLabel": "100KB",
       "density": "sparse",
       "matches": 745,
+      "iterations": 8,
+      "medianMs": 39.108600000006845,
+      "p95Ms": 40.42369999998482,
+      "opsPerSec": 25.56982351707361,
+      "mbPerSec": 2.556982351707361
+    },
+    {
+      "op": "anonymize/each",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 745,
       "iterations": 5,
-      "medianMs": 64.67916400003014,
-      "p95Ms": 65.97594999999274,
-      "opsPerSec": 15.460929581581079,
-      "mbPerSec": 1.546092958158108
+      "medianMs": 87.43130000002566,
+      "p95Ms": 92.45660000000498,
+      "opsPerSec": 11.437551540463273,
+      "mbPerSec": 1.1437551540463273
+    },
+    {
+      "op": "detectBatch",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 745,
+      "iterations": 8,
+      "medianMs": 37.40780000001541,
+      "p95Ms": 42.66700000001583,
+      "opsPerSec": 26.732392709530846,
+      "mbPerSec": 2.6732392709530846
+    },
+    {
+      "op": "detect/each",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 745,
+      "iterations": 5,
+      "medianMs": 85.9542000000074,
+      "p95Ms": 86.78630000000703,
+      "opsPerSec": 11.634102812892376,
+      "mbPerSec": 1.1634102812892377
+    },
+    {
+      "op": "engine/scanBatch",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 745,
+      "iterations": 8,
+      "medianMs": 38.8918999999878,
+      "p95Ms": 40.373400000011316,
+      "opsPerSec": 25.712294848035548,
+      "mbPerSec": 2.571229484803555
+    },
+    {
+      "op": "engine/scan/each",
+      "size": 100000,
+      "sizeLabel": "100KB",
+      "density": "sparse",
+      "matches": 745,
+      "iterations": 5,
+      "medianMs": 77.94130000000587,
+      "p95Ms": 103.648199999996,
+      "opsPerSec": 12.830168344637885,
+      "mbPerSec": 1.2830168344637887
     },
     {
       "op": "anonymizeObject",
@@ -2462,10 +2738,10 @@
       "density": "sparse",
       "matches": -1,
       "iterations": 5,
-      "medianMs": 1364.2090869999956,
-      "p95Ms": 1375.8366779999924,
-      "opsPerSec": 0.7330254647394847,
-      "mbPerSec": 0.7330217996121611
+      "medianMs": 2070.738400000002,
+      "p95Ms": 2080.2721999999776,
+      "opsPerSec": 0.4829195228136973,
+      "mbPerSec": 0.4829171082160832
     },
     {
       "op": "anonymizeBatch",
@@ -2474,10 +2750,70 @@
       "density": "sparse",
       "matches": 7407,
       "iterations": 5,
-      "medianMs": 650.1780060000019,
-      "p95Ms": 655.1907679999713,
-      "opsPerSec": 1.5380403378332625,
-      "mbPerSec": 1.5380403378332628
+      "medianMs": 387.4065999999875,
+      "p95Ms": 397.58659999998054,
+      "opsPerSec": 2.58126732998362,
+      "mbPerSec": 2.58126732998362
+    },
+    {
+      "op": "anonymize/each",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 7407,
+      "iterations": 5,
+      "medianMs": 902.7809999999881,
+      "p95Ms": 930.7618000000075,
+      "opsPerSec": 1.1076883540969662,
+      "mbPerSec": 1.107688354096966
+    },
+    {
+      "op": "detectBatch",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 7407,
+      "iterations": 5,
+      "medianMs": 381.90560000002733,
+      "p95Ms": 387.15950000000885,
+      "opsPerSec": 2.6184481191161595,
+      "mbPerSec": 2.61844811911616
+    },
+    {
+      "op": "detect/each",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 7407,
+      "iterations": 5,
+      "medianMs": 866.0065999999933,
+      "p95Ms": 886.2281999999832,
+      "opsPerSec": 1.1547256106362327,
+      "mbPerSec": 1.1547256106362327
+    },
+    {
+      "op": "engine/scanBatch",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 7407,
+      "iterations": 5,
+      "medianMs": 378.5164999999979,
+      "p95Ms": 381.5879000000132,
+      "opsPerSec": 2.6418927576473035,
+      "mbPerSec": 2.6418927576473035
+    },
+    {
+      "op": "engine/scan/each",
+      "size": 1000000,
+      "sizeLabel": "1MB",
+      "density": "sparse",
+      "matches": 7407,
+      "iterations": 5,
+      "medianMs": 777.2992999999842,
+      "p95Ms": 810.378400000016,
+      "opsPerSec": 1.2865057256580834,
+      "mbPerSec": 1.2865057256580834
     },
     {
       "op": "encrypt/passphrase",
@@ -2485,11 +2821,11 @@
       "sizeLabel": "17B",
       "density": "-",
       "matches": 1,
-      "iterations": 8,
-      "medianMs": 38.081609999993816,
-      "p95Ms": 39.11053400003584,
-      "opsPerSec": 26.25939396995459,
-      "mbPerSec": 0.000446409697489228
+      "iterations": 6,
+      "medianMs": 52.615300000004936,
+      "p95Ms": 53.23740000001271,
+      "opsPerSec": 19.005878518223906,
+      "mbPerSec": 0.00032309993480980636
     },
     {
       "op": "encrypt/keyBytes",
@@ -2497,248 +2833,283 @@
       "sizeLabel": "17B",
       "density": "-",
       "matches": 1,
-      "iterations": 5531,
-      "medianMs": 0.04985000001033768,
-      "p95Ms": 0.06043499999213964,
-      "opsPerSec": 20060.18053746488,
-      "mbPerSec": 0.34102306913690295
+      "iterations": 3372,
+      "medianMs": 0.08780000000842847,
+      "p95Ms": 0.12080000000423752,
+      "opsPerSec": 11389.521638997765,
+      "mbPerSec": 0.193621867862962
     }
   ],
   "scaling": [
     {
       "op": "detect",
       "density": "none",
-      "slope": 0.9391749572827761
+      "slope": 0.9490862966179989
     },
     {
       "op": "detect",
       "density": "sparse",
-      "slope": 0.9390018752213276
+      "slope": 0.9732487354565417
     },
     {
       "op": "detect",
       "density": "dense",
-      "slope": 0.9466747384252459
+      "slope": 0.9401034719913417
     },
     {
       "op": "hasPII",
       "density": "none",
-      "slope": 0.9406646497236514
+      "slope": 0.9507391506195207
     },
     {
       "op": "hasPII",
       "density": "sparse",
-      "slope": 0.9987120261830884
+      "slope": 0.9895418560538876
     },
     {
       "op": "hasPII",
       "density": "dense",
-      "slope": 1.0160028537762749
+      "slope": 1.0212881714067878
     },
     {
       "op": "anonymize/redact",
       "density": "none",
-      "slope": 0.9390180488064722
+      "slope": 0.949664734189533
     },
     {
       "op": "anonymize/redact",
       "density": "sparse",
-      "slope": 1.2279171491364786
+      "slope": 0.9659865828347629
     },
     {
       "op": "anonymize/redact",
       "density": "dense",
-      "slope": 1.4031735178516846
+      "slope": 0.9549495768729008
     },
     {
       "op": "anonymize/mask",
       "density": "none",
-      "slope": 0.9379031498643761
+      "slope": 0.9505465703855338
     },
     {
       "op": "anonymize/mask",
       "density": "sparse",
-      "slope": 1.2307841700177824
+      "slope": 0.9742868541301786
     },
     {
       "op": "anonymize/mask",
       "density": "dense",
-      "slope": 1.4215481858007637
+      "slope": 0.9552716911792446
     },
     {
       "op": "anonymize/consistentTokens",
       "density": "none",
-      "slope": 0.9383074991830843
+      "slope": 0.952979256379318
     },
     {
       "op": "anonymize/consistentTokens",
       "density": "sparse",
-      "slope": 1.2299656997925164
+      "slope": 0.9748839666375585
     },
     {
       "op": "anonymize/consistentTokens",
       "density": "dense",
-      "slope": 1.4012873194760072
+      "slope": 0.9602659496055023
     },
     {
       "op": "tokenize+detokenize",
       "density": "none",
-      "slope": 0.9375675297179232
+      "slope": 0.9491843293162233
     },
     {
       "op": "tokenize+detokenize",
       "density": "sparse",
-      "slope": 1.2281706756739346
+      "slope": 0.9598813892221537
     },
     {
       "op": "tokenize+detokenize",
       "density": "dense",
-      "slope": 1.4026340741029149
+      "slope": 0.9630983723318975
     },
     {
       "op": "anonymizeAsync/hash",
       "density": "none",
-      "slope": 0.8960709149727473
+      "slope": 0.9156941958387819
     },
     {
       "op": "anonymizeAsync/hash",
       "density": "sparse",
-      "slope": 0.9591122256748352
+      "slope": 1.030815393790423
     },
     {
       "op": "anonymizeAsync/hash",
       "density": "dense",
-      "slope": 1.0255222494890581
+      "slope": 0.9531755047847122
     },
     {
       "op": "stream/lines",
       "density": "none",
-      "slope": 0.9946019068513311
+      "slope": 0.9617090531438874
     },
     {
       "op": "stream/lines",
       "density": "sparse",
-      "slope": 0.9928465449249864
+      "slope": 0.9870853858600319
     },
     {
       "op": "stream/lines",
       "density": "dense",
-      "slope": 0.976686058648835
+      "slope": 0.9837646993339277
     },
     {
       "op": "stream/64KB",
       "density": "none",
-      "slope": 0.9790055014016271
+      "slope": 0.9758241677416339
     },
     {
       "op": "stream/64KB",
       "density": "sparse",
-      "slope": 1.0013984195437147
+      "slope": 0.9924882789004303
     },
     {
       "op": "stream/64KB",
       "density": "dense",
-      "slope": 1.045630781442656
+      "slope": 0.9862464889510535
     },
     {
       "op": "engine/scan",
       "density": "none",
-      "slope": 0.9405728934488907
+      "slope": 0.9507849276523013
     },
     {
       "op": "engine/scan",
       "density": "sparse",
-      "slope": 0.9395880186833324
+      "slope": 0.9769595009888041
     },
     {
       "op": "engine/scan",
       "density": "dense",
-      "slope": 0.9386475909667973
+      "slope": 0.9490198541937978
     },
     {
       "op": "engine/test",
       "density": "none",
-      "slope": 0.9399922429962431
+      "slope": 0.9543606757323273
     },
     {
       "op": "engine/test",
       "density": "sparse",
-      "slope": 0.9413080597054896
+      "slope": 0.980170686894274
     },
     {
       "op": "engine/test",
       "density": "dense",
-      "slope": 0.9479790928307132
+      "slope": 0.9575341007844157
     },
     {
       "op": "engine/transform",
       "density": "none",
-      "slope": 0.9392498938892843
+      "slope": 0.9536370203604116
     },
     {
       "op": "engine/transform",
       "density": "sparse",
-      "slope": 0.940060330537772
+      "slope": 0.9793986350065471
     },
     {
       "op": "engine/transform",
       "density": "dense",
-      "slope": 0.947955838468979
+      "slope": 0.957702560872304
     },
     {
       "op": "engine/transform(1.x detectors)",
       "density": "none",
-      "slope": 0.9398504954104578
+      "slope": 0.9580919615401519
     },
     {
       "op": "engine/transform(1.x detectors)",
       "density": "sparse",
-      "slope": 0.9403550710376012
+      "slope": 0.9718873275250745
     },
     {
       "op": "engine/transform(1.x detectors)",
       "density": "dense",
-      "slope": 0.9469576520768015
+      "slope": 0.9589462340066062
     },
     {
       "op": "engine/chunks/lines",
       "density": "none",
-      "slope": 0.9904191635111571
+      "slope": 1.0012047720645438
     },
     {
       "op": "engine/chunks/lines",
       "density": "sparse",
-      "slope": 0.9965420347156284
+      "slope": 1.0120568647557238
     },
     {
       "op": "engine/chunks/lines",
       "density": "dense",
-      "slope": 0.9922316394761841
+      "slope": 1.010963755735911
     },
     {
       "op": "engine/chunks/64KB",
       "density": "none",
-      "slope": 0.956385547325106
+      "slope": 0.9630049157628802
     },
     {
       "op": "engine/chunks/64KB",
       "density": "sparse",
-      "slope": 0.9596753757835661
+      "slope": 0.9866145589957183
     },
     {
       "op": "engine/chunks/64KB",
       "density": "dense",
-      "slope": 0.9714063727801123
+      "slope": 0.9790087500128745
+    },
+    {
+      "op": "labelled/detect",
+      "density": "labelled",
+      "slope": 0.9468873442475719
+    },
+    {
+      "op": "labelled/scan",
+      "density": "labelled",
+      "slope": 0.9561267649462798
     },
     {
       "op": "anonymizeObject",
       "density": "sparse",
-      "slope": 1.044309932881567
+      "slope": 1.0525212135651862
     },
     {
       "op": "anonymizeBatch",
       "density": "sparse",
-      "slope": 0.9928851443489569
+      "slope": 0.9781423272024229
+    },
+    {
+      "op": "anonymize/each",
+      "density": "sparse",
+      "slope": 0.9939979425687882
+    },
+    {
+      "op": "detectBatch",
+      "density": "sparse",
+      "slope": 0.9798011629852988
+    },
+    {
+      "op": "detect/each",
+      "density": "sparse",
+      "slope": 0.9945369925342329
+    },
+    {
+      "op": "engine/scanBatch",
+      "density": "sparse",
+      "slope": 0.987161700447037
+    },
+    {
+      "op": "engine/scan/each",
+      "density": "sparse",
+      "slope": 0.9980453104051712
     }
   ],
   "matchScaling": {
@@ -2746,214 +3117,214 @@
       {
         "size": 400000,
         "matches": 505,
-        "detectMs": 78.14550300000701,
-        "anonymizeMs": 150.95605600002455,
-        "replaceMs": 72.81055300001753
+        "detectMs": 122.4369000000006,
+        "anonymizeMs": 124.34890000001178,
+        "replaceMs": 1.9120000000111759
       },
       {
         "size": 400000,
         "matches": 1003,
-        "detectMs": 78.89834199997131,
-        "anonymizeMs": 221.68936999997823,
-        "replaceMs": 142.79102800000692
+        "detectMs": 124.19329999998445,
+        "anonymizeMs": 124.59000000002561,
+        "replaceMs": 0.39670000004116446
       },
       {
         "size": 400000,
         "matches": 2027,
-        "detectMs": 81.50032900000224,
-        "anonymizeMs": 364.5430199999828,
-        "replaceMs": 283.04269099998055
+        "detectMs": 129.57629999998608,
+        "anonymizeMs": 129.04829999999492,
+        "replaceMs": -0.5279999999911524
       },
       {
         "size": 400000,
         "matches": 4046,
-        "detectMs": 85.52268399996683,
-        "anonymizeMs": 627.1301310000126,
-        "replaceMs": 541.6074470000458
+        "detectMs": 134.95019999999204,
+        "anonymizeMs": 134.70209999999497,
+        "replaceMs": -0.24809999999706633
       },
       {
         "size": 400000,
         "matches": 8043,
-        "detectMs": 91.66729000001214,
-        "anonymizeMs": 1110.9218250000267,
-        "replaceMs": 1019.2545350000146
+        "detectMs": 144.3179999999993,
+        "anonymizeMs": 147.65400000000955,
+        "replaceMs": 3.3360000000102445
       },
       {
         "size": 400000,
         "matches": 11139,
-        "detectMs": 100.15351099998225,
-        "anonymizeMs": 1495.5252489999984,
-        "replaceMs": 1395.3717380000162
+        "detectMs": 149.79299999997602,
+        "anonymizeMs": 154.77569999999832,
+        "replaceMs": 4.982700000022305
       }
     ],
     "slopes": {
-      "detect": 0.07523992342075815,
-      "anonymize": 0.7487174820614377,
-      "replace": 0.9514960533627909
+      "detect": 0.06603298403011296,
+      "anonymize": 0.07198437122421408,
+      "replace": 0.22452420490380046
     }
   },
   "perDetector": [
     {
       "category": "ipv6",
-      "medianMs": 2.8200820000492968,
+      "medianMs": 4.118400000006659,
       "matches": 13,
-      "share": 0.1396349098925681
+      "share": 0.12914636211408864
     },
     {
       "category": "national-id",
-      "medianMs": 2.48332300002221,
-      "matches": 29,
-      "share": 0.1229604611980012
-    },
-    {
-      "category": "api-key",
-      "medianMs": 1.6161229999852367,
-      "matches": 12,
-      "share": 0.08002149918842805
-    },
-    {
-      "category": "cryptocurrency",
-      "medianMs": 1.534226999967359,
-      "matches": 4,
-      "share": 0.07596646086583381
-    },
-    {
-      "category": "license-plate",
-      "medianMs": 1.0069120000116527,
-      "matches": 16,
-      "share": 0.04985672983583984
-    },
-    {
-      "category": "drivers-license",
-      "medianMs": 0.9877369999885559,
-      "matches": 7,
-      "share": 0.04890728957120628
-    },
-    {
-      "category": "health-insurance",
-      "medianMs": 0.9142359999823384,
-      "matches": 10,
-      "share": 0.04526792535672514
-    },
-    {
-      "category": "tracking-number",
-      "medianMs": 0.8456190000288188,
-      "matches": 4,
-      "share": 0.04187038989306112
-    },
-    {
-      "category": "medical-record",
-      "medianMs": 0.841056999983266,
+      "medianMs": 3.4271000000007916,
       "matches": 5,
-      "share": 0.04164450480699641
-    },
-    {
-      "category": "email",
-      "medianMs": 0.6891000000177883,
-      "matches": 96,
-      "share": 0.03412043210366596
-    },
-    {
-      "category": "vin",
-      "medianMs": 0.687900000018999,
-      "matches": 4,
-      "share": 0.03406101472087387
-    },
-    {
-      "category": "address",
-      "medianMs": 0.6526930000400171,
-      "matches": 19,
-      "share": 0.03231775822352136
+      "share": 0.10746831235445313
     },
     {
       "category": "tax-id",
-      "medianMs": 0.647687999997288,
+      "medianMs": 2.357499999983702,
       "matches": 4,
-      "share": 0.032069938220426926
+      "share": 0.07392738652908092
+    },
+    {
+      "category": "cryptocurrency",
+      "medianMs": 2.264599999994971,
+      "matches": 4,
+      "share": 0.07101419280362344
+    },
+    {
+      "category": "address",
+      "medianMs": 2.0631000000284985,
+      "matches": 19,
+      "share": 0.06469547874922929
+    },
+    {
+      "category": "license-plate",
+      "medianMs": 1.6431999999913387,
+      "matches": 16,
+      "share": 0.05152809397445822
+    },
+    {
+      "category": "drivers-license",
+      "medianMs": 1.5547000000078697,
+      "matches": 7,
+      "share": 0.04875287713176605
+    },
+    {
+      "category": "health-insurance",
+      "medianMs": 1.350800000014715,
+      "matches": 10,
+      "share": 0.04235890295875321
     },
     {
       "category": "prescription",
-      "medianMs": 0.6123849999858066,
+      "medianMs": 1.3401000000012573,
       "matches": 4,
-      "share": 0.030321928330837064
+      "share": 0.0420233682665532
     },
     {
-      "category": "case-number",
-      "medianMs": 0.5725790000287816,
-      "matches": 6,
-      "share": 0.02835095471479129
+      "category": "medical-record",
+      "medianMs": 1.2215999999898486,
+      "matches": 5,
+      "share": 0.03830739995071012
     },
     {
-      "category": "company-registration",
-      "medianMs": 0.5630540000274777,
-      "matches": 7,
-      "share": 0.027879329238338645
-    },
-    {
-      "category": "bank-account",
-      "medianMs": 0.49332399998093024,
-      "matches": 4,
-      "share": 0.024426684147473125
-    },
-    {
-      "category": "date-of-birth",
-      "medianMs": 0.43047200003638864,
-      "matches": 19,
-      "share": 0.02131459969437199
-    },
-    {
-      "category": "social-media",
-      "medianMs": 0.3666959999827668,
-      "matches": 15,
-      "share": 0.018156763851073735
-    },
-    {
-      "category": "passport",
-      "medianMs": 0.3658940000459552,
-      "matches": 28,
-      "share": 0.018117053236663027
-    },
-    {
-      "category": "name",
-      "medianMs": 0.3630620000185445,
-      "matches": 41,
-      "share": 0.017976828211774983
-    },
-    {
-      "category": "credit-card",
-      "medianMs": 0.21818599995458499,
-      "matches": 27,
-      "share": 0.010803367576881016
+      "category": "email",
+      "medianMs": 1.1127000000269618,
+      "matches": 96,
+      "share": 0.03489247210751653
     },
     {
       "category": "phone",
-      "medianMs": 0.193371000001207,
+      "medianMs": 1.1114999999990687,
       "matches": 59,
-      "share": 0.00957466561629496
+      "share": 0.034854842047750856
+    },
+    {
+      "category": "tracking-number",
+      "medianMs": 1.0507999999972526,
+      "matches": 4,
+      "share": 0.03295138823545797
+    },
+    {
+      "category": "vin",
+      "medianMs": 0.9919999999983702,
+      "matches": 4,
+      "share": 0.031107515349834473
+    },
+    {
+      "category": "company-registration",
+      "medianMs": 0.9702000000106636,
+      "matches": 7,
+      "share": 0.030423902613700312
+    },
+    {
+      "category": "api-key",
+      "medianMs": 0.9624999999941792,
+      "matches": 12,
+      "share": 0.030182443068632867
+    },
+    {
+      "category": "bank-account",
+      "medianMs": 0.9120000000111759,
+      "matches": 4,
+      "share": 0.02859884475750333
+    },
+    {
+      "category": "name",
+      "medianMs": 0.762300000002142,
+      "matches": 41,
+      "share": 0.023904494910568962
+    },
+    {
+      "category": "passport",
+      "medianMs": 0.6539999999804422,
+      "matches": 28,
+      "share": 0.020508382094976588
+    },
+    {
+      "category": "date-of-birth",
+      "medianMs": 0.5881999999983236,
+      "matches": 19,
+      "share": 0.018445000533014667
+    },
+    {
+      "category": "case-number",
+      "medianMs": 0.4086000000243075,
+      "matches": 6,
+      "share": 0.012813035053144552
+    },
+    {
+      "category": "social-media",
+      "medianMs": 0.35749999998370185,
+      "matches": 15,
+      "share": 0.011210621710763206
+    },
+    {
+      "category": "credit-card",
+      "medianMs": 0.27150000000256114,
+      "matches": 27,
+      "share": 0.008513800824166941
     },
     {
       "category": "iban",
-      "medianMs": 0.1193349999957718,
+      "medianMs": 0.16169999999692664,
       "matches": 18,
-      "share": 0.005908811151997681
+      "share": 0.005070650435464611
     },
     {
       "category": "ssn",
-      "medianMs": 0.08352599997306243,
+      "medianMs": 0.10769999999320135,
       "matches": 28,
-      "share": 0.004135746932082591
+      "share": 0.0033772977852532136
     },
     {
       "category": "ipv4",
-      "medianMs": 0.0558420000015758,
+      "medianMs": 0.07589999999618158,
       "matches": 50,
-      "share": 0.0027649879110978044
+      "share": 0.0023801012247354173
     },
     {
       "category": "url",
-      "medianMs": 0.03168700000969693,
+      "medianMs": 0.04920000000856817,
       "matches": 39,
-      "share": 0.0015689655091740205
+      "share": 0.0015428324147992993
     }
   ],
   "memory": {
@@ -2961,121 +3332,121 @@
       {
         "op": "detect",
         "size": 1000,
-        "transientBytes": 75968,
-        "retainedBytes": 14304,
+        "transientBytes": 63496,
+        "retainedBytes": 15704,
         "keep": 1
       },
       {
         "op": "anonymize",
         "size": 1000,
-        "transientBytes": 366640,
-        "retainedBytes": 8000,
+        "transientBytes": 60976,
+        "retainedBytes": 14408,
         "keep": 1
       },
       {
         "op": "tokenize",
         "size": 1000,
-        "transientBytes": 66880,
-        "retainedBytes": 2000,
+        "transientBytes": 47184,
+        "retainedBytes": 202448,
         "keep": 1
       },
       {
         "op": "engine",
         "size": 1000,
-        "transientBytes": 214824,
-        "retainedBytes": 17016,
+        "transientBytes": 182760,
+        "retainedBytes": 5760,
         "keep": 1
       },
       {
         "op": "detect",
         "size": 10000,
-        "transientBytes": 268728,
-        "retainedBytes": 11504,
+        "transientBytes": 92456,
+        "retainedBytes": 8320,
         "keep": 1
       },
       {
         "op": "anonymize",
         "size": 10000,
-        "transientBytes": 769824,
-        "retainedBytes": 19936,
+        "transientBytes": 42760,
+        "retainedBytes": -71744,
         "keep": 1
       },
       {
         "op": "tokenize",
         "size": 10000,
-        "transientBytes": 777640,
-        "retainedBytes": 10784,
+        "transientBytes": 143520,
+        "retainedBytes": 9776,
         "keep": 1
       },
       {
         "op": "engine",
         "size": 10000,
-        "transientBytes": 1556208,
-        "retainedBytes": 60896,
+        "transientBytes": 1364976,
+        "retainedBytes": 49808,
         "keep": 1
       },
       {
         "op": "detect",
         "size": 100000,
-        "transientBytes": 258680,
-        "retainedBytes": 16232,
+        "transientBytes": 1374632,
+        "retainedBytes": 28856,
         "keep": 1
       },
       {
         "op": "anonymize",
         "size": 100000,
-        "transientBytes": 4149936,
-        "retainedBytes": 34656,
+        "transientBytes": 1693448,
+        "retainedBytes": 51264,
         "keep": 1
       },
       {
         "op": "tokenize",
         "size": 100000,
-        "transientBytes": 3216264,
-        "retainedBytes": 97352,
+        "transientBytes": 1978272,
+        "retainedBytes": 83784,
         "keep": 1
       },
       {
         "op": "engine",
         "size": 100000,
-        "transientBytes": 6363608,
-        "retainedBytes": 35144,
+        "transientBytes": 3646200,
+        "retainedBytes": 52776,
         "keep": 1
       },
       {
         "op": "detect",
         "size": 1000000,
-        "transientBytes": 4860312,
-        "retainedBytes": 433520,
+        "transientBytes": 13682888,
+        "retainedBytes": 438072,
         "keep": 1
       },
       {
         "op": "anonymize",
         "size": 1000000,
-        "transientBytes": 93003840,
-        "retainedBytes": 856576,
+        "transientBytes": 16684496,
+        "retainedBytes": 377256,
         "keep": 1
       },
       {
         "op": "tokenize",
         "size": 1000000,
-        "transientBytes": 137582528,
-        "retainedBytes": 932000,
+        "transientBytes": 3168248,
+        "retainedBytes": 836784,
         "keep": 1
       },
       {
         "op": "engine",
         "size": 1000000,
-        "transientBytes": 7323856,
-        "retainedBytes": -116048,
+        "transientBytes": 18486488,
+        "retainedBytes": -8248,
         "keep": 1
       }
     ],
     "stream": {
       "bytes": 50000000,
-      "peakHeapGrowthBytes": 71201648,
-      "retainedBytes": -787392,
-      "mbPerSec": 1.4551173005325089
+      "peakHeapGrowthBytes": 35388904,
+      "retainedBytes": -821624,
+      "mbPerSec": 1.080186677170229
     }
   }
 }

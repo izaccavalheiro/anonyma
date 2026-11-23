@@ -22,10 +22,13 @@ Each cell is warmed up once and then sampled for at least 300 ms and 5 iteration
 
 ## Results
 
-- `results/baseline.json` — anonyma 1.0.0 at commit `de26df2`.
-- `results/current.json` — the build with the span engine; contains the 1.x functions and the engine from the same run.
+- `results/baseline.json` — anonyma 1.0.0, the package published on npm (`--dist` pointed at its `dist`).
+- `results/current.json` — anonyma 1.5.1: the 1.x functions, the span engine, the batch functions and
+  the label-heavy cells, from the same run.
 
-Both were taken on Node v25.9.0, Intel Core i5-10400F, on an idle machine. Absolute numbers depend on the machine; compare ratios and slopes.
+Both were taken one after the other on the same machine: Node v26.13.1, Intel Core i5-8265U (4 cores,
+8 threads), Windows 11, a laptop whose clock varies with heat. Absolute numbers depend on the
+machine; compare ratios and slopes.
 
 ## The Rust core
 
