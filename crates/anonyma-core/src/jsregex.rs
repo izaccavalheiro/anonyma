@@ -297,6 +297,20 @@ impl Guarded {
     }
 }
 
+/// Whether `c` is a letter (`\p{L}`), as Unicode-aware ECMAScript patterns test it.
+pub(crate) fn is_letter(c: char) -> bool {
+    static LETTER: std::sync::OnceLock<Regex> = std::sync::OnceLock::new();
+    let mut buffer = [0; 4];
+    LETTER
+        .get_or_init(|| Regex::new(r"^\p{L}$").expect("valid pattern"))
+        .is_match(c.encode_utf8(&mut buffer))
+}
+
+/// A letter (`\p{L}`) or an ASCII digit: what `(?<![\p{L}\d])` rejects.
+pub(crate) fn is_letter_or_digit(c: char) -> bool {
+    c.is_ascii_digit() || is_letter(c)
+}
+
 /// The byte offset of the character after the one that starts at `at`.
 pub(crate) fn next_char(text: &str, at: usize) -> usize {
     text[at..]

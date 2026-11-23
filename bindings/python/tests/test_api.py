@@ -13,11 +13,19 @@ from anonyma import Anonyma, AnonymaError, UnsupportedCategoriesError, Vault
 def test_presets_refuse_categories_the_core_does_not_detect() -> None:
     with pytest.raises(UnsupportedCategoriesError) as raised:
         Anonyma(presets=["lgpd", "hipaa"])
-    assert "name" in str(raised.value)
+    assert "passport" in str(raised.value)
     engine = Anonyma(presets=["lgpd", "hipaa"], allow_partial=True)
-    assert "name" in engine.undetected
+    assert "passport" in engine.undetected
     assert engine.anonymize("CPF 529.982.247-25, card 4111111111111111.") == (
         "CPF [REDACTED], card [REDACTED]."
+    )
+
+
+def test_pci_dss_is_served_in_full() -> None:
+    engine = Anonyma("pci-dss")
+    assert engine.undetected == ()
+    assert engine.anonymize("Dear Ana Lima, card 4111111111111111") == (
+        "Dear [REDACTED], card ************1111"
     )
 
 

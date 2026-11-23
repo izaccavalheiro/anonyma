@@ -288,14 +288,14 @@ mod tests {
         let Error::UnsupportedCategories(missing) = error else {
             panic!("unexpected error");
         };
-        assert!(missing.contains(&Category::Name));
+        assert!(missing.contains(&Category::Passport));
         assert!(missing.contains(&Category::NationalId));
         let engine = AnonymaEngine::builder()
             .preset(Preset::Lgpd)
             .allow_partial(true)
             .build()
             .unwrap();
-        assert!(engine.undetected().contains(&Category::Address));
+        assert!(engine.undetected().contains(&Category::Passport));
     }
 
     #[test]

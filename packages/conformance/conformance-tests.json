@@ -1637,6 +1637,347 @@
       }
     },
     {
+      "id": "detect.name.greeting",
+      "description": "a name after a greeting at the start of the text",
+      "op": "detect",
+      "requires": ["detect:name"],
+      "input": {
+        "text": "Dear John Smith, thank you.",
+        "categories": ["name"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "name",
+            "value": "John Smith",
+            "start": 5,
+            "end": 15,
+            "confidence": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.name.greeting-lower-case",
+      "description": "reference behaviour: the greeting is case-insensitive, but a capture that starts in lower case is dropped",
+      "op": "detect",
+      "requires": ["detect:name"],
+      "input": {
+        "text": "Report. Hi alice Brown",
+        "categories": ["name"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.name.greeting-mid-sentence",
+      "description": "a greeting counts only at the start of the text or of a sentence",
+      "op": "detect",
+      "requires": ["detect:name"],
+      "input": {
+        "text": "hello there, hi john doe and HELLO Ana Lima",
+        "categories": ["name"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.name.title",
+      "description": "a name after a title",
+      "op": "detect",
+      "requires": ["detect:name"],
+      "input": {
+        "text": "Appointment with Dr. Maria Silva today",
+        "categories": ["name"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "name",
+            "value": "Maria Silva",
+            "start": 21,
+            "end": 32,
+            "confidence": 0.78
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.name.context",
+      "description": "a name after a context keyword; trailing capitalised words end at the first lower-case one",
+      "op": "detect",
+      "requires": ["detect:name"],
+      "input": {
+        "text": "Signed by Ana Costa Lima on Monday",
+        "categories": ["name"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "name",
+            "value": "Ana Costa Lima",
+            "start": 10,
+            "end": 24,
+            "confidence": 0.7
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.name.context-lower-case-word",
+      "description": "a keyword followed by a lower-case word is not a name",
+      "op": "detect",
+      "requires": ["detect:name"],
+      "input": {
+        "text": "Prepared by the Team Leader",
+        "categories": ["name"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.name.aggressive-title",
+      "description": "reference behaviour: the aggressive pattern is case-insensitive, so its first match runs over 'and Mrs' and the second name is not reached",
+      "op": "detect",
+      "requires": ["detect:name", "detect:name+aggressive"],
+      "input": {
+        "text": "Mr Smith and Mrs. Jane Doe",
+        "categories": ["name"],
+        "aggressive": true
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "name",
+            "value": "Smith",
+            "start": 3,
+            "end": 8,
+            "confidence": 0.65
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.address.us-street",
+      "description": "a US street address; 'ship to' is not one of the reference's context labels (it has 'shipped to')",
+      "op": "detect",
+      "requires": ["detect:address"],
+      "input": {
+        "text": "Ship to 1600 Pennsylvania Avenue NW, apt 5.",
+        "categories": ["address"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "address",
+            "value": "1600 Pennsylvania Avenue",
+            "start": 8,
+            "end": 32,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.address.us-terrace",
+      "description": "a US street type spelled out",
+      "op": "detect",
+      "requires": ["detect:address"],
+      "input": {
+        "text": "Send it to 742 Evergreen Terrace please",
+        "categories": ["address"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "address",
+            "value": "742 Evergreen Terrace",
+            "start": 11,
+            "end": 32,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.address.german",
+      "description": "a German street with its postal code and town",
+      "op": "detect",
+      "requires": ["detect:address"],
+      "input": {
+        "text": "Wohnt in der Hauptstraße 12, 10115 Berlin.",
+        "categories": ["address"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "address",
+            "value": "Hauptstraße 12, 10115 Berlin",
+            "start": 13,
+            "end": 41,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.address.german-short",
+      "description": "a street word after a capitalised word, with a house-number letter",
+      "op": "detect",
+      "requires": ["detect:address"],
+      "input": {
+        "text": "Ein Weg 12a ist kurz",
+        "categories": ["address"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "address",
+            "value": "Ein Weg 12a",
+            "start": 0,
+            "end": 11,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.address.french",
+      "description": "a French address, number first",
+      "op": "detect",
+      "requires": ["detect:address"],
+      "input": {
+        "text": "Adresse: 12 rue de la Paix, 75002 Paris",
+        "categories": ["address"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "address",
+            "value": "12 rue de la Paix, 75002 Paris",
+            "start": 9,
+            "end": 39,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.address.brazilian",
+      "description": "a Brazilian address, street type first; the town without a postal code is not part",
+      "op": "detect",
+      "requires": ["detect:address"],
+      "input": {
+        "text": "Mora na Rua das Flores, 123, São Paulo",
+        "categories": ["address"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "address",
+            "value": "Rua das Flores, 123",
+            "start": 8,
+            "end": 27,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.address.spanish",
+      "description": "a Spanish address at the start of the text",
+      "op": "detect",
+      "requires": ["detect:address"],
+      "input": {
+        "text": "Calle Mayor 5, 28013 Madrid",
+        "categories": ["address"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "address",
+            "value": "Calle Mayor 5, 28013 Madrid",
+            "start": 0,
+            "end": 27,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.address.postcode-po-box",
+      "description": "a UK postcode and a post office box",
+      "op": "detect",
+      "requires": ["detect:address"],
+      "input": {
+        "text": "Postcode SW1A 1AA and P.O. Box 1234",
+        "categories": ["address"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "address",
+            "value": "SW1A 1AA",
+            "start": 9,
+            "end": 17,
+            "confidence": 0.78
+          },
+          {
+            "category": "address",
+            "value": "P.O. Box 1234",
+            "start": 22,
+            "end": 35,
+            "confidence": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.address.context",
+      "description": "text after an address label, up to a comma or a line break",
+      "op": "detect",
+      "requires": ["detect:address"],
+      "input": {
+        "text": "Billing address: 221B Baker Street London",
+        "categories": ["address"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "address",
+            "value": "221B Baker Street London",
+            "start": 17,
+            "end": 41,
+            "confidence": 0.82
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.address.context-shipped",
+      "description": "the labelled text is the street found before it, so it is reported once, with the street's confidence",
+      "op": "detect",
+      "requires": ["detect:address"],
+      "input": {
+        "text": "Shipped to: 10 Downing Street, London",
+        "categories": ["address"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "address",
+            "value": "10 Downing Street",
+            "start": 12,
+            "end": 29,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
       "id": "detect.mixed.document-order",
       "description": "several categories, reported in document order",
       "op": "detect",
@@ -2481,7 +2822,7 @@
       }
     },
     {
-      "id": "digest.sha256.130",
+      "id": "digest.sha256.147",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -2493,7 +2834,7 @@
       }
     },
     {
-      "id": "digest.sha256.131",
+      "id": "digest.sha256.148",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -2505,7 +2846,7 @@
       }
     },
     {
-      "id": "digest.sha256.132",
+      "id": "digest.sha256.149",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],

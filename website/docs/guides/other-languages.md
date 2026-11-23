@@ -11,7 +11,7 @@ shared conformance suite.
 | Way                               | Languages                     | Detectors        | State          |
 | --------------------------------- | ----------------------------- | ---------------- | -------------- |
 | The sidecar                       | any language that speaks HTTP | all 27           | available      |
-| The Python package                | Python 3.10+                  | 11 in full, CPF  | alpha          |
+| The Python package                | Python 3.10+                  | 13 in full, CPF  | alpha          |
 | Go, Node.js, WebAssembly bindings | Go, JavaScript                | as the Rust core | in development |
 
 ## The sidecar
