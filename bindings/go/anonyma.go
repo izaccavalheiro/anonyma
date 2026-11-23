@@ -1,20 +1,27 @@
 // Package anonyma detects and anonymizes personal data in text with the Rust
 // core of anonyma (crates/anonyma-core), through its C ABI (crates/anonyma-ffi).
 //
-// Build the static library first, from the repository root:
+// The package links a static library of the core, lib/<GOOS>_<GOARCH>/libanonyma_ffi.a,
+// built for linux/amd64, linux/arm64, darwin/amd64, darwin/arm64 and windows/amd64.
+// In a clone of the repository, build it for the current platform with
 //
-//	cargo build --release -p anonyma-ffi
+//	go generate
+//
+// which needs a Rust toolchain (see buildlib.go).
 //
 // Offsets in [Match] are byte offsets into the Go string.
-//
-// Until prebuilt libraries ship, Go services that cannot build Rust can use the
-// sidecar (packages/sidecar) over HTTP instead: same detectors, no cgo.
 package anonyma
 
+//go:generate go run buildlib.go
+
 /*
-#cgo CFLAGS: -I${SRCDIR}/../../crates/anonyma-ffi/include
-#cgo LDFLAGS: ${SRCDIR}/../../target/release/libanonyma_ffi.a
+#cgo linux,amd64 LDFLAGS: ${SRCDIR}/lib/linux_amd64/libanonyma_ffi.a
+#cgo linux,arm64 LDFLAGS: ${SRCDIR}/lib/linux_arm64/libanonyma_ffi.a
+#cgo darwin,amd64 LDFLAGS: ${SRCDIR}/lib/darwin_amd64/libanonyma_ffi.a
+#cgo darwin,arm64 LDFLAGS: ${SRCDIR}/lib/darwin_arm64/libanonyma_ffi.a
+#cgo windows,amd64 LDFLAGS: ${SRCDIR}/lib/windows_amd64/libanonyma_ffi.a
 #cgo linux LDFLAGS: -lm -ldl -lpthread
+#cgo windows LDFLAGS: -lws2_32 -luserenv -lbcrypt -lntdll -ladvapi32 -lkernel32
 #include <stdlib.h>
 #include "anonyma.h"
 */

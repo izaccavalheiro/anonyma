@@ -170,7 +170,10 @@ Next steps, in order:
    validator are ported, and every preset is served in full.
 2. ~~Port the precise detectors of the span engine.~~ Done: the `scan`
    operation, the cover resolution and every precise detector.
-3. Publish prebuilt `libanonyma_ffi.a` per platform for Go.
+3. Publish prebuilt `libanonyma_ffi.a` per platform for Go. Built and tested:
+   CI builds the library for linux/amd64, linux/arm64, darwin/amd64,
+   darwin/arm64 and windows/amd64, runs the Go tests on each, and links a
+   program from the module files alone. Left: a module version that carries them.
 4. Benchmark the Rust core against the TypeScript engine (`bench/`), on Node.js
    through napi-rs and on Workers through WebAssembly. A native engine for the
    npm package is offered only where it wins. Its public API stays unchanged,
@@ -180,7 +183,7 @@ Next steps, in order:
 
 `.github/workflows/polyglot-release.yml` runs the suite in every language on
 every pull request: TypeScript, Rust (Linux, macOS, Windows), Python 3.10 and
-3.13, Go, and the WebAssembly and Node.js builds. It also builds the sidecar
+3.13, Go (on five platforms), and the WebAssembly and Node.js builds. It also builds the sidecar
 image and calls it. Tags release:
 
 - `python-v<version>`: abi3 wheels for manylinux x86_64/aarch64, macOS

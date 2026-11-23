@@ -7,7 +7,8 @@
 #                           the conformance suite (through the JSON API) on Linux, macOS, Windows?
 #   python                  Does the Python package build, and pass its tests and the suite?
 #   bindings                Do the WebAssembly and Node.js bindings build?
-#   go                      Does the Go package pass its tests and the suite through the C ABI?
+#   go                      Does the Go package pass its tests and the suite through the C ABI,
+#                           and link from its module alone, on each platform it ships a library for?
 #   sidecar                 Does the sidecar image build, start and answer?
 #
 # Releases, from tags only, after every check above:
@@ -194,9 +195,22 @@ jobs:
         run: cargo clippy -p anonyma-wasm -p anonyma-node -- -D warnings
 
   go:
-    name: Go
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    name: Go (${{ matrix.platform }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { platform: linux_amd64, os: ubuntu-24.04, target: x86_64-unknown-linux-gnu }
+          - { platform: linux_arm64, os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
+          - { platform: darwin_amd64, os: macos-15-intel, target: x86_64-apple-darwin }
+          - { platform: darwin_arm64, os: macos-latest, target: aarch64-apple-darwin }
+          - { platform: windows_amd64, os: windows-latest, target: x86_64-pc-windows-gnu }
+    defaults:
+      run:
+        shell: bash
+        working-directory: bindings/go
     steps:
       - name: Check out
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -207,9 +221,12 @@ jobs:
         uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
         with:
           toolchain: stable
+          targets: ${{ matrix.target }}
 
       - name: Cache
         uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          key: ${{ matrix.target }}
 
       - name: Set up Go
         uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
@@ -217,19 +234,61 @@ jobs:
           go-version-file: bindings/go/go.mod
           cache: false
 
+      # The library the package links, built as a release would build it.
       - name: Build the static library
-        run: cargo build --release -p anonyma-ffi
+        run: |
+          go generate
+          ls -l lib/${{ matrix.platform }}
 
       - name: Vet
-        working-directory: bindings/go
         run: |
           test -z "$(gofmt -l .)" || { gofmt -d .; exit 1; }
           go vet ./...
+          go vet buildlib.go
 
       # Includes the conformance suite through the C ABI (conformance_test.go).
       - name: Test
-        working-directory: bindings/go
         run: go test -race ./...
+
+      # A program outside the repository that requires the module as a user would,
+      # with only the files of its module zip: does it link with the prebuilt library?
+      - name: Link from the module alone
+        run: |
+          # Outside the checkout, with relative paths, which every platform reads alike.
+          check=../../../go-check
+          mkdir -p "$check/module" "$check/app"
+          git ls-files -z . | tar --null -T - -cf - | tar -xf - -C "$check/module"
+          cp -R lib "$check/module/"
+          cd "$check/app"
+          go mod init example.com/app
+          go mod edit -require=github.com/izaccavalheiro/anonyma/bindings/go@v0.0.0
+          go mod edit -replace=github.com/izaccavalheiro/anonyma/bindings/go=../module
+          cat > main.go <<'GO'
+          package main
+
+          import (
+          	"fmt"
+
+          	anonyma "github.com/izaccavalheiro/anonyma/bindings/go"
+          )
+
+          func main() {
+          	out, err := anonyma.Anonymize("Mail ana@example.com", anonyma.Options{Categories: []string{"email"}})
+          	if err != nil {
+          		panic(err)
+          	}
+          	fmt.Println(out)
+          }
+          GO
+          test "$(go run .)" = "Mail [REDACTED]"
+
+      - name: Upload the static library
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: go-lib-${{ matrix.platform }}
+          path: bindings/go/lib/${{ matrix.platform }}/libanonyma_ffi.a
+          if-no-files-found: error
+          retention-days: 7
 
   sidecar:
     name: Sidecar image
