@@ -131,7 +131,12 @@ const WORKLOADS = [
   { name: "detect (all categories)", run: (e, text) => e.detect(text, undefined) },
   { name: "detect (5 common)", run: (e, text) => e.detect(text, COMMON) },
   { name: "scan (all categories)", run: (e, text) => e.scan(text, undefined) },
-  { name: "anonymize (gdpr)", run: (e, text) => e.anonymize(text, ["gdpr"]) },
+  {
+    name: "anonymize (gdpr)",
+    run: (e, text) => e.anonymize(text, ["gdpr"]),
+    // gdpr pseudonymizes some categories without a seed: random ids, compared as such.
+    comparable: (text) => text.replace(/\bid_[0-9a-f]{16}\b/g, "id_<random>"),
+  },
 ];
 
 function measure(fn) {
@@ -199,9 +204,10 @@ for (const workload of WORKLOADS) {
     for (const [density, value] of DENSITIES) {
       const { text } = makeText({ size, density: value, seed: "core" });
       if (size <= COMPARE_UP_TO) {
-        const expected = workload.run(ts, text);
+        const comparable = workload.comparable ?? ((result) => result);
+        const expected = comparable(workload.run(ts, text));
         for (const engine of cores) {
-          const diff = difference(expected, workload.run(engine, text));
+          const diff = difference(expected, comparable(workload.run(engine, text)));
           if (diff)
             differences.push({ engine: engine.name, workload: workload.name, size, density, diff });
         }
