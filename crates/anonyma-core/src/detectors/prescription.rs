@@ -3,6 +3,7 @@
 //! within 30 characters after a label.
 
 use super::{after_labels, has_context, label_ends, Collector, Match};
+use crate::anchored::TextIndex;
 use crate::jsregex::js_regex;
 use crate::validators::dea;
 use crate::Category;
@@ -15,19 +16,25 @@ js_regex!(
 );
 js_regex!(rx_number = r"\b\d{4,12}\b");
 
+/// [`detect_in`] with an index of its own, for tests.
+#[cfg(test)]
 pub(super) fn detect(text: &str) -> Vec<Match> {
+    detect_in(text, &TextIndex::new(text, true))
+}
+
+pub(super) fn detect_in(text: &str, index: &TextIndex<'_>) -> Vec<Match> {
     let labels = label_ends(label().ranges(text));
     let labelled = |index: usize| has_context(text, &labels, index, 30);
     let mut found = Collector::new(text, Category::Prescription);
-    for (start, end) in dea_number().ranges(text) {
+    for (start, end) in dea_number().ranges_with(text, index) {
         if dea(&text[start..end]) {
             found.push(start, end, 0.9);
         }
     }
-    for (start, end) in ndc().ranges(text) {
+    for (start, end) in ndc().ranges_with(text, index) {
         found.push(start, end, if labelled(start) { 0.9 } else { 0.78 });
     }
-    for (start, end) in after_labels(&labels, || rx_number().ranges(text)) {
+    for (start, end) in after_labels(&labels, || rx_number().ranges_with(text, index)) {
         if labelled(start) {
             found.push(start, end, 0.82);
         }
@@ -38,6 +45,12 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn its_case_sensitive_patterns_are_searched_at_candidate_starts() {
+        assert!(rx_number().is_anchored());
+        crate::anchored::parity::check(rx_number());
+    }
 
     #[test]
     fn identifiers() {

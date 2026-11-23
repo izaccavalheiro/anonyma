@@ -2,6 +2,7 @@
 //! EU VAT, Australian ABN, UK UTR and Brazilian CNPJ.
 
 use super::{after_labels, has_context, label_ends, Collector, Match};
+use crate::anchored::TextIndex;
 use crate::jsregex::js_regex;
 use crate::validators::cnpj;
 use crate::Category;
@@ -18,36 +19,42 @@ js_regex!(br_cnpj = insensitive r"\b[a-z0-9]{2}\.[a-z0-9]{3}\.[a-z0-9]{3}\/[a-z0
 js_regex!(br_cnpj_bare = insensitive r"\b[a-z0-9]{12}\d{2}\b");
 js_regex!(context = insensitive r"\b(?:tax(?:\s+(?:id(?:entification)?|number|no\.?|#|reference))?|t\.?i\.?n\.?|ein|itin|utr|vat(?:\s+(?:number|no\.?|reg(?:istration)?|#))?|abn|tfn|cnpj)\s*:?\s*");
 
+/// [`detect_in`] with an index of its own, for tests.
+#[cfg(test)]
 pub(super) fn detect(text: &str) -> Vec<Match> {
+    detect_in(text, &TextIndex::new(text, true))
+}
+
+pub(super) fn detect_in(text: &str, index: &TextIndex<'_>) -> Vec<Match> {
     let labels = label_ends(context().ranges(text));
     let labelled = |index: usize| has_context(text, &labels, index, 30);
     let mut found = Collector::new(text, Category::TaxId);
 
-    for (start, end) in us_ein().ranges(text) {
+    for (start, end) in us_ein().ranges_with(text, index) {
         found.push(start, end, if labelled(start) { 0.92 } else { 0.8 });
     }
-    for (start, end) in us_itin().ranges(text) {
+    for (start, end) in us_itin().ranges_with(text, index) {
         found.push(start, end, 0.9);
     }
-    for (start, end) in eu_vat().ranges(text) {
+    for (start, end) in eu_vat().ranges_with(text, index) {
         found.push(start, end, if labelled(start) { 0.9 } else { 0.78 });
     }
-    for (start, end) in after_labels(&labels, || au_abn().ranges(text)) {
+    for (start, end) in after_labels(&labels, || au_abn().ranges_with(text, index)) {
         if labelled(start) {
             found.push(start, end, 0.82);
         }
     }
-    for (start, end) in br_cnpj().ranges(text) {
+    for (start, end) in br_cnpj().ranges_with(text, index) {
         if cnpj(&text[start..end]) {
             found.push(start, end, 0.95);
         }
     }
-    for (start, end) in after_labels(&labels, || br_cnpj_bare().ranges(text)) {
+    for (start, end) in after_labels(&labels, || br_cnpj_bare().ranges_with(text, index)) {
         if labelled(start) && cnpj(&text[start..end]) {
             found.push(start, end, 0.9);
         }
     }
-    for (start, end) in after_labels(&labels, || uk_utr().ranges(text)) {
+    for (start, end) in after_labels(&labels, || uk_utr().ranges_with(text, index)) {
         if labelled(start) {
             found.push(start, end, 0.85);
         }
@@ -58,6 +65,14 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn its_case_sensitive_patterns_are_searched_at_candidate_starts() {
+        for pattern in [us_ein(), us_itin(), uk_utr(), au_abn()] {
+            assert!(pattern.is_anchored());
+            crate::anchored::parity::check(pattern);
+        }
+    }
 
     #[test]
     fn cnpj_needs_valid_check_digits() {

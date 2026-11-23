@@ -191,6 +191,15 @@ impl EngineBuilder {
         }
 
         let names = seen.contains(&Category::Name);
+        // The index of candidate starts pays for itself with national-id's
+        // twenty formats, or once three detectors share it.
+        let indexed: Vec<Category> = detectors
+            .iter()
+            .filter_map(|d| d.as_builtin())
+            .filter(|b| b.uses_index())
+            .map(|b| b.category())
+            .collect();
+        let index = indexed.contains(&Category::NationalId) || indexed.len() >= 3;
         Ok(AnonymaEngine {
             detectors,
             rules,
@@ -198,6 +207,7 @@ impl EngineBuilder {
             undetected,
             fusable,
             names,
+            index,
         })
     }
 }
@@ -226,6 +236,8 @@ pub struct AnonymaEngine {
     fusable: bool,
     /// The name detector runs (greetings anchor at the start of a text).
     names: bool,
+    /// Enough detectors share an index of candidate starts for it to pay off.
+    index: bool,
 }
 
 impl std::fmt::Debug for AnonymaEngine {
@@ -251,9 +263,14 @@ impl AnonymaEngine {
 
     /// Every value found, without overlaps, in document order.
     pub fn detect(&self, text: &str) -> Vec<Match> {
+        // One index of the text, built on first use, for every built-in detector.
+        let index = crate::anchored::TextIndex::new(text, self.index);
         let mut raw = Vec::new();
         for detector in &self.detectors {
-            raw.extend(detector.detect(text));
+            match detector.as_builtin() {
+                Some(builtin) => raw.extend(builtin.detect_in(&index)),
+                None => raw.extend(detector.detect(text)),
+            }
         }
         resolve(raw)
     }
@@ -336,6 +353,26 @@ impl AnonymaEngine {
 mod tests {
     use super::*;
     use crate::InMemoryVault;
+
+    #[test]
+    fn indexes_the_text_when_enough_detectors_share_the_index() {
+        let build = |categories: &[Category]| {
+            AnonymaEngine::builder()
+                .categories(categories.iter().copied())
+                .build()
+                .unwrap()
+                .index
+        };
+        assert!(AnonymaEngine::builder().build().unwrap().index);
+        assert!(build(&[Category::NationalId]));
+        assert!(build(&[
+            Category::Passport,
+            Category::TaxId,
+            Category::BankAccount
+        ]));
+        assert!(!build(&[Category::Passport, Category::Prescription]));
+        assert!(!build(&[Category::Email]));
+    }
 
     #[test]
     fn serves_every_preset_in_full() {

@@ -7,6 +7,7 @@
 
 use std::cmp::Ordering;
 
+use crate::anchored::TextIndex;
 use crate::{Category, Support};
 
 mod address;
@@ -76,6 +77,12 @@ pub trait Detector: Send + Sync {
     fn category(&self) -> Category;
     /// Every value found, in the order the detector finds them.
     fn detect(&self, text: &str) -> Vec<Match>;
+
+    /// This detector as a built-in one, so that an engine can share work
+    /// between built-in detectors on one text. Custom detectors keep the default.
+    fn as_builtin(&self) -> Option<&BuiltinDetector> {
+        None
+    }
 }
 
 /// The built-in detector of a category.
@@ -108,6 +115,39 @@ impl Detector for BuiltinDetector {
     }
 
     fn detect(&self, text: &str) -> Vec<Match> {
+        // Alone, only national-id's twenty formats pay for an index of the text.
+        self.detect_in(&TextIndex::new(text, self.category == Category::NationalId))
+    }
+
+    fn as_builtin(&self) -> Option<&BuiltinDetector> {
+        Some(self)
+    }
+}
+
+impl BuiltinDetector {
+    /// Whether this detector searches some patterns at the candidate starts of
+    /// a [`TextIndex`] (src/anchored.rs).
+    pub(crate) fn uses_index(&self) -> bool {
+        matches!(
+            self.category,
+            Category::NationalId
+                | Category::Passport
+                | Category::BankAccount
+                | Category::TaxId
+                | Category::TrackingNumber
+                | Category::HealthInsurance
+                | Category::MedicalRecord
+                | Category::CompanyRegistration
+                | Category::DriversLicense
+                | Category::LicensePlate
+                | Category::Prescription
+        )
+    }
+
+    /// [`Detector::detect`] with an index of the text that every built-in
+    /// detector of one call shares.
+    pub(crate) fn detect_in(&self, index: &TextIndex<'_>) -> Vec<Match> {
+        let text = index.text();
         match self.category {
             Category::Email => email::detect(text, self.aggressive),
             Category::Ipv4 => ip::detect_ipv4(text),
@@ -116,24 +156,24 @@ impl Detector for BuiltinDetector {
             // The aggressive SSN pattern only finds what the standard one does.
             Category::Ssn => ssn::detect(text),
             Category::Iban => iban::detect(text),
-            Category::NationalId => national_id::detect(text, self.strict),
-            Category::TaxId => tax_id::detect(text),
-            Category::BankAccount => bank_account::detect(text),
+            Category::NationalId => national_id::detect_in(text, index, self.strict),
+            Category::TaxId => tax_id::detect_in(text, index),
+            Category::BankAccount => bank_account::detect_in(text, index),
             Category::Phone => phone::detect(text, self.aggressive),
             Category::Name => name::detect(text, self.aggressive),
             Category::Address => address::detect(text),
-            Category::Passport => passport::detect(text),
-            Category::DriversLicense => drivers_license::detect(text),
+            Category::Passport => passport::detect_in(text, index),
+            Category::DriversLicense => drivers_license::detect_in(text, index),
             Category::Cryptocurrency => cryptocurrency::detect(text),
             Category::SocialMedia => social_media::detect(text),
-            Category::MedicalRecord => medical_record::detect(text),
-            Category::HealthInsurance => health_insurance::detect(text),
-            Category::Prescription => prescription::detect(text),
+            Category::MedicalRecord => medical_record::detect_in(text, index),
+            Category::HealthInsurance => health_insurance::detect_in(text, index),
+            Category::Prescription => prescription::detect_in(text, index),
             Category::Vin => vin::detect(text, self.aggressive),
-            Category::LicensePlate => license_plate::detect(text),
-            Category::CompanyRegistration => company_registration::detect(text),
+            Category::LicensePlate => license_plate::detect_in(text, index),
+            Category::CompanyRegistration => company_registration::detect_in(text, index),
             Category::ApiKey => api_key::detect(text),
-            Category::TrackingNumber => tracking_number::detect(text),
+            Category::TrackingNumber => tracking_number::detect_in(text, index),
             Category::CaseNumber => case_number::detect(text),
             Category::Url => url::detect(text),
             Category::DateOfBirth => date_of_birth::detect(text),
