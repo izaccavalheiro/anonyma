@@ -35,6 +35,15 @@ def run(op: str, data: dict[str, Any]) -> dict[str, Any]:
         return {"valid": anonyma.validate(data["validator"], data["value"])}
     if op == "detect":
         return {"matches": [vars(m) for m in engine(data).detect(data["text"])]}
+    if op == "scan":
+        spans = anonyma.scan(
+            data["text"],
+            data["categories"],
+            detection=data.get("detection", "precise"),
+            aggressive=data.get("aggressive", False),
+            min_confidence=data.get("minConfidence", 0.0),
+        )
+        return {"spans": [vars(span) for span in spans]}
     if op == "tokenize":
         text, mapping = engine(data).tokenize(data["text"])
         return {"text": text, "mapping": [list(pair) for pair in mapping.items()]}
@@ -70,13 +79,13 @@ def run(op: str, data: dict[str, Any]) -> dict[str, Any]:
 
 
 def compare(op: str, expected: dict[str, Any], actual: dict[str, Any]) -> None:
-    if op == "detect":
-        want, got = expected["matches"], actual["matches"]
+    if op in ("detect", "scan"):
+        key = "spans" if op == "scan" else "matches"
+        want, got = expected[key], actual[key]
         assert len(got) == len(want), got
         for w, g in zip(want, got):
-            assert {k: g[k] for k in ("category", "value", "start", "end")} == {
-                k: w[k] for k in ("category", "value", "start", "end")
-            }
+            fields = [k for k in ("category", "detector", "value", "start", "end", "residual") if k in w]
+            assert {k: g[k] for k in fields} == {k: w[k] for k in fields}
             assert g["confidence"] == pytest.approx(w["confidence"], abs=1e-9)
     elif op == "anonymize" and "textPattern" in expected:
         assert re.search(expected["textPattern"], actual["text"]), actual["text"]

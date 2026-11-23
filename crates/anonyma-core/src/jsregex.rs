@@ -169,7 +169,6 @@ impl JsRegex {
     }
 
     /// Whether the pattern matches anywhere in `text`.
-    #[cfg(test)]
     pub(crate) fn is_match(&self, text: &str) -> bool {
         self.regex.is_match(&self.haystack(text))
     }
@@ -233,17 +232,42 @@ pub(crate) const NOT_BEFORE_SEPARATED_DIGIT: &str = r"$|[^\d ./-]|[ ./-](?:$|[^\
 ///   path can succeed at a start whose lookbehind fails).
 pub(crate) struct Guarded {
     regex: JsRegex,
-    not_after: fn(char) -> bool,
+    /// Whether the text before a candidate fails the lookbehind.
+    rejects: Lookbehind,
+}
+
+/// A lookbehind, tested on the text before a candidate.
+#[derive(Clone, Copy)]
+pub(crate) enum Lookbehind {
+    /// No lookbehind.
+    None,
+    /// `(?<![X])`: the character before is not one of a class.
+    Char(fn(char) -> bool),
+    /// Anything longer, given the text before the candidate.
+    Text(fn(&str) -> bool),
 }
 
 impl Guarded {
     /// `core` followed by `tail`; a match preceded by a character for which
     /// `not_after` holds is rejected.
     pub(crate) fn new(core: &str, tail: &str, not_after: fn(char) -> bool) -> Self {
-        Guarded {
-            regex: JsRegex::new(&format!("({core})(?:{tail})")),
-            not_after,
-        }
+        Self::with(core, tail, Lookbehind::Char(not_after), false)
+    }
+
+    /// `core` followed by `tail`, with any lookbehind; `insensitive` compiles a
+    /// lower-case pattern for ECMAScript's `i` flag (see [`JsRegex::insensitive`]).
+    pub(crate) fn with(core: &str, tail: &str, rejects: Lookbehind, insensitive: bool) -> Self {
+        let source = if tail.is_empty() {
+            format!("({core})")
+        } else {
+            format!("({core})(?:{tail})")
+        };
+        let regex = if insensitive {
+            JsRegex::insensitive(&source)
+        } else {
+            JsRegex::new(&source)
+        };
+        Guarded { regex, rejects }
     }
 
     /// The candidate at or after `at`: the byte range of the match, and the
@@ -254,10 +278,40 @@ impl Guarded {
 
     /// Whether a match may start at `start`: the lookbehind holds.
     pub(crate) fn may_start(&self, text: &str, start: usize) -> bool {
-        !text[..start]
-            .chars()
-            .next_back()
-            .is_some_and(self.not_after)
+        let before = &text[..start];
+        match self.rejects {
+            Lookbehind::None => true,
+            Lookbehind::Char(rejects) => !before.chars().next_back().is_some_and(rejects),
+            Lookbehind::Text(rejects) => !rejects(before),
+        }
+    }
+
+    /// The groups of every match, as a global `exec` loop finds them: a
+    /// candidate that fails the lookbehind resumes one character later, a match
+    /// resumes at its end. Checks the caller makes afterwards (the reference's
+    /// `continue`) do not change where the next search starts.
+    pub(crate) fn matches(&self, text: &str) -> Vec<Vec<Option<(usize, usize)>>> {
+        let mut out = Vec::new();
+        let mut at = 0;
+        while at <= text.len() {
+            let Some(groups) = self.candidate(text, at) else {
+                break;
+            };
+            let Some((start, end)) = groups[1] else {
+                break;
+            };
+            if self.may_start(text, start) {
+                at = if end > start {
+                    end
+                } else {
+                    next_char(text, end)
+                };
+                out.push(groups);
+            } else {
+                at = next_char(text, start);
+            }
+        }
+        out
     }
 
     /// The successive matches, as a global ECMAScript `exec` loop finds them,

@@ -50,7 +50,9 @@ __all__ = [
     "detokenize",
     "preset",
     "restore",
+    "scan",
     "sha256_hex",
+    "Span",
     "validate",
     "validators",
 ]
@@ -210,6 +212,45 @@ class Anonyma:
     def restore(self, text: str, vault: Vault) -> str:
         """Put the original values back into a model's answer."""
         return vault.restore(text)[0]
+
+
+@dataclass(frozen=True)
+class Span:
+    """A detection of :func:`scan`. Offsets are code points."""
+
+    category: str
+    detector: str
+    value: str
+    start: int
+    end: int
+    confidence: float
+    #: True for the part of a detection a stronger overlapping one left uncovered.
+    residual: bool
+
+
+def scan(
+    text: str,
+    categories: Iterable[str] | None = None,
+    *,
+    detection: str = "precise",
+    aggressive: bool = False,
+    min_confidence: float = 0.0,
+) -> list[Span]:
+    """The span engine of anonyma: precise detectors, overlaps resolved by covering.
+
+    It matches ``compilePipeline({ categories, detection, aggressive,
+    minConfidence }).scan(text)`` of the TypeScript package.
+    """
+    payload: dict[str, Any] = {
+        "text": text,
+        "detection": detection,
+        "aggressive": aggressive,
+        "minConfidence": min_confidence,
+    }
+    names = _names(categories)
+    if names is not None:
+        payload["categories"] = names
+    return [Span(**span) for span in _call("scan", payload)["spans"]]
 
 
 def restore(text: str, vault: Vault) -> Restored:

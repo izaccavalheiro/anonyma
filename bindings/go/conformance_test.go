@@ -40,16 +40,20 @@ func decodeAny(raw json.RawMessage) any {
 func compareCase(c conformanceCase, actual map[string]any) []string {
 	var problems []string
 	switch {
-	case c.Op == "detect":
-		want, _ := decodeAny(c.Expected["matches"]).([]any)
-		got, _ := actual["matches"].([]any)
+	case c.Op == "detect" || c.Op == "scan":
+		list := "matches"
+		if c.Op == "scan" {
+			list = "spans"
+		}
+		want, _ := decodeAny(c.Expected[list]).([]any)
+		got, _ := actual[list].([]any)
 		if len(want) != len(got) {
 			return []string{fmt.Sprintf("expected %d matches, got %v", len(want), got)}
 		}
 		for i := range want {
 			w, g := want[i].(map[string]any), got[i].(map[string]any)
-			for _, key := range []string{"category", "value", "start", "end"} {
-				if !reflect.DeepEqual(w[key], g[key]) {
+			for _, key := range []string{"category", "detector", "value", "start", "end", "residual"} {
+				if _, ok := w[key]; ok && !reflect.DeepEqual(w[key], g[key]) {
 					problems = append(problems, fmt.Sprintf("match %d %s: expected %v, got %v", i, key, w[key], g[key]))
 				}
 			}

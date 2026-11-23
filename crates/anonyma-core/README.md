@@ -39,6 +39,15 @@ first, an engine asked for it fails with `Error::UnsupportedCategories` rather
 than skipping it silently; `EngineBuilder::allow_partial(true)` opts in to
 partial detection.
 
+## Two APIs
+
+`AnonymaEngine` is the classic API of the reference (`detect()`, `anonymize()`, `tokenize()`).
+`Pipeline` is its span engine (`compilePipeline(...).scan()` of `anonyma/engine`): precise
+detectors where there is one, the redaction labels allow-listed, and overlaps resolved by
+covering, so a weaker detection keeps the characters no stronger one claims as residual spans.
+The precise IPv4, IPv6 and card detectors are not ported yet: a pipeline refuses those
+categories in precise mode.
+
 ## Regular expressions
 
 The reference's patterns are ECMAScript regular expressions; this crate runs

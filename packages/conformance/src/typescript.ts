@@ -15,6 +15,8 @@ import {
 } from "anonyma";
 import type { AnonymizationRule, CompliancePreset, PiiCategory } from "anonyma";
 import { canonicalize, createReceiptIssuer, hmacSha256Hex, sha256Hex } from "anonyma/audit";
+import { compilePipeline } from "anonyma/engine";
+import type { PipelineSpec } from "anonyma/engine";
 import { detectNationalIdStrict } from "anonyma/detectors";
 import { CHECKSUMS } from "anonyma/validators";
 import type { ChecksumName } from "anonyma/validators";
@@ -109,6 +111,31 @@ async function run(testCase: ConformanceCase): Promise<unknown> {
           end: utf16ToCodePoints(input, match.end),
           confidence: match.confidence,
         })),
+      };
+    }
+
+    case "scan": {
+      const input = text(testCase, "text");
+      const detection = testCase.input["detection"];
+      const minConfidence = testCase.input["minConfidence"];
+      const spec: PipelineSpec = {
+        categories: strings(testCase, "categories") as PiiCategory[],
+        aggressive: flag(testCase, "aggressive"),
+        ...(detection === "precise" || detection === "legacy" ? { detection } : {}),
+        ...(typeof minConfidence === "number" ? { minConfidence } : {}),
+      };
+      return {
+        spans: compilePipeline(spec)
+          .scan(input)
+          .map((span) => ({
+            category: span.category,
+            detector: span.detector,
+            value: input.slice(span.start, span.end),
+            start: utf16ToCodePoints(input, span.start),
+            end: utf16ToCodePoints(input, span.end),
+            confidence: span.confidence,
+            residual: span.residual,
+          })),
       };
     }
 

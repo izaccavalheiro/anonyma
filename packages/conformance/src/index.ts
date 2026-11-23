@@ -17,6 +17,7 @@ import { readFileSync } from "node:fs";
 export const OPERATIONS = [
   "validate",
   "detect",
+  "scan",
   "tokenize",
   "detokenize",
   "shield",
@@ -210,7 +211,8 @@ function compareMatches(expected: unknown, actual: unknown, problems: string[]):
       problems.push(`match ${String(i)}: expected ${show(want)}, got ${show(got)}`);
       continue;
     }
-    for (const key of ["category", "value", "start", "end"]) {
+    for (const key of ["category", "detector", "value", "start", "end", "residual"]) {
+      if (!Object.hasOwn(want, key)) continue;
       if (want[key] !== got[key]) {
         problems.push(
           `match ${String(i)} ${key}: expected ${show(want[key])}, got ${show(got[key])}`,
@@ -250,6 +252,9 @@ export function compareResult(testCase: ConformanceCase, actual: unknown): strin
   switch (testCase.op) {
     case "detect":
       compareMatches(expected["matches"], actual["matches"], problems);
+      return problems;
+    case "scan":
+      compareMatches(expected["spans"], actual["spans"], problems);
       return problems;
     case "anonymize": {
       const pattern = expected["textPattern"];

@@ -3789,6 +3789,370 @@
       }
     },
     {
+      "id": "scan.email-precise",
+      "description": "the precise e-mail detector: file names and the Git remote account are not addresses",
+      "op": "scan",
+      "requires": ["scan", "scan:email"],
+      "input": {
+        "text": "Mail ana@example.com, see logo@2x.png and git@github.com:org/repo.git",
+        "categories": ["email"]
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "email",
+            "detector": "email",
+            "value": "ana@example.com",
+            "start": 5,
+            "end": 20,
+            "confidence": 0.99,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "scan.email-userinfo",
+      "description": "credentials in a URL are not an e-mail address",
+      "op": "scan",
+      "requires": ["scan", "scan:email"],
+      "input": {
+        "text": "Open https://ana@example.com/x or ftp://bob@example.org",
+        "categories": ["email"]
+      },
+      "expected": {
+        "spans": []
+      }
+    },
+    {
+      "id": "scan.email-message-id",
+      "description": "a Message-ID is not an e-mail address",
+      "op": "scan",
+      "requires": ["scan", "scan:email"],
+      "input": {
+        "text": "Message-ID: <abc123@mail.example.com>",
+        "categories": ["email"]
+      },
+      "expected": {
+        "spans": []
+      }
+    },
+    {
+      "id": "scan.email-obfuscated",
+      "description": "an obfuscated address in aggressive mode",
+      "op": "scan",
+      "requires": ["scan", "scan:email"],
+      "input": {
+        "text": "Write to ana [at] example [dot] com",
+        "categories": ["email"],
+        "aggressive": true
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "email",
+            "detector": "email/obfuscated",
+            "value": "ana [at] example [dot] com",
+            "start": 9,
+            "end": 35,
+            "confidence": 0.75,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "scan.email-obfuscated-standard",
+      "description": "not in standard mode",
+      "op": "scan",
+      "requires": ["scan", "scan:email"],
+      "input": {
+        "text": "Write to ana [at] example [dot] com",
+        "categories": ["email"]
+      },
+      "expected": {
+        "spans": []
+      }
+    },
+    {
+      "id": "scan.ssn-separators",
+      "description": "Unicode dashes and spaces as separators",
+      "op": "scan",
+      "requires": ["scan", "scan:ssn"],
+      "input": {
+        "text": "SSN 123–45–6789 and 123 45 6789",
+        "categories": ["ssn"]
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "ssn",
+            "detector": "ssn",
+            "value": "123–45–6789",
+            "start": 4,
+            "end": 15,
+            "confidence": 0.95,
+            "residual": false
+          },
+          {
+            "category": "ssn",
+            "detector": "ssn",
+            "value": "123 45 6789",
+            "start": 20,
+            "end": 31,
+            "confidence": 0.95,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "scan.ssn-labelled",
+      "description": "nine digits after an SSN label; only the digits are reported",
+      "op": "scan",
+      "requires": ["scan", "scan:ssn"],
+      "input": {
+        "text": "SSN of the applicant: 123456789.",
+        "categories": ["ssn"]
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "ssn",
+            "detector": "ssn",
+            "value": "123456789",
+            "start": 22,
+            "end": 31,
+            "confidence": 0.9,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "scan.ssn-bare",
+      "description": "nine bare digits, with a low confidence, in aggressive mode",
+      "op": "scan",
+      "requires": ["scan", "scan:ssn"],
+      "input": {
+        "text": "Ref 123456789 here",
+        "categories": ["ssn"],
+        "aggressive": true
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "ssn",
+            "detector": "ssn/bare",
+            "value": "123456789",
+            "start": 4,
+            "end": 13,
+            "confidence": 0.5,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "scan.ssn-bare-standard",
+      "description": "not in standard mode",
+      "op": "scan",
+      "requires": ["scan", "scan:ssn"],
+      "input": {
+        "text": "Ref 123456789 here",
+        "categories": ["ssn"]
+      },
+      "expected": {
+        "spans": []
+      }
+    },
+    {
+      "id": "scan.iban-lower-case",
+      "description": "the precise IBAN detector reads lower case and the country's length",
+      "op": "scan",
+      "requires": ["scan", "scan:iban"],
+      "input": {
+        "text": "IBAN gb82 west 1234 5698 7654 32 ok",
+        "categories": ["iban"]
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "iban",
+            "detector": "iban",
+            "value": "gb82 west 1234 5698 7654 32",
+            "start": 5,
+            "end": 32,
+            "confidence": 0.99,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "scan.iban-hyphens",
+      "description": "hyphens as separators",
+      "op": "scan",
+      "requires": ["scan", "scan:iban"],
+      "input": {
+        "text": "Account GB82-WEST-1234-5698-7654-32.",
+        "categories": ["iban"]
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "iban",
+            "detector": "iban",
+            "value": "GB82-WEST-1234-5698-7654-32",
+            "start": 8,
+            "end": 35,
+            "confidence": 0.99,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "scan.cover-residual",
+      "description": "the e-mail address claims its characters; the URL keeps the rest as a residual span",
+      "op": "scan",
+      "requires": ["scan", "scan:email", "scan:url"],
+      "input": {
+        "text": "see https://example.com/contact/ana@example.org",
+        "categories": ["email", "url"]
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "url",
+            "detector": "url",
+            "value": "https://example.com/contact/",
+            "start": 4,
+            "end": 32,
+            "confidence": 0.95,
+            "residual": true
+          },
+          {
+            "category": "email",
+            "detector": "email",
+            "value": "ana@example.org",
+            "start": 32,
+            "end": 47,
+            "confidence": 0.99,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "scan.allow-label",
+      "description": "a redaction label read as a BIC is allow-listed",
+      "op": "scan",
+      "requires": ["scan", "scan:bank-account"],
+      "input": {
+        "text": "Already REDACTED, BIC DEUTDEFF",
+        "categories": ["bank-account"]
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "bank-account",
+            "detector": "bank-account",
+            "value": "DEUTDEFF",
+            "start": 22,
+            "end": 30,
+            "confidence": 0.82,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "scan.min-confidence",
+      "description": "detections below minConfidence are dropped before resolution",
+      "op": "scan",
+      "requires": ["scan", "scan:phone"],
+      "input": {
+        "text": "Ring +44 20 7946 0958 or 020 7946 0958",
+        "categories": ["phone"],
+        "minConfidence": 0.85
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "phone",
+            "detector": "phone",
+            "value": "+44 20 7946 0958",
+            "start": 5,
+            "end": 21,
+            "confidence": 0.9,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "scan.legacy-detection",
+      "description": "detection: legacy uses the classic detectors",
+      "op": "scan",
+      "requires": ["scan", "detect:email"],
+      "input": {
+        "text": "Contact us at support@example.com.",
+        "categories": ["email"],
+        "detection": "legacy"
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "email",
+            "detector": "email",
+            "value": "support@example.com",
+            "start": 14,
+            "end": 33,
+            "confidence": 0.99,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "scan.national-id-strict",
+      "description": "precise mode verifies national-id check digits",
+      "op": "scan",
+      "requires": ["scan", "scan:national-id"],
+      "input": {
+        "text": "CPF 529.982.247-26",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "spans": []
+      }
+    },
+    {
+      "id": "scan.national-id-legacy",
+      "description": "legacy mode does not",
+      "op": "scan",
+      "requires": ["scan", "detect:national-id"],
+      "input": {
+        "text": "CPF 529.982.247-26",
+        "categories": ["national-id"],
+        "detection": "legacy"
+      },
+      "expected": {
+        "spans": [
+          {
+            "category": "national-id",
+            "detector": "national-id",
+            "value": "529.982.247-26",
+            "start": 4,
+            "end": 18,
+            "confidence": 0.92,
+            "residual": false
+          }
+        ]
+      }
+    },
+    {
       "id": "tokenize.single",
       "description": "one value, bracket token",
       "op": "tokenize",
@@ -4577,7 +4941,7 @@
       }
     },
     {
-      "id": "digest.sha256.243",
+      "id": "digest.sha256.260",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -4589,7 +4953,7 @@
       }
     },
     {
-      "id": "digest.sha256.244",
+      "id": "digest.sha256.261",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],
@@ -4601,7 +4965,7 @@
       }
     },
     {
-      "id": "digest.sha256.245",
+      "id": "digest.sha256.262",
       "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
       "op": "digest",
       "requires": ["receipt"],

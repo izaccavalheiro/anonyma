@@ -28,6 +28,7 @@ mod name;
 mod national_id;
 mod passport;
 mod phone;
+pub(crate) mod precise;
 mod prescription;
 mod social_media;
 mod ssn;

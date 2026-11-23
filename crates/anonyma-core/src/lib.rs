@@ -35,6 +35,7 @@ mod engine;
 mod error;
 mod jsregex;
 pub mod offsets;
+pub mod pipeline;
 pub mod presets;
 pub mod receipt;
 pub mod strategy;
@@ -45,6 +46,7 @@ pub use category::{Category, Support};
 pub use detectors::{BuiltinDetector, Detector, Match};
 pub use engine::{AnonymaEngine, Anonymized, EngineBuilder};
 pub use error::{Error, Result};
+pub use pipeline::{Detection, Pipeline, PipelineBuilder, Span};
 pub use presets::{combine as combine_presets, CombinedPreset, Preset};
 pub use receipt::{
     canonicalize, sha256_hex, AuditReceipt, Invalid, IssueOptions, Json, ReceiptIssuer,
@@ -96,6 +98,13 @@ pub fn capabilities() -> Vec<String> {
         ]
         .map(String::from),
     );
+    // The engine's scan: a category whose precise detector is ported, or that has none.
+    out.push("scan".to_string());
+    for category in Category::ALL {
+        if category.support() == Support::Full && !pipeline::PRECISE_PENDING.contains(category) {
+            out.push(format!("scan:{category}"));
+        }
+    }
     // A preset is available for anonymization when every category it covers is detected in full.
     for preset in Preset::ALL {
         if preset

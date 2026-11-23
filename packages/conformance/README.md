@@ -60,6 +60,7 @@ every capability and must skip nothing.
 | `detect:<category>/<entry>`    | one entry of a composite detector, such as `national-id/br-cpf`: a case that needs only it uses inputs no other entry matches |
 | `detect:<category>+aggressive` | the aggressive variant of the detector                                                                                        |
 | `detect:<category>+strict`     | the strict variant, which verifies check digits (`national-id`)                                                               |
+| `scan`, `scan:<category>`      | the engine's scan (`anonyma/engine`), and its detectors of the category in precise mode                                       |
 | `tokenize`, `detokenize`       | classic tokens (`[EMAIL_0001]`) and their restoration                                                                         |
 | `shield`, `restore`            | vault tokens (`{{EMAIL_1}}`) and their restoration from a vault                                                               |
 | `anonymize`, `strategy:<name>` | one-way anonymization with the strategy `<name>`                                                                              |
@@ -76,21 +77,22 @@ Offsets are in **Unicode code points** from the start of the text (`"offsets": "
 whatever the implementation's native unit: JavaScript counts UTF-16 code units, Rust counts UTF-8
 bytes, Python counts code points. Each runner converts. Confidence values are equal within `1e-9`.
 
-| `op`             | Input                                                | Expected                                                                        |
-| ---------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `validate`       | `validator`, `value`                                 | `valid`                                                                         |
-| `detect`         | `text`, `categories`, `aggressive?`, `strict?`       | `matches`: `category`, `value`, `start`, `end`, `confidence`, in document order |
-| `tokenize`       | `text`, `categories`                                 | `text`, `mapping` (pairs, compared as a set)                                    |
-| `detokenize`     | `text`, `mapping`                                    | `text`, `replacedCount`, `unresolved`                                           |
-| `shield`         | `text`, `categories`, `vault` (pairs it starts with) | `text`, `vault` (every pair afterwards, compared as a set)                      |
-| `restore`        | `text`, `vault`                                      | `text`, `restored`, `unresolved`                                                |
-| `anonymize`      | `text`, and `preset` (names) or `rules`              | `text`, or `textPattern` when the output is random                              |
-| `preset`         | `names`                                              | `categories`, `defaultStrategy`, `rules`                                        |
-| `canonicalize`   | `value`                                              | `text`                                                                          |
-| `digest`         | `text`                                               | `hex`: SHA-256 of the UTF-8 encoding                                            |
-| `receipt.sign`   | `key`, `body`                                        | `signature`                                                                     |
-| `receipt.verify` | `key`, `receipt`                                     | `valid`, `reason?`                                                              |
-| `receipt.issue`  | `key`, `text`, `counts`, `presets?`, `timestamp`     | `receipt`: the listed members; the receipt must verify                          |
+| `op`             | Input                                                               | Expected                                                                           |
+| ---------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `validate`       | `validator`, `value`                                                | `valid`                                                                            |
+| `detect`         | `text`, `categories`, `aggressive?`, `strict?`                      | `matches`: `category`, `value`, `start`, `end`, `confidence`, in document order    |
+| `scan`           | `text`, `categories`, `detection?`, `aggressive?`, `minConfidence?` | `spans`: `category`, `detector`, `value`, `start`, `end`, `confidence`, `residual` |
+| `tokenize`       | `text`, `categories`                                                | `text`, `mapping` (pairs, compared as a set)                                       |
+| `detokenize`     | `text`, `mapping`                                                   | `text`, `replacedCount`, `unresolved`                                              |
+| `shield`         | `text`, `categories`, `vault` (pairs it starts with)                | `text`, `vault` (every pair afterwards, compared as a set)                         |
+| `restore`        | `text`, `vault`                                                     | `text`, `restored`, `unresolved`                                                   |
+| `anonymize`      | `text`, and `preset` (names) or `rules`                             | `text`, or `textPattern` when the output is random                                 |
+| `preset`         | `names`                                                             | `categories`, `defaultStrategy`, `rules`                                           |
+| `canonicalize`   | `value`                                                             | `text`                                                                             |
+| `digest`         | `text`                                                              | `hex`: SHA-256 of the UTF-8 encoding                                               |
+| `receipt.sign`   | `key`, `body`                                                       | `signature`                                                                        |
+| `receipt.verify` | `key`, `receipt`                                                    | `valid`, `reason?`                                                                 |
+| `receipt.issue`  | `key`, `text`, `counts`, `presets?`, `timestamp`                    | `receipt`: the listed members; the receipt must verify                             |
 
 The semantics are the reference's:
 
@@ -98,6 +100,14 @@ The semantics are the reference's:
   category's detector runs in the order given; the matches are sorted by start, then by
   confidence, highest first (a stable sort), and a match that starts inside the previous kept one
   is dropped. `strict` replaces the `national-id` detector by its strict variant.
+- **scan** is `compilePipeline({ categories, detection, aggressive, minConfidence }).scan(text)`
+  of `anonyma/engine`: in precise mode (the default), the precise detectors of `email`, `ssn`,
+  `iban`, `ipv4`, `ipv6`, `credit-card` and the strict `national-id`; the legacy detectors
+  otherwise. A detection whose value is a redaction label in use (`[REDACTED]`, `REDACTED`, any
+  case) is allow-listed. Overlaps are resolved by covering: within a cluster of overlapping
+  detections, ordered by confidence, length, start and detector, each one claims the characters no
+  stronger one has, and a partly covered one becomes residual spans of its unclaimed parts, trimmed
+  of white space.
 - **tokenize** is `tokenize(text, { categories, format: "bracket" })`. Tokens are assigned from the
   end of the text backwards, one counter per prefix, and values equal ignoring case share a token.
 - **shield** is `tokenize(text, { categories, vault })` with an `InMemoryVault`: brace tokens

@@ -13,6 +13,13 @@ change its API.
   labelled tokens), `tracking-number` (UPS, Amazon, USPS, DHL, labelled numbers) and
   `case-number` (US federal case numbers, labelled case numbers). The Rust core detects all 27
   categories, and every preset, CCPA included, works without `allow_partial=True`.
+- `scan()`: the span engine of the TypeScript package (`compilePipeline(...).scan()`), with the
+  precise detectors of e-mail addresses (and obfuscated ones in aggressive mode), SSNs (with
+  Unicode dashes, after a label, and bare ones in aggressive mode) and IBANs (each country's length,
+  lower case, hyphens), the redaction labels allow-listed, and overlaps resolved by covering:
+  a weaker detection keeps the characters no stronger one claims, as residual spans. The precise
+  IPv4, IPv6 and card detectors come next; until then `scan()` refuses those categories in precise
+  mode.
 
 ## [0.1.0a2] — 2026-11-23
 
