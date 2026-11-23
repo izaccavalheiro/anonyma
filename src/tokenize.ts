@@ -29,6 +29,7 @@ import {
 } from "./strategies/tokenize.js";
 import { ValidationError } from "./errors.js";
 import { compileAllowlist } from "./internal/allowlist.js";
+import { replaceSpans, type Replacement } from "./internal/replace.js";
 import { isThenable } from "./vault/anonyma-vault.js";
 import type { AnonymaVault } from "./vault/anonyma-vault.js";
 import { createVaultTokenizer } from "./vault/vault-tokenizer.js";
@@ -121,7 +122,7 @@ export function tokenize(text: string, options: TokenizeOptions = {}): TokenizeR
   }
 
   const store = createTokenStore();
-  let result = text;
+  const replacements: Replacement[] = [];
   const reversed = [...matches].reverse();
   const tokenMatches: TokenMatch[] = [];
   const format = options.format ?? "bracket";
@@ -136,10 +137,14 @@ export function tokenize(text: string, options: TokenizeOptions = {}): TokenizeR
       start: match.start,
       end: match.end,
     });
-    result = result.slice(0, match.start) + token + result.slice(match.end);
+    replacements.push({ start: match.start, end: match.end, replacement: token });
   }
 
-  return { text: result, mapping: store.tokens, tokens: tokenMatches };
+  return {
+    text: replaceSpans(text, replacements.reverse()),
+    mapping: store.tokens,
+    tokens: tokenMatches,
+  };
 }
 
 // ---------------------------------------------------------------------------
