@@ -2,6 +2,7 @@ package anonyma
 
 import (
 	"fmt"
+	"io"
 	"strings"
 	"testing"
 )
@@ -104,4 +105,22 @@ func BenchmarkEngineDetectBatch(b *testing.B) {
 			b.Fatal(err)
 		}
 	}
+}
+
+// BenchmarkNewReader copies 10,000 log lines per op and reports the time per line.
+func BenchmarkNewReader(b *testing.B) {
+	const lines = 10000
+	var input strings.Builder
+	for i := 0; i < lines; i++ {
+		input.WriteString(entry(i))
+		input.WriteByte('\n')
+	}
+	text := input.String()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		if _, err := io.Copy(io.Discard, NewReader(strings.NewReader(text), Options{})); err != nil {
+			b.Fatal(err)
+		}
+	}
+	b.ReportMetric(float64(b.Elapsed().Nanoseconds())/float64(b.N*lines), "ns/line")
 }
