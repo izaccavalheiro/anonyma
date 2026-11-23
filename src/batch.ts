@@ -19,7 +19,15 @@
  * ```
  */
 
-import { anonymize, anonymizeAsync, detect } from "./anonymize.js";
+import {
+  anonymize,
+  anonymizeAsync,
+  anonymizeDetected,
+  detect,
+  detectEach,
+  prepareAnonymize,
+  type PreparedAnonymize,
+} from "./anonymize.js";
 import { tokenize } from "./tokenize.js";
 import type {
   AnonymizeOptions,
@@ -68,6 +76,12 @@ async function wrapAsync<T>(index: number, fn: () => Promise<T>): Promise<BatchR
 /**
  * Synchronously anonymize an array of strings.
  *
+ * Entries shorter than 8 KB are detected together: they are joined into one
+ * text, scanned once, and the matches are split back by entry, which costs
+ * less than one scan per entry and gives the same results. The options are
+ * resolved once for the batch. Each entry is still replaced on its own, so a
+ * failure, and the numbering of `consistentTokens`, stay per entry.
+ *
  * @param texts   - The array of input strings.
  * @param options - Anonymization options applied to every item.
  * @returns An array of {@link BatchResult} objects, one per input item.
@@ -76,7 +90,27 @@ export function anonymizeBatch(
   texts: readonly string[],
   options: AnonymizeOptions = {},
 ): BatchResult<AnonymizeResult>[] {
-  return texts.map((text, index) => wrapSync(index, () => anonymize(text, options)));
+  let prepared: PreparedAnonymize;
+  try {
+    prepared = prepareAnonymize(options);
+  } catch {
+    // Every entry fails with the error anonymize() throws for these options.
+    return texts.map((text, index) => wrapSync(index, () => anonymize(text, options)));
+  }
+  const detected = detectEach(
+    texts,
+    prepared.categories,
+    options.customDetectors,
+    options.aggressive ?? false,
+  );
+  return texts.map((text, index) => {
+    const matches = detected[index];
+    return wrapSync(index, () =>
+      matches === undefined
+        ? anonymize(text, options)
+        : anonymizeDetected(text, matches, options, prepared),
+    );
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -148,6 +182,10 @@ export function tokenizeBatch(
 /**
  * Detect PII in an array of strings.
  *
+ * Entries shorter than 8 KB are joined into one text, scanned once, and the
+ * matches are split back by entry: the same results as {@link detect} on each
+ * entry, at a fraction of the cost for short entries.
+ *
  * @param texts      - The array of input strings.
  * @param categories - Optional category filter.
  * @returns An array of {@link BatchResult} objects containing PiiMatch arrays.
@@ -156,5 +194,11 @@ export function detectBatch(
   texts: readonly string[],
   categories?: readonly PiiCategory[],
 ): BatchResult<PiiMatch[]>[] {
-  return texts.map((text, index) => wrapSync(index, () => detect(text, categories)));
+  const detected = detectEach(texts, categories, undefined, false);
+  return texts.map((text, index): BatchResult<PiiMatch[]> => {
+    const matches = detected[index];
+    return matches === undefined
+      ? wrapSync(index, () => detect(text, categories))
+      : { index, ok: true, value: matches };
+  });
 }

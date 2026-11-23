@@ -9,12 +9,18 @@ are documented in this file. The format is based on
 
 ### Changed
 
+- Each call encodes its input in one buffer that the core reads in place, and decodes the answer
+  in one pass without copying it: the Go side of a call costs 1.9 µs instead of 11.7 µs, and a
+  `Detect` call allocates 17 times instead of 37. `NewReader` and `Middleware` encode their
+  options once, not once per line or request.
 - Detection skips the patterns that count only after a label (generic account, member and record
   numbers, ten national-id formats, ...) when the text holds no such label. Results are unchanged;
   a call on a 200-character text without labels takes about 30% less time.
 
 ### Fixed
 
+- Options that `encoding/json` cannot encode (a strategy holding a channel or a function) are
+  now an error. They were dropped, so the call detected every category with its default strategy.
 - Detecting addresses, names, phone numbers, IBANs, IPv4 addresses and US SSNs in a text with
   capital letters took time and memory proportional to the length of the text times the number of
   candidates: each candidate lower-cased the whole text again. A 119 KB text with 1,000 labelled
