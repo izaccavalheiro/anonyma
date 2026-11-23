@@ -278,21 +278,24 @@ impl AnonymaEngine {
         } else {
             texts.iter().map(|_| None).collect()
         };
-        texts
-            .iter()
-            .zip(fused)
-            .map(|(text, found)| found.unwrap_or_else(|| self.detect(text)))
-            .collect()
+        // Texts scanned alone run on the pool too, with the `parallel` feature.
+        crate::fusion::map_all(
+            texts.iter().copied().zip(fused).collect(),
+            |(text, found)| found.unwrap_or_else(|| self.detect(text)),
+        )
     }
 
     /// [`anonymize`](Self::anonymize) on each text of a batch, in order, with
     /// the matches of [`detect_batch`](Self::detect_batch).
     pub fn anonymize_batch<S: AsRef<str>>(&self, texts: &[S]) -> Vec<Result<Anonymized>> {
-        texts
+        let pending: Vec<(&str, Vec<Match>)> = texts
             .iter()
+            .map(AsRef::as_ref)
             .zip(self.detect_batch(texts))
-            .map(|(text, matches)| self.anonymize_matches(text.as_ref(), matches))
-            .collect()
+            .collect();
+        crate::fusion::map_all(pending, |(text, matches)| {
+            self.anonymize_matches(text, matches)
+        })
     }
 
     /// Replace every value found with its category's strategy.

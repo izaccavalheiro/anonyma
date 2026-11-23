@@ -17,6 +17,11 @@ regex.workspace = true
 sha2.workspace = true
 hmac.workspace = true
 getrandom.workspace = true
+rayon = { workspace = true, optional = true }
+
+[features]
+# Batches use every core (rayon). Off for WebAssembly, which has no threads.
+parallel = ["dep:rayon"]
 
 [dev-dependencies]
 serde_json.workspace = true

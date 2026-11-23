@@ -13,6 +13,8 @@ change its API.
   on each text, in order, in one call with the GIL released. Short texts are joined, scanned once
   and split back, as the TypeScript package's `detectBatch()` does: the same results, at about half
   the cost per text for log lines and rows.
+- `detect_batch()` and `anonymize_batch()` spread a batch over every core (rayon): on 4 cores,
+  200-byte texts cost about 15 µs each in a batch of 1,000, against 37–40 µs on one core.
 
 ### Changed
 

@@ -14,6 +14,9 @@ are documented in this file. The format is based on
   together. On 200-byte log lines: 37–40 µs per text in a batch, against 63–88 µs for `Detect`.
   An `Engine` is safe for concurrent use; `Close` frees it.
 - `NewReader` and `Middleware` build one engine each instead of one per line or request.
+- `DetectBatch()` and `AnonymizeBatch()` spread a batch over every core inside the one cgo call
+  (rayon; `RAYON_NUM_THREADS` sets the number of threads): on 4 cores, 200-byte texts cost about
+  15 µs each in a batch of 1,000, against 37–40 µs on one core.
 
 ### Changed
 

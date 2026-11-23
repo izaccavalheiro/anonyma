@@ -33,17 +33,32 @@ fn starts_with_greeting(text: &str) -> bool {
     })
 }
 
+/// `f` of each item, in order: on rayon's pool with the `parallel` feature,
+/// one after the other without it.
+pub(crate) fn map_all<I: Send, O: Send>(items: Vec<I>, f: impl Fn(I) -> O + Sync + Send) -> Vec<O> {
+    #[cfg(feature = "parallel")]
+    {
+        use rayon::prelude::*;
+        items.into_par_iter().map(f).collect()
+    }
+    #[cfg(not(feature = "parallel"))]
+    {
+        items.into_iter().map(f).collect()
+    }
+}
+
 /// Run `scan` on fused texts of the entries that can be fused and split its
 /// results back by entry. `scan` returns results sorted by start, each inside
-/// one entry; `start` reads a result's start and `shift` moves it left.
+/// one entry; `start` reads a result's start and `shift` moves it left. Fused
+/// texts are scanned with [`map_all`], in parallel with the `parallel` feature.
 ///
 /// Returns, per entry, its results, or `None` for an entry to scan alone (too
 /// long, holding `\0`, a greeting when `names`), and for every entry when fewer
 /// than two can be fused.
-pub(crate) fn fuse_each<T>(
+pub(crate) fn fuse_each<T: Send>(
     texts: &[&str],
     names: bool,
-    scan: impl Fn(&str) -> Vec<T>,
+    scan: impl Fn(&str) -> Vec<T> + Sync + Send,
     start: impl Fn(&T) -> usize,
     shift: impl Fn(T, usize) -> T,
 ) -> Vec<Option<Vec<T>>> {
@@ -58,7 +73,23 @@ pub(crate) fn fuse_each<T>(
         return out;
     }
 
-    let flush = |chunk: &[usize], out: &mut Vec<Option<Vec<T>>>| {
+    // Group the members into fused texts of about CHUNK bytes.
+    let mut chunks: Vec<Vec<usize>> = Vec::new();
+    let mut chunk = Vec::new();
+    let mut size = 0;
+    for i in members {
+        chunk.push(i);
+        size += texts[i].len() + SEPARATOR.len();
+        if size >= CHUNK {
+            chunks.push(std::mem::take(&mut chunk));
+            size = 0;
+        }
+    }
+    if !chunk.is_empty() {
+        chunks.push(chunk);
+    }
+
+    let scanned = map_all(chunks.clone(), |chunk| {
         let mut fused = String::new();
         for (n, &i) in chunk.iter().enumerate() {
             if n > 0 {
@@ -66,7 +97,10 @@ pub(crate) fn fuse_each<T>(
             }
             fused.push_str(texts[i]);
         }
-        let mut results = scan(&fused).into_iter().peekable();
+        scan(&fused)
+    });
+    for (chunk, results) in chunks.iter().zip(scanned) {
+        let mut results = results.into_iter().peekable();
         let mut offset = 0;
         for &i in chunk {
             let limit = offset + texts[i].len() + SEPARATOR.len();
@@ -77,20 +111,6 @@ pub(crate) fn fuse_each<T>(
             out[i] = Some(found);
             offset = limit;
         }
-    };
-    let mut chunk = Vec::new();
-    let mut size = 0;
-    for i in members {
-        chunk.push(i);
-        size += texts[i].len() + SEPARATOR.len();
-        if size >= CHUNK {
-            flush(&chunk, &mut out);
-            chunk.clear();
-            size = 0;
-        }
-    }
-    if !chunk.is_empty() {
-        flush(&chunk, &mut out);
     }
     out
 }
