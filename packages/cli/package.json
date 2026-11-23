@@ -1,6 +1,6 @@
 {
   "name": "anonyma-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Scrub and scan files for personal data from the command line: text, JSON Lines and CSV, streamed so that files of any size run in constant memory, with compliance presets, policies and signed receipts. Nothing leaves the machine.",
   "license": "MIT",
   "author": "Izac Cavalheiro <izac@izaccavalheiro.com>",
