@@ -822,6 +822,27 @@ export function makeText({ size, density, seed, flavour = "mixed" }) {
   return { text, size, lines, planted, plantedByCategory };
 }
 
+/** One line with a label before each value, for the label-heavy corpus (synthetic values). */
+const LABELLED_LINE =
+  "Passport: A1234567, tax id: 12-3456789, account number: 12345678, plate number AB12 CDE, " +
+  "MRN: 00123456, member id ABC123456789, Rx # 1234567, tracking number 1Z999AA10123456784, " +
+  "case no. 13-cv-12345, company number 12345678, DL # D1234567, national id 123.456.789-09, " +
+  "discord id 123456789012345678, Order 2026 Item 4512 Code AB12 Ref 77 Batch X91 Lot 3300\n";
+
+/**
+ * A text of exactly `size` characters with a label before every value, and
+ * capitalised words and numbers between them: the shape whose cost grows with
+ * labels × candidates when a label check is linear.
+ *
+ * @param {number} size
+ * @returns {string}
+ */
+export function makeLabelledText(size) {
+  let text = "";
+  while (text.length < size) text += LABELLED_LINE;
+  return text.slice(0, size);
+}
+
 /** Split into lines, each keeping its trailing newline (concatenation == input). */
 export function splitLines(text) {
   return text.match(/[^\n]*\n|[^\n]+$/g) ?? [];

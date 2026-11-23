@@ -31,7 +31,7 @@ import { cpus } from "node:os";
 import { dirname, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { makeObject, makeText, splitFixed, splitLines } from "./corpus.mjs";
+import { makeLabelledText, makeObject, makeText, splitFixed, splitLines } from "./corpus.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const argv = process.argv.slice(2);
@@ -356,8 +356,20 @@ if (engine !== null) {
   }
 }
 
-// Structured payloads and batches (sparse density only).
-for (const size of QUICK ? [10_000, 100_000] : [1_000, 10_000, 100_000, 1_000_000]) {
+// Text with a label before every value: a label check that is linear in the
+// labels makes detection grow with labels × candidates here. That term only
+// shows above 100 KB, so even the quick profile measures 1 MB.
+for (const size of QUICK ? [10_000, 100_000, 1_000_000] : [1_000, 10_000, 100_000, 1_000_000]) {
+  const text = makeLabelledText(size);
+  const matches = lib.detect(text).length;
+  await cell("labelled/detect", label(size), size, 0, "labelled", matches, () => lib.detect(text));
+  const precise = engine.compilePipeline({});
+  await cell("labelled/scan", label(size), size, 0, "labelled", matches, () => precise.scan(text));
+}
+
+// Structured payloads and batches (sparse density only); three sizes, so
+// that the batch operations have a scaling slope too.
+for (const size of QUICK ? [1_000, 10_000, 100_000] : [1_000, 10_000, 100_000, 1_000_000]) {
   const { obj: object, bytes } = makeObject({ size, density: 1 / 200, seed: "object" });
   await cell("anonymizeObject", label(size), bytes, 1 / 200, "sparse", -1, () =>
     lib.anonymizeObject(object),
@@ -427,7 +439,9 @@ if (wanted("detector")) {
 // Scaling slopes: time against size at fixed density.
 const scaling = [];
 for (const op of [...new Set(results.map((r) => r.op))]) {
-  for (const [densityLabel] of DENSITIES) {
+  for (const densityLabel of [
+    ...new Set(results.filter((r) => r.op === op).map((r) => r.density)),
+  ]) {
     const points = results
       .filter((r) => r.op === op && r.density === densityLabel && r.size >= 1000)
       .map((r) => [r.size, r.medianMs]);
