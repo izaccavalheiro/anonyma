@@ -15,6 +15,7 @@
 
 import type { PiiMatch } from "../types.js";
 import { cnpjChecksum } from "../validators.js";
+import { labelBefore } from "../internal/labels.js";
 
 /**
  * Brazil CNPJ as written: XX.XXX.XXX/XXXX-XX. The first twelve characters may
@@ -86,7 +87,7 @@ export function detectTaxId(text: string): PiiMatch[] {
   }
 
   function hasContext(index: number): boolean {
-    return contextPositions.some((pos) => pos <= index && index - pos <= 30);
+    return labelBefore(contextPositions, index, 30);
   }
 
   function push(value: string, start: number, end: number, confidence: number): void {

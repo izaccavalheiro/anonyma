@@ -45,6 +45,7 @@ import {
   swedishPersonnummerChecksum,
   verhoeff,
 } from "../validators.js";
+import { labelBefore } from "../internal/labels.js";
 
 // ---------------------------------------------------------------------------
 // Individual country patterns
@@ -318,7 +319,7 @@ function scanNationalId(text: string, strict: boolean): PiiMatch[] {
       const key = `${String(match.index)}-${String(match.index + match[0].length)}`;
       if (seen.has(key)) continue;
 
-      const hasContext = ends.some((pos) => pos <= match.index && match.index - pos <= 40);
+      const hasContext = labelBefore(ends, match.index, 40);
 
       if (entry.requiresContext && !hasContext) continue;
       const end = match.index + match[0].length;

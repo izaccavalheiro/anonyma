@@ -13,6 +13,7 @@
  */
 
 import type { PiiMatch } from "../types.js";
+import { labelBefore } from "../internal/labels.js";
 
 /**
  * Bitcoin legacy address: 1 + 25-34 base58 chars
@@ -119,7 +120,7 @@ export function detectCryptocurrency(text: string): PiiMatch[] {
   }
 
   function hasContext(index: number): boolean {
-    return contextPositions.some((pos) => pos <= index && index - pos <= 40);
+    return labelBefore(contextPositions, index, 40);
   }
 
   for (const entry of CRYPTO_ENTRIES) {

@@ -13,6 +13,7 @@
  */
 
 import type { PiiMatch } from "../types.js";
+import { labelBefore } from "../internal/labels.js";
 
 /**
  * Passport number patterns per country.
@@ -68,9 +69,7 @@ export function detectPassport(text: string): PiiMatch[] {
       if (seen.has(key)) continue;
 
       // Check if there's a context keyword within 30 chars before this match
-      const hasContext = contextPositions.some(
-        (pos) => pos <= match.index && match.index - pos <= 30,
-      );
+      const hasContext = labelBefore(contextPositions, match.index, 30);
 
       const adjustedConfidence = hasContext ? Math.min(confidence + 0.15, 0.95) : confidence;
 

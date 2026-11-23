@@ -13,6 +13,7 @@
  */
 
 import type { PiiMatch } from "../types.js";
+import { labelBefore } from "../internal/labels.js";
 
 /**
  * Twitter/X handle: @ + 1-15 word chars (letters, digits, underscores).
@@ -110,9 +111,7 @@ export function detectSocialMedia(text: string): PiiMatch[] {
   // Matches count only after a label: without one, the scan is skipped.
   while (discordContextPositions.length > 0 && (m = discordRe.exec(text)) !== null) {
     const match = m;
-    const hasContext = discordContextPositions.some(
-      (pos) => pos <= match.index && match.index - pos <= 30,
-    );
+    const hasContext = labelBefore(discordContextPositions, match.index, 30);
     if (hasContext) push(match[0], match.index, match.index + match[0].length, 0.85);
   }
 

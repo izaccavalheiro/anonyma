@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Detectors that count a value after a label find the closest label by binary search instead of
+  checking every label of the text for every candidate value: the same results, and text with many
+  labels and many candidates (log lines, forms) no longer costs labels × candidates.
+
 ---
 
 ## [1.5.0] — 2026-11-23

@@ -5,7 +5,7 @@
   "./validators": 3.5,
   "./crypto": 4.5,
   "./stream": 33.5,
-  "./engine": 41,
+  "./engine": 41.5,
   "./vault": 19,
   "./audit": 46,
   "./compliance": 33,
