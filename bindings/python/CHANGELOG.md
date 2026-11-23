@@ -9,6 +9,11 @@ change its API.
 
 ### Fixed
 
+- Detecting addresses, names, phone numbers, IBANs, IPv4 addresses and US SSNs in a text with
+  capital letters took time and memory proportional to the length of the text times the number of
+  candidates: each candidate lower-cased the whole text again. A 119 KB text with 1,000 labelled
+  addresses allocated 240 MB; it now allocates a few times its own size. Long untrusted text can
+  no longer make detection quadratic this way.
 - With presets, a rule for a category the presets do not cover now adds that category; it was
   ignored. The rules of the other categories still override the presets' strategies
   ([#47](https://github.com/izaccavalheiro/anonyma/issues/47)).

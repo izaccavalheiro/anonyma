@@ -13,7 +13,7 @@ use std::collections::HashSet;
 use std::sync::OnceLock;
 
 use super::Match;
-use crate::jsregex::{is_letter_or_digit, js_regex, next_char, JsRegex};
+use crate::jsregex::{is_letter_or_digit, js_regex, next_char, Haystack, JsRegex};
 use crate::Category;
 
 js_regex!(us_street = insensitive r"\b\d{1,5}\s+(?:(?:n|s|e|w|ne|nw|se|sw|north|south|east|west|northeast|northwest|southeast|southwest)\.?\s+)?(?:[a-z][a-z]+\s+){1,4}(?:st(?:reet)?|ave(?:nue)?|blvd|boulevard|dr(?:ive)?|rd|road|ln|lane|ct|court|pl|place|cir|circle|way|pkwy|parkway|hwy|highway|trl|trail|terr(?:ace)?|terr)\.?(?:\s+(?:apt|apartment|suite|ste|unit|#)\s*\w+)?\b");
@@ -53,10 +53,11 @@ impl Street {
     /// The matches, as a global `exec` loop finds them: the street, with its
     /// town when there is one.
     fn ranges(&self, text: &str) -> Vec<(usize, usize)> {
+        let haystack = Haystack::new(text);
         let mut out = Vec::new();
         let mut at = 0;
         while at <= text.len() {
-            let Some(groups) = self.regex.captures_at(text, at) else {
+            let Some(groups) = self.regex.captures_at(&haystack, at) else {
                 break;
             };
             let Some((start, core_end)) = groups[1] else {
@@ -141,9 +142,10 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     }
 
     // Text after an address label, unless it lies inside a street found whole.
+    let haystack = Haystack::new(text);
     let mut at = 0;
     while at <= text.len() {
-        let Some(groups) = labelled().captures_at(text, at) else {
+        let Some(groups) = labelled().captures_at(&haystack, at) else {
             break;
         };
         let (Some((match_start, match_end)), Some((cs, ce))) = (groups[0], groups[1]) else {
