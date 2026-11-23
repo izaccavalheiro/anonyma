@@ -135,7 +135,8 @@ const WORKLOADS = [
     name: "anonymize (gdpr)",
     run: (e, text) => e.anonymize(text, ["gdpr"]),
     // gdpr pseudonymizes some categories without a seed: random ids, compared as such.
-    comparable: (text) => text.replace(/\bid_[0-9a-f]{16}\b/g, "id_<random>"),
+    // No word boundaries: a pseudonym can replace part of a word.
+    comparable: (text) => text.replace(/id_[0-9a-f]{16}/g, "id_<random>"),
   },
 ];
 
