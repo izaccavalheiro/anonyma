@@ -12,16 +12,18 @@ import (
 // detected; use [Anonymize] on whole documents.
 func NewReader(r io.Reader, opts Options) io.Reader {
 	pr, pw := io.Pipe()
-	fields, err := opts.fields()
+	// One engine for every line: the options are parsed and the detectors built once.
+	engine, err := NewEngine(opts)
 	if err != nil {
 		pw.CloseWithError(err)
 		return pr
 	}
 	go func() {
+		defer engine.Close()
 		scanner := bufio.NewScanner(r)
 		scanner.Buffer(make([]byte, 64*1024), 16*1024*1024)
 		for scanner.Scan() {
-			line, err := anonymize(scanner.Text(), fields)
+			line, err := engine.Anonymize(scanner.Text())
 			if err != nil {
 				pw.CloseWithError(err)
 				return
@@ -43,9 +45,9 @@ var MaxBodyBytes int64 = 1 << 20
 // them. Replacements (labels, masks) contain no character JSON escapes, so a
 // JSON body stays valid.
 func Middleware(next http.Handler, opts Options) http.Handler {
-	// The options are encoded once for every request; options that cannot
-	// be encoded fail each request, as Anonymize would.
-	fields, fieldsErr := opts.fields()
+	// One engine for every request; options it cannot be built from fail each
+	// request, as Anonymize would.
+	engine, engineErr := NewEngine(opts)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		kind := r.Header.Get("Content-Type")
 		if r.Body == nil || !(strings.HasPrefix(kind, "text/") || strings.Contains(kind, "json")) {
@@ -62,11 +64,11 @@ func Middleware(next http.Handler, opts Options) http.Handler {
 			http.Error(w, "body too large to anonymize", http.StatusRequestEntityTooLarge)
 			return
 		}
-		if fieldsErr != nil {
+		if engineErr != nil {
 			http.Error(w, "anonymization failed", http.StatusInternalServerError)
 			return
 		}
-		clean, err := anonymize(string(body), fields)
+		clean, err := engine.Anonymize(string(body))
 		if err != nil {
 			http.Error(w, "anonymization failed", http.StatusInternalServerError)
 			return

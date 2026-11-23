@@ -181,6 +181,17 @@ class Anonyma:
         """Every value found, without overlaps, in document order."""
         return [Match(*found) for found in self._engine.detect(text)]
 
+    def detect_batch(self, texts: Iterable[str]) -> list[list[Match]]:
+        """:meth:`detect` on each text, in order, in one call: short texts are
+        scanned together, which costs far less than a call each (log lines,
+        rows, chat turns). The GIL is released during the call."""
+        return [[Match(*found) for found in matches] for matches in self._engine.detect_batch(list(texts))]
+
+    def anonymize_batch(self, texts: Iterable[str]) -> list[str]:
+        """:meth:`anonymize` on each text, in order, in one call, as
+        :meth:`detect_batch` does."""
+        return self._engine.anonymize_batch(list(texts))
+
     def contains_pii(self, text: str) -> bool:
         """Whether ``text`` holds any value this engine detects."""
         return bool(self._engine.detect(text))

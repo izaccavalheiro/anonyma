@@ -7,6 +7,14 @@ are documented in this file. The format is based on
 
 ## [Unreleased]
 
+### Added
+
+- `NewEngine(opts)` builds an `Engine` once for many calls: `Detect`, `Anonymize`, and
+  `DetectBatch`/`AnonymizeBatch`, which take many texts in one cgo call and scan short ones
+  together. On 200-byte log lines: 37–40 µs per text in a batch, against 63–88 µs for `Detect`.
+  An `Engine` is safe for concurrent use; `Close` frees it.
+- `NewReader` and `Middleware` build one engine each instead of one per line or request.
+
 ### Changed
 
 - Each call encodes its input in one buffer that the core reads in place, and decodes the answer

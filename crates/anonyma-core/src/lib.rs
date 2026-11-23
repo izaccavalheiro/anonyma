@@ -33,6 +33,7 @@ mod category;
 pub mod detectors;
 mod engine;
 mod error;
+mod fusion;
 mod jsregex;
 pub mod offsets;
 pub mod pipeline;

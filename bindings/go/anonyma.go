@@ -48,6 +48,9 @@ func (e *Error) Error() string { return "anonyma: " + e.Message }
 // ErrClosed is returned by the methods of a closed [Vault].
 var ErrClosed = errors.New("anonyma: vault is closed")
 
+// ErrEngineClosed is returned by the methods of a closed [Engine].
+var ErrEngineClosed = errors.New("anonyma: engine is closed")
+
 // decode reads an answer of the JSON API, `{"ok": …}` or `{"error": "…"}`, in
 // one pass and in place: the result goes straight into out, and the C string
 // is read without a copy and freed afterwards.
@@ -151,12 +154,6 @@ func Anonymize(text string, opts Options) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return anonymize(text, fields)
-}
-
-// anonymize is [Anonymize] with the options already encoded, for callers that
-// make many calls with one set of options.
-func anonymize(text string, fields []byte) (string, error) {
 	var out struct {
 		Text string `json:"text"`
 	}
