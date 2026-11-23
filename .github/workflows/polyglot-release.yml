@@ -1,0 +1,458 @@
+# Polyglot: the Rust core, its bindings and the sidecar.
+#
+# On every pull request and push to main, one question per job:
+#
+#   conformance-typescript  Does the TypeScript reference pass the whole conformance suite?
+#   rust                    Is the core formatted, lint-free, and does it pass its tests and
+#                           the conformance suite (through the JSON API) on Linux, macOS, Windows?
+#   python                  Does the Python package build, and pass its tests and the suite?
+#   bindings                Do the WebAssembly and Node.js bindings build?
+#   go                      Does the Go package pass its tests and the suite through the C ABI?
+#   sidecar                 Does the sidecar image build, start and answer?
+#
+# Releases, from tags only, after every check above:
+#
+#   python-v<version>   wheels for Linux (manylinux, x86_64 and aarch64), macOS (x86_64,
+#                       arm64) and Windows (x64), and an sdist, published to PyPI by trusted
+#                       publishing (environment `pypi`).
+#   sidecar-v<version>  the sidecar image for linux/amd64 and linux/arm64, pushed to
+#                       ghcr.io/<owner>/anonyma-sidecar with provenance and an SBOM.
+#
+# The npm packages are released by release.yml (tags v<version>), unchanged.
+# All actions are pinned to a commit; Dependabot keeps the pins current.
+
+name: Polyglot
+
+on:
+  push:
+    branches: [main]
+    tags: ["python-v*", "sidecar-v*"]
+  pull_request:
+    branches: [main, dev, "release/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  HUSKY: "0"
+  CARGO_TERM_COLOR: always
+
+jobs:
+  conformance-typescript:
+    name: Conformance (TypeScript reference)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build anonyma
+        run: npm run build
+
+      # The reference must pass every case and skip none.
+      - name: Run the suite
+        run: npm test --workspace anonyma-conformance
+
+  rust:
+    name: Rust (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      # Warnings of this repository's crates are errors (dependencies are not linted).
+      RUSTFLAGS: -D warnings
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-latest, windows-latest]
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+
+      - name: Cache
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+
+      - name: Check formatting
+        if: runner.os == 'Linux'
+        run: cargo fmt --all --check
+
+      - name: Lint
+        if: runner.os == 'Linux'
+        run: cargo clippy -p anonyma-core -p anonyma-ffi --all-targets -- -D warnings
+
+      # Unit tests, doc tests, the C ABI and the conformance suite (crates/anonyma-ffi/tests).
+      - name: Test
+        run: cargo test -p anonyma-core -p anonyma-ffi -- --nocapture
+
+      - name: Package the crate
+        if: runner.os == 'Linux'
+        run: cargo package -p anonyma-core --allow-dirty
+
+  python:
+    name: Python ${{ matrix.python }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        # The oldest supported (the stable ABI of 3.10), and the newest with LangChain.
+        include:
+          - python: "3.10"
+            extras: test
+          - python: "3.13"
+            extras: test,langchain
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with:
+          toolchain: stable
+
+      - name: Cache
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+
+      # pip builds the wheel with maturin (pyproject.toml) and installs it.
+      - name: Build and install
+        env:
+          EXTRAS: ${{ matrix.extras }}
+        run: python -m pip install "./bindings/python[$EXTRAS]"
+
+      - name: Test, with the conformance suite
+        run: python -m pytest bindings/python/tests -ra
+
+  bindings:
+    name: WebAssembly and Node.js bindings
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      RUSTFLAGS: -D warnings
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+          components: clippy
+
+      - name: Cache
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+
+      - name: Build for WebAssembly
+        run: cargo build -p anonyma-wasm --target wasm32-unknown-unknown --release
+
+      - name: Report the WebAssembly size
+        run: |
+          size=$(stat -c %s target/wasm32-unknown-unknown/release/anonyma_wasm.wasm)
+          echo "anonyma_wasm.wasm: $size bytes (before wasm-bindgen and wasm-opt)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build the Node.js addon
+        run: cargo build -p anonyma-node --release
+
+      - name: Lint
+        run: cargo clippy -p anonyma-wasm -p anonyma-node -- -D warnings
+
+  go:
+    name: Go
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with:
+          toolchain: stable
+
+      - name: Cache
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+
+      - name: Set up Go
+        uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version-file: bindings/go/go.mod
+          cache: false
+
+      - name: Build the static library
+        run: cargo build --release -p anonyma-ffi
+
+      - name: Vet
+        working-directory: bindings/go
+        run: |
+          test -z "$(gofmt -l .)" || { gofmt -d .; exit 1; }
+          go vet ./...
+
+      # Includes the conformance suite through the C ABI (conformance_test.go).
+      - name: Test
+        working-directory: bindings/go
+        run: go test -race ./...
+
+  sidecar:
+    name: Sidecar image
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build
+        run: docker build -f packages/sidecar/Dockerfile -t anonyma-sidecar:ci .
+
+      - name: Start and call it
+        run: |
+          docker run -d --name sidecar -p 127.0.0.1:7878:7878 -e ANONYMA_SIDECAR_TOKEN=ci-token anonyma-sidecar:ci
+          for attempt in $(seq 1 30); do
+            curl -sf http://127.0.0.1:7878/healthz && break
+            sleep 1
+          done
+          answer=$(curl -sf http://127.0.0.1:7878/v1/anonymize \
+            -H 'authorization: Bearer ci-token' -H 'content-type: application/json' \
+            -d '{"text":"Mail ana@example.com","categories":["email"]}')
+          echo "$answer"
+          test "$answer" = '{"text":"Mail [REDACTED]","counts":{"email":1}}'
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:7878/v1/info)" = 401
+
+      - name: Show the logs
+        if: always()
+        run: docker logs sidecar || true
+
+  polyglot:
+    name: Polyglot
+    if: always()
+    needs: [conformance-typescript, rust, python, bindings, go, sidecar]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Require every job
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          for result in $RESULTS; do
+            test "$result" = success || { echo "a job ended with: $result"; exit 1; }
+          done
+
+  # -------------------------------------------------------------------------
+  # Python release (tags python-v<version>)
+  # -------------------------------------------------------------------------
+
+  python-wheels:
+    name: Wheel (${{ matrix.target }}, ${{ matrix.os }})
+    if: startsWith(github.ref, 'refs/tags/python-v')
+    needs: polyglot
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - { os: ubuntu-24.04, target: x86_64, manylinux: auto }
+          - { os: ubuntu-24.04, target: aarch64, manylinux: auto }
+          - { os: macos-latest, target: x86_64 }
+          - { os: macos-latest, target: aarch64 }
+          - { os: windows-latest, target: x64 }
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      # One abi3 wheel per platform serves CPython 3.10 and every later version.
+      - name: Build
+        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
+        with:
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux || '' }}
+          working-directory: bindings/python
+          args: --release --out dist
+          sccache: false
+
+      - name: Upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: wheel-${{ matrix.os }}-${{ matrix.target }}
+          path: bindings/python/dist/*.whl
+          if-no-files-found: error
+
+  python-sdist:
+    name: Source distribution
+    if: startsWith(github.ref, 'refs/tags/python-v')
+    needs: polyglot
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build
+        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
+        with:
+          command: sdist
+          working-directory: bindings/python
+          args: --out dist
+
+      - name: Upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sdist
+          path: bindings/python/dist/*.tar.gz
+          if-no-files-found: error
+
+  python-publish:
+    name: Publish to PyPI
+    if: startsWith(github.ref, 'refs/tags/python-v')
+    needs: [python-wheels, python-sdist]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: pypi
+      url: https://pypi.org/project/anonyma/
+    permissions:
+      # Trusted publishing (OpenID Connect): no PyPI token is stored anywhere.
+      id-token: write
+      attestations: write
+    steps:
+      - name: Download
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          path: dist
+          merge-multiple: true
+
+      # python-v0.1.0a1 publishes anonyma 0.1.0a1, and nothing else.
+      - name: Check the version against the tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version="${TAG#python-v}"
+          ls dist
+          ls dist/anonyma-"$version"-*.whl dist/anonyma-"$version".tar.gz > /dev/null
+
+      - name: Attest
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: dist/*
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
+        with:
+          packages-dir: dist
+
+  # -------------------------------------------------------------------------
+  # Sidecar release (tags sidecar-v<version>)
+  # -------------------------------------------------------------------------
+
+  sidecar-publish:
+    name: Publish the sidecar image
+    if: startsWith(github.ref, 'refs/tags/sidecar-v')
+    needs: polyglot
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check the version against the tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version=$(node -p 'require("./packages/sidecar/package.json").version')
+          test "sidecar-v$version" = "$TAG" || { echo "package.json has $version"; exit 1; }
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Log in to GHCR
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tags and labels
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/anonyma-sidecar
+          tags: |
+            type=match,pattern=sidecar-v(.*),group=1
+            type=match,pattern=sidecar-v(\d+\.\d+),group=1
+          labels: |
+            org.opencontainers.image.title=anonyma-sidecar
+            org.opencontainers.image.description=Local HTTP and MCP service that scrubs personal data
+
+      - name: Build and push
+        id: push
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: packages/sidecar/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          provenance: mode=max
+          sbom: true
+
+      - name: Attest
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ghcr.io/${{ github.repository_owner }}/anonyma-sidecar
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true

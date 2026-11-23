@@ -1,0 +1,2269 @@
+{
+  "$schema": "./conformance-tests.schema.json",
+  "suite": "anonyma-conformance",
+  "version": "1.0.0",
+  "reference": "anonyma@1.3.2",
+  "offsets": "code-points",
+  "cases": [
+    {
+      "id": "validate.luhn.00",
+      "description": "a test Visa number, spaces stripped",
+      "op": "validate",
+      "requires": ["validate:luhn"],
+      "input": {
+        "validator": "luhn",
+        "value": "4111 1111 1111 1111"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.luhn.01",
+      "description": "one digit off: the Luhn sum fails",
+      "op": "validate",
+      "requires": ["validate:luhn"],
+      "input": {
+        "validator": "luhn",
+        "value": "4111111111111112"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.luhn.02",
+      "description": "a test Mastercard number, hyphens stripped",
+      "op": "validate",
+      "requires": ["validate:luhn"],
+      "input": {
+        "validator": "luhn",
+        "value": "5555-5555-5555-4444"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.luhn.03",
+      "description": "fewer than two digits",
+      "op": "validate",
+      "requires": ["validate:luhn"],
+      "input": {
+        "validator": "luhn",
+        "value": "1"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.luhn.04",
+      "description": "a letter is not stripped",
+      "op": "validate",
+      "requires": ["validate:luhn"],
+      "input": {
+        "validator": "luhn",
+        "value": "4111a1111"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.luhn.05",
+      "description": "the empty string",
+      "op": "validate",
+      "requires": ["validate:luhn"],
+      "input": {
+        "validator": "luhn",
+        "value": ""
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.verhoeff.06",
+      "description": "check digit 3 after 236",
+      "op": "validate",
+      "requires": ["validate:verhoeff"],
+      "input": {
+        "validator": "verhoeff",
+        "value": "2363"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.verhoeff.07",
+      "description": "wrong check digit",
+      "op": "validate",
+      "requires": ["validate:verhoeff"],
+      "input": {
+        "validator": "verhoeff",
+        "value": "2364"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.cpf.08",
+      "description": "punctuated CPF",
+      "op": "validate",
+      "requires": ["validate:cpf"],
+      "input": {
+        "validator": "cpf",
+        "value": "529.982.247-25"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.cpf.09",
+      "description": "bare CPF",
+      "op": "validate",
+      "requires": ["validate:cpf"],
+      "input": {
+        "validator": "cpf",
+        "value": "52998224725"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.cpf.10",
+      "description": "second check digit wrong",
+      "op": "validate",
+      "requires": ["validate:cpf"],
+      "input": {
+        "validator": "cpf",
+        "value": "529.982.247-26"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.cpf.11",
+      "description": "first check digit wrong",
+      "op": "validate",
+      "requires": ["validate:cpf"],
+      "input": {
+        "validator": "cpf",
+        "value": "529.982.247-15"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.cpf.12",
+      "description": "eleven equal digits pass the arithmetic but are invalid",
+      "op": "validate",
+      "requires": ["validate:cpf"],
+      "input": {
+        "validator": "cpf",
+        "value": "111.111.111-11"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.cpf.13",
+      "description": "ten digits",
+      "op": "validate",
+      "requires": ["validate:cpf"],
+      "input": {
+        "validator": "cpf",
+        "value": "529.982.247-2"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.cnpj.14",
+      "description": "numeric CNPJ",
+      "op": "validate",
+      "requires": ["validate:cnpj"],
+      "input": {
+        "validator": "cnpj",
+        "value": "11.222.333/0001-81"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.cnpj.15",
+      "description": "second check digit wrong",
+      "op": "validate",
+      "requires": ["validate:cnpj"],
+      "input": {
+        "validator": "cnpj",
+        "value": "11.222.333/0001-82"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.cnpj.16",
+      "description": "alphanumeric CNPJ (issued from July 2026)",
+      "op": "validate",
+      "requires": ["validate:cnpj"],
+      "input": {
+        "validator": "cnpj",
+        "value": "12.ABC.345/01DE-35"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.cnpj.17",
+      "description": "letters are upper-cased first",
+      "op": "validate",
+      "requires": ["validate:cnpj"],
+      "input": {
+        "validator": "cnpj",
+        "value": "12.abc.345/01de-35"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.cnpj.18",
+      "description": "fourteen equal characters",
+      "op": "validate",
+      "requires": ["validate:cnpj"],
+      "input": {
+        "validator": "cnpj",
+        "value": "00000000000000"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.cnpj.19",
+      "description": "check digits must be digits",
+      "op": "validate",
+      "requires": ["validate:cnpj"],
+      "input": {
+        "validator": "cnpj",
+        "value": "11.222.333/0001-8A"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.iban.20",
+      "description": "the ISO 13616 example, grouped",
+      "op": "validate",
+      "requires": ["validate:iban"],
+      "input": {
+        "validator": "iban",
+        "value": "GB82 WEST 1234 5698 7654 32"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.iban.21",
+      "description": "lower case is upper-cased first",
+      "op": "validate",
+      "requires": ["validate:iban"],
+      "input": {
+        "validator": "iban",
+        "value": "gb82 west 1234 5698 7654 32"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.iban.22",
+      "description": "MOD-97 remainder is not 1",
+      "op": "validate",
+      "requires": ["validate:iban"],
+      "input": {
+        "validator": "iban",
+        "value": "GB82 WEST 1234 5698 7654 33"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.iban.23",
+      "description": "German example, compact",
+      "op": "validate",
+      "requires": ["validate:iban"],
+      "input": {
+        "validator": "iban",
+        "value": "DE89370400440532013000"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.iban.24",
+      "description": "shorter than 15 characters",
+      "op": "validate",
+      "requires": ["validate:iban"],
+      "input": {
+        "validator": "iban",
+        "value": "GB82WEST12345"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.aba-routing.25",
+      "description": "weights 3-7-1 sum to a multiple of 10",
+      "op": "validate",
+      "requires": ["validate:aba-routing"],
+      "input": {
+        "validator": "aba-routing",
+        "value": "011000015"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.aba-routing.26",
+      "description": "weighted sum fails",
+      "op": "validate",
+      "requires": ["validate:aba-routing"],
+      "input": {
+        "validator": "aba-routing",
+        "value": "011000016"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.aba-routing.27",
+      "description": "nine equal digits",
+      "op": "validate",
+      "requires": ["validate:aba-routing"],
+      "input": {
+        "validator": "aba-routing",
+        "value": "000000000"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.pix.28",
+      "description": "PIX copia e cola payload with its CRC-16/CCITT-FALSE",
+      "op": "validate",
+      "requires": ["validate:pix"],
+      "input": {
+        "validator": "pix",
+        "value": "00020126400014br.gov.bcb.pix0118fulano@example.com5204000053039865802BR5913FULANO DE TAL6009SAO PAULO62070503***63049F63"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.pix.29",
+      "description": "last CRC digit altered",
+      "op": "validate",
+      "requires": ["validate:pix"],
+      "input": {
+        "validator": "pix",
+        "value": "00020126400014br.gov.bcb.pix0118fulano@example.com5204000053039865802BR5913FULANO DE TAL6009SAO PAULO62070503***63049F60"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "validate.pix.30",
+      "description": "the CRC is compared case-insensitively",
+      "op": "validate",
+      "requires": ["validate:pix"],
+      "input": {
+        "validator": "pix",
+        "value": "00020126400014br.gov.bcb.pix0118fulano@example.com5204000053039865802BR5913FULANO DE TAL6009SAO PAULO62070503***63049f63"
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "validate.pix.31",
+      "description": "no CRC field",
+      "op": "validate",
+      "requires": ["validate:pix"],
+      "input": {
+        "validator": "pix",
+        "value": "000201"
+      },
+      "expected": {
+        "valid": false
+      }
+    },
+    {
+      "id": "detect.email.basic",
+      "description": "an address before a full stop",
+      "op": "detect",
+      "requires": ["detect:email"],
+      "input": {
+        "text": "Contact us at support@example.com.",
+        "categories": ["email"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "email",
+            "value": "support@example.com",
+            "start": 14,
+            "end": 33,
+            "confidence": 0.99
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.email.several",
+      "description": "plus addressing and subdomains",
+      "op": "detect",
+      "requires": ["detect:email"],
+      "input": {
+        "text": "Mail alice@example.com, bob.smith+tag@mail.example.org!",
+        "categories": ["email"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "email",
+            "value": "alice@example.com",
+            "start": 5,
+            "end": 22,
+            "confidence": 0.99
+          },
+          {
+            "category": "email",
+            "value": "bob.smith+tag@mail.example.org",
+            "start": 24,
+            "end": 54,
+            "confidence": 0.99
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.email.not-addresses",
+      "description": "no top-level domain, no local part",
+      "op": "detect",
+      "requires": ["detect:email"],
+      "input": {
+        "text": "user@localhost, name@ and @example.com are not addresses",
+        "categories": ["email"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.email.astral-offsets",
+      "description": "offsets count code points: the emoji is one, not two UTF-16 units or four UTF-8 bytes",
+      "op": "detect",
+      "requires": ["detect:email"],
+      "input": {
+        "text": "📧 alice@example.com",
+        "categories": ["email"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "email",
+            "value": "alice@example.com",
+            "start": 2,
+            "end": 19,
+            "confidence": 0.99
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.email.accented-offsets",
+      "description": "offsets after a non-ASCII letter",
+      "op": "detect",
+      "requires": ["detect:email"],
+      "input": {
+        "text": "José: jose@example.com",
+        "categories": ["email"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "email",
+            "value": "jose@example.com",
+            "start": 6,
+            "end": 22,
+            "confidence": 0.99
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.email.aggressive",
+      "description": "obfuscated address, aggressive mode only",
+      "op": "detect",
+      "requires": ["detect:email", "detect:email+aggressive"],
+      "input": {
+        "text": "Write to user [at] example [dot] com today",
+        "categories": ["email"],
+        "aggressive": true
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "email",
+            "value": "user [at] example [dot] com",
+            "start": 9,
+            "end": 36,
+            "confidence": 0.75
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.email.obfuscated-standard",
+      "description": "obfuscated address is ignored by the standard detector",
+      "op": "detect",
+      "requires": ["detect:email"],
+      "input": {
+        "text": "Write to user [at] example [dot] com today",
+        "categories": ["email"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.ipv4.basic",
+      "description": "documentation ranges, CIDR suffix included",
+      "op": "detect",
+      "requires": ["detect:ipv4"],
+      "input": {
+        "text": "Server 192.0.2.10 and 198.51.100.7/24",
+        "categories": ["ipv4"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "ipv4",
+            "value": "192.0.2.10",
+            "start": 7,
+            "end": 17,
+            "confidence": 0.98
+          },
+          {
+            "category": "ipv4",
+            "value": "198.51.100.7/24",
+            "start": 22,
+            "end": 37,
+            "confidence": 0.98
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.ipv4.invalid-octet",
+      "description": "an octet above 255 and three octets",
+      "op": "detect",
+      "requires": ["detect:ipv4"],
+      "input": {
+        "text": "Version 256.1.1.1 and 1.2.3",
+        "categories": ["ipv4"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.ipv6.full",
+      "description": "eight groups",
+      "op": "detect",
+      "requires": ["detect:ipv6"],
+      "input": {
+        "text": "Address: 2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+        "categories": ["ipv6"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "ipv6",
+            "value": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+            "start": 9,
+            "end": 48,
+            "confidence": 0.98
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.ipv6.compressed-trailing",
+      "description": "reference behaviour: the legacy pattern's `x::` alternative wins, so the last group is left out of the match",
+      "op": "detect",
+      "requires": ["detect:ipv6"],
+      "input": {
+        "text": "Host 2001:db8::1 is up",
+        "categories": ["ipv6"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "ipv6",
+            "value": "2001:db8::",
+            "start": 5,
+            "end": 15,
+            "confidence": 0.98
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.ipv6.compressed-middle",
+      "description": "a compressed address in the middle",
+      "op": "detect",
+      "requires": ["detect:ipv6"],
+      "input": {
+        "text": "Gateway 2001:db8:0:0:1::7 ok",
+        "categories": ["ipv6"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "ipv6",
+            "value": "2001:db8:0:0:1::",
+            "start": 8,
+            "end": 24,
+            "confidence": 0.98
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.credit-card.grouped",
+      "description": "Luhn-valid test number",
+      "op": "detect",
+      "requires": ["detect:credit-card"],
+      "input": {
+        "text": "Card 4111 1111 1111 1111.",
+        "categories": ["credit-card"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "credit-card",
+            "value": "4111 1111 1111 1111",
+            "start": 5,
+            "end": 24,
+            "confidence": 0.97
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.credit-card.trailing-space",
+      "description": "reference behaviour: the separator after the last digit is part of the match",
+      "op": "detect",
+      "requires": ["detect:credit-card"],
+      "input": {
+        "text": "Card 4111 1111 1111 1111 exp 12/30",
+        "categories": ["credit-card"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "credit-card",
+            "value": "4111 1111 1111 1111 ",
+            "start": 5,
+            "end": 25,
+            "confidence": 0.97
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.credit-card.invalid-luhn",
+      "description": "a checksum failure is not a card",
+      "op": "detect",
+      "requires": ["detect:credit-card"],
+      "input": {
+        "text": "Card 4111 1111 1111 1112.",
+        "categories": ["credit-card"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.credit-card.hyphens",
+      "description": "hyphen separators",
+      "op": "detect",
+      "requires": ["detect:credit-card"],
+      "input": {
+        "text": "Pay with 5555-5555-5555-4444.",
+        "categories": ["credit-card"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "credit-card",
+            "value": "5555-5555-5555-4444",
+            "start": 9,
+            "end": 28,
+            "confidence": 0.97
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.credit-card.masked-aggressive",
+      "description": "a masked card, aggressive mode only",
+      "op": "detect",
+      "requires": ["detect:credit-card", "detect:credit-card+aggressive"],
+      "input": {
+        "text": "Card ending ****-****-****-1234 on file",
+        "categories": ["credit-card"],
+        "aggressive": true
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "credit-card",
+            "value": "****-****-****-1234",
+            "start": 12,
+            "end": 31,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.credit-card.masked-standard",
+      "description": "a masked card is not reported by the standard detector",
+      "op": "detect",
+      "requires": ["detect:credit-card"],
+      "input": {
+        "text": "Card ending ****-****-****-1234 on file",
+        "categories": ["credit-card"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.ssn.hyphens",
+      "description": "AAA-GG-SSSS",
+      "op": "detect",
+      "requires": ["detect:ssn"],
+      "input": {
+        "text": "SSN: 123-45-6789",
+        "categories": ["ssn"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "ssn",
+            "value": "123-45-6789",
+            "start": 5,
+            "end": 16,
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.ssn.spaces",
+      "description": "space separators",
+      "op": "detect",
+      "requires": ["detect:ssn"],
+      "input": {
+        "text": "SSN 123 45 6789 on file",
+        "categories": ["ssn"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "ssn",
+            "value": "123 45 6789",
+            "start": 4,
+            "end": 15,
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.ssn.bare",
+      "description": "no separators",
+      "op": "detect",
+      "requires": ["detect:ssn"],
+      "input": {
+        "text": "SSN 123456789",
+        "categories": ["ssn"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "ssn",
+            "value": "123456789",
+            "start": 4,
+            "end": 13,
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.ssn.unassignable",
+      "description": "areas 000, 666 and 9xx, group 00 and serial 0000 are never issued",
+      "op": "detect",
+      "requires": ["detect:ssn"],
+      "input": {
+        "text": "000-12-3456 666-12-3456 900-12-3456 123-00-4567 123-45-0000",
+        "categories": ["ssn"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.iban.grouped",
+      "description": "grouped by four",
+      "op": "detect",
+      "requires": ["detect:iban"],
+      "input": {
+        "text": "IBAN: GB82 WEST 1234 5698 7654 32",
+        "categories": ["iban"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "iban",
+            "value": "GB82 WEST 1234 5698 7654 32",
+            "start": 6,
+            "end": 33,
+            "confidence": 0.99
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.iban.compact",
+      "description": "compact form",
+      "op": "detect",
+      "requires": ["detect:iban"],
+      "input": {
+        "text": "Transfer to DE89370400440532013000 today",
+        "categories": ["iban"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "iban",
+            "value": "DE89370400440532013000",
+            "start": 12,
+            "end": 34,
+            "confidence": 0.99
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.iban.invalid-checksum",
+      "description": "MOD-97 failure is not an IBAN",
+      "op": "detect",
+      "requires": ["detect:iban"],
+      "input": {
+        "text": "IBAN: GB82 WEST 1234 5698 7654 33",
+        "categories": ["iban"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.national-id.cpf",
+      "description": "punctuated CPF",
+      "op": "detect",
+      "requires": ["detect:national-id/br-cpf"],
+      "input": {
+        "text": "CPF 529.982.247-25 cadastrado",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "529.982.247-25",
+            "start": 4,
+            "end": 18,
+            "confidence": 0.92
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.cpf-context",
+      "description": "a label within 40 characters raises the confidence by 0.05",
+      "op": "detect",
+      "requires": ["detect:national-id/br-cpf"],
+      "input": {
+        "text": "National ID: 529.982.247-25",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "529.982.247-25",
+            "start": 13,
+            "end": 27,
+            "confidence": 0.97
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.cpf-invalid-default",
+      "description": "reference behaviour: the default national-id detector does not verify CPF check digits",
+      "op": "detect",
+      "requires": ["detect:national-id/br-cpf"],
+      "input": {
+        "text": "CPF 529.982.247-26",
+        "categories": ["national-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "529.982.247-26",
+            "start": 4,
+            "end": 18,
+            "confidence": 0.92
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.national-id.cpf-invalid-strict",
+      "description": "strict mode drops a CPF whose check digits fail",
+      "op": "detect",
+      "requires": ["detect:national-id/br-cpf", "detect:national-id+strict"],
+      "input": {
+        "text": "CPF 529.982.247-26",
+        "categories": ["national-id"],
+        "strict": true
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.national-id.cpf-valid-strict",
+      "description": "strict mode keeps a valid CPF",
+      "op": "detect",
+      "requires": ["detect:national-id/br-cpf", "detect:national-id+strict"],
+      "input": {
+        "text": "CPF 529.982.247-25",
+        "categories": ["national-id"],
+        "strict": true
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "national-id",
+            "value": "529.982.247-25",
+            "start": 4,
+            "end": 18,
+            "confidence": 0.92
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.tax-id.cnpj",
+      "description": "punctuated CNPJ",
+      "op": "detect",
+      "requires": ["detect:tax-id"],
+      "input": {
+        "text": "CNPJ 11.222.333/0001-81",
+        "categories": ["tax-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "tax-id",
+            "value": "11.222.333/0001-81",
+            "start": 5,
+            "end": 23,
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.tax-id.cnpj-invalid",
+      "description": "check digits fail: no match",
+      "op": "detect",
+      "requires": ["detect:tax-id"],
+      "input": {
+        "text": "CNPJ 11.222.333/0001-82",
+        "categories": ["tax-id"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.tax-id.cnpj-alphanumeric",
+      "description": "alphanumeric CNPJ",
+      "op": "detect",
+      "requires": ["detect:tax-id"],
+      "input": {
+        "text": "Empresa 12.ABC.345/01DE-35",
+        "categories": ["tax-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "tax-id",
+            "value": "12.ABC.345/01DE-35",
+            "start": 8,
+            "end": 26,
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.tax-id.cnpj-bare-context",
+      "description": "a bare CNPJ needs a label",
+      "op": "detect",
+      "requires": ["detect:tax-id"],
+      "input": {
+        "text": "CNPJ: 11222333000181",
+        "categories": ["tax-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "tax-id",
+            "value": "11222333000181",
+            "start": 6,
+            "end": 20,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.tax-id.cnpj-bare-no-context",
+      "description": "a bare CNPJ without a label is ignored",
+      "op": "detect",
+      "requires": ["detect:tax-id"],
+      "input": {
+        "text": "Ref 11222333000181",
+        "categories": ["tax-id"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.tax-id.ein",
+      "description": "US EIN with its label",
+      "op": "detect",
+      "requires": ["detect:tax-id"],
+      "input": {
+        "text": "EIN 12-3456789",
+        "categories": ["tax-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "tax-id",
+            "value": "12-3456789",
+            "start": 4,
+            "end": 14,
+            "confidence": 0.92
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.tax-id.ein-no-context",
+      "description": "US EIN without a label has a lower confidence",
+      "op": "detect",
+      "requires": ["detect:tax-id"],
+      "input": {
+        "text": "Ticket 12-3456789",
+        "categories": ["tax-id"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "tax-id",
+            "value": "12-3456789",
+            "start": 7,
+            "end": 17,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.bank-account.pix-payload",
+      "description": "PIX copia e cola payload verified by its CRC",
+      "op": "detect",
+      "requires": ["detect:bank-account"],
+      "input": {
+        "text": "Pague com: 00020126400014br.gov.bcb.pix0118fulano@example.com5204000053039865802BR5913FULANO DE TAL6009SAO PAULO62070503***63049F63",
+        "categories": ["bank-account"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "bank-account",
+            "value": "00020126400014br.gov.bcb.pix0118fulano@example.com5204000053039865802BR5913FULANO DE TAL6009SAO PAULO62070503***63049F63",
+            "start": 11,
+            "end": 131,
+            "confidence": 0.97
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.bank-account.pix-payload-bad-crc",
+      "description": "an altered payload is ignored",
+      "op": "detect",
+      "requires": ["detect:bank-account"],
+      "input": {
+        "text": "Pague com: 00020126400014br.gov.bcb.pix0118fulano@example.com5204000053039865802BR5913FULANO DE TAL6009SAO PAULO62070503***63049F60",
+        "categories": ["bank-account"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.bank-account.pix-random-key",
+      "description": "a random PIX key after its label",
+      "op": "detect",
+      "requires": ["detect:bank-account"],
+      "input": {
+        "text": "Chave PIX: 123e4567-e89b-12d3-a456-426614174000",
+        "categories": ["bank-account"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "bank-account",
+            "value": "123e4567-e89b-12d3-a456-426614174000",
+            "start": 11,
+            "end": 47,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.bank-account.pix-random-key-no-label",
+      "description": "a UUID without a PIX label is not a key",
+      "op": "detect",
+      "requires": ["detect:bank-account"],
+      "input": {
+        "text": "Request 123e4567-e89b-12d3-a456-426614174000",
+        "categories": ["bank-account"]
+      },
+      "expected": {
+        "matches": []
+      }
+    },
+    {
+      "id": "detect.bank-account.aba",
+      "description": "ABA routing number with valid check digit",
+      "op": "detect",
+      "requires": ["detect:bank-account"],
+      "input": {
+        "text": "Routing number: 011000015",
+        "categories": ["bank-account"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "bank-account",
+            "value": "011000015",
+            "start": 16,
+            "end": 25,
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.bank-account.sort-code",
+      "description": "UK sort code",
+      "op": "detect",
+      "requires": ["detect:bank-account"],
+      "input": {
+        "text": "Sort code 12-34-56",
+        "categories": ["bank-account"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "bank-account",
+            "value": "12-34-56",
+            "start": 10,
+            "end": 18,
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.mixed.document-order",
+      "description": "several categories, reported in document order",
+      "op": "detect",
+      "requires": ["detect:email", "detect:ipv4", "detect:credit-card"],
+      "input": {
+        "text": "Email alice@example.com from 192.0.2.10, card 4111111111111111.",
+        "categories": ["email", "ipv4", "credit-card"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "email",
+            "value": "alice@example.com",
+            "start": 6,
+            "end": 23,
+            "confidence": 0.99
+          },
+          {
+            "category": "ipv4",
+            "value": "192.0.2.10",
+            "start": 29,
+            "end": 39,
+            "confidence": 0.98
+          },
+          {
+            "category": "credit-card",
+            "value": "4111111111111111",
+            "start": 46,
+            "end": 62,
+            "confidence": 0.97
+          }
+        ]
+      }
+    },
+    {
+      "id": "detect.mixed.overlap-confidence",
+      "description": "two detections of one span: the higher confidence wins",
+      "op": "detect",
+      "requires": ["detect:bank-account", "detect:credit-card"],
+      "input": {
+        "text": "Account number 4111111111111111",
+        "categories": ["bank-account", "credit-card"]
+      },
+      "expected": {
+        "matches": [
+          {
+            "category": "credit-card",
+            "value": "4111111111111111",
+            "start": 15,
+            "end": 31,
+            "confidence": 0.97
+          }
+        ]
+      }
+    },
+    {
+      "id": "tokenize.single",
+      "description": "one value, bracket token",
+      "op": "tokenize",
+      "requires": ["tokenize", "detect:email"],
+      "input": {
+        "text": "Contact alice@example.com",
+        "categories": ["email"]
+      },
+      "expected": {
+        "text": "Contact [EMAIL_0001]",
+        "mapping": [["[EMAIL_0001]", "alice@example.com"]]
+      }
+    },
+    {
+      "id": "tokenize.repeat-case-insensitive",
+      "description": "reference behaviour: tokens are numbered from the end of the text, and values that differ only in case share one",
+      "op": "tokenize",
+      "requires": ["tokenize", "detect:email"],
+      "input": {
+        "text": "alice@example.com, bob@example.com, ALICE@example.com",
+        "categories": ["email"]
+      },
+      "expected": {
+        "text": "[EMAIL_0001], [EMAIL_0002], [EMAIL_0001]",
+        "mapping": [
+          ["[EMAIL_0001]", "ALICE@example.com"],
+          ["[EMAIL_0002]", "bob@example.com"]
+        ]
+      }
+    },
+    {
+      "id": "tokenize.categories",
+      "description": "one counter per prefix",
+      "op": "tokenize",
+      "requires": ["tokenize", "detect:email", "detect:ipv4"],
+      "input": {
+        "text": "Mail alice@example.com from 192.0.2.10",
+        "categories": ["email", "ipv4"]
+      },
+      "expected": {
+        "text": "Mail [EMAIL_0001] from [IPV4_0001]",
+        "mapping": [
+          ["[EMAIL_0001]", "alice@example.com"],
+          ["[IPV4_0001]", "192.0.2.10"]
+        ]
+      }
+    },
+    {
+      "id": "detokenize.unresolved",
+      "description": "unknown tokens stay and are reported",
+      "op": "detokenize",
+      "requires": ["detokenize"],
+      "input": {
+        "text": "[EMAIL_0001] wrote to [EMAIL_0002] about [PHONE_0001]",
+        "mapping": [
+          ["[EMAIL_0001]", "alice@example.com"],
+          ["[EMAIL_0002]", "bob@example.com"]
+        ]
+      },
+      "expected": {
+        "text": "alice@example.com wrote to bob@example.com about [PHONE_0001]",
+        "replacedCount": 2,
+        "unresolved": ["[PHONE_0001]"]
+      }
+    },
+    {
+      "id": "shield.numbering",
+      "description": "tokens numbered in document order; a repeated value keeps its token",
+      "op": "shield",
+      "requires": ["shield", "detect:email"],
+      "input": {
+        "text": "Mail john@example.com, cc jane@example.com, again john@example.com",
+        "categories": ["email"],
+        "vault": []
+      },
+      "expected": {
+        "text": "Mail {{EMAIL_1}}, cc {{EMAIL_2}}, again {{EMAIL_1}}",
+        "vault": [
+          ["{{EMAIL_1}}", "john@example.com"],
+          ["{{EMAIL_2}}", "jane@example.com"]
+        ]
+      }
+    },
+    {
+      "id": "shield.existing-vault",
+      "description": "a token the vault holds for another value is skipped; one it holds for the same value is reused",
+      "op": "shield",
+      "requires": ["shield", "detect:email"],
+      "input": {
+        "text": "Mail new@example.com and old@example.com",
+        "categories": ["email"],
+        "vault": [["{{EMAIL_1}}", "old@example.com"]]
+      },
+      "expected": {
+        "text": "Mail {{EMAIL_2}} and {{EMAIL_1}}",
+        "vault": [
+          ["{{EMAIL_1}}", "old@example.com"],
+          ["{{EMAIL_2}}", "new@example.com"]
+        ]
+      }
+    },
+    {
+      "id": "shield.case-sensitive",
+      "description": "vault tokens compare values exactly, unlike classic tokenize()",
+      "op": "shield",
+      "requires": ["shield", "detect:email"],
+      "input": {
+        "text": "Alice@Example.com and alice@example.com",
+        "categories": ["email"],
+        "vault": []
+      },
+      "expected": {
+        "text": "{{EMAIL_1}} and {{EMAIL_2}}",
+        "vault": [
+          ["{{EMAIL_1}}", "Alice@Example.com"],
+          ["{{EMAIL_2}}", "alice@example.com"]
+        ]
+      }
+    },
+    {
+      "id": "shield.prefixes",
+      "description": "the token prefix of each category",
+      "op": "shield",
+      "requires": ["shield", "detect:email", "detect:ssn", "detect:credit-card"],
+      "input": {
+        "text": "SSN 123-45-6789, card 4111111111111111, mail ann@example.com",
+        "categories": ["email", "ssn", "credit-card"],
+        "vault": []
+      },
+      "expected": {
+        "text": "SSN {{SSN_1}}, card {{CREDIT_CARD_1}}, mail {{EMAIL_1}}",
+        "vault": [
+          ["{{SSN_1}}", "123-45-6789"],
+          ["{{CREDIT_CARD_1}}", "4111111111111111"],
+          ["{{EMAIL_1}}", "ann@example.com"]
+        ]
+      }
+    },
+    {
+      "id": "restore.overlapping-numbers",
+      "description": "{{PERSON_1}} is a prefix of {{PERSON_10}}: tokens are matched whole, never by substring",
+      "op": "restore",
+      "requires": ["restore"],
+      "input": {
+        "text": "{{PERSON_10}} met {{PERSON_1}}.",
+        "vault": [
+          ["{{PERSON_1}}", "Ana"],
+          ["{{PERSON_10}}", "Bruno"]
+        ]
+      },
+      "expected": {
+        "text": "Bruno met Ana.",
+        "restored": 2,
+        "unresolved": []
+      }
+    },
+    {
+      "id": "restore.unresolved",
+      "description": "an unknown token stays and is reported",
+      "op": "restore",
+      "requires": ["restore"],
+      "input": {
+        "text": "{{EMAIL_1}} and {{EMAIL_9}}",
+        "vault": [["{{EMAIL_1}}", "ann@example.com"]]
+      },
+      "expected": {
+        "text": "ann@example.com and {{EMAIL_9}}",
+        "restored": 1,
+        "unresolved": ["{{EMAIL_9}}"]
+      }
+    },
+    {
+      "id": "restore.shapes",
+      "description": "bracket, angle and brace tokens",
+      "op": "restore",
+      "requires": ["restore"],
+      "input": {
+        "text": "[EMAIL_0001] <EMAIL_1> {{EMAIL_1}}",
+        "vault": [
+          ["{{EMAIL_1}}", "a@example.com"],
+          ["[EMAIL_0001]", "b@example.com"],
+          ["<EMAIL_1>", "c@example.com"]
+        ]
+      },
+      "expected": {
+        "text": "b@example.com c@example.com a@example.com",
+        "restored": 3,
+        "unresolved": []
+      }
+    },
+    {
+      "id": "restore.look-alikes",
+      "description": "text that only resembles a token is left alone",
+      "op": "restore",
+      "requires": ["restore"],
+      "input": {
+        "text": "{{ EMAIL_1 }} and {{email_1}} and {EMAIL_1}",
+        "vault": [["{{EMAIL_1}}", "ann@example.com"]]
+      },
+      "expected": {
+        "text": "{{ EMAIL_1 }} and {{email_1}} and {EMAIL_1}",
+        "restored": 0,
+        "unresolved": []
+      }
+    },
+    {
+      "id": "restore.tagged",
+      "description": "a token with a tag",
+      "op": "restore",
+      "requires": ["restore"],
+      "input": {
+        "text": "Reply to {{EMAIL_k3Xf_1}}",
+        "vault": [["{{EMAIL_k3Xf_1}}", "ann@example.com"]]
+      },
+      "expected": {
+        "text": "Reply to ann@example.com",
+        "restored": 1,
+        "unresolved": []
+      }
+    },
+    {
+      "id": "restore.repeated-adjacent",
+      "description": "adjacent and repeated tokens",
+      "op": "restore",
+      "requires": ["restore"],
+      "input": {
+        "text": "{{EMAIL_1}}{{EMAIL_2}} {{EMAIL_1}}",
+        "vault": [
+          ["{{EMAIL_1}}", "a@example.com"],
+          ["{{EMAIL_2}}", "b@example.com"]
+        ]
+      },
+      "expected": {
+        "text": "a@example.comb@example.com a@example.com",
+        "restored": 3,
+        "unresolved": []
+      }
+    },
+    {
+      "id": "restore.value-looks-like-token",
+      "description": "restoration is a single pass: a value is never restored again",
+      "op": "restore",
+      "requires": ["restore"],
+      "input": {
+        "text": "{{PERSON_1}}",
+        "vault": [
+          ["{{PERSON_1}}", "{{PERSON_2}}"],
+          ["{{PERSON_2}}", "Ana"]
+        ]
+      },
+      "expected": {
+        "text": "{{PERSON_2}}",
+        "restored": 1,
+        "unresolved": []
+      }
+    },
+    {
+      "id": "anonymize.redact",
+      "description": "default label",
+      "op": "anonymize",
+      "requires": ["anonymize", "strategy:redact", "detect:email"],
+      "input": {
+        "text": "Mail alice@example.com today",
+        "rules": [
+          {
+            "category": "email",
+            "strategy": {
+              "strategy": "redact"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "text": "Mail [REDACTED] today"
+      }
+    },
+    {
+      "id": "anonymize.redact-label",
+      "description": "custom label",
+      "op": "anonymize",
+      "requires": ["anonymize", "strategy:redact", "detect:email"],
+      "input": {
+        "text": "Mail alice@example.com today",
+        "rules": [
+          {
+            "category": "email",
+            "strategy": {
+              "strategy": "redact",
+              "label": "<EMAIL>"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "text": "Mail <EMAIL> today"
+      }
+    },
+    {
+      "id": "anonymize.mask-trailing",
+      "description": "keep the last four digits",
+      "op": "anonymize",
+      "requires": ["anonymize", "strategy:mask", "detect:credit-card"],
+      "input": {
+        "text": "Card 4111111111111111.",
+        "rules": [
+          {
+            "category": "credit-card",
+            "strategy": {
+              "strategy": "mask",
+              "keepTrailing": 4
+            }
+          }
+        ]
+      },
+      "expected": {
+        "text": "Card ************1111."
+      }
+    },
+    {
+      "id": "anonymize.mask-format",
+      "description": "format-preserving mask keeps separators",
+      "op": "anonymize",
+      "requires": ["anonymize", "strategy:mask", "detect:ssn"],
+      "input": {
+        "text": "SSN 123-45-6789",
+        "rules": [
+          {
+            "category": "ssn",
+            "strategy": {
+              "strategy": "mask",
+              "keepTrailing": 4,
+              "preserveFormat": true
+            }
+          }
+        ]
+      },
+      "expected": {
+        "text": "SSN 000-00-6789"
+      }
+    },
+    {
+      "id": "anonymize.mask-char",
+      "description": "mask character and leading characters",
+      "op": "anonymize",
+      "requires": ["anonymize", "strategy:mask", "detect:email"],
+      "input": {
+        "text": "Mail ann@example.com",
+        "rules": [
+          {
+            "category": "email",
+            "strategy": {
+              "strategy": "mask",
+              "maskChar": "#",
+              "keepLeading": 2
+            }
+          }
+        ]
+      },
+      "expected": {
+        "text": "Mail an#############"
+      }
+    },
+    {
+      "id": "anonymize.pseudonymize-seeded",
+      "description": "a seeded pseudonym is deterministic (djb2 over UTF-16 code units)",
+      "op": "anonymize",
+      "requires": ["anonymize", "strategy:pseudonymize", "detect:email"],
+      "input": {
+        "text": "Mail alice@example.com",
+        "rules": [
+          {
+            "category": "email",
+            "strategy": {
+              "strategy": "pseudonymize",
+              "seed": "s3cr3t"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "text": "Mail id_dce0436c55d847d2"
+      }
+    },
+    {
+      "id": "anonymize.default-strategy",
+      "description": "one strategy per category",
+      "op": "anonymize",
+      "requires": ["anonymize", "strategy:redact", "detect:email", "detect:ipv4"],
+      "input": {
+        "text": "From alice@example.com at 192.0.2.10",
+        "rules": [
+          {
+            "category": "email",
+            "strategy": {
+              "strategy": "mask",
+              "keepTrailing": 4
+            }
+          },
+          {
+            "category": "ipv4",
+            "strategy": {
+              "strategy": "redact",
+              "label": "[IP]"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "text": "From *************.com at [IP]"
+      }
+    },
+    {
+      "id": "anonymize.preset-lgpd",
+      "description": "LGPD redacts",
+      "op": "anonymize",
+      "requires": ["anonymize", "preset:lgpd"],
+      "input": {
+        "text": "CPF 529.982.247-25, e-mail ana@example.com",
+        "preset": ["lgpd"]
+      },
+      "expected": {
+        "text": "CPF [REDACTED], e-mail [REDACTED]"
+      }
+    },
+    {
+      "id": "anonymize.preset-hipaa",
+      "description": "HIPAA redacts",
+      "op": "anonymize",
+      "requires": ["anonymize", "preset:hipaa"],
+      "input": {
+        "text": "Patient e-mail ana@example.com, SSN 123-45-6789",
+        "preset": ["hipaa"]
+      },
+      "expected": {
+        "text": "Patient e-mail [REDACTED], SSN [REDACTED]"
+      }
+    },
+    {
+      "id": "anonymize.preset-gdpr",
+      "description": "GDPR pseudonymizes with random identifiers: only the shape is fixed",
+      "op": "anonymize",
+      "requires": ["anonymize", "preset:gdpr"],
+      "input": {
+        "text": "Contact ana@example.com",
+        "preset": ["gdpr"]
+      },
+      "expected": {
+        "textPattern": "^Contact id_[0-9a-f]{16}$"
+      }
+    },
+    {
+      "id": "anonymize.preset-pci-dss",
+      "description": "PCI-DSS masks card numbers and redacts the rest",
+      "op": "anonymize",
+      "requires": ["anonymize", "preset:pci-dss"],
+      "input": {
+        "text": "Card 4111111111111111, mail ana@example.com",
+        "preset": ["pci-dss"]
+      },
+      "expected": {
+        "text": "Card ************1111, mail [REDACTED]"
+      }
+    },
+    {
+      "id": "anonymize.preset-combined",
+      "description": "LGPD and HIPAA combined: the union of their categories",
+      "op": "anonymize",
+      "requires": ["anonymize", "preset:lgpd", "preset:hipaa"],
+      "input": {
+        "text": "SSN 123-45-6789 e CPF 529.982.247-25",
+        "preset": ["lgpd", "hipaa"]
+      },
+      "expected": {
+        "text": "SSN [REDACTED] e CPF [REDACTED]"
+      }
+    },
+    {
+      "id": "preset.lgpd",
+      "description": "LGPD",
+      "op": "preset",
+      "requires": ["preset"],
+      "input": {
+        "names": ["lgpd"]
+      },
+      "expected": {
+        "categories": [
+          "name",
+          "email",
+          "phone",
+          "address",
+          "date-of-birth",
+          "national-id",
+          "tax-id",
+          "passport",
+          "drivers-license",
+          "bank-account",
+          "iban",
+          "credit-card",
+          "cryptocurrency",
+          "ipv4",
+          "ipv6",
+          "url",
+          "social-media",
+          "license-plate",
+          "medical-record",
+          "health-insurance",
+          "prescription"
+        ],
+        "defaultStrategy": {
+          "strategy": "redact"
+        },
+        "rules": []
+      }
+    },
+    {
+      "id": "preset.gdpr",
+      "description": "GDPR",
+      "op": "preset",
+      "requires": ["preset"],
+      "input": {
+        "names": ["gdpr"]
+      },
+      "expected": {
+        "categories": [
+          "name",
+          "email",
+          "phone",
+          "address",
+          "date-of-birth",
+          "ssn",
+          "national-id",
+          "passport",
+          "drivers-license",
+          "iban",
+          "bank-account",
+          "credit-card",
+          "ipv4",
+          "ipv6",
+          "url",
+          "medical-record",
+          "health-insurance",
+          "prescription",
+          "social-media",
+          "cryptocurrency",
+          "tax-id"
+        ],
+        "defaultStrategy": {
+          "strategy": "pseudonymize"
+        },
+        "rules": []
+      }
+    },
+    {
+      "id": "preset.hipaa",
+      "description": "HIPAA",
+      "op": "preset",
+      "requires": ["preset"],
+      "input": {
+        "names": ["hipaa"]
+      },
+      "expected": {
+        "categories": [
+          "name",
+          "address",
+          "date-of-birth",
+          "phone",
+          "email",
+          "ssn",
+          "medical-record",
+          "health-insurance",
+          "prescription",
+          "bank-account",
+          "credit-card",
+          "iban",
+          "drivers-license",
+          "passport",
+          "vin",
+          "license-plate",
+          "url",
+          "ipv4",
+          "ipv6",
+          "national-id",
+          "tax-id",
+          "social-media",
+          "company-registration"
+        ],
+        "defaultStrategy": {
+          "strategy": "redact"
+        },
+        "rules": []
+      }
+    },
+    {
+      "id": "preset.pci-dss",
+      "description": "PCI-DSS has per-category rules",
+      "op": "preset",
+      "requires": ["preset"],
+      "input": {
+        "names": ["pci-dss"]
+      },
+      "expected": {
+        "categories": ["credit-card", "bank-account", "name", "address", "email", "phone"],
+        "defaultStrategy": {
+          "strategy": "redact"
+        },
+        "rules": [
+          {
+            "category": "credit-card",
+            "strategy": {
+              "strategy": "mask",
+              "keepTrailing": 4
+            }
+          },
+          {
+            "category": "bank-account",
+            "strategy": {
+              "strategy": "mask",
+              "keepTrailing": 4
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "preset.lgpd-hipaa",
+      "description": "combined presets: categories in first-seen order",
+      "op": "preset",
+      "requires": ["preset"],
+      "input": {
+        "names": ["lgpd", "hipaa"]
+      },
+      "expected": {
+        "categories": [
+          "name",
+          "email",
+          "phone",
+          "address",
+          "date-of-birth",
+          "national-id",
+          "tax-id",
+          "passport",
+          "drivers-license",
+          "bank-account",
+          "iban",
+          "credit-card",
+          "cryptocurrency",
+          "ipv4",
+          "ipv6",
+          "url",
+          "social-media",
+          "license-plate",
+          "medical-record",
+          "health-insurance",
+          "prescription",
+          "ssn",
+          "vin",
+          "company-registration"
+        ],
+        "defaultStrategy": {
+          "strategy": "redact"
+        },
+        "rules": []
+      }
+    },
+    {
+      "id": "preset.pci-dss-hipaa",
+      "description": "a category gets the most protective strategy of the presets that cover it: redaction beats a mask that keeps four digits",
+      "op": "preset",
+      "requires": ["preset"],
+      "input": {
+        "names": ["pci-dss", "hipaa"]
+      },
+      "expected": {
+        "categories": [
+          "credit-card",
+          "bank-account",
+          "name",
+          "address",
+          "email",
+          "phone",
+          "date-of-birth",
+          "ssn",
+          "medical-record",
+          "health-insurance",
+          "prescription",
+          "iban",
+          "drivers-license",
+          "passport",
+          "vin",
+          "license-plate",
+          "url",
+          "ipv4",
+          "ipv6",
+          "national-id",
+          "tax-id",
+          "social-media",
+          "company-registration"
+        ],
+        "defaultStrategy": {
+          "strategy": "redact"
+        },
+        "rules": []
+      }
+    },
+    {
+      "id": "preset.gdpr-lgpd",
+      "description": "a tie in protection keeps the strategy of the first preset; a category only the second covers keeps the second's strategy as a rule",
+      "op": "preset",
+      "requires": ["preset"],
+      "input": {
+        "names": ["gdpr", "lgpd"]
+      },
+      "expected": {
+        "categories": [
+          "name",
+          "email",
+          "phone",
+          "address",
+          "date-of-birth",
+          "ssn",
+          "national-id",
+          "passport",
+          "drivers-license",
+          "iban",
+          "bank-account",
+          "credit-card",
+          "ipv4",
+          "ipv6",
+          "url",
+          "medical-record",
+          "health-insurance",
+          "prescription",
+          "social-media",
+          "cryptocurrency",
+          "tax-id",
+          "license-plate"
+        ],
+        "defaultStrategy": {
+          "strategy": "pseudonymize"
+        },
+        "rules": [
+          {
+            "category": "license-plate",
+            "strategy": {
+              "strategy": "redact"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "canonical.sorting-escaping",
+      "description": "keys sorted by UTF-16 code units, JSON.stringify string escapes, no white space",
+      "op": "canonicalize",
+      "requires": ["receipt"],
+      "input": {
+        "value": {
+          "b": 1,
+          "a": [true, null, "x"],
+          "c": {
+            "z": "é\n\u0001\"\\",
+            "y": 0,
+            "Z": "upper"
+          },
+          "é": "after z",
+          "": "empty"
+        }
+      },
+      "expected": {
+        "text": "{\"\":\"empty\",\"a\":[true,null,\"x\"],\"b\":1,\"c\":{\"Z\":\"upper\",\"y\":0,\"z\":\"é\\n\\u0001\\\"\\\\\"},\"é\":\"after z\"}"
+      }
+    },
+    {
+      "id": "canonical.astral-key-order",
+      "description": "an astral key (surrogate pair D83D) sorts before U+FB01, as in UTF-16",
+      "op": "canonicalize",
+      "requires": ["receipt"],
+      "input": {
+        "value": {
+          "😀": 1,
+          "ﬁ": 2
+        }
+      },
+      "expected": {
+        "text": "{\"😀\":1,\"ﬁ\":2}"
+      }
+    },
+    {
+      "id": "digest.sha256.113",
+      "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
+      "op": "digest",
+      "requires": ["receipt"],
+      "input": {
+        "text": ""
+      },
+      "expected": {
+        "hex": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "id": "digest.sha256.114",
+      "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
+      "op": "digest",
+      "requires": ["receipt"],
+      "input": {
+        "text": "Contact [EMAIL_0001]"
+      },
+      "expected": {
+        "hex": "77fd0927a04af69699ba8da0c88d4601bbfbac1e480d952428fe2022a2feffb2"
+      }
+    },
+    {
+      "id": "digest.sha256.115",
+      "description": "SHA-256 of the UTF-8 encoding, lower-case hex",
+      "op": "digest",
+      "requires": ["receipt"],
+      "input": {
+        "text": "José — 📧"
+      },
+      "expected": {
+        "hex": "b3d077fd1f999603d86244e8592a6333989e32fe0ae29765c77391ca6282aa2e"
+      }
+    },
+    {
+      "id": "receipt.sign",
+      "description": "HMAC-SHA-256 over the domain anonyma/receipt/v1, a NUL and the canonical body",
+      "op": "receipt.sign",
+      "requires": ["receipt"],
+      "input": {
+        "key": "conformance-receipt-key",
+        "body": {
+          "v": 1,
+          "id": "00112233445566778899aabbccddeeff",
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "library": "anonyma@1.3.2",
+          "presets": ["lgpd"],
+          "stats": {
+            "email": 1,
+            "national-id": 2
+          },
+          "total": 3,
+          "output": "77fd0927a04af69699ba8da0c88d4601bbfbac1e480d952428fe2022a2feffb2",
+          "alg": "HMAC-SHA-256"
+        }
+      },
+      "expected": {
+        "signature": "04e6bec1ca45823f262d26f2c954541dfc64439ff3dded2c898128e996d24847"
+      }
+    },
+    {
+      "id": "receipt.verify-valid",
+      "description": "an untouched receipt verifies",
+      "op": "receipt.verify",
+      "requires": ["receipt"],
+      "input": {
+        "key": "conformance-receipt-key",
+        "receipt": {
+          "v": 1,
+          "id": "00112233445566778899aabbccddeeff",
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "library": "anonyma@1.3.2",
+          "presets": ["lgpd"],
+          "stats": {
+            "email": 1,
+            "national-id": 2
+          },
+          "total": 3,
+          "output": "77fd0927a04af69699ba8da0c88d4601bbfbac1e480d952428fe2022a2feffb2",
+          "alg": "HMAC-SHA-256",
+          "signature": "04e6bec1ca45823f262d26f2c954541dfc64439ff3dded2c898128e996d24847"
+        }
+      },
+      "expected": {
+        "valid": true
+      }
+    },
+    {
+      "id": "receipt.verify-tampered",
+      "description": "changing a count breaks the signature",
+      "op": "receipt.verify",
+      "requires": ["receipt"],
+      "input": {
+        "key": "conformance-receipt-key",
+        "receipt": {
+          "v": 1,
+          "id": "00112233445566778899aabbccddeeff",
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "library": "anonyma@1.3.2",
+          "presets": ["lgpd"],
+          "stats": {
+            "email": 1,
+            "national-id": 1
+          },
+          "total": 2,
+          "output": "77fd0927a04af69699ba8da0c88d4601bbfbac1e480d952428fe2022a2feffb2",
+          "alg": "HMAC-SHA-256",
+          "signature": "04e6bec1ca45823f262d26f2c954541dfc64439ff3dded2c898128e996d24847"
+        }
+      },
+      "expected": {
+        "valid": false,
+        "reason": "signature"
+      }
+    },
+    {
+      "id": "receipt.verify-wrong-key",
+      "description": "another key does not verify",
+      "op": "receipt.verify",
+      "requires": ["receipt"],
+      "input": {
+        "key": "another-key",
+        "receipt": {
+          "v": 1,
+          "id": "00112233445566778899aabbccddeeff",
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "library": "anonyma@1.3.2",
+          "presets": ["lgpd"],
+          "stats": {
+            "email": 1,
+            "national-id": 2
+          },
+          "total": 3,
+          "output": "77fd0927a04af69699ba8da0c88d4601bbfbac1e480d952428fe2022a2feffb2",
+          "alg": "HMAC-SHA-256",
+          "signature": "04e6bec1ca45823f262d26f2c954541dfc64439ff3dded2c898128e996d24847"
+        }
+      },
+      "expected": {
+        "valid": false,
+        "reason": "signature"
+      }
+    },
+    {
+      "id": "receipt.issue",
+      "description": "id, library and signature vary; the issued receipt must verify with the key",
+      "op": "receipt.issue",
+      "requires": ["receipt"],
+      "input": {
+        "key": "conformance-receipt-key",
+        "text": "Contact [EMAIL_0001]",
+        "counts": {
+          "national-id": 2,
+          "email": 1
+        },
+        "presets": ["lgpd"],
+        "timestamp": "2026-01-01T00:00:00.000Z"
+      },
+      "expected": {
+        "receipt": {
+          "v": 1,
+          "timestamp": "2026-01-01T00:00:00.000Z",
+          "presets": ["lgpd"],
+          "stats": {
+            "email": 1,
+            "national-id": 2
+          },
+          "total": 3,
+          "output": "77fd0927a04af69699ba8da0c88d4601bbfbac1e480d952428fe2022a2feffb2",
+          "alg": "HMAC-SHA-256"
+        }
+      }
+    }
+  ]
+}

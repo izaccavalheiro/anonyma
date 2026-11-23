@@ -64,3 +64,30 @@ updates:
     groups:
       actions:
         patterns: ["*"]
+
+  # The Rust workspace: the core and its bindings.
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: build(rust)
+    groups:
+      rust:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  # The base images of the sidecar, pinned by digest.
+  - package-ecosystem: docker
+    directory: /packages/sidecar
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: build(sidecar)

@@ -1,0 +1,18 @@
+# Docker build context of packages/sidecar/Dockerfile (the repository root).
+**/node_modules
+**/dist
+**/coverage
+**/target
+.git
+.github
+.husky
+bench
+bindings
+crates
+docs
+scripts
+tests
+website
+*.log
+.env
+.env.*

@@ -1,0 +1,22 @@
+[package]
+name = "anonyma-core"
+description = "The engine of anonyma: PII detection, checksum validation, reversible tokenization and signed anonymization receipts, shared by every language binding."
+readme = "README.md"
+keywords = ["pii", "anonymization", "privacy", "redaction", "gdpr"]
+categories = ["text-processing", "cryptography"]
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+regex.workspace = true
+sha2.workspace = true
+hmac.workspace = true
+getrandom.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

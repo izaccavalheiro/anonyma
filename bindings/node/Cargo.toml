@@ -1,0 +1,23 @@
+[package]
+name = "anonyma-node"
+description = "Node.js and Bun bindings of anonyma-core (napi-rs)."
+publish = false
+version.workspace = true
+edition.workspace = true
+# napi-build writes `cargo::` build instructions, which need Rust 1.77.
+rust-version = "1.77"
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+anonyma-core.workspace = true
+anonyma-ffi = { path = "../../crates/anonyma-ffi", default-features = false }
+napi = { version = "2", default-features = false, features = ["napi4"] }
+napi-derive = "2"
+
+[build-dependencies]
+napi-build = "2"

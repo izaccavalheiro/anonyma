@@ -1,0 +1,4 @@
+# The toolchain CI and contributors build the Rust workspace with.
+[toolchain]
+channel = "stable"
+components = ["rustfmt", "clippy"]

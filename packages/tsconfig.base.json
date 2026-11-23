@@ -17,6 +17,10 @@
     "resolveJsonModule": true,
     "paths": {
       "anonyma": ["../dist/index.d.ts", "../src/index.ts"],
+      "anonyma/validators": ["../dist/validators.d.ts", "../src/validators.ts"],
+      "anonyma/schemas": ["../dist/schemas.d.ts", "../src/schemas.ts"],
+      "anonyma/crypto": ["../dist/crypto.d.ts", "../src/crypto.ts"],
+      "anonyma/stream": ["../dist/stream.d.ts", "../src/stream.ts"],
       "anonyma/*": ["../dist/*/index.d.ts", "../src/*/index.ts"]
     }
   }

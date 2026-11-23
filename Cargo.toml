@@ -1,0 +1,38 @@
+# Rust workspace of anonyma: the core engine and the native bindings built on it.
+#
+# The npm workspace (package.json, packages/*) is separate and unchanged; the
+# two meet only in the conformance suite (packages/conformance), which every
+# implementation runs. See docs/rfcs/0001-polyglot-core.md.
+
+[workspace]
+resolver = "2"
+members = [
+  "crates/anonyma-core",
+  "crates/anonyma-ffi",
+  "bindings/python",
+  "bindings/node",
+  "bindings/wasm",
+]
+default-members = ["crates/anonyma-core", "crates/anonyma-ffi"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+license = "MIT"
+authors = ["Izac Cavalheiro"]
+repository = "https://github.com/izaccavalheiro/anonyma"
+homepage = "https://izaccavalheiro.github.io/anonyma/"
+
+[workspace.dependencies]
+anonyma-core = { path = "crates/anonyma-core", version = "0.1.0" }
+regex = "1.10"
+sha2 = "0.10"
+hmac = "0.12"
+getrandom = "0.2"
+serde_json = "1"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

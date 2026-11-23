@@ -13,5 +13,10 @@ const dist = join(dirname(fileURLToPath(import.meta.url)), "..", "dist");
 
 export const anonymaAlias = [
   { find: /^anonyma$/, replacement: join(dist, "index.js") },
+  // Subpaths built from a single file rather than a directory.
+  {
+    find: /^anonyma\/(validators|schemas|crypto|stream)$/,
+    replacement: join(dist, "$1.js"),
+  },
   { find: /^anonyma\/(.+)$/, replacement: join(dist, "$1", "index.js") },
 ];

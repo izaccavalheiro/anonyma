@@ -41,3 +41,21 @@ temp/
 
 # Tarballs of the companion packages (scripts/publish-packages.mjs)
 dist-packages/
+
+# Rust build output
+target/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+bindings/python/dist/
+bindings/python/python/anonyma/*.so
+bindings/python/python/anonyma/*.pyd
+
+# Native and WebAssembly bindings
+bindings/node/*.node
+bindings/node/index.js
+bindings/node/index.d.ts
+bindings/wasm/pkg/
