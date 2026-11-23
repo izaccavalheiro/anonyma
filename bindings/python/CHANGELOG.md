@@ -7,6 +7,12 @@ change its API.
 
 ## [Unreleased]
 
+## [0.1.0a3] — 2026-11-23
+
+The Rust core detects all 27 categories and serves every preset in full, CCPA included, with no
+`allow_partial=True`. It also runs the span engine of the TypeScript package, `scan()`. It passes
+all 282 cases of the conformance suite.
+
 ### Added
 
 - Detection of `api-key` (AWS, Stripe, GitHub, Slack, Google, `sk-` keys, JSON Web Tokens, and
