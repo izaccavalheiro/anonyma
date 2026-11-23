@@ -169,6 +169,10 @@ pub(super) fn detect(text: &str, strict: bool) -> Vec<Match> {
         } else {
             &national_ends
         };
+        // Without a label, a format that requires one reports nothing.
+        if entry.requires_label && ends.is_empty() {
+            continue;
+        }
         for (start, end) in entry.pattern.ranges(text) {
             if seen.contains(&(start, end)) {
                 continue;

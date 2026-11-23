@@ -183,6 +183,21 @@ pub(crate) fn label_ends(ranges: Vec<(usize, usize)>) -> Vec<usize> {
     ranges.into_iter().map(|(_, end)| end).collect()
 }
 
+/// The ranges `scan` finds, for a pattern whose matches are reported only
+/// after a label: none, without scanning, when the text has no label. Skipping
+/// the scan changes no result, since every candidate would be rejected and a
+/// rejected candidate leaves no trace.
+pub(crate) fn after_labels(
+    labels: &[usize],
+    scan: impl FnOnce() -> Vec<(usize, usize)>,
+) -> Vec<(usize, usize)> {
+    if labels.is_empty() {
+        Vec::new()
+    } else {
+        scan()
+    }
+}
+
 /// Whether a value at `index` starts at most `limit` UTF-16 units after the
 /// end of a label.
 pub(crate) fn has_context(text: &str, labels: &[usize], index: usize, limit: usize) -> bool {

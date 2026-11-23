@@ -1,7 +1,7 @@
 //! Licence plates (`src/detectors/license-plate.ts`): UK formats on their
 //! own, European formats and any other plate within 20 characters after a label.
 
-use super::{has_context, label_ends, Collector, Match};
+use super::{after_labels, has_context, label_ends, Collector, Match};
 use crate::jsregex::js_regex;
 use crate::Category;
 
@@ -21,13 +21,13 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     for (start, end) in uk_old().ranges(text) {
         found.push(start, end, if labelled(start) { 0.85 } else { 0.7 });
     }
-    for (start, end) in european().ranges(text) {
+    for (start, end) in after_labels(&labels, || european().ranges(text)) {
         // Reported only after a label: 0.65 without one is below the threshold of 0.7.
         if labelled(start) {
             found.push(start, end, 0.82);
         }
     }
-    for (start, end) in any_plate().ranges(text) {
+    for (start, end) in after_labels(&labels, || any_plate().ranges(text)) {
         if labelled(start) {
             found.push(start, end, 0.8);
         }

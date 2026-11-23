@@ -2,7 +2,7 @@
 //! keys, US ABA routing numbers, UK sort codes, SWIFT/BIC codes and account
 //! numbers after a label.
 
-use super::{has_context, label_ends, Collector, Match};
+use super::{after_labels, has_context, label_ends, Collector, Match};
 use crate::jsregex::js_regex;
 use crate::validators::{aba_routing, pix_payload};
 use crate::Category;
@@ -81,7 +81,7 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     }
 
     // US ABA routing numbers: only after a label; valid check digits raise the confidence.
-    for (start, end) in us_aba().ranges(text) {
+    for (start, end) in after_labels(&labels, || us_aba().ranges(text)) {
         if labelled(start) {
             let confidence = if aba_routing(&text[start..end]) {
                 0.9
@@ -101,7 +101,7 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     }
 
     // Any account number: only after a label.
-    for (start, end) in generic_account().ranges(text) {
+    for (start, end) in after_labels(&labels, || generic_account().ranges(text)) {
         if labelled(start) {
             found.push(start, end, 0.8);
         }

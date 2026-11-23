@@ -36,6 +36,10 @@ pub(super) fn detect(text: &str) -> Vec<Match> {
     let labels = label_ends(label().ranges(text));
     let mut found = Collector::new(text, Category::Cryptocurrency);
     for (pattern, confidence, requires_label) in formats() {
+        // Without a label, a format that requires one reports nothing.
+        if *requires_label && labels.is_empty() {
+            continue;
+        }
         for (start, end) in pattern.ranges(text) {
             let labelled = has_context(text, &labels, start, 40);
             if *requires_label && !labelled {
