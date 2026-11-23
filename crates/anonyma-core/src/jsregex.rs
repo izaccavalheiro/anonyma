@@ -156,6 +156,10 @@ impl<'t> Haystack<'t> {
 /// A compiled pattern with ECMAScript semantics.
 pub(crate) struct JsRegex {
     regex: Regex,
+    /// The translated source, for the anchored search built on first use.
+    translated: String,
+    /// The search at candidate starts ([`crate::anchored`]), when the pattern has one.
+    anchored: std::sync::OnceLock<Option<crate::anchored::AnchoredSearch>>,
     /// Case-insensitive: the pattern is written in lower case and matched
     /// against the haystack with ASCII letters lower-cased, as ECMAScript's
     /// `i` flag (without `u`) folds ASCII letters only. ASCII lower-casing
@@ -176,6 +180,8 @@ impl JsRegex {
             .unwrap_or_else(|error| panic!("invalid pattern {source}: {error}"));
         JsRegex {
             regex,
+            translated,
+            anchored: std::sync::OnceLock::new(),
             insensitive: false,
         }
     }
@@ -214,6 +220,31 @@ impl JsRegex {
             .find_iter(&haystack)
             .map(|m| (m.start(), m.end()))
             .collect()
+    }
+
+    /// [`ranges`](Self::ranges), searched only at the candidate starts of
+    /// `text` when the pattern begins with a word boundary and an indexed class
+    /// (see [`crate::anchored`]): the same ranges, without a full scan.
+    pub(crate) fn ranges_in(
+        &self,
+        text: &str,
+        candidates: &crate::anchored::Candidates,
+    ) -> Vec<(usize, usize)> {
+        if !self.insensitive {
+            let search = self
+                .anchored
+                .get_or_init(|| crate::anchored::AnchoredSearch::new(&self.translated));
+            if let Some(found) = search.as_ref().and_then(|s| s.ranges(text, candidates)) {
+                return found;
+            }
+        }
+        self.ranges(text)
+    }
+
+    /// Whether the pattern has a search at candidate starts.
+    #[cfg(test)]
+    pub(crate) fn is_anchored(&self) -> bool {
+        !self.insensitive && crate::anchored::AnchoredSearch::new(&self.translated).is_some()
     }
 
     /// Whether the pattern matches anywhere in `text`.

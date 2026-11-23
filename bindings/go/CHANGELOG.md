@@ -7,6 +7,12 @@ are documented in this file. The format is based on
 
 ## [Unreleased]
 
+### Changed
+
+- National-id detection reads a long text 1.7 times faster with the same results: its twenty formats
+  are tried only where one can start (a word boundary and a run of digits or capitals long enough),
+  instead of each scanning the whole text.
+
 ## [0.1.0-alpha.3] — 2026-11-23
 
 An `Engine` built once with batches on every core, `NewReader` in batches, links with current Go

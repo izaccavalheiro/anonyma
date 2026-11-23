@@ -149,6 +149,10 @@ serves every category.
 `anonyma` on npm keeps zero runtime dependencies. The Rust core depends on
 `regex`, `sha2`, `hmac` and `getrandom`: the standard, audited crates for
 matching, hashing and randomness, which would be riskier to write by hand.
+`regex-automata` and `regex-syntax`, which `regex` is built on, are also direct
+dependencies: patterns that begin with a word boundary are searched with
+anchored lazy DFAs at the positions where they can start, which needs their
+lower-level interfaces.
 Behind its `parallel` feature it also uses `rayon`, so that one batch call uses
 every core; the C ABI (Go) and the Python package turn it on, the WebAssembly
 and Node.js builds do not.

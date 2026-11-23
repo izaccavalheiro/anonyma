@@ -27,6 +27,8 @@ homepage = "https://izaccavalheiro.github.io/anonyma/"
 [workspace.dependencies]
 anonyma-core = { path = "crates/anonyma-core", version = "0.1.0" }
 regex = "1.10"
+regex-automata = "0.4"
+regex-syntax = "0.8"
 sha2 = "0.11"
 hmac = "0.13"
 getrandom = "0.4"
