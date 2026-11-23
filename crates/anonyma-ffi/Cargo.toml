@@ -17,9 +17,11 @@ name = "anonyma_ffi"
 crate-type = ["rlib", "staticlib", "cdylib"]
 
 [features]
-default = ["c-abi"]
+default = ["c-abi", "parallel"]
 # The exported C functions. The Node.js and WebAssembly bindings turn it off.
 c-abi = []
+# Batches use every core (anonyma-core's rayon pool). Off for WebAssembly.
+parallel = ["anonyma-core/parallel"]
 
 [dependencies]
 anonyma-core.workspace = true

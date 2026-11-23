@@ -149,6 +149,9 @@ serves every category.
 `anonyma` on npm keeps zero runtime dependencies. The Rust core depends on
 `regex`, `sha2`, `hmac` and `getrandom`: the standard, audited crates for
 matching, hashing and randomness, which would be riskier to write by hand.
+Behind its `parallel` feature it also uses `rayon`, so that one batch call uses
+every core; the C ABI (Go) and the Python package turn it on, the WebAssembly
+and Node.js builds do not.
 The Python package has no runtime dependency, and LangChain support is an
 extra. The sidecar depends on `anonyma` alone, and serves gRPC only as a
 published contract until a listener justifies its first dependency.
