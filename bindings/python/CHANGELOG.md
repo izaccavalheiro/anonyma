@@ -5,7 +5,11 @@ All notable changes to `anonyma` for Python are documented in this file. The pac
 `anonyma`, and is released from tags `python-v<version>`. While it is at 0.x, a minor version may
 change its API.
 
-## [Unreleased]
+## [0.1.0a2] — 2026-11-23
+
+The Rust core detects 24 of the 27 categories, with every validator, and serves every preset but
+CCPA in full: `Anonyma(presets=["lgpd", "hipaa"])` needs no `allow_partial=True`. It passes all
+234 cases of the conformance suite. Built with PyO3 0.30.
 
 ### Added
 
