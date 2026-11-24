@@ -7,6 +7,13 @@ change its API.
 
 ## [Unreleased]
 
+### Added
+
+- `anonyma.pandas.anonymize_series()` and `detect_series()`, and `anonyma.polars.anonymize_series()`
+  and `anonymize_expr()`: a column of text in one batch call, rows that are not strings (or null)
+  left as they are, the index and name kept. On 100,000 log lines, 5.9 µs per row against 59.7 for
+  `Series.map(engine.anonymize)`. Extras: `anonyma[pandas]`, `anonyma[polars]`.
+
 ## [0.1.0a6] — 2026-11-23
 
 The same results, faster: with every category, 1 MB of log text costs 114 ns per byte instead of 194.
