@@ -5,6 +5,8 @@ All notable changes to `anonyma-parallel` are documented in this file. The packa
 
 ## [Unreleased]
 
+## [0.1.0] — 2026-11-24
+
 ### Added
 
 - `createPool()`: a pool of worker threads with `detectBatch()`, `anonymizeBatch()` and
