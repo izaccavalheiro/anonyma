@@ -1,0 +1,118 @@
+# Performance comparison: a pull request against its base, on the same runner.
+#
+# Shared runners are too noisy for absolute budgets, so this workflow builds the
+# base commit and the pull request side by side and times them interleaved
+# (bench/compare.mjs for TypeScript, bench/compare-core.mjs for the Rust core).
+# A cell fails when even the lower quartile of its head / base ratios is above
+# 1.10: the pull request is more than 10% slower beyond the run-to-run spread.
+# The tables go to the job summary.
+
+name: Performance comparison
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - src/**
+      - crates/anonyma-core/**
+      - bench/compare.mjs
+      - bench/compare-core.mjs
+      - bench/corpus.mjs
+      - .github/workflows/perf-compare.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HUSKY: "0"
+  CARGO_TERM_COLOR: always
+
+jobs:
+  typescript:
+    name: TypeScript, head against base
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the pull request
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: head
+          persist-credentials: false
+
+      - name: Check out the base
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: base
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: head/.nvmrc
+          cache: npm
+          cache-dependency-path: |
+            head/package-lock.json
+            base/package-lock.json
+
+      - name: Build both
+        run: |
+          (cd base && npm ci && npm run build)
+          (cd head && npm ci && npm run build)
+
+      # The pull request's script and corpus time both builds.
+      - name: Compare
+        run: node head/bench/compare.mjs --base base/dist --head head/dist
+
+  core:
+    name: Rust core, head against base
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out the pull request
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: head
+          persist-credentials: false
+
+      - name: Check out the base
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: base
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: head/.nvmrc
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with:
+          toolchain: stable
+
+      - name: Cache
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          workspaces: |
+            base
+            head
+
+      - name: Build both
+        run: |
+          for side in base head; do
+            (cd "$side" && cargo build --release -q -p anonyma-core --features parallel --example matrix)
+          done
+
+      - name: Compare
+        run: |
+          node head/bench/matrix/corpus.mjs "$RUNNER_TEMP/corpus"
+          node head/bench/compare-core.mjs \
+            --base base/target/release/examples/matrix \
+            --head head/target/release/examples/matrix \
+            --corpus "$RUNNER_TEMP/corpus"
