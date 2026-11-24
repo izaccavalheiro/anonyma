@@ -16,9 +16,9 @@
  * 5. The repository holds synthetic data only: every e-mail address in a
  *    tracked file is under a domain reserved for documentation (RFC 2606,
  *    RFC 6761) or one listed in scripts/synthetic-domains.json.
- * 6. The site (website/), its playground included, cannot send what is typed
- *    into it: its Content Security Policy blocks every connection and loads
- *    nothing from another origin.
+ * 6. The site (website/) contacts no origin but its analytics service: its
+ *    Content Security Policy allows that one origin for scripts and
+ *    connections, and nothing else from another origin.
  *
  * Usage: node scripts/check-privacy.mjs [--require-dist]
  */
@@ -190,38 +190,51 @@ function withoutComments(source) {
 }
 
 // ---------------------------------------------------------------------------
-// 6. The site, playground included, cannot send data
+// 6. The site contacts no origin but its analytics service
 // ---------------------------------------------------------------------------
 {
+  // The one other origin the site may load a script from and connect to.
+  const analyticsOrigin = "https://api.monoid.website";
+  const otherOriginDirectives = new Set(["script-src", "connect-src"]);
   const config = join(root, "website", "docusaurus.config.ts");
   const problems = [];
   if (existsSync(config)) {
     const source = readFileSync(config, "utf8");
+    const origin = /const ANALYTICS_ORIGIN = "([^"]*)"/.exec(source)?.[1];
+    if (origin !== undefined && origin !== analyticsOrigin) {
+      problems.push(`ANALYTICS_ORIGIN is ${origin}, not ${analyticsOrigin}`);
+    }
     const block = /const CONTENT_SECURITY_POLICY = \[([\s\S]*?)\]\.join/.exec(source)?.[1];
     if (block === undefined) {
       problems.push("website/docusaurus.config.ts has no CONTENT_SECURITY_POLICY");
     } else {
       const directives = new Map(
-        [...block.matchAll(/"([^"]+)"/g)].map(([, directive]) => {
+        [...block.matchAll(/"([^"]+)"|`([^`]+)`/g)].map(([, quoted, template]) => {
+          const directive = (quoted ?? template ?? "").replaceAll(
+            "${ANALYTICS_ORIGIN}",
+            origin ?? "${ANALYTICS_ORIGIN}",
+          );
           const [name, ...values] = directive.trim().split(/\s+/);
           return [name, values];
         }),
       );
       for (const [name, value] of [
         ["default-src", "'self'"],
-        ["connect-src", "'none'"],
+        ["connect-src", analyticsOrigin],
         ["form-action", "'none'"],
       ]) {
         if ((directives.get(name) ?? []).join(" ") !== value) {
           problems.push(`${name} must be ${value}`);
         }
       }
-      // Nothing may load from another origin: only keywords and data: URIs.
+      // Only keywords and data: URIs, plus the analytics origin for scripts and connections.
       for (const [name, values] of directives) {
         for (const value of values) {
-          if (!/^'[a-z-]+'$/.test(value) && value !== "data:") {
-            problems.push(`${name} allows ${value}`);
-          }
+          const allowed =
+            /^'[a-z-]+'$/.test(value) ||
+            value === "data:" ||
+            (value === analyticsOrigin && otherOriginDirectives.has(name));
+          if (!allowed) problems.push(`${name} allows ${value}`);
         }
       }
       // The constant must also be put on the page.
@@ -230,7 +243,7 @@ function withoutComments(source) {
       }
     }
   }
-  check("The site cannot send what is typed into it (Content Security Policy)", problems);
+  check("The site contacts no origin but its analytics (Content Security Policy)", problems);
 }
 
 // ---------------------------------------------------------------------------

@@ -107,9 +107,9 @@ export default function Playground(): ReactNode {
   return (
     <div className={styles["playground"]}>
       <p className={styles["banner"]} role="note">
-        <strong>Everything runs in your browser.</strong> What you type never leaves this page: the
-        site&apos;s Content Security Policy forbids every network connection, so no script here
-        could send it anywhere, even if it tried.
+        <strong>Everything runs in your browser.</strong> The playground sends nothing you type to a
+        server. The site&apos;s Content Security Policy forbids every network connection except to
+        its analytics service, Monoid, which records page views and clicks.
       </p>
 
       <section className={styles["controls"]} aria-label="Settings">

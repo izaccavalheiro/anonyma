@@ -5,23 +5,26 @@ import { themes as prismThemes } from "prism-react-renderer";
 const repository = "https://github.com/izaccavalheiro/anonyma";
 
 /**
- * The privacy guarantee of the whole site, the playground included: no script
- * on it can open a connection (connect-src 'none'), submit a form, or load
- * anything from another origin. Docusaurus inlines a small script that sets
- * the colour mode before the page paints, hence 'unsafe-inline' for scripts;
- * with connect-src 'none' and same-origin images, even an inline script has
- * no channel to send data out. `npm run check:privacy` checks this policy.
+ * The site loads one script from another origin: the Monoid analytics tracker
+ * (ANALYTICS_ORIGIN), which records page views and, with autotrack, clicks.
+ * The policy allows that origin for scripts and connections and nothing else:
+ * no other origin can be loaded or contacted, and no form can be submitted.
+ * Docusaurus inlines a small script that sets the colour mode before the page
+ * paints, hence 'unsafe-inline' for scripts. The playground's own code opens
+ * no connection. `npm run check:privacy` checks this policy.
  *
  * Applied to the production build only: the development server needs a
- * WebSocket for hot reloading.
+ * WebSocket for hot reloading, and local visits are not recorded.
  */
+const ANALYTICS_ORIGIN = "https://api.monoid.website";
+
 const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline' ${ANALYTICS_ORIGIN}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self' data:",
-  "connect-src 'none'",
+  `connect-src ${ANALYTICS_ORIGIN}`,
   "form-action 'none'",
   "frame-src 'none'",
   "object-src 'none'",
@@ -60,6 +63,16 @@ const config: Config = {
           attributes: { "http-equiv": "Content-Security-Policy", content: CONTENT_SECURITY_POLICY },
         },
         { tagName: "meta", attributes: { name: "referrer", content: "no-referrer" } },
+        {
+          tagName: "script",
+          attributes: {
+            async: true,
+            defer: true,
+            src: `${ANALYTICS_ORIGIN}/tracker.min.js`,
+            "data-site-id": "oi4iiasquc",
+            "data-autotrack": "true",
+          },
+        },
       ]
     : [],
 

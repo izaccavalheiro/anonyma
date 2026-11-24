@@ -42,7 +42,7 @@ the longest value a detector can match.
 ## In the browser
 
 Import it like any module. The [playground](/playground) is a page that does
-exactly that, under a Content Security Policy that forbids every network connection.
+exactly that, and the library code on it opens no network connection.
 
 ## Keys on the edge
 
