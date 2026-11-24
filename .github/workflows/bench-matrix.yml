@@ -1,0 +1,112 @@
+# Benchmark matrix (bench/matrix/): TypeScript, the Rust core, Python, Go and
+# the sidecar on one corpus, on Linux and macOS. It writes matrix.json and
+# model.json to an artifact and the tables to the job summary.
+#
+# It runs by hand, weekly, and when a harness changes. Timings never fail it:
+# shared runners are too noisy for that. A difference in results does: every
+# engine running `detect` must report TypeScript's matches on every cell.
+# Results are committed by a pull request, never by this workflow.
+
+name: Benchmark matrix
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - bench/matrix/**
+      - bench/corpus.mjs
+      - crates/anonyma-core/examples/matrix.rs
+      - bindings/python/bench/**
+      - bindings/go/internal/matrix/**
+      - .github/workflows/bench-matrix.yml
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HUSKY: "0"
+  CARGO_TERM_COLOR: always
+
+jobs:
+  matrix:
+    name: Matrix (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-latest]
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # llvm-tools: the Go package's library build strips LLVM bitcode with it.
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+        with:
+          toolchain: stable
+          components: llvm-tools
+
+      - name: Cache
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      - name: Set up Go
+        uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version-file: bindings/go/go.mod
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+          npm run build --workspace anonyma-sidecar
+          python -m pip install ./bindings/python
+          (cd bindings/go && go generate)
+
+      - name: Run the harnesses
+        run: |
+          m="$RUNNER_TEMP/matrix"
+          node bench/matrix/corpus.mjs "$m/corpus"
+          mkdir -p "$m/rows"
+          node bench/matrix/ts.mjs "$m/corpus" "$m/rows/ts.jsonl"
+          cargo run --release -q -p anonyma-core --features parallel --example matrix -- "$m/corpus" "$m/rows/rust.jsonl"
+          python bindings/python/bench/matrix.py "$m/corpus" "$m/rows/python.jsonl"
+          (cd bindings/go && go run ./internal/matrix "$m/corpus" "$m/rows/go.jsonl")
+          node bench/matrix/sidecar.mjs "$m/corpus" "$m/rows/sidecar.jsonl"
+
+      - name: Merge and check the results
+        run: |
+          set -o pipefail
+          m="$RUNNER_TEMP/matrix"
+          echo "### Benchmark matrix, ${{ matrix.os }}" >> "$GITHUB_STEP_SUMMARY"
+          node bench/matrix/merge.mjs "$m/rows" "$m" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the results
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: bench-matrix-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/matrix/matrix.json
+            ${{ runner.temp }}/matrix/model.json
+          if-no-files-found: warn

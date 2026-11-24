@@ -9,7 +9,8 @@
  * The model is T(s) = C_call + s × C_byte per call on a text of s bytes, fitted
  * by least squares on the relative error over the single texts and the
  * entries called one by one. Before it, every engine that runs `detect` must
- * report TypeScript's matches on every cell; a difference is listed, not hidden.
+ * report TypeScript's matches on every cell; a difference is listed, not
+ * hidden, and makes the script exit with code 1.
  */
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { cpus, release, type } from "node:os";
@@ -129,3 +130,5 @@ const lines = [
     : `**Differences from TypeScript:** ${JSON.stringify(differences)}`,
 ];
 console.log(lines.join("\n"));
+// A difference in results fails the run; timings never do (shared runners are noisy).
+if (differences.length > 0) process.exitCode = 1;
