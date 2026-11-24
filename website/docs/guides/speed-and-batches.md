@@ -56,6 +56,23 @@ A batch under 8 KB runs in the calling thread, where it costs less than the trip
 `pool.explain(lines)` tells how a batch would run. Options cannot hold functions (custom detectors,
 plugins, allow callbacks): those stay with anonyma's own batch functions.
 
+### The Rust core in Node.js: anonyma-native
+
+`anonyma-native` runs detection and anonymization on anonyma's Rust core, prebuilt for Linux, macOS
+and Windows. It returns anonyma's result shapes; on the benchmark corpus it finds the same values.
+
+```ts
+import { createEngine } from "anonyma-native";
+
+const engine = createEngine({ preset: "gdpr" }); // build once, reuse
+const results = engine.anonymizeBatch(lines); // as anonymizeBatch(), on every core
+```
+
+On a 4-core laptop it is 2.4 to 2.9 times faster than anonyma on single texts and 7 times on
+batches of log lines. It runs built-in detectors, presets, rules and default strategies only: custom
+detectors and patterns, allowlists and plugins stay with anonyma, as does the span engine
+(`anonyma/engine`), which is faster in TypeScript.
+
 ## Python
 
 ```python

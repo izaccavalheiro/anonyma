@@ -81,7 +81,7 @@ crates/
 └── anonyma-ffi/          # its JSON API (api::call) and C ABI (include/anonyma.h); runs the conformance suite
 bindings/
 ├── python/               # PyPI "anonyma" — PyO3 + maturin, Pythonic API, LLM integrations, pytest suite
-├── node/                 # napi-rs scaffold (not published)
+├── node/                 # npm "anonyma-native" — napi-rs engine with anonyma's results; released to npm on native-v* tags
 ├── wasm/                 # wasm-bindgen scaffold (not published)
 └── go/                   # cgo over the C ABI, io.Reader, net/http middleware; released to anonyma-go
 ```

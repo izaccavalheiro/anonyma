@@ -166,7 +166,7 @@ published contract until a listener justifies its first dependency.
 | ---- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | 0    | Sidecar (HTTP, MCP; gRPC contract) | implemented; image built in CI, published on `sidecar-v*` tags                                              |
 | 1    | Python (`anonyma` on PyPI)         | alpha: wheels built and published on `python-v*` tags                                                       |
-| 1B   | WebAssembly, Node.js               | scaffolds that build in CI; not published                                                                   |
+| 1B   | WebAssembly, Node.js               | Node.js: `anonyma-native` on npm (opt-in, prebuilt for five platforms); WebAssembly: a scaffold              |
 | 2    | Go                                 | cgo package with tests and the suite; `github.com/izaccavalheiro/anonyma-go` with prebuilt static libraries |
 | 3    | JVM, .NET                          | through the sidecar; generated bindings (UniFFI) when there is demand                                       |
 | 4    | `anonyma-core` on crates.io        | packaged in CI; published once the API settles                                                              |
@@ -228,9 +228,12 @@ Next steps, in order:
    and on the span engine. For batches, the worker pool (`anonyma-parallel`)
    brings every core to the TypeScript engine without a binary: on 200-byte
    log lines, 15 µs a line on 8 threads, against 6.4 µs for the core's batch.
-   Whether to publish the addon as an opt-in package (`anonyma-native`,
-   prebuilt per platform, registered by the application and never imported by
-   `anonyma`) is open; the npm package keeps its TypeScript engine either way.
+   The addon is published as an opt-in package, `anonyma-native`
+   (bindings/node): an engine built once, with anonyma's result shapes and no
+   JSON per call, prebuilt for five platforms. Through it, the core is 2.4–2.9
+   times faster than TypeScript on single texts and 7 times on batches of log
+   lines. `anonyma` never imports it and keeps its TypeScript engine, which
+   runs everywhere and keeps the span engine, custom detectors and plugins.
 
 ## Releases
 

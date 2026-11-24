@@ -1,23 +1,50 @@
 {
   "name": "anonyma-native",
   "version": "0.1.0",
-  "private": true,
-  "description": "Node.js and Bun bindings of the Rust core of anonyma (napi-rs). Not published yet: see README.md.",
+  "description": "anonyma's detection and anonymization on its Rust core: an engine built once, batches on every core, the results anonyma returns. Prebuilt for Linux, macOS and Windows.",
   "license": "MIT",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "napi": {
-    "name": "anonyma-native",
-    "triples": {
-      "defaults": true,
-      "additional": ["aarch64-apple-darwin", "aarch64-unknown-linux-gnu"]
-    }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/izaccavalheiro/anonyma.git",
+    "directory": "bindings/node"
   },
+  "homepage": "https://github.com/izaccavalheiro/anonyma/tree/main/bindings/node#readme",
+  "bugs": {
+    "url": "https://github.com/izaccavalheiro/anonyma/issues"
+  },
+  "keywords": [
+    "anonyma",
+    "pii",
+    "anonymization",
+    "napi",
+    "rust"
+  ],
+  "type": "commonjs",
+  "main": "lib/index.cjs",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "scripts": {
-    "build": "napi build --platform --release"
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/engine.test.mjs"
   },
-  "devDependencies": {
-    "@napi-rs/cli": "^2.18.4"
+  "optionalDependencies": {
+    "anonyma-native-darwin-arm64": "0.1.0",
+    "anonyma-native-darwin-x64": "0.1.0",
+    "anonyma-native-linux-arm64-gnu": "0.1.0",
+    "anonyma-native-linux-x64-gnu": "0.1.0",
+    "anonyma-native-win32-x64-msvc": "0.1.0"
   },
   "engines": {
     "node": ">=18"
