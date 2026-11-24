@@ -23,6 +23,24 @@ const MAX_ENTRY: usize = 8192;
 /// A fused text grows to about this many bytes, which keeps label lookups bounded.
 const CHUNK: usize = 32 * 1024;
 
+/// With the `parallel` feature, a smaller batch is cut into one fused text per
+/// thread, down to this many bytes, so that every thread has work.
+#[cfg(feature = "parallel")]
+const MIN_CHUNK: usize = 4 * 1024;
+
+/// The size fused texts grow to for `total` bytes of members.
+fn chunk_size(total: usize) -> usize {
+    #[cfg(feature = "parallel")]
+    {
+        (total / rayon::current_num_threads().max(1)).clamp(MIN_CHUNK, CHUNK)
+    }
+    #[cfg(not(feature = "parallel"))]
+    {
+        let _ = total;
+        CHUNK
+    }
+}
+
 /// Words a greeting starts with; the name detector anchors greetings with `^`.
 const GREETINGS: [&str; 5] = ["dear", "hi", "hello", "greetings", "hey"];
 
@@ -34,11 +52,15 @@ fn starts_with_greeting(text: &str) -> bool {
 }
 
 /// `f` of each item, in order: on rayon's pool with the `parallel` feature,
-/// one after the other without it.
+/// one after the other without it. A single item runs on the calling thread:
+/// waking the pool for it costs more than it can save.
 pub(crate) fn map_all<I: Send, O: Send>(items: Vec<I>, f: impl Fn(I) -> O + Sync + Send) -> Vec<O> {
     #[cfg(feature = "parallel")]
     {
         use rayon::prelude::*;
+        if items.len() < 2 {
+            return items.into_iter().map(f).collect();
+        }
         items.into_par_iter().map(f).collect()
     }
     #[cfg(not(feature = "parallel"))]
@@ -73,14 +95,19 @@ pub(crate) fn fuse_each<T: Send>(
         return out;
     }
 
-    // Group the members into fused texts of about CHUNK bytes.
+    // Group the members into fused texts of about `limit` bytes.
+    let total: usize = members
+        .iter()
+        .map(|&i| texts[i].len() + SEPARATOR.len())
+        .sum();
+    let limit = chunk_size(total);
     let mut chunks: Vec<Vec<usize>> = Vec::new();
     let mut chunk = Vec::new();
     let mut size = 0;
     for i in members {
         chunk.push(i);
         size += texts[i].len() + SEPARATOR.len();
-        if size >= CHUNK {
+        if size >= limit {
             chunks.push(std::mem::take(&mut chunk));
             size = 0;
         }

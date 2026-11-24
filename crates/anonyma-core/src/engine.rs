@@ -295,11 +295,14 @@ impl AnonymaEngine {
         } else {
             texts.iter().map(|_| None).collect()
         };
-        // Texts scanned alone run on the pool too, with the `parallel` feature.
-        crate::fusion::map_all(
-            texts.iter().copied().zip(fused).collect(),
-            |(text, found)| found.unwrap_or_else(|| self.detect(text)),
-        )
+        // Texts scanned alone run on the pool too, with the `parallel` feature;
+        // only they go to it, not the entries whose matches are already split back.
+        let alone: Vec<usize> = (0..texts.len()).filter(|&i| fused[i].is_none()).collect();
+        let mut scanned = crate::fusion::map_all(alone, |i| self.detect(texts[i])).into_iter();
+        fused
+            .into_iter()
+            .map(|found| found.unwrap_or_else(|| scanned.next().unwrap_or_default()))
+            .collect()
     }
 
     /// [`anonymize`](Self::anonymize) on each text of a batch, in order, with

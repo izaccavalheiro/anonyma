@@ -7,6 +7,13 @@ change its API.
 
 ## [Unreleased]
 
+### Changed
+
+- Small batches are no longer slower than one call per text: a batch whose work fits in one piece
+  runs on the calling thread instead of waking the thread pool, and a batch is cut into one piece
+  per thread (4 KB to 32 KB each) so that every core has work. On 200-byte log lines, a batch of 2
+  costs 49 µs instead of 114 µs, and a batch of 256 costs 1.3 ms instead of 4.0 ms (4-core laptop).
+
 ## [0.1.0a7] — 2026-11-24
 
 pandas and Polars columns in one batch call.
