@@ -337,7 +337,9 @@ describe("vault/keyring", () => {
       for (const edited of malformed) {
         await expect(load(edited), JSON.stringify(edited)).rejects.toThrow(/malformed/);
       }
-      for (const mac of [undefined, "", "AAAA", `${manifest.mac.slice(0, -2)}AA`]) {
+      // The last two characters changed: "AA", or "BB" when the MAC already ends with "AA".
+      const tail = manifest.mac.endsWith("AA") ? "BB" : "AA";
+      for (const mac of [undefined, "", "AAAA", `${manifest.mac.slice(0, -2)}${tail}`]) {
         await expect(load({ ...manifest, mac }), String(mac)).rejects.toThrow(
           /failed authentication/,
         );
