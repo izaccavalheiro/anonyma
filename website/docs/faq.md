@@ -7,7 +7,8 @@ sidebar_position: 7
 
 No. The library has no network, file-system or process code, and no runtime dependencies; CI checks
 both on every change. The [playground](/playground) runs the same code in your
-browser, and this site's Content Security Policy forbids it any connection.
+browser and sends nothing you type to a server. This site uses Monoid analytics, which records page
+views and clicks; its Content Security Policy allows no other connection.
 
 ## How accurate is detection?
 

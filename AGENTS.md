@@ -93,8 +93,8 @@ feature there, with examples whose output you have checked against the build. `R
 overview that links to the site; do not grow it into a manual. `website/scripts/sync.mjs` generates
 the other pages from `docs/api.md`, the package READMEs, `CHANGELOG.md`, `bench/results/` and the
 built library: edit those, not the generated pages (they are git-ignored). Keep the site's Content
-Security Policy at `connect-src 'none'`, loading nothing from another origin; `check:privacy`
-enforces it.
+Security Policy closed to every other origin except its analytics service (`ANALYTICS_ORIGIN`,
+allowed in `script-src` and `connect-src` only); `check:privacy` enforces it.
 
 The packages are type-checked and tested against the root build: run
 `npm run build` before `npm run typecheck:packages` or `npm run test:packages`.
