@@ -1,0 +1,62 @@
+{
+  "environment": {
+    "cpu": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
+    "threads": 8,
+    "os": "Windows_NT 10.0.26200",
+    "date": "2026-11-24",
+    "runtimes": {
+      "go": "go1.22.12",
+      "python": "python 3.13.17",
+      "rust": "rustc release",
+      "sidecar": "node 26.13.1, HTTP loopback",
+      "ts": "node 26.13.1"
+    }
+  },
+  "engines": {
+    "go": {
+      "op": "detect",
+      "cCallUs": 53.07101561892549,
+      "cByteNsPerB": 138.31556166216959,
+      "maxRelativeError": 0.1336073655949583,
+      "batchSpeedup": 4.643176256049353,
+      "batchThreads": 8,
+      "fasterThanTsFromBytes": 0
+    },
+    "python": {
+      "op": "detect",
+      "cCallUs": 31.277658084856718,
+      "cByteNsPerB": 113.85317274137228,
+      "maxRelativeError": 0.11725043326836627,
+      "batchSpeedup": 5.909405583694154,
+      "batchThreads": 8,
+      "fasterThanTsFromBytes": 0
+    },
+    "rust": {
+      "op": "detect",
+      "cCallUs": 27.36810948383766,
+      "cByteNsPerB": 105.9428091879756,
+      "maxRelativeError": 0.1663247477848929,
+      "batchSpeedup": 8.56953478287803,
+      "batchThreads": 8,
+      "fasterThanTsFromBytes": 0
+    },
+    "sidecar": {
+      "op": "scan",
+      "cCallUs": 353.4887192843165,
+      "cByteNsPerB": 304.6752288429154,
+      "maxRelativeError": 0.2999745286883336,
+      "batchSpeedup": 5.952989645427939,
+      "batchThreads": 1,
+      "fasterThanTsFromBytes": null
+    },
+    "ts": {
+      "op": "detect",
+      "cCallUs": 83.314189716756,
+      "cByteNsPerB": 275.3013523380379,
+      "maxRelativeError": 0.04113491429198274,
+      "batchSpeedup": 2.3992536978527,
+      "batchThreads": 1,
+      "fasterThanTsFromBytes": null
+    }
+  }
+}

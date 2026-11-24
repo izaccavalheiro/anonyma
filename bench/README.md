@@ -50,3 +50,34 @@ node bench/core.mjs --native anonyma_native.node --wasm pkg/anonyma_wasm.js [--q
 `results/core.json` is the run that settled step 4 of the RFC: GitHub's
 `ubuntu-24.04` runner, Node.js 24, AMD EPYC 7763 (4 cores). The npm package
 keeps its TypeScript engine; docs/rfcs/0001-polyglot-core.md has the summary.
+
+## The matrix: every engine, one corpus
+
+`bench/matrix/` times every engine anonyma runs on, on the same bytes, through the API its users
+call:
+
+| Engine    | Harness                                         | Batch call                               |
+| --------- | ----------------------------------------------- | ---------------------------------------- |
+| `ts`      | `bench/matrix/ts.mjs` (the built package)       | `detectBatch()`                          |
+| `rust`    | `crates/anonyma-core/examples/matrix.rs`        | `detect_batch()`, rayon                  |
+| `python`  | `bindings/python/bench/matrix.py`               | `detect_batch()`, GIL released, rayon    |
+| `go`      | `bindings/go/internal/matrix` (`go run`)        | `Engine.DetectBatch()`, rayon            |
+| `sidecar` | `bench/matrix/sidecar.mjs` (HTTP over loopback) | `POST /v1/detect/batch`, 1,000 a request |
+
+```sh
+node bench/matrix/corpus.mjs <dir>/corpus          # the texts every harness reads
+node bench/matrix/ts.mjs <dir>/corpus <dir>/rows/ts.jsonl
+# ... one harness per engine, each writing <dir>/rows/<engine>.jsonl
+node bench/matrix/merge.mjs <dir>/rows bench/results
+```
+
+Each harness times the same cells: one text of 1 KB, 100 KB and 1 MB; 10,000 log lines of about
+200 bytes called one by one; and the same lines through the batch call. Every row has the same
+fields (`engine`, `op`, `shape`, `entrySize`, `entries`, `threads`, `medianMs`, `perEntryUs`,
+`matches`).
+
+`merge.mjs` writes `results/matrix.json` (every row, and any cell where an engine running `detect`
+reports other matches than TypeScript) and `results/model.json`. The model fits, per engine,
+`T(s) = C_call + s × C_byte`, the cost of a call on a text of `s` bytes, by least squares on the
+relative error. The text size from which an engine beats TypeScript follows from it. The sidecar
+runs the span engine (`op: "scan"`), so its matches are not compared with `detect`'s.
