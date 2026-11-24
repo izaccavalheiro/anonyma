@@ -164,7 +164,7 @@ export default function Benchmarks(): ReactNode {
         </div>
       </div>
 
-      <h2>Throughput at {size}</h2>
+      <h3>Throughput at {size}</h3>
       {quickCheck === undefined ? null : (
         <p>
           <code>hasPII()</code> stops at the first value it finds, so it is left out: on text with
@@ -184,7 +184,7 @@ export default function Benchmarks(): ReactNode {
         }))}
       />
 
-      <h2>Against 1.0</h2>
+      <h3>Against 1.0</h3>
       <p>
         The same operations on the same inputs, in anonyma 1.0.0 and in the current build. A ratio
         above 1 is faster now.
@@ -214,7 +214,7 @@ export default function Benchmarks(): ReactNode {
         </table>
       </div>
 
-      <h2>Cost of each detector</h2>
+      <h3>Cost of each detector</h3>
       <p>
         Time of each of the {now.perDetector.length} detectors on {size} of text with values of
         every kind.
@@ -234,7 +234,7 @@ export default function Benchmarks(): ReactNode {
           }))}
       />
 
-      <h2>Scaling</h2>
+      <h3>Scaling</h3>
       <p>
         The slope of log(time) against log(size), from 100 B to 1 MB: 1.0 means the time grows in
         proportion to the input. The span engine stays linear; the 1.x <code>anonymize()</code>{" "}
@@ -253,7 +253,7 @@ export default function Benchmarks(): ReactNode {
         }))}
       />
 
-      <h2>Memory</h2>
+      <h3>Memory</h3>
       <p>
         Heap growth during one call on 100 KB (garbage included), and what stays allocated after a
         collection. Streaming {bytes(streamed.bytes)} in line-sized chunks peaked at{" "}
