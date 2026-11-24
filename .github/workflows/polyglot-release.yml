@@ -672,7 +672,13 @@ jobs:
           version="${TAG#native-v}"
           tag=latest
           if [[ "$version" == *-* ]]; then tag=next; fi
+          # A version already on the registry is skipped, so a failed run can be resumed.
           for dir in "$RUNNER_TEMP"/npm/anonyma-native-*/ "$RUNNER_TEMP"/npm/anonyma-native/; do
+            name=$(node -p "require('$dir/package.json').name")
+            if npm view "$name@$version" version > /dev/null 2>&1; then
+              echo "$name@$version is already published"
+              continue
+            fi
             (cd "$dir" && npm publish --provenance --access public --tag "$tag")
           done
 
