@@ -47,7 +47,8 @@ describe("audit/receipt", () => {
       const result = compilePipeline({ categories: ["email", "credit-card"] }).transform(TEXT);
       const receipt = await createReceiptIssuer({ key: SECRET }).issue(result, { input: TEXT });
       const serialised = JSON.stringify(receipt);
-      for (const value of ["ana@example.com", "bob@example.org", "4111"]) {
+      // "4111 1111", not "4111": the random id and the hex digests can hold four digits.
+      for (const value of ["ana@example.com", "bob@example.org", "4111 1111"]) {
         expect(serialised).not.toContain(value);
       }
     });

@@ -211,7 +211,8 @@ describe("audit/logger", () => {
         attributes: { note: "call bob@example.com", "carol@example.com": "x", n: 1 },
       });
       const dump = JSON.stringify(record);
-      for (const leak of ["alice", "bob@", "carol@", "203.0.113.57", "123-45-6789", "4111"]) {
+      // "4111 1111", not "4111": the record's random ids and hex digests can hold four digits.
+      for (const leak of ["alice", "bob@", "carol@", "203.0.113.57", "123-45-6789", "4111 1111"]) {
         expect(dump).not.toContain(leak);
       }
       expect(record.guarded).toBe(7);
