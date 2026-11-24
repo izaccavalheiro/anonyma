@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.5.2] — 2026-11-24
+
+No change to the library. The release publishes the first version of `anonyma-parallel`, a pool of
+worker threads for the batch functions, and the site shows every engine on one corpus.
+
+---
+
 ## [1.5.1] — 2026-11-23
 
 The same results, faster on text with many labels.
@@ -934,7 +941,8 @@ All types are zero-cost, type-only exports (stripped by `tsc`; no runtime overhe
 - **Prettier** code formatting.
 - **MIT License**.
 
-[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.5.1...HEAD
+[Unreleased]: https://github.com/izaccavalheiro/anonyma/compare/v1.5.2...HEAD
+[1.5.2]: https://github.com/izaccavalheiro/anonyma/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/izaccavalheiro/anonyma/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/izaccavalheiro/anonyma/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/izaccavalheiro/anonyma/compare/v1.3.3...v1.4.0
