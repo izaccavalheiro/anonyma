@@ -7,6 +7,10 @@ change its API.
 
 ## [Unreleased]
 
+## [0.1.0a8] — 2026-11-24
+
+Small batches no longer cost more than one call per text.
+
 ### Changed
 
 - Small batches are no longer slower than one call per text: a batch whose work fits in one piece

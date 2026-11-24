@@ -7,6 +7,10 @@ are documented in this file. The format is based on
 
 ## [Unreleased]
 
+## [0.1.0-alpha.5] — 2026-11-24
+
+Small batches no longer cost more than one call per text.
+
 ### Changed
 
 - Small batches are no longer slower than one call per text: a batch whose work fits in one piece
