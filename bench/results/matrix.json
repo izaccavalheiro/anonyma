@@ -9,6 +9,7 @@
       "python": "python 3.13.17",
       "rust": "rustc release",
       "sidecar": "node 26.13.1, HTTP loopback",
+      "ts-pool": "node 26.13.1, anonyma-parallel",
       "ts": "node 26.13.1"
     }
   },
@@ -18,9 +19,9 @@
       "entries": 1,
       "entrySize": 1000,
       "matches": 4,
-      "medianMs": 0.1688296875,
+      "medianMs": 0.167259375,
       "op": "detect",
-      "perEntryUs": 168.8296875,
+      "perEntryUs": 167.25937499999998,
       "runtime": "go1.22.12",
       "shape": "single",
       "threads": 1
@@ -30,9 +31,9 @@
       "entries": 1,
       "entrySize": 100000,
       "matches": 505,
-      "medianMs": 14.6466,
+      "medianMs": 15.3063,
       "op": "detect",
-      "perEntryUs": 14646.599999999999,
+      "perEntryUs": 15306.300000000001,
       "runtime": "go1.22.12",
       "shape": "single",
       "threads": 1
@@ -42,9 +43,9 @@
       "entries": 1,
       "entrySize": 1000000,
       "matches": 5071,
-      "medianMs": 144.16,
+      "medianMs": 152.8307,
       "op": "detect",
-      "perEntryUs": 144160,
+      "perEntryUs": 152830.7,
       "runtime": "go1.22.12",
       "shape": "single",
       "threads": 1
@@ -54,9 +55,9 @@
       "entries": 10000,
       "entrySize": 200,
       "matches": 10000,
-      "medianMs": 866.4673,
+      "medianMs": 692.6645,
       "op": "detect",
-      "perEntryUs": 86.64673,
+      "perEntryUs": 69.26645,
       "runtime": "go1.22.12",
       "shape": "each",
       "threads": 1
@@ -66,9 +67,45 @@
       "entries": 10000,
       "entrySize": 200,
       "matches": 10000,
-      "medianMs": 186.6109,
+      "medianMs": 472.2074,
       "op": "detect",
-      "perEntryUs": 18.661089999999998,
+      "perEntryUs": 47.22074,
+      "runtime": "go1.22.12",
+      "shape": "each",
+      "threads": 2
+    },
+    {
+      "engine": "go",
+      "entries": 10000,
+      "entrySize": 200,
+      "matches": 10000,
+      "medianMs": 357.6151,
+      "op": "detect",
+      "perEntryUs": 35.761509999999994,
+      "runtime": "go1.22.12",
+      "shape": "each",
+      "threads": 4
+    },
+    {
+      "engine": "go",
+      "entries": 10000,
+      "entrySize": 200,
+      "matches": 10000,
+      "medianMs": 299.3937,
+      "op": "detect",
+      "perEntryUs": 29.93937,
+      "runtime": "go1.22.12",
+      "shape": "each",
+      "threads": 8
+    },
+    {
+      "engine": "go",
+      "entries": 10000,
+      "entrySize": 200,
+      "matches": 10000,
+      "medianMs": 165.6648,
+      "op": "detect",
+      "perEntryUs": 16.566480000000002,
       "runtime": "go1.22.12",
       "shape": "batch",
       "threads": 8
@@ -81,8 +118,8 @@
       "entrySize": 1000,
       "entries": 1,
       "threads": 1,
-      "medianMs": 0.12989999959245324,
-      "perEntryUs": 129.89999959245324,
+      "medianMs": 0.14689999807160348,
+      "perEntryUs": 146.89999807160348,
       "matches": 4
     },
     {
@@ -93,8 +130,8 @@
       "entrySize": 100000,
       "entries": 1,
       "threads": 1,
-      "medianMs": 11.675499998091254,
-      "perEntryUs": 11675.499998091254,
+      "medianMs": 13.881300001230557,
+      "perEntryUs": 13881.300001230557,
       "matches": 505
     },
     {
@@ -105,8 +142,8 @@
       "entrySize": 1000000,
       "entries": 1,
       "threads": 1,
-      "medianMs": 121.78449999919394,
-      "perEntryUs": 121784.49999919394,
+      "medianMs": 121.49920000229031,
+      "perEntryUs": 121499.20000229031,
       "matches": 5071
     },
     {
@@ -117,8 +154,44 @@
       "entrySize": 200,
       "entries": 10000,
       "threads": 1,
-      "medianMs": 569.699200001196,
-      "perEntryUs": 56.9699200001196,
+      "medianMs": 500.15110000094865,
+      "perEntryUs": 50.015110000094865,
+      "matches": 10000
+    },
+    {
+      "engine": "python",
+      "runtime": "python 3.13.17",
+      "op": "detect",
+      "shape": "each",
+      "entrySize": 200,
+      "entries": 10000,
+      "threads": 2,
+      "medianMs": 425.116699996579,
+      "perEntryUs": 42.5116699996579,
+      "matches": 10000
+    },
+    {
+      "engine": "python",
+      "runtime": "python 3.13.17",
+      "op": "detect",
+      "shape": "each",
+      "entrySize": 200,
+      "entries": 10000,
+      "threads": 4,
+      "medianMs": 330.2253000001656,
+      "perEntryUs": 33.02253000001656,
+      "matches": 10000
+    },
+    {
+      "engine": "python",
+      "runtime": "python 3.13.17",
+      "op": "detect",
+      "shape": "each",
+      "entrySize": 200,
+      "entries": 10000,
+      "threads": 8,
+      "medianMs": 273.2943000009982,
+      "perEntryUs": 27.32943000009982,
       "matches": 10000
     },
     {
@@ -129,8 +202,8 @@
       "entrySize": 200,
       "entries": 10000,
       "threads": 8,
-      "medianMs": 96.40550000040093,
-      "perEntryUs": 9.640550000040093,
+      "medianMs": 96.69180000491906,
+      "perEntryUs": 9.669180000491906,
       "matches": 10000
     },
     {
@@ -141,8 +214,8 @@
       "entrySize": 1000,
       "entries": 1,
       "threads": 1,
-      "medianMs": 0.1143,
-      "perEntryUs": 114.3,
+      "medianMs": 0.1132,
+      "perEntryUs": 113.19999999999999,
       "matches": 4
     },
     {
@@ -153,8 +226,8 @@
       "entrySize": 100000,
       "entries": 1,
       "threads": 1,
-      "medianMs": 10.9219,
-      "perEntryUs": 10921.900000000001,
+      "medianMs": 11.3391,
+      "perEntryUs": 11339.1,
       "matches": 505
     },
     {
@@ -165,8 +238,8 @@
       "entrySize": 1000000,
       "entries": 1,
       "threads": 1,
-      "medianMs": 118.8732,
-      "perEntryUs": 118873.2,
+      "medianMs": 122.92309999999999,
+      "perEntryUs": 122923.09999999999,
       "matches": 5071
     },
     {
@@ -177,8 +250,44 @@
       "entrySize": 200,
       "entries": 10000,
       "threads": 1,
-      "medianMs": 525.6844000000001,
-      "perEntryUs": 52.56844000000002,
+      "medianMs": 571.9209,
+      "perEntryUs": 57.19208999999999,
+      "matches": 10000
+    },
+    {
+      "engine": "rust",
+      "runtime": "rustc release",
+      "op": "detect",
+      "shape": "each",
+      "entrySize": 200,
+      "entries": 10000,
+      "threads": 2,
+      "medianMs": 429.5607,
+      "perEntryUs": 42.956070000000004,
+      "matches": 10000
+    },
+    {
+      "engine": "rust",
+      "runtime": "rustc release",
+      "op": "detect",
+      "shape": "each",
+      "entrySize": 200,
+      "entries": 10000,
+      "threads": 4,
+      "medianMs": 277.4813,
+      "perEntryUs": 27.74813,
+      "matches": 10000
+    },
+    {
+      "engine": "rust",
+      "runtime": "rustc release",
+      "op": "detect",
+      "shape": "each",
+      "entrySize": 200,
+      "entries": 10000,
+      "threads": 8,
+      "medianMs": 203.7595,
+      "perEntryUs": 20.37595,
       "matches": 10000
     },
     {
@@ -189,8 +298,8 @@
       "entrySize": 200,
       "entries": 10000,
       "threads": 8,
-      "medianMs": 61.3434,
-      "perEntryUs": 6.13434,
+      "medianMs": 64.3219,
+      "perEntryUs": 6.43219,
       "matches": 10000
     },
     {
@@ -201,9 +310,9 @@
       "shape": "single",
       "entrySize": 1000,
       "entries": 1,
-      "medianMs": 0.9402000000000044,
+      "medianMs": 1.0844999999999914,
       "matches": 4,
-      "perEntryUs": 940.2000000000044
+      "perEntryUs": 1084.4999999999914
     },
     {
       "engine": "sidecar",
@@ -213,9 +322,9 @@
       "shape": "single",
       "entrySize": 100000,
       "entries": 1,
-      "medianMs": 30.054399999999987,
+      "medianMs": 35.565000000000055,
       "matches": 500,
-      "perEntryUs": 30054.399999999987
+      "perEntryUs": 35565.00000000006
     },
     {
       "engine": "sidecar",
@@ -225,9 +334,9 @@
       "shape": "single",
       "entrySize": 1000000,
       "entries": 1,
-      "medianMs": 290.6216999999999,
+      "medianMs": 299.6211999999998,
       "matches": 5042,
-      "perEntryUs": 290621.6999999999
+      "perEntryUs": 299621.19999999984
     },
     {
       "engine": "sidecar",
@@ -237,9 +346,9 @@
       "shape": "each",
       "entrySize": 200,
       "entries": 10000,
-      "medianMs": 3707.1611999999986,
+      "medianMs": 2994.075500000001,
       "matches": 10000,
-      "perEntryUs": 370.7161199999999
+      "perEntryUs": 299.40755000000007
     },
     {
       "engine": "sidecar",
@@ -249,9 +358,45 @@
       "shape": "batch",
       "entrySize": 200,
       "entries": 10000,
-      "medianMs": 622.7393999999986,
+      "medianMs": 490.420900000001,
       "matches": 10000,
-      "perEntryUs": 62.273939999999854
+      "perEntryUs": 49.042090000000094
+    },
+    {
+      "engine": "ts-pool",
+      "runtime": "node 26.13.1, anonyma-parallel",
+      "op": "detect",
+      "shape": "batch",
+      "entrySize": 200,
+      "entries": 10000,
+      "threads": 2,
+      "medianMs": 265.17499999999995,
+      "perEntryUs": 26.517499999999995,
+      "matches": 10000
+    },
+    {
+      "engine": "ts-pool",
+      "runtime": "node 26.13.1, anonyma-parallel",
+      "op": "detect",
+      "shape": "batch",
+      "entrySize": 200,
+      "entries": 10000,
+      "threads": 4,
+      "medianMs": 163.0381000000002,
+      "perEntryUs": 16.30381000000002,
+      "matches": 10000
+    },
+    {
+      "engine": "ts-pool",
+      "runtime": "node 26.13.1, anonyma-parallel",
+      "op": "detect",
+      "shape": "batch",
+      "entrySize": 200,
+      "entries": 10000,
+      "threads": 8,
+      "medianMs": 152.27019999999993,
+      "perEntryUs": 15.227019999999992,
+      "matches": 10000
     },
     {
       "engine": "ts",
@@ -261,9 +406,9 @@
       "shape": "single",
       "entrySize": 1000,
       "entries": 1,
-      "medianMs": 0.3739999999999952,
+      "medianMs": 0.3714999999999975,
       "matches": 4,
-      "perEntryUs": 373.9999999999952
+      "perEntryUs": 371.4999999999975
     },
     {
       "engine": "ts",
@@ -273,9 +418,9 @@
       "shape": "single",
       "entrySize": 100000,
       "entries": 1,
-      "medianMs": 27.74029999999999,
+      "medianMs": 28.13979999999998,
       "matches": 505,
-      "perEntryUs": 27740.299999999992
+      "perEntryUs": 28139.79999999998
     },
     {
       "engine": "ts",
@@ -285,9 +430,9 @@
       "shape": "single",
       "entrySize": 1000000,
       "entries": 1,
-      "medianMs": 267.8880999999999,
+      "medianMs": 272.65199999999993,
       "matches": 5071,
-      "perEntryUs": 267888.0999999999
+      "perEntryUs": 272651.99999999994
     },
     {
       "engine": "ts",
@@ -297,9 +442,9 @@
       "shape": "each",
       "entrySize": 200,
       "entries": 10000,
-      "medianMs": 1363.2916999999998,
+      "medianMs": 1473.0041,
       "matches": 10000,
-      "perEntryUs": 136.32916999999998
+      "perEntryUs": 147.30041
     },
     {
       "engine": "ts",
@@ -309,9 +454,9 @@
       "shape": "batch",
       "entrySize": 200,
       "entries": 10000,
-      "medianMs": 568.214899999999,
+      "medianMs": 588.8383999999987,
       "matches": 10000,
-      "perEntryUs": 56.8214899999999
+      "perEntryUs": 58.88383999999987
     }
   ],
   "differences": []

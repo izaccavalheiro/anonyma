@@ -13,6 +13,7 @@ import (
 	"runtime"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	anonyma "github.com/izaccavalheiro/anonyma-go"
@@ -107,6 +108,29 @@ func main() {
 			_, _ = engine.Detect(e)
 		}
 	}), each)
+	// The same calls spread over goroutines, one engine shared by all.
+	cores := runtime.NumCPU()
+	for _, threads := range []int{2, 4, cores} {
+		if threads <= 1 || threads > cores || (threads == cores && (cores == 2 || cores == 4)) {
+			continue
+		}
+		chunk := (len(entries) + threads - 1) / threads
+		row("each", size, len(entries), threads, median(func() {
+			var wg sync.WaitGroup
+			for start := 0; start < len(entries); start += chunk {
+				end := min(start+chunk, len(entries))
+				wg.Add(1)
+				go func(part []string) {
+					defer wg.Done()
+					for _, e := range part {
+						_, _ = engine.Detect(e)
+					}
+				}(entries[start:end])
+			}
+			wg.Wait()
+		}), each)
+	}
+
 	batched, err := engine.DetectBatch(entries)
 	if err != nil {
 		panic(err)
