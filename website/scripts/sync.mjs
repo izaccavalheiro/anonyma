@@ -8,7 +8,7 @@
  *                    generated from the built library (categories, presets,
  *                    regulations, checksums);
  * - docs/project/    CHANGELOG.md, SECURITY.md, CONTRIBUTING.md;
- * - src/data/        the benchmark results.
+ * - src/data/        the benchmark results, the matrix of engines and its cost model.
  *
  * The rest of docs/ — the introduction, the library guide (docs/guide/), the
  * recipes and the FAQ — is written in website/ and is the main documentation
@@ -303,6 +303,14 @@ for (const name of ["baseline", "current"]) {
   // Where the build lay on the measuring machine says nothing about the results.
   delete results.environment.dist;
   writeFileSync(join(site, "src", "data", `bench-${name}.json`), `${JSON.stringify(results)}\n`);
+}
+// The benchmark matrix: every engine on one corpus, and the cost model fitted on it.
+for (const name of ["matrix", "model"]) {
+  const results = readFileSync(join(root, "bench", "results", `${name}.json`), "utf8");
+  writeFileSync(
+    join(site, "src", "data", `bench-${name}.json`),
+    `${JSON.stringify(JSON.parse(results))}\n`,
+  );
 }
 writeFileSync(
   join(site, "src", "data", "library.json"),

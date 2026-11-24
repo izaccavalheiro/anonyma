@@ -210,6 +210,28 @@ Next steps, in order:
    benchmark"), and the question can be reopened when the core's numbers
    change.
 
+   Measured again on 2026-11-24, after the core's speed work (#102–#104: the
+   patterns are searched only where a value can start, and labels are found by
+   binary search), on a 4-core laptop (Intel Core i5-8265U, Windows 11,
+   Node.js 26), with identical results on all 72 comparisons:
+
+   | operation                | napi-rs addon     | WebAssembly        |
+   | ------------------------ | ----------------- | ------------------ |
+   | detect, every category   | 1.26–2.73×        | 1.06–1.31×         |
+   | detect, five categories  | 0.37–1.46×        | 0.45–1.06×         |
+   | scan (precise engine)    | 0.55–0.92×        | 0.46–0.71×         |
+   | anonymize, `gdpr`        | 2.18–2.90×        | 1.14–1.79×         |
+   | first call (1,000 chars) | 47 ms             | 122 ms             |
+
+   The addon now clears the two-times bar for `anonymize()` with a preset and
+   nearly for detection of every category, and still loses with few categories
+   and on the span engine. For batches, the worker pool (`anonyma-parallel`)
+   brings every core to the TypeScript engine without a binary: on 200-byte
+   log lines, 15 µs a line on 8 threads, against 6.4 µs for the core's batch.
+   Whether to publish the addon as an opt-in package (`anonyma-native`,
+   prebuilt per platform, registered by the application and never imported by
+   `anonyma`) is open; the npm package keeps its TypeScript engine either way.
+
 ## Releases
 
 `.github/workflows/polyglot-release.yml` runs the suite in every language on
