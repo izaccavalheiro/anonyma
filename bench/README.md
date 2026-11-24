@@ -90,3 +90,22 @@ runs the span engine (`op: "scan"`), so its matches are not compared with `detec
 The "Benchmark matrix" workflow (`.github/workflows/bench-matrix.yml`) runs the matrix on Linux and
 macOS by hand, weekly, and when a harness changes, with the tables in the job summary and the JSON
 files as an artifact. A difference in results fails it; timings never do.
+
+## A pull request against its base
+
+The "Performance comparison" workflow (`.github/workflows/perf-compare.yml`) runs on pull requests
+that touch `src/`, `crates/anonyma-core/` or the comparison scripts. It builds the base commit and
+the pull request on one runner and times them against each other, interleaved, so the runner's noise
+touches both:
+
+- `bench/compare.mjs --base <dist> --head <dist>` loads both TypeScript builds in one process and
+  times seven cells (detect on 1 KB, 100 KB, 1 MB of dense values and 100 KB of labels; anonymize
+  with `gdpr`; the span engine's scan; `detectBatch` on 2,000 lines) in alternating order, 11
+  rounds.
+- `bench/compare-core.mjs --base <binary> --head <binary> --corpus <dir>` runs the Rust core's
+  matrix harness of each side in turn, 5 times.
+
+Each round gives a ratio head / base per cell. A cell fails when even the lower quartile of its
+ratios is above 1.10: the pull request is more than 10% slower beyond the spread between rounds. A
+build compared with itself stays within 0.96–1.02; an extra pass in `detect()` that costs 30% fails
+the four detect cells.
