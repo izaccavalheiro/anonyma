@@ -59,6 +59,7 @@ call:
 | Engine    | Harness                                         | Batch call                               |
 | --------- | ----------------------------------------------- | ---------------------------------------- |
 | `ts`      | `bench/matrix/ts.mjs` (the built package)       | `detectBatch()`                          |
+| `ts-pool` | `bench/matrix/ts-pool.mjs` (anonyma-parallel)   | `pool.detectBatch()`, 2, 4, every core   |
 | `rust`    | `crates/anonyma-core/examples/matrix.rs`        | `detect_batch()`, rayon                  |
 | `python`  | `bindings/python/bench/matrix.py`               | `detect_batch()`, GIL released, rayon    |
 | `go`      | `bindings/go/internal/matrix` (`go run`)        | `Engine.DetectBatch()`, rayon            |
@@ -72,14 +73,18 @@ node bench/matrix/merge.mjs <dir>/rows bench/results
 ```
 
 Each harness times the same cells: one text of 1 KB, 100 KB and 1 MB; 10,000 log lines of about
-200 bytes called one by one; and the same lines through the batch call. Every row has the same
+200 bytes called one by one; and the same lines through the batch call. The Rust, Python and Go harnesses also call the lines one by one
+from 2, 4 and every hardware thread at once (their engines are safe for concurrent use); the pool
+runs batches only, one row per pool size. Every row has the same
 fields (`engine`, `op`, `shape`, `entrySize`, `entries`, `threads`, `medianMs`, `perEntryUs`,
 `matches`).
 
 `merge.mjs` writes `results/matrix.json` (every row, and any cell where an engine running `detect`
 reports other matches than TypeScript) and `results/model.json`. The model fits, per engine,
-`T(s) = C_call + s × C_byte`, the cost of a call on a text of `s` bytes, by least squares on the
-relative error. The text size from which an engine beats TypeScript follows from it. The sidecar
+`T(s) = C_call + C_byte × s^k`, the cost of a call on a text of `s` bytes, by least squares on the
+relative error over the rows on one thread, with `k` searched from 0.7 to 1.5 (small texts stay in
+cache, so the cost per byte grows with size). The rows on more threads give each engine's speed-up
+and parallel efficiency; the pool's are against TypeScript's batch on one thread. The text size from which an engine beats TypeScript follows from it. The sidecar
 runs the span engine (`op: "scan"`), so its matches are not compared with `detect`'s.
 
 The "Benchmark matrix" workflow (`.github/workflows/bench-matrix.yml`) runs the matrix on Linux and

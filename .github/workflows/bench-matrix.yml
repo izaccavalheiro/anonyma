@@ -80,6 +80,7 @@ jobs:
           npm ci
           npm run build
           npm run build --workspace anonyma-sidecar
+          npm run build --workspace anonyma-parallel
           python -m pip install ./bindings/python
           (cd bindings/go && go generate)
 
@@ -89,6 +90,7 @@ jobs:
           node bench/matrix/corpus.mjs "$m/corpus"
           mkdir -p "$m/rows"
           node bench/matrix/ts.mjs "$m/corpus" "$m/rows/ts.jsonl"
+          node bench/matrix/ts-pool.mjs "$m/corpus" "$m/rows/ts-pool.jsonl"
           cargo run --release -q -p anonyma-core --features parallel --example matrix -- "$m/corpus" "$m/rows/rust.jsonl"
           python bindings/python/bench/matrix.py "$m/corpus" "$m/rows/python.jsonl"
           (cd bindings/go && go run ./internal/matrix "$m/corpus" "$m/rows/go.jsonl")

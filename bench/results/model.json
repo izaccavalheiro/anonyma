@@ -9,53 +9,139 @@
       "python": "python 3.13.17",
       "rust": "rustc release",
       "sidecar": "node 26.13.1, HTTP loopback",
+      "ts-pool": "node 26.13.1, anonyma-parallel",
       "ts": "node 26.13.1"
     }
   },
   "engines": {
     "go": {
       "op": "detect",
-      "cCallUs": 53.07101561892549,
-      "cByteNsPerB": 138.31556166216959,
-      "maxRelativeError": 0.1336073655949583,
-      "batchSpeedup": 4.643176256049353,
+      "cCallUs": 44.301331727403976,
+      "cByteNs": 103.41314047862834,
+      "exponent": 1.03,
+      "maxRelativeError": 0.04276045255428838,
+      "batchSpeedup": 4.181120551861349,
       "batchThreads": 8,
-      "fasterThanTsFromBytes": 0
+      "threads": [
+        {
+          "threads": 2,
+          "speedup": 1.4668649834797167,
+          "efficiency": 0.7334324917398584
+        },
+        {
+          "threads": 4,
+          "speedup": 1.9368994765601342,
+          "efficiency": 0.48422486914003354
+        },
+        {
+          "threads": 8,
+          "speedup": 2.3135573661035616,
+          "efficiency": 0.2891946707629452
+        }
+      ],
+      "fasterThanTsFromBytes": 200
     },
     "python": {
       "op": "detect",
-      "cCallUs": 31.277658084856718,
-      "cByteNsPerB": 113.85317274137228,
-      "maxRelativeError": 0.11725043326836627,
-      "batchSpeedup": 5.909405583694154,
+      "cCallUs": 24.00530606910785,
+      "cByteNs": 127.46631877631751,
+      "exponent": 1,
+      "maxRelativeError": 0.08001144110646977,
+      "batchSpeedup": 5.172632011975205,
       "batchThreads": 8,
-      "fasterThanTsFromBytes": 0
+      "threads": [
+        {
+          "threads": 2,
+          "speedup": 1.1765030637586655,
+          "efficiency": 0.5882515318793328
+        },
+        {
+          "threads": 4,
+          "speedup": 1.514575352042069,
+          "efficiency": 0.37864383801051726
+        },
+        {
+          "threads": 8,
+          "speedup": 1.8300824422577489,
+          "efficiency": 0.2287603052822186
+        }
+      ],
+      "fasterThanTsFromBytes": 200
     },
     "rust": {
       "op": "detect",
-      "cCallUs": 27.36810948383766,
-      "cByteNsPerB": 105.9428091879756,
-      "maxRelativeError": 0.1663247477848929,
-      "batchSpeedup": 8.56953478287803,
+      "cCallUs": 43.384654501595556,
+      "cByteNs": 42.24042520047559,
+      "exponent": 1.08,
+      "maxRelativeError": 0.06044573672263138,
+      "batchSpeedup": 8.891542382920901,
       "batchThreads": 8,
-      "fasterThanTsFromBytes": 0
+      "threads": [
+        {
+          "threads": 2,
+          "speedup": 1.331408809046079,
+          "efficiency": 0.6657044045230395
+        },
+        {
+          "threads": 4,
+          "speedup": 2.061115109378542,
+          "efficiency": 0.5152787773446355
+        },
+        {
+          "threads": 8,
+          "speedup": 2.806842871129935,
+          "efficiency": 0.35085535889124186
+        }
+      ],
+      "fasterThanTsFromBytes": 200
     },
     "sidecar": {
       "op": "scan",
-      "cCallUs": 353.4887192843165,
-      "cByteNsPerB": 304.6752288429154,
-      "maxRelativeError": 0.2999745286883336,
-      "batchSpeedup": 5.952989645427939,
+      "cCallUs": 59.50336508077872,
+      "cByteNs": 3207.8026041238018,
+      "exponent": 0.82,
+      "maxRelativeError": 0.13716703243611225,
+      "batchSpeedup": 6.105113994937807,
       "batchThreads": 1,
+      "threads": [],
+      "fasterThanTsFromBytes": 962965
+    },
+    "ts-pool": {
+      "op": "detect",
+      "cCallUs": null,
+      "cByteNs": null,
+      "exponent": null,
+      "maxRelativeError": null,
+      "batchSpeedup": null,
+      "batchThreads": 2,
+      "threads": [
+        {
+          "threads": 2,
+          "speedup": 2.220565287074569,
+          "efficiency": 1.1102826435372846
+        },
+        {
+          "threads": 4,
+          "speedup": 3.61166132333484,
+          "efficiency": 0.90291533083371
+        },
+        {
+          "threads": 8,
+          "speedup": 3.867062629457366,
+          "efficiency": 0.48338282868217075
+        }
+      ],
       "fasterThanTsFromBytes": null
     },
     "ts": {
       "op": "detect",
-      "cCallUs": 83.314189716756,
-      "cByteNsPerB": 275.3013523380379,
-      "maxRelativeError": 0.04113491429198274,
-      "batchSpeedup": 2.3992536978527,
+      "cCallUs": 89.69790959984164,
+      "cByteNs": 293.99650234338037,
+      "exponent": 0.995,
+      "maxRelativeError": 0.010484883605116195,
+      "batchSpeedup": 2.501542188824647,
       "batchThreads": 1,
+      "threads": [],
       "fasterThanTsFromBytes": null
     }
   }

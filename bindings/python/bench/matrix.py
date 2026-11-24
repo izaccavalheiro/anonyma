@@ -13,6 +13,7 @@ import os
 import platform
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from anonyma import Anonyma
@@ -62,6 +63,18 @@ def main() -> None:
     size = sum(len(e.encode()) for e in entries) // len(entries)
     each = sum(len(engine.detect(e)) for e in entries)
     row("each", size, len(entries), 1, median(lambda: [engine.detect(e) for e in entries]), each)
+
+    # The same calls spread over a thread pool: detect releases the GIL.
+    cores = os.cpu_count() or 1
+    for threads in sorted({n for n in (2, 4, cores) if 1 < n <= cores}):
+        with ThreadPoolExecutor(max_workers=threads) as pool:
+            chunk = -(-len(entries) // threads)
+            parts = [entries[i : i + chunk] for i in range(0, len(entries), chunk)]
+
+            def spread() -> None:
+                list(pool.map(lambda part: [engine.detect(e) for e in part], parts))
+
+            row("each", size, len(entries), threads, median(spread), each)
     batch = sum(len(m) for m in engine.detect_batch(entries))
     # detect_batch runs on the core's rayon pool, one thread per core.
     row("batch", size, len(entries), os.cpu_count() or 1, median(lambda: engine.detect_batch(entries)), batch)

@@ -77,6 +77,28 @@ fn main() {
     });
     row(&mut out, "each", size, entries.len(), 1, ms, each);
 
+    // The same calls spread over threads, one engine shared by all.
+    let cores = std::thread::available_parallelism().map_or(1, usize::from);
+    let mut counts = vec![2, 4, cores];
+    counts.retain(|&n| n > 1 && n <= cores);
+    counts.dedup();
+    for threads in counts {
+        let chunk = entries.len().div_ceil(threads);
+        let ms = median(|| {
+            std::thread::scope(|scope| {
+                for part in entries.chunks(chunk) {
+                    let engine = &engine;
+                    scope.spawn(move || {
+                        for e in part {
+                            black_box(engine.detect(e));
+                        }
+                    });
+                }
+            });
+        });
+        row(&mut out, "each", size, entries.len(), threads, ms, each);
+    }
+
     // With the `parallel` feature, a batch runs on rayon's pool.
     let threads = if cfg!(feature = "parallel") {
         std::thread::available_parallelism().map_or(1, usize::from)
