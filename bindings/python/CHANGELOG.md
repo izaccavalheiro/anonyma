@@ -7,6 +7,10 @@ change its API.
 
 ## [Unreleased]
 
+## [0.1.0a7] — 2026-11-24
+
+pandas and Polars columns in one batch call.
+
 ### Added
 
 - `anonyma.pandas.anonymize_series()` and `detect_series()`, and `anonyma.polars.anonymize_series()`
