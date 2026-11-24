@@ -13,7 +13,8 @@ repository.workspace = true
 crate-type = ["cdylib"]
 
 [dependencies]
-anonyma-core.workspace = true
+# Batches spread over every core (rayon), outside the JavaScript thread.
+anonyma-core = { workspace = true, features = ["parallel"] }
 anonyma-ffi = { path = "../../crates/anonyma-ffi", default-features = false }
 napi = { version = "3", default-features = false, features = ["napi4"] }
 napi-derive = "3"

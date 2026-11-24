@@ -198,8 +198,20 @@ jobs:
           size=$(stat -c %s target/wasm32-unknown-unknown/release/anonyma_wasm.wasm)
           echo "anonyma_wasm.wasm: $size bytes (before wasm-bindgen and wasm-opt)" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Build the Node.js addon
-        run: cargo build -p anonyma-node --release
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # The tests compare anonyma-native with the root build of anonyma.
+      - name: Build and test the Node.js addon (anonyma-native)
+        run: |
+          npm ci
+          npm run build
+          cd bindings/node
+          npm run build
+          npm test
 
       - name: Lint
         run: cargo clippy -p anonyma-wasm -p anonyma-node -- -D warnings

@@ -58,8 +58,34 @@ export default tseslint.config(
     },
   },
   {
+    // anonyma-native's package: hand-written CommonJS and its declarations, without a tsconfig.
+    files: ["bindings/node/lib/**"],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: {
+      sourceType: "commonjs",
+      globals: {
+        require: "readonly",
+        module: "writable",
+        __dirname: "readonly",
+        process: "readonly",
+      },
+    },
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
+  {
     // Node.js scripts of the repository: plain JavaScript, run directly, free to print.
-    files: ["scripts/**/*.mjs", "bench/**/*.mjs", "packages/*.mjs", "packages/*/bench.mjs"],
+    files: [
+      "scripts/**/*.mjs",
+      "bench/**/*.mjs",
+      "packages/*.mjs",
+      "packages/*/bench.mjs",
+      "bindings/node/scripts/**/*.mjs",
+      "bindings/node/test/**/*.mjs",
+    ],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: {
       globals: {
