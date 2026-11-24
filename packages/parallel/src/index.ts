@@ -4,13 +4,15 @@
  * every core. A batch is cut into chunks of about 256 KB, each chunk runs in a
  * worker with anonyma's own batch function (which already joins short texts),
  * and the results come back in input order, as the function returns them in
- * one thread. Node.js, Bun and Deno provide `node:worker_threads`; runtimes
+ * one thread. A batch too small to gain from threads runs in the calling
+ * thread. Node.js, Bun and Deno provide `node:worker_threads`; runtimes
  * without threads (Cloudflare Workers, browsers) use anonyma directly.
  */
 
 import { availableParallelism, cpus } from "node:os";
 import { Worker } from "node:worker_threads";
 
+import { anonymizeBatch, detectBatch } from "anonyma";
 import type {
   AnonymizeOptions,
   AnonymizeResult,
@@ -18,6 +20,7 @@ import type {
   PiiCategory,
   PiiMatch,
 } from "anonyma";
+import { compilePipeline } from "anonyma/engine";
 import type { DetectedSpan, PipelineSpec } from "anonyma/engine";
 
 import type { Reply, Task } from "./protocol.js";
@@ -28,6 +31,23 @@ export interface PoolOptions {
   readonly threads?: number;
   /** About how many characters each chunk of a batch holds. Defaults to 262,144. */
   readonly chunkSize?: number;
+  /**
+   * Batches of fewer characters run in the calling thread, where they cost less than the
+   * round trip to a worker. Defaults to 8,192; 0 sends every batch to the workers.
+   */
+  readonly inlineBelow?: number;
+}
+
+/** How the pool would run a batch; see {@link Pool.explain}. */
+export interface BatchPlan {
+  /** `"inline"`: in the calling thread; `"workers"`: on the pool. */
+  readonly route: "inline" | "workers";
+  /** The characters of the batch (an entry that is not a string counts as one). */
+  readonly characters: number;
+  /** The chunks the batch is cut into: 1 when it runs inline. */
+  readonly chunks: number;
+  /** The workers that run it at most: 0 when it runs inline. */
+  readonly threads: number;
 }
 
 /** A pool of worker threads; see {@link createPool}. */
@@ -46,6 +66,8 @@ export interface Pool {
   ): Promise<BatchResult<AnonymizeResult>[]>;
   /** `compilePipeline(spec).scanBatch(texts)` of anonyma/engine, on the pool. */
   scanBatch(texts: readonly string[], spec?: PipelineSpec): Promise<DetectedSpan[][]>;
+  /** How a batch of `texts` would run: inline or on the workers, in how many chunks. */
+  explain(texts: readonly string[]): BatchPlan;
   /** Stop the workers; later calls reject. */
   close(): Promise<void>;
 }
@@ -134,6 +156,7 @@ export function createPool(options: PoolOptions = {}): Pool {
   const cores = typeof availableParallelism === "function" ? availableParallelism() : cpus().length;
   const threads = Math.max(1, Math.floor(options.threads ?? cores - 1));
   const chunkSize = Math.max(1, Math.floor(options.chunkSize ?? 262_144));
+  const inlineBelow = Math.max(0, options.inlineBelow ?? 8192);
   const slots: Slot[] = [];
   const queue: Job[] = [];
   let nextId = 0;
@@ -185,18 +208,35 @@ export function createPool(options: PoolOptions = {}): Pool {
     }
   }
 
+  /** The batch's characters and, unless it runs inline, its chunks. */
+  function plan(texts: readonly string[]): {
+    readonly characters: number;
+    readonly parts: { readonly offset: number; readonly texts: string[] }[] | undefined;
+  } {
+    const characters = texts.reduce(
+      (n, text) => n + (typeof text === "string" ? text.length : 1),
+      0,
+    );
+    if (characters < inlineBelow) return { characters, parts: undefined };
+    // Enough chunks to keep every worker busy, none much larger than chunkSize.
+    const size = Math.max(4096, Math.min(chunkSize, Math.ceil(characters / threads)));
+    return { characters, parts: chunks(texts, size) };
+  }
+
   function run(
     make: (id: number, texts: string[]) => Task,
+    inline: (texts: readonly string[]) => unknown[],
     texts: readonly string[],
   ): Promise<{ offset: number; value: unknown[] }[]> {
     if (closed) return Promise.reject(new Error("anonyma-parallel: the pool is closed"));
     if (!isArray(texts)) {
       return Promise.reject(new TypeError("anonyma-parallel: texts must be an array"));
     }
-    const total = texts.reduce((n, text) => n + (typeof text === "string" ? text.length : 1), 0);
-    // Enough chunks to keep every worker busy, none much larger than chunkSize.
-    const size = Math.max(4096, Math.min(chunkSize, Math.ceil(total / threads)));
-    const parts = chunks(texts, size);
+    const { parts } = plan(texts);
+    // A throw of the inline call becomes the rejection, as a worker's error does.
+    if (parts === undefined) {
+      return Promise.resolve().then(() => [{ offset: 0, value: inline(texts) }]);
+    }
     return Promise.all(
       parts.map(
         (part) =>
@@ -229,6 +269,7 @@ export function createPool(options: PoolOptions = {}): Pool {
           categories === undefined
             ? { id, op: "detect", texts: chunk }
             : { id, op: "detect", texts: chunk, categories },
+        (batch) => detectBatch(batch, categories),
         texts,
       );
       return flattenBatch<PiiMatch[]>(parts);
@@ -237,14 +278,30 @@ export function createPool(options: PoolOptions = {}): Pool {
       assertCloneable(anonymizeOptions, "options");
       const parts = await run(
         (id, chunk) => ({ id, op: "anonymize", texts: chunk, options: anonymizeOptions }),
+        (batch) => anonymizeBatch(batch, anonymizeOptions),
         texts,
       );
       return flattenBatch<AnonymizeResult>(parts);
     },
     async scanBatch(texts, spec = {}): Promise<DetectedSpan[][]> {
       assertCloneable(spec, "spec");
-      const parts = await run((id, chunk) => ({ id, op: "scan", texts: chunk, spec }), texts);
+      const parts = await run(
+        (id, chunk) => ({ id, op: "scan", texts: chunk, spec }),
+        (batch) => compilePipeline(spec).scanBatch(batch),
+        texts,
+      );
       return parts.flatMap(({ value }) => value as DetectedSpan[][]);
+    },
+    explain(texts): BatchPlan {
+      const { characters, parts } = plan(isArray(texts) ? texts : []);
+      return parts === undefined
+        ? { route: "inline", characters, chunks: 1, threads: 0 }
+        : {
+            route: "workers",
+            characters,
+            chunks: parts.length,
+            threads: Math.min(threads, parts.length),
+          };
     },
     async close(): Promise<void> {
       closed = true;

@@ -25,7 +25,8 @@ const LINES = Array.from(
     ][i % 5] ?? "",
 );
 
-const pool = createPool({ threads: 3, chunkSize: 2000 });
+// Every batch goes to the workers, in small chunks spread over many of them.
+const pool = createPool({ threads: 3, chunkSize: 2000, inlineBelow: 0 });
 afterAll(() => pool.close());
 
 describe("anonyma-parallel", () => {
@@ -88,6 +89,38 @@ describe("anonyma-parallel", () => {
     await expect(
       pool.anonymizeBatch(LINES, { customDetectors: { email: () => [] } }),
     ).rejects.toThrow(PoolOptionsError);
+  });
+
+  it("runs a small batch in the calling thread, with the same results", async () => {
+    const own = createPool({ threads: 2 });
+    const small = LINES.slice(0, 20);
+    expect(own.explain(small)).toEqual({
+      route: "inline",
+      characters: small.join("").length,
+      chunks: 1,
+      threads: 0,
+    });
+    expect(await own.detectBatch(small)).toEqual(detectBatch(small));
+    expect(await own.detectBatch(small, ["email"])).toEqual(detectBatch(small, ["email"]));
+    expect((await own.anonymizeBatch(small, { preset: "pci-dss" })).map((r) => r.ok)).toEqual(
+      small.map(() => true),
+    );
+    expect(await own.scanBatch(small)).toEqual(compilePipeline({}).scanBatch(small));
+    await expect(own.scanBatch(["x"], { preset: ["nope" as "gdpr"] })).rejects.toThrow();
+    await own.close();
+  });
+
+  it("explains how a batch would run", () => {
+    expect(pool.explain(LINES)).toMatchObject({ route: "workers", threads: 3 });
+    expect(pool.explain(LINES).chunks).toBeGreaterThan(3);
+    expect(pool.explain("x" as unknown as string[])).toMatchObject({ characters: 0 });
+    const big = createPool({ threads: 2 });
+    expect(big.explain([...LINES, ...LINES, ...LINES])).toMatchObject({
+      route: "workers",
+      chunks: 2,
+      threads: 2,
+    });
+    return big.close();
   });
 
   it("closes, and refuses calls afterwards", async () => {
