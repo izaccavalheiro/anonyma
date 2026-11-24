@@ -81,3 +81,7 @@ reports other matches than TypeScript) and `results/model.json`. The model fits,
 `T(s) = C_call + s × C_byte`, the cost of a call on a text of `s` bytes, by least squares on the
 relative error. The text size from which an engine beats TypeScript follows from it. The sidecar
 runs the span engine (`op: "scan"`), so its matches are not compared with `detect`'s.
+
+The "Benchmark matrix" workflow (`.github/workflows/bench-matrix.yml`) runs the matrix on Linux and
+macOS by hand, weekly, and when a harness changes, with the tables in the job summary and the JSON
+files as an artifact. A difference in results fails it; timings never do.
