@@ -67,6 +67,7 @@ packages/
 ├── vercel-ai/            # "anonyma-vercel-ai" — AI SDK 7 middleware, withAnonyma(), generateText/streamText
 ├── mcp/                  # "anonyma-mcp" — MCP connection guard, anonyma-mcp-proxy, guardMcpClient()
 ├── cli/                  # "anonyma-cli" — the `anonyma` command: scrub and scan text, JSON Lines and CSV as streams
+├── parallel/             # "anonyma-parallel" — a pool of worker threads for the batch functions (Node.js, Bun, Deno)
 ├── conformance/          # private — the language-neutral conformance suite (JSON + schema) and its TypeScript runner
 └── sidecar/              # private — local HTTP + MCP service on anonyma, Dockerfile, gRPC contract (proto/)
 ```
