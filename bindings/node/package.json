@@ -37,7 +37,7 @@
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node --test test/"
+    "test": "node --test test/engine.test.mjs"
   },
   "optionalDependencies": {
     "anonyma-native-darwin-arm64": "0.1.0",

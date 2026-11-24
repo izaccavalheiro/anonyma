@@ -2,7 +2,7 @@
  * The engine of anonyma-native returns what anonyma returns: the same values,
  * offsets and confidences, the same anonymized text, the same batch entries.
  * Needs the root build (npm run build at the repository root) and the addon
- * (npm run build here). Run with `node --test test/`.
+ * (npm run build here). Run with `npm test`.
  */
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
