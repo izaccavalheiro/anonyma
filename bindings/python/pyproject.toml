@@ -25,6 +25,8 @@ dependencies = []
 [project.optional-dependencies]
 test = ["pytest>=8"]
 langchain = ["langchain-core>=0.3"]
+pandas = ["pandas>=2"]
+polars = ["polars>=1"]
 
 [project.urls]
 Homepage = "https://izaccavalheiro.github.io/anonyma/"
