@@ -48,6 +48,15 @@ anonymize("Mail ana@example.com, CPF 529.982.247-25", { preset: ["lgpd", "gdpr"]
   Cloudflare Workers.
 - **Evidence without data.** Audit records and receipts say what was replaced, never what it was.
 
+## Status
+
+The library is stable and has followed semantic versioning since 1.0.0. Around it, five companion
+packages are published on npm, at 0.x. Python and Go run the same detectors on a Rust core, a
+sidecar serves them to any language over HTTP, and one conformance suite checks every
+implementation against this library. The [releases page](project/releases.md)
+lists the latest version of each; [History and decisions](project/history.md) tells how anonyma got
+here, why it is built this way, and what the project learned on the way.
+
 ## Where next
 
 - New to it: [Installation](guide/installation.md), then [Quick start](guide/quick-start.md).
@@ -55,3 +64,5 @@ anonymize("Mail ana@example.com, CPF 529.982.247-25", { preset: ["lgpd", "gdpr"]
 - Learning a feature: the [library guide](guide/installation.md), topic by topic.
 - Looking something up: the [API reference](reference/api.md), the [categories](reference/categories.md)
   and the [presets](reference/presets.md).
+- Upgrading: the [changelog](project/changelog.md), and the [blog](/blog), which explains each minor
+  release.
