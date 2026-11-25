@@ -266,7 +266,7 @@
     "fast-check": "^4.10.2",
     "hono": "^4.13.13",
     "husky": "^9.1.7",
-    "lint-staged": "^17.6.0",
+    "lint-staged": "^17.6.1",
     "prettier": "^3.10.1",
     "publint": "^0.3.25",
     "tsup": "^9.0.0",
