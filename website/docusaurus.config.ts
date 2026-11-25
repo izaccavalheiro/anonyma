@@ -102,6 +102,16 @@ const config: Config = {
 
   themeConfig: {
     colorMode: { respectPrefersColorScheme: true },
+    // The latest release post. Raw HTML, which the link check does not see: keep the baseUrl in it.
+    announcementBar: {
+      id: "release-1-5",
+      content:
+        'anonyma 1.5: presets that add up, batches on every core, and a Rust engine for Node.js. <a href="/anonyma/blog/anonyma-1-5">What changed, and why</a>',
+      // The site's primary colour, legible in both colour modes.
+      backgroundColor: "#2f6f4e",
+      textColor: "#ffffff",
+      isCloseable: true,
+    },
     navbar: {
       title: "anonyma",
       logo: { alt: "anonyma", src: "img/logo.svg" },

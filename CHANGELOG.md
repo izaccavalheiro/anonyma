@@ -9,6 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+No change to the library: documentation and the site.
+
+### Added
+
+- **A releases page** on the site, which lists the latest release of every package and every
+  release so far, read from their changelogs, and how each package is released.
+- **History and decisions** (`docs/history.md`, also on the site): how anonyma got where it is,
+  release line by release line, the reasons for its main design decisions, and what the project
+  learned on the way.
+- The site has a page for every published package (`anonyma-parallel`, `anonyma-native`, the Python
+  and Go packages and the sidecar are new), the changelog of each, RFC 0001 and the conformance
+  suite, and a blog post on 1.4 and 1.5.
+
+### Changed
+
+- The site records page views and clicks with Monoid analytics
+  ([#125](https://github.com/izaccavalheiro/anonyma/pull/125)). Its Content Security Policy allows
+  that one origin for scripts and connections and nothing else, and the playground still sends
+  nothing typed into it. The note under 1.3.1 that the policy forbids every connection no longer
+  holds.
+- The security policy supports 1.5.x and gives 1.4.x security fixes, and covers every package.
+
+### Fixed
+
+- The entry for 1.1.1 in this changelog also listed the plugins of `createAnonymizer()`, which were
+  released in 1.2.0: a merge had copied them there. It again lists what 1.1.1 shipped.
+
 ---
 
 ## [1.5.2] — 2026-11-24
