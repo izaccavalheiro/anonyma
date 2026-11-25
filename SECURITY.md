@@ -8,12 +8,16 @@ are welcome and are treated as a priority.
 
 | Version | Supported           |
 | ------- | ------------------- |
-| 1.3.x   | yes                 |
-| 1.2.x   | security fixes only |
-| < 1.2   | no                  |
+| 1.5.x   | yes                 |
+| 1.4.x   | security fixes only |
+| < 1.4   | no                  |
 
-`anonyma-vercel-ai`, `anonyma-mcp` and `anonyma-cli` are supported in their latest 0.x
-minor version.
+The latest minor version is supported, and the one before it receives security fixes. The
+companion npm packages (`anonyma-cli`, `anonyma-vercel-ai`, `anonyma-mcp`, `anonyma-parallel`
+and `anonyma-native`) and the sidecar image are supported in their latest 0.x minor version. The
+Python and Go packages are alphas: only their latest release is supported. The
+[releases page](https://izaccavalheiro.github.io/anonyma/docs/project/releases) lists the latest
+version of each.
 
 ## Reporting a vulnerability
 
@@ -23,8 +27,8 @@ public issue for a suspected vulnerability.
 
 Please include:
 
-- the version, the entry point (`anonyma`, `anonyma/engine`, …) and the
-  runtime;
+- the package and its version, the entry point (`anonyma`, `anonyma/engine`,
+  …) and the runtime or language;
 - the smallest input and configuration that show the problem, and what you
   expected instead;
 - what an attacker gains: personal data left in the output, a token that
@@ -67,3 +71,7 @@ unless the documentation claims otherwise.
   SBOM attached to the GitHub release.
   Verify a download with `npm audit signatures`, or with
   `gh attestation verify <tarball> --repo izaccavalheiro/anonyma`.
+- The other packages are released the same way from tags of their own
+  (`native-v*`, `python-v*`, `go-v*`, `sidecar-v*`): the Python wheels through
+  PyPI trusted publishing, and the sidecar image with provenance, an SBOM and
+  an attestation.

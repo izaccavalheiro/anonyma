@@ -20,6 +20,7 @@ anywhere.
 [Quick start](https://izaccavalheiro.github.io/anonyma/docs/guide/quick-start) ·
 [Playground](https://izaccavalheiro.github.io/anonyma/playground) ·
 [API reference](https://izaccavalheiro.github.io/anonyma/docs/reference/api) ·
+[Releases](https://izaccavalheiro.github.io/anonyma/docs/project/releases) ·
 [Changelog](CHANGELOG.md)
 
 ## Install
@@ -112,10 +113,24 @@ anonyma scan fixtures/customers.csv --fail-on-pii
 | [`anonyma-cli`](packages/cli#readme)             | The `anonyma` command: scrub and scan files as streams                     |
 | [`anonyma-vercel-ai`](packages/vercel-ai#readme) | Vercel AI SDK middleware: prompts tokenized, answers restored              |
 | [`anonyma-mcp`](packages/mcp#readme)             | A privacy proxy for any MCP server: tool results reach the model as tokens |
+| [`anonyma-parallel`](packages/parallel#readme)   | The batch functions on a pool of worker threads: every core, same results  |
+| [`anonyma-native`](bindings/node#readme)         | An opt-in engine on the Rust core for Node.js, faster on batches           |
 
-Outside JavaScript, the same detectors run in Python (`pip install --pre anonyma`), in Go
-(`github.com/izaccavalheiro/anonyma-go`) and, over HTTP, in any language through the sidecar: see
+Outside JavaScript, the same detectors run on one Rust core, which a shared conformance suite checks
+against this library: in Python (`pip install --pre anonyma`), in Go
+(`github.com/izaccavalheiro/anonyma-go`), and in any language over HTTP through the sidecar
+container (`ghcr.io/izaccavalheiro/anonyma-sidecar`). See
 [other languages](https://izaccavalheiro.github.io/anonyma/docs/guides/other-languages).
+
+## Status
+
+The library is stable: it has followed semantic versioning since 1.0.0, and the
+[changelog](CHANGELOG.md) records every release with what changed and why. The companion packages
+are at 0.x, where a minor version may change their API, and the Python and Go packages are alphas.
+The [releases page](https://izaccavalheiro.github.io/anonyma/docs/project/releases) lists the latest
+version of every package, the [blog](https://izaccavalheiro.github.io/anonyma/blog) walks through
+the releases, and [history and decisions](docs/history.md) tells how the project got here, why it is
+built the way it is, and what it learned on the way.
 
 ## Learn more
 
