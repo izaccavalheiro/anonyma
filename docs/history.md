@@ -17,9 +17,9 @@ As of November 2026:
   (`anonyma-cli`), the Vercel AI SDK middleware (`anonyma-vercel-ai`), the MCP proxy
   (`anonyma-mcp`), a pool of worker threads (`anonyma-parallel`) and an engine on the Rust core
   (`anonyma-native`).
-- **Other languages** run on one Rust core that ports the TypeScript library: a Python package and
-  a Go module, both alpha, and a sidecar container that any language reaches over HTTP. They all
-  pass the same conformance suite of 284 cases.
+- **Other languages**: a Python package and a Go module, both alpha, run on one Rust core that
+  ports the TypeScript library, and pass the same conformance suite of 284 cases as the library
+  itself. A sidecar container serves the TypeScript library to any language over HTTP.
 
 The [releases page](https://izaccavalheiro.github.io/anonyma/docs/project/releases) lists the
 latest version of every package, read from their changelogs.

@@ -116,10 +116,10 @@ anonyma scan fixtures/customers.csv --fail-on-pii
 | [`anonyma-parallel`](packages/parallel#readme)   | The batch functions on a pool of worker threads: every core, same results  |
 | [`anonyma-native`](bindings/node#readme)         | An opt-in engine on the Rust core for Node.js, faster on batches           |
 
-Outside JavaScript, the same detectors run on one Rust core, which a shared conformance suite checks
-against this library: in Python (`pip install --pre anonyma`), in Go
-(`github.com/izaccavalheiro/anonyma-go`), and in any language over HTTP through the sidecar
-container (`ghcr.io/izaccavalheiro/anonyma-sidecar`). See
+Outside JavaScript, the same detectors run in Python (`pip install --pre anonyma`) and in Go
+(`github.com/izaccavalheiro/anonyma-go`), on a Rust core that a shared conformance suite checks
+against this library, and in any language over HTTP through the sidecar container
+(`ghcr.io/izaccavalheiro/anonyma-sidecar`), which serves the library itself. See
 [other languages](https://izaccavalheiro.github.io/anonyma/docs/guides/other-languages).
 
 ## Status
