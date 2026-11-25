@@ -5,19 +5,22 @@ description: Use anonyma from Python, Go, Java, C# or any language, through the 
 ---
 
 anonyma's detectors, token format, presets and receipts are available outside JavaScript in three
-ways. All give the same results as the TypeScript package, because every implementation runs one
-shared conformance suite.
+ways. Python and Go call a Rust port of the library (`anonyma-core`), and the sidecar serves the
+TypeScript library itself. All give the same results as the TypeScript package, because every
+implementation runs one shared conformance suite.
 
-| Way                    | Languages                     | Detectors | State                                         |
-| ---------------------- | ----------------------------- | --------- | --------------------------------------------- |
-| The sidecar            | any language that speaks HTTP | all 27    | available                                     |
-| The Python package     | Python 3.10+                  | all 27    | alpha, on PyPI                                |
-| The Go package         | Go 1.22+ with cgo             | all 27    | alpha, `github.com/izaccavalheiro/anonyma-go` |
-| Node.js or WebAssembly | JavaScript                    | —         | not offered: use the `anonyma` package (\*)   |
+| Way                | Languages                     | Detectors | State                                                      |
+| ------------------ | ----------------------------- | --------- | ---------------------------------------------------------- |
+| The sidecar        | any language that speaks HTTP | all 27    | 0.x, `ghcr.io/izaccavalheiro/anonyma-sidecar`              |
+| The Python package | Python 3.10+                  | all 27    | alpha, `anonyma` on PyPI                                   |
+| The Go package     | Go 1.22+ with cgo             | all 27    | alpha, `github.com/izaccavalheiro/anonyma-go`              |
+| WebAssembly        | browsers, edge runtimes       | all 27    | not published: use the `anonyma` package, which runs there |
 
-(\*) The Rust core's Node.js addon and WebAssembly build were measured against the TypeScript
-engine: the WebAssembly build is slower almost everywhere, and the addon is at most 1.8 times faster
-on some operations and slower on others, which does not pay for a native binary per platform.
+In Node.js, use `anonyma`. For large batches, two opt-in packages add speed without changing the
+results: [`anonyma-parallel`](../packages/parallel.md) runs the batch functions on every core, and
+[`anonyma-native`](../packages/native.md) runs detection and anonymization on the Rust core
+([Speed and batches](speed-and-batches.md) compares them). The [releases page](../project/releases.md)
+lists the latest version of each package.
 
 ## The sidecar
 
@@ -26,8 +29,7 @@ or a process on the same host. Your application sends it text over `localhost`, 
 leaves the machine.
 
 ```sh
-docker build -f packages/sidecar/Dockerfile -t anonyma-sidecar .
-docker run --rm -p 127.0.0.1:7878:7878 anonyma-sidecar
+docker run --rm -p 127.0.0.1:7878:7878 ghcr.io/izaccavalheiro/anonyma-sidecar:0.2
 ```
 
 Shield a prompt, send it to the model, and restore the answer from the same session:
@@ -45,8 +47,8 @@ curl -s localhost:7878/v1/restore -H 'content-type: application/json' \
 `POST /v1/detect` and `POST /v1/anonymize` take the options of a pipeline (`preset`,
 `categories`, `defaultStrategy`, `rules`), and `POST /mcp` serves the MCP tools. Set
 `ANONYMA_SIDECAR_TOKEN` whenever another host can reach the port. The
-[sidecar README](https://github.com/izaccavalheiro/anonyma/tree/main/packages/sidecar#readme) lists
-every endpoint and setting.
+[sidecar page](../packages/sidecar.md) lists every endpoint and setting, and how to build the image
+yourself.
 
 ## Python
 
@@ -67,7 +69,9 @@ engine.restore("Sent to {{EMAIL_1}}.", shielded.vault)   # 'Sent to ana@example.
 ```
 
 Every category and every compliance preset works as is: `Anonyma(presets=["lgpd", "hipaa"])`
-detects all their categories, with the same results as the TypeScript package.
+detects all their categories, with the same results as the TypeScript package. The
+[Python package page](../packages/python.md) covers batches, dataframes and the OpenAI, Anthropic
+and LangChain integrations.
 
 ## Go
 
@@ -93,5 +97,4 @@ answer, _ := vault.Restore("Sent to {{EMAIL_1}}.")
 `Detect`, `Anonymize` and `Scan` report byte offsets into the Go string. `NewReader` anonymizes
 an `io.Reader` line by line, and `Middleware` scrubs the bodies of `net/http` requests. Alpine and
 other musl systems are not among the platforms yet: use the sidecar there. The
-[package README](https://github.com/izaccavalheiro/anonyma/tree/main/bindings/go#readme) has the
-rest.
+[Go package page](../packages/go.md) has the rest.

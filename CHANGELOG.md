@@ -9,6 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+No change to the library: documentation and the site.
+
+### Added
+
+- **A releases page** on the site, which lists the latest release of every package and every
+  release so far, read from their changelogs, and how each package is released.
+- **History and decisions** (`docs/history.md`, also on the site): how anonyma got where it is,
+  release line by release line, the reasons for its main design decisions, and what the project
+  learned on the way.
+- The site has a page for every published package (`anonyma-parallel`, `anonyma-native`, the Python
+  and Go packages and the sidecar are new), the changelog of each, RFC 0001 and the conformance
+  suite, and a blog post on 1.4 and 1.5.
+
+### Changed
+
+- The site records page views and clicks with Monoid analytics
+  ([#125](https://github.com/izaccavalheiro/anonyma/pull/125)). Its Content Security Policy allows
+  that one origin for scripts and connections and nothing else, and the playground still sends
+  nothing typed into it. The note under 1.3.1 that the policy forbids every connection no longer
+  holds.
+- The security policy supports 1.5.x and gives 1.4.x security fixes, and covers every package.
+
+### Fixed
+
+- The entry for 1.1.1 in this changelog also listed the plugins of `createAnonymizer()`, which were
+  released in 1.2.0: a merge had copied them there. It again lists what 1.1.1 shipped.
+
 ---
 
 ## [1.5.2] — 2026-11-24
@@ -342,33 +369,6 @@ to match a part of a value instead. The span engine (`"anonyma/engine"`) is unch
 - **`allowlistPatterns`** with the `g` or `y` flag skipped only every other matching value,
   because `RegExp.test()` kept its `lastIndex` between values, and left the caller's pattern
   with a changed `lastIndex`. These flags are now ignored.
-
-### Added
-
-- **Plugins.** `createAnonymizer()` applies the `plugins` of its configuration, which 1.1.0
-  listed under "Known limitations" ([#6](https://github.com/izaccavalheiro/anonyma/issues/6)).
-  The methods of the anonymizer use their detectors, strategies and validators: a plugin
-  detector replaces the built-in detector of its category (`customDetectors` take precedence
-  over it), rules, default strategies and field rules name a plugin strategy as
-  `{ strategy, options }`, and a match is kept only when every plugin validator of its category
-  accepts it. `createAnonymizer()` throws a `ValidationError` when two plugins have the same
-  name, register a detector for the same category or a strategy under the same name, or when a
-  strategy has the name of a built-in one, and an `UnknownCategoryError` for a detector or
-  validator keyed by a name that is not a category. The standalone functions do not apply
-  plugins.
-- **Types** `PluginStrategyOptions` and `StrategyFunction`, exported from `"anonyma"`.
-  `AnonymizationRule`, `AnonymizeOptions`, `FieldRule` and `FieldRuleMap` take an optional type
-  parameter for the strategy options they hold, `StrategyOptions` by default.
-
-### Changed
-
-- The methods of `Anonymizer` and `AnonymizerConfig.defaultStrategy` accept
-  `PluginStrategyOptions` wherever they accepted `StrategyOptions`; the options of a built-in
-  strategy are type-checked as before. An object that implements `Anonymizer` with parameter
-  types of its own, such as a test double, may have to widen them.
-- `createAnonymizer()` throws `UnsupportedStrategyError` when `defaultStrategy` names a
-  strategy that neither anonyma nor one of the plugins provides, instead of when it first
-  applies it.
 
 ---
 

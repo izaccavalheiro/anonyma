@@ -8,13 +8,19 @@ leaves the machine.
 
 It serves the TypeScript reference implementation of anonyma: all 27 detectors
 and every strategy and preset, plus vault tokens that you restore in a model's
-answer. When the Rust core detects every category, the sidecar can switch to it
+answer. The Rust core detects every category too, but runs three of the eight
+strategies, so the sidecar stays on the reference; it can switch to the core
 without changing its interface (docs/rfcs/0001-polyglot-core.md).
 
 ## Run it
 
+The image is published to the GitHub Container Registry for `linux/amd64` and
+`linux/arm64`, from tags `sidecar-v<version>`:
+
 ```sh
-# From the repository root
+docker run --rm -p 127.0.0.1:7878:7878 ghcr.io/izaccavalheiro/anonyma-sidecar:0.2
+
+# Or build it, from the repository root
 docker build -f packages/sidecar/Dockerfile -t anonyma-sidecar .
 docker run --rm -p 127.0.0.1:7878:7878 anonyma-sidecar
 

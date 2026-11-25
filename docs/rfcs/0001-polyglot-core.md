@@ -1,6 +1,7 @@
 # RFC 0001: One Rust core, thin bindings, a sidecar
 
-- Status: accepted, first slice implemented
+- Status: accepted and implemented. Steps 1 to 4 of the roadmap are done; the crates.io release
+  waits for the core's API to settle, and a gRPC listener for a user who needs one
 - Scope: `crates/`, `bindings/`, `packages/conformance`, `packages/sidecar`,
   `.github/workflows/polyglot-release.yml`
 
@@ -252,9 +253,16 @@ image and calls it. Tags release:
   same run, tested as a module, attested, committed to
   `github.com/<owner>/anonyma-go` and tagged `v<version>` there with the deploy
   key of environment `go`. `Version` in `bindings/go/version.go` must match the tag.
+- `native-v<version>`: `anonyma-native` and one package per platform (Linux x64
+  and arm64, macOS x64 and arm64, Windows x64), built in the same run and
+  published to npm with provenance through trusted publishing (environment
+  `npm-native`). The version of `bindings/node/package.json` and of its five
+  optional dependencies must match the tag. A version already on the registry
+  is skipped, so a failed release can be resumed.
 
 Each release needs a section for its version in its own changelog
-(`bindings/python/CHANGELOG.md`, `packages/sidecar/CHANGELOG.md`, `bindings/go/CHANGELOG.md`), and nothing is published
+(`bindings/python/CHANGELOG.md`, `packages/sidecar/CHANGELOG.md`, `bindings/go/CHANGELOG.md`,
+`bindings/node/CHANGELOG.md`), and nothing is published
 without one. The release then gets a GitHub release with those notes. These GitHub releases never
 take the "Latest" badge, which stays with the npm package. The npm packages keep their own
 workflow and changelog (`release.yml`, tags `v<version>`, `CHANGELOG.md`).

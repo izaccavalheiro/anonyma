@@ -101,11 +101,28 @@ tests/                    # Mirrors src/, with a folder per subpath module
 ├── engine/
 ├── ...
 └── fixtures/corpus/      # Labelled detector corpora (precision and recall floors)
-bench/                    # Benchmark and corpus generator (`npm run bench`)
+packages/                 # npm workspaces, each versioned on its own
+├── cli/                  # anonyma-cli: the `anonyma` command
+├── vercel-ai/            # anonyma-vercel-ai: Vercel AI SDK middleware
+├── mcp/                  # anonyma-mcp: MCP guard and proxy
+├── parallel/             # anonyma-parallel: a pool of worker threads for the batch functions
+├── conformance/          # private: the conformance suite every implementation passes
+└── sidecar/              # the sidecar: a local HTTP and MCP service, shipped as an image
+crates/                   # The Rust core (anonyma-core) and its JSON API and C ABI (anonyma-ffi)
+bindings/                 # Python, Go, Node.js (anonyma-native) and WebAssembly, on the core
+bench/                    # Benchmark and corpus generator (`npm run bench`), engine matrix
 scripts/                  # Checks run by CI: smoke test, size budget, privacy, scaling
+website/                  # The documentation site (Docusaurus)
 docs/
-└── api.md
+├── api.md                # API reference of the core functions
+├── history.md            # History and decisions
+└── rfcs/                 # Design records, such as RFC 0001 (one Rust core)
 ```
+
+The Rust core and the bindings have their own toolchains (Cargo, maturin, Go). A change to a
+detector, validator, token format, preset or receipt is a change for every language: give it a case
+in `packages/conformance/conformance-tests.json` first, as
+[RFC 0001](docs/rfcs/0001-polyglot-core.md) describes.
 
 ---
 
@@ -141,12 +158,18 @@ Every push and pull request runs the `CI` workflow. Each job answers one questio
 | `coverage`     | Is the code covered above the thresholds in `vitest.config.ts`?                              |
 | `package`      | Is the build a valid dual ESM/CJS package (publint, are-the-types-wrong), within its budget? |
 | `smoke`        | Does the packed tarball work for a consumer on Node.js 18, 20, 22, 24 and 26?                |
+| `runtimes`     | Does the built package work on Bun, Deno and Cloudflare Workers?                             |
+| `packages`     | Do the companion packages (`packages/*`) type-check, pass their tests and pack?              |
+| `site`         | Does the site (`website/`) type-check and build, with no broken link?                        |
 | `performance`  | Is the span engine still linear in the size of its input?                                    |
 | `privacy`      | Do the privacy invariants and the compliance suites hold (GDPR, LGPD)?                       |
 | `supply-chain` | Are the dependencies free of known vulnerabilities and correctly signed?                     |
 
-CodeQL analyses the source and the workflows on every push, and Dependabot
-proposes dependency updates weekly. A new size budget, a new made-up domain in
+The `Polyglot` workflow runs the conformance suite in every language on every pull request: the
+TypeScript reference, the Rust core on Linux, macOS and Windows, Python, Go on five platforms, and
+the WebAssembly and Node.js builds. The `Performance comparison` workflow times a pull request
+against its base on the same runner. CodeQL analyses the source and the workflows on every push, and
+Dependabot proposes dependency updates weekly. A new size budget, a new made-up domain in
 a fixture or a new entry point belongs in the same pull request as the change
 that needs it.
 
@@ -166,11 +189,18 @@ README only if it changes what a newcomer should know.
 | --------------------------------------------- | --------------------------------------------------- |
 | Introduction, library guide, recipes, FAQ     | `website/docs/` (written there)                     |
 | Home page, playground, blog                   | `website/src/`, `website/blog/`                     |
-| Companion packages                            | `packages/*/README.md`                              |
+| Packages                                      | `packages/*/README.md`, `bindings/*/README.md`      |
 | API reference, architecture, benchmark method | `docs/api.md`, `ARCHITECTURE.md`, `bench/README.md` |
+| Conformance suite                             | `packages/conformance/README.md`                    |
 | Categories, presets, regulations, checksums   | the built library (`dist/`)                         |
 | Changelog, security, contributing             | the files of the same name                          |
+| History and decisions, RFC 0001               | `docs/history.md`, `docs/rfcs/`                     |
+| Package changelogs, releases table            | the `CHANGELOG.md` of every package                 |
 | Benchmarks page                               | `bench/results/*.json`                              |
+
+A new package goes into `PACKAGES` in `website/scripts/sync.mjs`, which gives it a page, a changelog
+page and a row on the releases page. A minor release of `anonyma` gets a post on the blog
+(`website/blog/`) that says what changed, why, and what to check when upgrading.
 
 `website/scripts/sync.mjs` generates the pages that come from other files; they are git-ignored, so
 edit their sources. Every example on a guide page shows real output: run it against the build
@@ -183,8 +213,9 @@ npm run build:site        # what CI runs: type check and production build
 ```
 
 The build fails on a broken link or anchor. The site's Content Security Policy
-(`website/docusaurus.config.ts`) forbids every connection, which is what lets the playground promise
-that nothing typed into it leaves the page; `npm run check:privacy` fails if it is loosened.
+(`website/docusaurus.config.ts`) allows one other origin, its analytics service, for scripts and
+connections, and nothing else; the playground's own code opens no connection.
+`npm run check:privacy` fails if the policy is loosened any further.
 
 ---
 
@@ -199,6 +230,9 @@ that nothing typed into it leaves the page; `npm run check:privacy` fails if it 
    `BUILTIN_CATEGORIES` and a named export), and add it to `PiiCategorySchema` in
    `src/schemas.ts`.
 6. Write tests in `tests/detectors.test.ts`.
+7. Add its cases to the conformance suite (`detect:<category>`), and port it to
+   `crates/anonyma-core` or leave the capability out there, so the other languages refuse the
+   category instead of skipping it.
 
 ---
 
@@ -314,8 +348,20 @@ npm trusts the `Release` workflow as a publisher (trusted publishing through
 OpenID Connect), so there is no npm token to store or rotate. Running the
 workflow by hand from the Actions tab rehearses all of it without publishing.
 
+The packages built on the Rust core are released by the `Polyglot` workflow
+(`polyglot-release.yml`) from tags of their own, each with a section in its own
+changelog: `native-v<version>` (`bindings/node`, to npm), `python-v<version>`
+(`bindings/python`, to PyPI), `go-v<version>` (`bindings/go`, to the
+`anonyma-go` repository) and `sidecar-v<version>` (`packages/sidecar`, to the
+GitHub Container Registry). Their GitHub releases never take the "Latest"
+badge, which stays with `anonyma`; keep their entries out of the root
+`CHANGELOG.md`, whose sections are the npm release notes. Push at most three
+tags at a time: GitHub starts no workflow for a push of more tags than that.
+
 ---
 
 ## Questions?
 
-Open an issue or start a GitHub Discussion. We are happy to help.
+Open an issue: questions are welcome there as well as bug reports. The
+[site](https://izaccavalheiro.github.io/anonyma/) answers most of them, and
+[history and decisions](docs/history.md) explains why the project is built the way it is.

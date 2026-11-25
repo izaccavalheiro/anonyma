@@ -102,6 +102,16 @@ const config: Config = {
 
   themeConfig: {
     colorMode: { respectPrefersColorScheme: true },
+    // The latest release post. Raw HTML, which the link check does not see: keep the baseUrl in it.
+    announcementBar: {
+      id: "release-1-5",
+      content:
+        'anonyma 1.5: presets that add up, batches on every core, and a Rust engine for Node.js. <a href="/anonyma/blog/anonyma-1-5">What changed, and why</a>',
+      // The site's primary colour, legible in both colour modes.
+      backgroundColor: "#2f6f4e",
+      textColor: "#ffffff",
+      isCloseable: true,
+    },
     navbar: {
       title: "anonyma",
       logo: { alt: "anonyma", src: "img/logo.svg" },
@@ -133,19 +143,22 @@ const config: Config = {
             { label: "Playground", to: "/playground" },
             { label: "Benchmarks", to: "/benchmarks" },
             { label: "Command line", to: "/docs/packages/cli" },
+            { label: "Other languages", to: "/docs/guides/other-languages" },
           ],
         },
         {
           title: "Project",
           items: [
+            { label: "Releases", to: "/docs/project/releases" },
+            { label: "Changelog", to: "/docs/project/changelog" },
+            { label: "History and decisions", to: "/docs/project/history" },
+            { label: "Security", to: "/docs/project/security" },
             { label: "GitHub", href: repository },
             { label: "npm", href: "https://www.npmjs.com/package/anonyma" },
-            { label: "Changelog", to: "/docs/project/changelog" },
-            { label: "Security", to: "/docs/project/security" },
           ],
         },
       ],
-      copyright: `MIT licensed. This site runs entirely in your browser and cannot send what you type anywhere.`,
+      copyright: `MIT licensed. The playground runs the library in your browser and sends nothing you type to a server.`,
     },
     prism: {
       theme: prismThemes.github,

@@ -55,8 +55,16 @@ Start with `anonyma`. The other entry points add features you can adopt one at a
 
 ## Companion packages
 
-Three packages are published separately and take `anonyma` as a peer dependency:
+Five packages are published separately, each with a version of its own. The first four take
+`anonyma` as a peer dependency:
 
 - [`anonyma-cli`](../packages/cli.md) — the `anonyma` command, to scrub and scan files of any size;
 - [`anonyma-vercel-ai`](../packages/vercel-ai.md) — middleware for the Vercel AI SDK;
-- [`anonyma-mcp`](../packages/mcp.md) — a privacy proxy for any MCP server.
+- [`anonyma-mcp`](../packages/mcp.md) — a privacy proxy for any MCP server;
+- [`anonyma-parallel`](../packages/parallel.md) — the batch functions on a pool of worker threads;
+- [`anonyma-native`](../packages/native.md) — detection and anonymization on anonyma's Rust core,
+  prebuilt for Linux, macOS and Windows: an opt-in engine, faster when every category is detected
+  and on batches.
+
+For Python, Go and other languages, see [Other languages](../guides/other-languages.md). The
+[releases page](../project/releases.md) lists the latest version of every package.

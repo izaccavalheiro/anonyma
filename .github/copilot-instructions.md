@@ -8,11 +8,11 @@
 
 ## Language and Framework
 
-- **Language**: TypeScript 5.x with the strictest compiler settings
+- **Language**: TypeScript 6 with the strictest compiler settings
 - **Module format**: ESM (`"type": "module"`) with `.js` extensions on relative imports in source
 - **Build tool**: tsup (esbuild wrapper)
 - **Test runner**: Vitest with V8 coverage
-- **Linter**: ESLint 9 with `typescript-eslint`
+- **Linter**: ESLint 10 with `typescript-eslint`
 - **Runtime target**: Node.js ≥ 18 (uses Web Crypto API, `TransformStream`, `structuredClone`)
 
 ---

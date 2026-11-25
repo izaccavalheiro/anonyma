@@ -2,7 +2,7 @@
   "name": "anonyma",
   "version": "1.5.2",
   "author": "Izac Cavalheiro <izac@izaccavalheiro.com>",
-  "description": "TypeScript-first PII detection & anonymization \u2014 27 built-in detectors (email, SSN, IBAN, and more), 8 strategies (mask, redact, hash, AES-256 encrypt, tokenize, pseudonymize, generalize, synthesize), 8 compliance presets (GDPR, LGPD, PIPEDA, HIPAA, CCPA, PCI-DSS, SOX, FERPA), a span engine with chunk-safe streaming, reversible and keyed tokenization with key rotation, a zero-PII audit log, regulation profiles, LLM/AI helpers, an MCP server, HTTP middleware, batch processing, checksum validators, and optional Zod schemas.",
+  "description": "Find and anonymize personal data (PII) in text and JSON before it reaches logs, LLM prompts or API responses: 27 categories, validated by their check digits where a format has them, 8 strategies from masking to reversible tokens and AES-GCM encryption, GDPR, LGPD, HIPAA and PCI DSS presets that combine, signed receipts, and MCP, AI SDK and HTTP integrations. Zero dependencies; runs on Node.js, Bun, Deno, Cloudflare Workers and browsers.",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -46,7 +46,17 @@
     "middleware",
     "streaming",
     "web-crypto",
-    "zero-dependencies"
+    "zero-dependencies",
+    "pii-redaction",
+    "data-masking",
+    "de-identification",
+    "personal-data",
+    "dlp",
+    "checksum",
+    "cloudflare-workers",
+    "deno",
+    "bun",
+    "edge"
   ],
   "type": "module",
   "main": "./dist/index.cjs",
